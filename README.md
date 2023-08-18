@@ -6,3 +6,4 @@ Views to display and interact with geographical objects and cartographic layers 
 ## Dependencies
 
 - [GeoTools](https://github.com/OpenSmock/GeoTools)
+- [OpenSmock core packages and dependencies](https://github.com/OpenSmock/OpenSmock)
