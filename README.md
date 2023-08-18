@@ -1,2 +1,2 @@
 # GeoView
-Views to display and manage geographical objects for UI 
+Views to display and interact with geographical objects and cartographic layers for UI.
