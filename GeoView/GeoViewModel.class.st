@@ -54,7 +54,10 @@ GeoViewModel >> defaultProcessData [
 
 { #category : #'process data' }
 GeoViewModel >> defaultProcessData: anObject [
-	defaultProcessData := anObject
+
+	(defaultProcessData ~= anObject) ifFalse:[ ^ self ].
+	defaultProcessData := anObject.
+	defaultProcessData ifNotNil: [ defaultProcessData processor: self ]
 ]
 
 { #category : #'process data' }
