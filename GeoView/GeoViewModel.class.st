@@ -74,14 +74,19 @@ GeoViewModel >> deleteProcessDataFor: aDataClass [
 { #category : #cud }
 GeoViewModel >> deleted: aData [
 	| processData data oldData key |
-	self assert: [self isSupportedData: aData] description:['[GeoGraphicModel] Data not supported or model not correctly setting up for this data.'. ^nil].
+	(self isSupportedData: aData) ifFalse:[
+		GeoViewNotSupportedDataError signal: 'Data not supported or model not setup for this data.'. ^ nil.
+	].
+	
 	key := self getSupportedDataIndex: aData.
-	self assert: [self datas includesKey: key] description:['[GeoGraphicModel] Cannot delete the Data because index not exist.'. ^nil].
+	(self datas includesKey: key) not ifTrue:[ 
+		GeoViewNoIdError signal: 'Cannot delete the Data because index not used.'. ^ nil.	
+	].
 	
 	processData := self getSupportedDataProcessData: aData.
-	processData ifNil:[^nil].
-	oldData := self datas at: key ifAbsent:[nil].
-	oldData ifNil:[^nil].
+	processData ifNil:[ ^ nil ].
+	oldData := self datas at: key ifAbsent:[ nil ].
+	oldData ifNil:[ ^ nil ].
 	data := processData processDeletedData: key incoming: aData with: oldData context: nil.
 	
 	self datas removeKey: key.
@@ -238,16 +243,21 @@ GeoViewModel >> symbologyProvider: anObject [
 { #category : #cud }
 GeoViewModel >> updated: aData [
 	| processData data oldData key |
-	self assert: [self isSupportedData: aData] description:['[GeoGraphicModel] Data not supported or model not correctly setting up for this data.'. ^nil].
+	(self isSupportedData: aData) ifFalse:[
+		GeoViewNotSupportedDataError signal: 'Data not supported or model not setup for this data.'. ^ nil.
+	].
+	
 	key := self getSupportedDataIndex: aData.
-	self assert: [self datas includesKey: key] description:['[GeoGraphicModel] Cannot update the Data because index not exist.'. ^nil].
+	(self datas includesKey: key) not ifTrue:[ 
+		GeoViewNoIdError signal: 'Cannot update the Data because index not used.'. ^ nil.	
+	].
 	
 	processData := self getSupportedDataProcessData: aData.
-	processData ifNil:[^nil].
-	oldData := self datas at: key ifAbsent:[nil].
-	oldData ifNil:[^nil].
+	processData ifNil:[ ^ nil ].
+	oldData := self datas at: key ifAbsent:[ nil ].
+	oldData ifNil:[ ^ nil ].
 	data := processData processUpdatedData: key incoming: aData with: oldData context: nil.
-	data ifNil:[^nil].
+	data ifNil:[ ^ nil ].
 	
 	self datas at: key put: data.
 	^data

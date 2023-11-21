@@ -117,22 +117,24 @@ GeoGraphicModelTest >> testCreateUpdateDeleteIndexedDatasWithDefaultProcessData 
 
 { #category : #tests }
 GeoGraphicModelTest >> testCreateUpdateDeleteNonExistingData [
-	| model processData data1 gData1 |
+	| model processData data1 gData1 error |
 	model := GeoViewModel new.
 	model indexAccessor: #id.
 	processData := GeoViewTestProcessData new.
 	model setProcessData: processData for: GeoViewTestData.
+	error := nil.
 	
 	"Update non existing data"
 	data1 := GeoViewTestData id: 1 data: #toto.
-	gData1 := model updated: data1.
+	[ gData1 := model updated: data1 ] on: Error do:[ :e | error := e ].
+	self assert: error class equals: GeoViewNoIdError.
 	self assert: model datas size equals: 0.
-	self assert: gData1 isNil. 
 
 	"Delete non existing data"
-	gData1 := model deleted: data1.
+	error := nil.
+	[ gData1 := model deleted: data1 ] on: Error do:[ :e | error := e ].
+	self assert: error class equals: GeoViewNoIdError.
 	self assert: model datas size equals: 0.
-	self assert: gData1 isNil. 
 ]
 
 { #category : #tests }
