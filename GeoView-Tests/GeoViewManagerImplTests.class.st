@@ -10,12 +10,13 @@ Class {
 
 { #category : #running }
 GeoViewManagerImplTests >> setUp [
+
 	super setUp.
 	geoViewManagerName := #myGeoViewManager.
 	MolComponentManager cleanUp.
 	MolComponentManager default deploymentServices deployComponentImplementation: GeoViewManagerTestImpl.
-	geoViewManager := MolComponentManager default homeServices instanciateComponent: GeoViewManagerTestImpl named: geoViewManagerName.
-	MolComponentManager default homeServices activateComponent: GeoViewManagerTestImpl named: geoViewManagerName.
+	geoViewManager := MolComponentManager default homeServices instantiateComponent: GeoViewManagerTestImpl named: geoViewManagerName.
+	MolComponentManager default homeServices activateComponent: GeoViewManagerTestImpl named: geoViewManagerName
 ]
 
 { #category : #running }

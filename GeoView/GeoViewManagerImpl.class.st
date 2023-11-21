@@ -359,22 +359,21 @@ GeoViewManagerImpl >> initializeEventStrategyStack [
 GeoViewManagerImpl >> initializeProjectionManager [
 
 	MolComponentManager default deploymentServices deployComponentImplementation: MapProjectionManagerImpl.
-	MolComponentManager default homeServices instanciateComponent: MapProjectionManagerImpl named: self componentName.
+	MolComponentManager default homeServices instantiateComponent: MapProjectionManagerImpl named: self componentName
 ]
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSelectionManager [
-	
-	MolComponentManager default deploymentServices deployComponentImplementation: SmockSelectionManagerImpl.
-	MolComponentManager default homeServices instanciateComponent: SmockSelectionManagerImpl named: self componentName.
 
+	MolComponentManager default deploymentServices deployComponentImplementation: SmockSelectionManagerImpl.
+	MolComponentManager default homeServices instantiateComponent: SmockSelectionManagerImpl named: self componentName
 ]
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSymbologyManager [
 
 	MolComponentManager default deploymentServices deployComponentImplementation: GeoSymbologyProvider.
-	MolComponentManager default homeServices instanciateComponent: GeoSymbologyProvider named: self componentName.
+	MolComponentManager default homeServices instantiateComponent: GeoSymbologyProvider named: self componentName
 ]
 
 { #category : #initialization }
