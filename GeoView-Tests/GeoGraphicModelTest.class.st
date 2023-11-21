@@ -9,7 +9,7 @@ Class {
 
 { #category : #tests }
 GeoGraphicModelTest >> testCreateExistingData [
-	| model processData data1 gData1 data2 |
+	| model processData data1 gData1 data2 error |
 	model := GeoViewModel new.
 	model indexAccessor: #id.
 	processData := GeoViewTestProcessData new.
@@ -19,10 +19,11 @@ GeoGraphicModelTest >> testCreateExistingData [
 	gData1 := model created: data1.
 	
 	"Create already existing data"
+	error := nil.
 	data2 := GeoViewTestData id: 1 data: #tata.
-	gData1 := model created: data2.
-	self assert: model datas size equals: 1.
-	self assert: gData1 isNil. 
+	[ gData1 := model created: data2 ] on: Error do:[ :e | error := e ].
+	self assert: error class equals: GeoViewDuplicateIdError.
+	self assert: model datas size equals: 1. 
 ]
 
 { #category : #tests }

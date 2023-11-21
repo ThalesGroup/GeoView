@@ -20,17 +20,22 @@ Class {
 { #category : #cud }
 GeoViewModel >> created: aData [
 	| processData data key |
-	self assert: [self isSupportedData: aData] description:['[GeoViewGraphicModel] Data not supported or model not correctly setting up for this data.'. ^nil].
+	(self isSupportedData: aData) ifFalse:[
+		GeoViewNotSupportedDataError signal: 'Data not supported or model not setup for this data.'. ^ nil.
+	].
+	
 	key := self getSupportedDataIndex: aData.
-	self assert: [(self datas includesKey: key) not] description:['[GeoViewGraphicModel] Cannot create the Data because index already created.'. ^nil].
+	(self datas includesKey: key) ifTrue:[ 
+		GeoViewDuplicateIdError signal: 'Cannot create the Data because index already used.'. ^ nil.	
+	].
 	
 	processData := self getSupportedDataProcessData: aData.
-	processData ifNil:[^nil].
+	processData ifNil:[ ^ nil ].
 	self isRecyclingActive ifTrue:[
 		data := self destockRecycledDataFor: aData class.
 	].
 	data := processData processCreatedData: key incoming: aData with: data context: nil.
-	data ifNil:[^nil].
+	data ifNil:[ ^ nil ].
 	
 	self datas at: key put: data.
 	^data
