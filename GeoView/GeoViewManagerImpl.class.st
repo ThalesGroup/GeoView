@@ -132,14 +132,10 @@ GeoViewManagerImpl >> createAndAddGeoObjectLayer: aKey [
 	"add a layer to the geoplot"
 
 	| existingLayer layer |
-	self
-		assert: [ aKey isNotNil ]
-		description: [ '[GeoView] Can not add layer with nil key.'. ^nil  ].
+	aKey ifNil:[ GeoViewNoIdError signal: 'Cannot add layer with nil key.'. ^ nil ].
 	
 	existingLayer := self getLayer: aKey.
-	self
-		assert: [ existingLayer isNil ]
-		description: [ '[GeoView] Can not add layer with key already exist.'. ^nil ].
+	existingLayer ifNotNil:[ GeoViewDuplicateIdError signal: 'Cannot add layer with already existing key.'. ^ nil ].
 		
 	layer := self createGeoObjectLayer: aKey.
 	^self addLayer: layer
