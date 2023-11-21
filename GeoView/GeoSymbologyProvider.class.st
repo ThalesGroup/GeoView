@@ -91,6 +91,12 @@ GeoSymbologyProvider class >> availableSymbologies [
 	^self symbologyTable keys
 ]
 
+{ #category : #creation }
+GeoSymbologyProvider class >> cleanUp: anObject [
+
+	self cleanUpSymbologies.
+]
+
 { #category : #adding }
 GeoSymbologyProvider class >> cleanUpSymbologies [
 	<script: 'self cleanUpSymbologies'>
