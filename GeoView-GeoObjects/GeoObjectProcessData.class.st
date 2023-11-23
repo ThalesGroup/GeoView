@@ -1,6 +1,6 @@
 Class {
 	#name : #GeoObjectProcessData,
-	#superclass : #GeoProcessData,
+	#superclass : #SmockProcessData,
 	#category : #'GeoView-GeoObjects-ProcessData'
 }
 

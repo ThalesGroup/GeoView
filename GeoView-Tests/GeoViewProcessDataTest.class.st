@@ -25,16 +25,16 @@ GeoViewProcessDataTest >> testProperty [
 	
 	processData setProperty: #toto value: #tata. 
 	self assert: processData properties size equals: 1.
-	self assert: (processData isPropertyExist: #toto) equals: true.
+	self assert: (processData isPropertyExists: #toto) equals: true.
 	self assert: (processData getProperty: #toto) equals: #tata.
 	
 	processData setProperty: #toto value: #tutu.
 	self assert: processData properties size equals: 1.
-	self assert: (processData isPropertyExist: #toto) equals: true.
+	self assert: (processData isPropertyExists: #toto) equals: true.
 	self assert: (processData getProperty: #toto) equals: #tutu.
 	
 	processData removeProperty: #toto.
-	self assert: (processData isPropertyExist: #toto) equals: false.
+	self assert: (processData isPropertyExists: #toto) equals: false.
 	self assert: (processData getProperty: #toto) equals: nil.
 	self assert: processData properties isEmpty.
 ]

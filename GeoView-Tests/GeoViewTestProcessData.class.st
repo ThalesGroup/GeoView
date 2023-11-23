@@ -3,7 +3,7 @@ Process Data for GFLModel Tests
 "
 Class {
 	#name : #GeoViewTestProcessData,
-	#superclass : #GeoProcessData,
+	#superclass : #SmockProcessData,
 	#category : #'GeoView-Tests-Utils'
 }
 
