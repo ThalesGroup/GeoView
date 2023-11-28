@@ -2,8 +2,8 @@
 I am a Graphic Projection Model
 "
 Class {
-	#name : #GeoViewProjectionModel,
-	#superclass : #GeoViewModel,
+	#name : #GeoViewCUDModel,
+	#superclass : #SmockCUDModel,
 	#instVars : [
 		'projection'
 	],
@@ -11,11 +11,13 @@ Class {
 }
 
 { #category : #accessing }
-GeoViewProjectionModel >> projection [
+GeoViewCUDModel >> projection [
+
 	^ projection
 ]
 
 { #category : #accessing }
-GeoViewProjectionModel >> projection: aMapProjection [ 
+GeoViewCUDModel >> projection: aMapProjection [
+
 	projection := aMapProjection
 ]

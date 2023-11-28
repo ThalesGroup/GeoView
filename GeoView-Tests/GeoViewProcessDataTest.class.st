@@ -11,7 +11,7 @@ Class {
 GeoViewProcessDataTest >> testInitialize [
 
 	| processData |
-	processData := GeoViewTestProcessData new.
+	processData := SmockTestProcessData new.
 	
 	self assert: processData processor isNil.
 	self assert: processData properties isEmpty.
@@ -21,7 +21,7 @@ GeoViewProcessDataTest >> testInitialize [
 GeoViewProcessDataTest >> testProperty [
 
 	| processData |
-	processData := GeoViewTestProcessData new.
+	processData := SmockTestProcessData new.
 	
 	processData setProperty: #toto value: #tata. 
 	self assert: processData properties size equals: 1.

@@ -1,5 +1,5 @@
 Class {
 	#name : #GeoViewError,
-	#superclass : #Error,
+	#superclass : #SmockError,
 	#category : #'GeoView-Exceptions'
 }
