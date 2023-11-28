@@ -3,8 +3,8 @@ I am a Display Text.
 I am used to display a text on geo view.
 "
 Class {
-	#name : #DText,
-	#superclass : #DLeafShape,
+	#name : #SmockDText,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'text',
 		'fontName',
@@ -17,7 +17,7 @@ Class {
 }
 
 { #category : #copying }
-DText >> copy [
+SmockDText >> copy [
 	| copy |
 	copy := super copy.
 	copy text: self text copy.
@@ -29,69 +29,69 @@ DText >> copy [
 ]
 
 { #category : #accessing }
-DText >> fontEmphasis [
+SmockDText >> fontEmphasis [
 	fontEmphasis isNil ifTrue:[fontEmphasis := GeoFontAttributes fontEmphasisNormal].
 	^ fontEmphasis
 ]
 
 { #category : #accessing }
-DText >> fontEmphasis: anObject [
+SmockDText >> fontEmphasis: anObject [
 	fontEmphasis := anObject 
 ]
 
 { #category : #accessing }
-DText >> fontName [
+SmockDText >> fontName [
 	^ fontName
 ]
 
 { #category : #accessing }
-DText >> fontName: anObject [
+SmockDText >> fontName: anObject [
 	fontName := anObject
 ]
 
 { #category : #accessing }
-DText >> fontSize [
+SmockDText >> fontSize [
 	^ fontSize
 ]
 
 { #category : #accessing }
-DText >> fontSize: anObject [
+SmockDText >> fontSize: anObject [
 	fontSize := anObject
 ]
 
 { #category : #accessing }
-DText >> fontWeight [
+SmockDText >> fontWeight [
 	fontWeight isNil ifTrue:[fontWeight := GeoFontAttributes fontWeightNormal].
 	^ fontWeight
 ]
 
 { #category : #accessing }
-DText >> fontWeight: anObject [
+SmockDText >> fontWeight: anObject [
 	fontWeight := anObject 
 ]
 
 { #category : #accessing }
-DText >> initialize [
+SmockDText >> initialize [
 	super initialize.
 	drawMode := #user.
 ]
 
 { #category : #accessing }
-DText >> offsetPx [
+SmockDText >> offsetPx [
 	^ offsetPx
 ]
 
 { #category : #accessing }
-DText >> offsetPx: anObject [
+SmockDText >> offsetPx: anObject [
 	offsetPx := anObject
 ]
 
 { #category : #accessing }
-DText >> text [
+SmockDText >> text [
 	^ text
 ]
 
 { #category : #accessing }
-DText >> text: anObject [
+SmockDText >> text: anObject [
 	text := anObject
 ]

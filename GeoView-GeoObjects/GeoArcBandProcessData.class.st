@@ -7,7 +7,7 @@ Class {
 { #category : #processing }
 GeoArcBandProcessData >> processCreatedData: aKey incoming: aGeoArcBand with: aDArcBand context: aContext [
 	| dArcBand |
-	dArcBand := aDArcBand ifNil:[DArcBand new].
+	dArcBand := aDArcBand ifNil:[SmockDArcBand new].
 	super processCreatedData: aKey incoming: aGeoArcBand with: dArcBand context: aContext.
 
 	aGeoArcBand radiusInMeters1 < aGeoArcBand radiusInMeters2 

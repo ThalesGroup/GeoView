@@ -1,23 +1,23 @@
 Class {
-	#name : #DShapeTest,
+	#name : #SmockDShapeTest,
 	#superclass : #TestCase,
 	#category : #'GeoView-Tests-Cases - DShape'
 }
 
 { #category : #tests }
-DShapeTest >> testConstructor [ 
+SmockDShapeTest >> testConstructor [ 
 	
 	| dShape |
-	dShape := DShape key: #testDShape.
+	dShape := SmockDShape key: #testDShape.
 	
 	self assert: dShape key equals: #testDShape.
 ]
 
 { #category : #tests }
-DShapeTest >> testCopy [ 
+SmockDShapeTest >> testCopy [ 
 	
 	| dShape dShapeCopy |
-	dShape := DShape new.
+	dShape := SmockDShape new.
 	dShapeCopy := dShape copy.
 	
 	self assert: dShapeCopy equals: dShape.
@@ -25,10 +25,10 @@ DShapeTest >> testCopy [
 ]
 
 { #category : #tests }
-DShapeTest >> testInitialize [ 
+SmockDShapeTest >> testInitialize [ 
 	
 	| dShape |
-	dShape := DShape new.
+	dShape := SmockDShape new.
 	
 	self assert: dShape key equals: nil.
 	self assert: dShape coordinates equals: nil.

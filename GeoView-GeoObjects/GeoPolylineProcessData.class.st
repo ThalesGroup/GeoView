@@ -7,7 +7,7 @@ Class {
 { #category : #processing }
 GeoPolylineProcessData >> processCreatedData: aKey incoming: aGeoPolyline with: aDPolyline context: aContext [
 	| dPolyline points |
-	dPolyline := aDPolyline ifNil:[DPolyline new].
+	dPolyline := aDPolyline ifNil:[SmockDPolyline new].
 	super processCreatedData: aKey incoming: aGeoPolyline with: dPolyline context: aContext.
 	
 	points := aGeoPolyline absolutePositions collect: [ :e | self processor projection projLatLonToCart: e].

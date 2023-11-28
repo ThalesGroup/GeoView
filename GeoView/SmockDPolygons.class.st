@@ -1,10 +1,6 @@
-"
-I am a Display Polygon.
-I am used to display a polygon on a geo view.
-"
 Class {
-	#name : #DPolygon,
-	#superclass : #DLeafShape,
+	#name : #SmockDPolygons,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'points'
 	],
@@ -12,7 +8,7 @@ Class {
 }
 
 { #category : #copying }
-DPolygon >> copy [
+SmockDPolygons >> copy [
 	| copy |
 	copy := super copy.
 	copy points: (self points collect:[ :p | p copy]).
@@ -20,18 +16,18 @@ DPolygon >> copy [
 ]
 
 { #category : #'initialize-release' }
-DPolygon >> initialize [
+SmockDPolygons >> initialize [
 	super initialize.
 	drawMode := #user.
 ]
 
 { #category : #accessing }
-DPolygon >> points [
+SmockDPolygons >> points [
 	points isNil ifTrue:[points := OrderedCollection new].
 	^ points
 ]
 
 { #category : #accessing }
-DPolygon >> points: anObject [
+SmockDPolygons >> points: anObject [
 	points := anObject
 ]

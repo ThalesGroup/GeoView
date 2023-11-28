@@ -7,7 +7,7 @@ Class {
 { #category : #processing }
 GeoCircleProcessData >> processCreatedData: aKey incoming: aGeoCircle with: aDCircle context: aContext [
 	| dCircle |
-	dCircle := aDCircle ifNil:[DCircle new].
+	dCircle := aDCircle ifNil:[SmockDCircle new].
 	super processCreatedData: aKey incoming: aGeoCircle with: dCircle context: aContext.
 	
 	dCircle radius: aGeoCircle radiusInMeters.

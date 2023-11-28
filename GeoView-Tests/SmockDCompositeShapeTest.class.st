@@ -1,15 +1,15 @@
 Class {
-	#name : #DCompositeShapeTest,
+	#name : #SmockDCompositeShapeTest,
 	#superclass : #TestCase,
 	#category : #'GeoView-Tests-Cases - DShape'
 }
 
 { #category : #tests }
-DCompositeShapeTest >> testAddUpdateAndDeleteChildren [ 
+SmockDCompositeShapeTest >> testAddUpdateAndDeleteChildren [ 
 	
 	| dCompositeShape dLeafShape |
-	dCompositeShape := DCompositeShape new.
-	dLeafShape := DLeafShape key: #testLeafShape. 
+	dCompositeShape := SmockDCompositeShape new.
+	dLeafShape := SmockDLeafShape key: #testLeafShape. 
 	
 	dCompositeShape addDShape: dLeafShape.
 	self assert: dCompositeShape dShapeList size equals: 1.
@@ -43,10 +43,10 @@ DCompositeShapeTest >> testAddUpdateAndDeleteChildren [
 ]
 
 { #category : #tests }
-DCompositeShapeTest >> testCopy [ 
+SmockDCompositeShapeTest >> testCopy [ 
 	
 	| dShape dShapeCopy |
-	dShape := DCompositeShape new.
+	dShape := SmockDCompositeShape new.
 	dShapeCopy := dShape copy.
 	
 	self assert: dShapeCopy equals: dShape.
@@ -54,12 +54,12 @@ DCompositeShapeTest >> testCopy [
 ]
 
 { #category : #tests }
-DCompositeShapeTest >> testGetChildren [ 
+SmockDCompositeShapeTest >> testGetChildren [ 
 	
 	| dCompositeShape dLeafShape dLeafShape2 |
-	dCompositeShape := DCompositeShape new.
-	dLeafShape := DLeafShape key: #testLeafShape. 
-	dLeafShape2 := DLeafShape key: #testLeafShape2. 
+	dCompositeShape := SmockDCompositeShape new.
+	dLeafShape := SmockDLeafShape key: #testLeafShape. 
+	dLeafShape2 := SmockDLeafShape key: #testLeafShape2. 
 	
 	self assert: (dCompositeShape getDShape: nil) equals: nil. 
 	self assert: (dCompositeShape getDShape: #notExistingKey) equals: nil. 
@@ -77,10 +77,10 @@ DCompositeShapeTest >> testGetChildren [
 ]
 
 { #category : #tests }
-DCompositeShapeTest >> testInitialize [ 
+SmockDCompositeShapeTest >> testInitialize [ 
 	
 	| dShape |
-	dShape := DCompositeShape new.
+	dShape := SmockDCompositeShape new.
 	
 	self assert: dShape isLeaf equals: false.
 	self assert: dShape isComposite equals: true.

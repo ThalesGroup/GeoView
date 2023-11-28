@@ -3,8 +3,8 @@ I am a Display Line.
 I am used to display a line on a geo view.
 "
 Class {
-	#name : #DLine,
-	#superclass : #DLeafShape,
+	#name : #SmockDLine,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'orientation'
 	],
@@ -12,7 +12,7 @@ Class {
 }
 
 { #category : #copying }
-DLine >> copy [
+SmockDLine >> copy [
 	| copy |
 	copy := super copy.
 	copy orientation: self orientation.
@@ -20,17 +20,17 @@ DLine >> copy [
 ]
 
 { #category : #'initialize-release' }
-DLine >> initialize [
+SmockDLine >> initialize [
 	super initialize.
 	drawMode := #user.
 ]
 
 { #category : #accessing }
-DLine >> orientation [
+SmockDLine >> orientation [
 	^ orientation
 ]
 
 { #category : #accessing }
-DLine >> orientation: anObject [
+SmockDLine >> orientation: anObject [
 	orientation := anObject
 ]

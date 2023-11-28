@@ -3,8 +3,8 @@ I am a Display Segment.
 I am used to display a segment on a geo view.
 "
 Class {
-	#name : #DSegment,
-	#superclass : #DLeafShape,
+	#name : #SmockDSegment,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'coordinates2'
 	],
@@ -12,17 +12,17 @@ Class {
 }
 
 { #category : #accessing }
-DSegment >> coordinates2 [
+SmockDSegment >> coordinates2 [
 	^ coordinates2
 ]
 
 { #category : #accessing }
-DSegment >> coordinates2: anObject [
+SmockDSegment >> coordinates2: anObject [
 	coordinates2 := anObject
 ]
 
 { #category : #copying }
-DSegment >> copy [
+SmockDSegment >> copy [
 	| copy |
 	copy := super copy.
 	copy coordinates2: self coordinates2 copy.
@@ -30,7 +30,7 @@ DSegment >> copy [
 ]
 
 { #category : #'initialize-release' }
-DSegment >> initialize [
+SmockDSegment >> initialize [
 	super initialize.
 	drawMode := #user.
 ]

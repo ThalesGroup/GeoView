@@ -3,8 +3,8 @@ I am a Display Donut.
 I am used to display a donut on a geo view.
 "
 Class {
-	#name : #DArcBand,
-	#superclass : #DLeafShape,
+	#name : #SmockDArcBand,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'radiusMin',
 		'radiusMax',
@@ -16,17 +16,17 @@ Class {
 }
 
 { #category : #accessing }
-DArcBand >> aperture [
+SmockDArcBand >> aperture [
 	^ aperture
 ]
 
 { #category : #accessing }
-DArcBand >> aperture: anObject [
+SmockDArcBand >> aperture: anObject [
 	aperture := anObject
 ]
 
 { #category : #copying }
-DArcBand >> copy [
+SmockDArcBand >> copy [
 	| copy |
 	copy := super copy.
 	copy radiusMin: self radiusMin.
@@ -38,48 +38,48 @@ DArcBand >> copy [
 ]
 
 { #category : #accessing }
-DArcBand >> initialize [
+SmockDArcBand >> initialize [
 	super initialize.
 	drawMode := #user.
 ]
 
 { #category : #accessing }
-DArcBand >> isClosed [
+SmockDArcBand >> isClosed [
 	isClosed isNil ifTrue:[isClosed := false].
 	^ isClosed
 ]
 
 { #category : #accessing }
-DArcBand >> isClosed: anObject [
+SmockDArcBand >> isClosed: anObject [
 	isClosed := anObject
 ]
 
 { #category : #accessing }
-DArcBand >> orientation [
+SmockDArcBand >> orientation [
 	^ orientation
 ]
 
 { #category : #accessing }
-DArcBand >> orientation: anObject [
+SmockDArcBand >> orientation: anObject [
 	orientation := anObject
 ]
 
 { #category : #accessing }
-DArcBand >> radiusMax [
+SmockDArcBand >> radiusMax [
 	^ radiusMax
 ]
 
 { #category : #accessing }
-DArcBand >> radiusMax: anObject [
+SmockDArcBand >> radiusMax: anObject [
 	radiusMax := anObject
 ]
 
 { #category : #accessing }
-DArcBand >> radiusMin [
+SmockDArcBand >> radiusMin [
 	^ radiusMin
 ]
 
 { #category : #accessing }
-DArcBand >> radiusMin: anObject [
+SmockDArcBand >> radiusMin: anObject [
 	radiusMin := anObject
 ]

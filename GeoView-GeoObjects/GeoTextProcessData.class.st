@@ -7,7 +7,7 @@ Class {
 { #category : #processing }
 GeoTextProcessData >> processCreatedData: aKey incoming: aGeoText with: aDText context: aContext [
 	| dText |
-	dText := aDText ifNil:[DText new].
+	dText := aDText ifNil:[SmockDText new].
 	super processCreatedData: aKey incoming: aGeoText with: dText context: aContext.
 	
 	dText fontName: aGeoText fontName.

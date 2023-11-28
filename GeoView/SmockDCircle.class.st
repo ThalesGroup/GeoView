@@ -3,8 +3,8 @@ I am a Display Circle.
 I am used to display a Circle on a geo view.
 "
 Class {
-	#name : #DCircle,
-	#superclass : #DLeafShape,
+	#name : #SmockDCircle,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'radius'
 	],
@@ -12,7 +12,7 @@ Class {
 }
 
 { #category : #copying }
-DCircle >> copy [
+SmockDCircle >> copy [
 	| copy |
 	copy := super copy.
 	copy radius: self radius.
@@ -20,17 +20,17 @@ DCircle >> copy [
 ]
 
 { #category : #accessing }
-DCircle >> initialize [
+SmockDCircle >> initialize [
 	super initialize.
 	drawMode := #user.
 ]
 
 { #category : #accessing }
-DCircle >> radius [
+SmockDCircle >> radius [
 	^ radius
 ]
 
 { #category : #accessing }
-DCircle >> radius: anObject [
+SmockDCircle >> radius: anObject [
 	radius := anObject
 ]

@@ -7,7 +7,7 @@ Class {
 { #category : #processing }
 GeoEllipseProcessData >> processCreatedData: aKey incoming: aGeoEllipse with: aDEllipse context: aContext [
 	| dEllipse |
-	dEllipse := aDEllipse ifNil:[DEllipse new].
+	dEllipse := aDEllipse ifNil:[SmockDEllipse new].
 	super processCreatedData: aKey incoming: aGeoEllipse with: dEllipse context: aContext.
 	
 	dEllipse radius1: aGeoEllipse radiusInMeters1.

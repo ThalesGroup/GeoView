@@ -1,14 +1,14 @@
 Class {
-	#name : #DSymbolTest,
+	#name : #SmockDSymbolTest,
 	#superclass : #TestCase,
 	#category : #'GeoView-Tests-Cases - DShape'
 }
 
 { #category : #tests }
-DSymbolTest >> testCopy [ 
+SmockDSymbolTest >> testCopy [ 
 	
 	| dShape dShapeCopy |
-	dShape := DSymbol new.
+	dShape := SmockDSymbol new.
 	dShapeCopy := dShape copy.
 	
 	self assert: dShapeCopy equals: dShape.
@@ -16,20 +16,20 @@ DSymbolTest >> testCopy [
 ]
 
 { #category : #tests }
-DSymbolTest >> testInitialize [ 
+SmockDSymbolTest >> testInitialize [ 
 	
 	| dShape |
-	dShape := DSymbol new.
+	dShape := SmockDSymbol new.
 	
 	self assert: dShape symbolKey equals: nil.
 	self assert: dShape orientation equals: nil.
 ]
 
 { #category : #tests }
-DSymbolTest >> testOrientation [
+SmockDSymbolTest >> testOrientation [
 	
 	| dShape |
-	dShape := DSymbol new.
+	dShape := SmockDSymbol new.
 
 	dShape orientation: 180.
 	self assert: dShape orientation equals: 180.
@@ -39,10 +39,10 @@ DSymbolTest >> testOrientation [
 ]
 
 { #category : #tests }
-DSymbolTest >> testSymbolKey [ 
+SmockDSymbolTest >> testSymbolKey [ 
 	
 	| dShape |
-	dShape := DSymbol new.
+	dShape := SmockDSymbol new.
 
 	dShape symbolKey: #mySymbol.
 	self assert: dShape symbolKey equals: #mySymbol.

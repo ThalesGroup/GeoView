@@ -1,14 +1,14 @@
 Class {
-	#name : #DLeafShapeTest,
+	#name : #SmockDLeafShapeTest,
 	#superclass : #TestCase,
 	#category : #'GeoView-Tests-Cases - DShape'
 }
 
 { #category : #tests }
-DLeafShapeTest >> testCopy [ 
+SmockDLeafShapeTest >> testCopy [ 
 	
 	| dShape dShapeCopy |
-	dShape := DLeafShape new.
+	dShape := SmockDLeafShape new.
 	dShapeCopy := dShape copy.
 	
 	self assert: dShapeCopy equals: dShape.
@@ -16,10 +16,10 @@ DLeafShapeTest >> testCopy [
 ]
 
 { #category : #tests }
-DLeafShapeTest >> testDrawMode [ 
+SmockDLeafShapeTest >> testDrawMode [ 
 	
 	| dShape |
-	dShape := DLeafShape new.
+	dShape := SmockDLeafShape new.
 
 	dShape setDrawModeUser.
 	self assert: dShape isDrawModeUser equals: true.
@@ -41,10 +41,10 @@ DLeafShapeTest >> testDrawMode [
 ]
 
 { #category : #tests }
-DLeafShapeTest >> testInitialize [ 
+SmockDLeafShapeTest >> testInitialize [ 
 	
 	| dShape |
-	dShape := DLeafShape new.
+	dShape := SmockDLeafShape new.
 	
 	self assert: dShape isLeaf equals: true.
 	self assert: dShape isComposite equals: false.

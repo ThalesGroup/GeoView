@@ -3,8 +3,8 @@ I am a Display Polyline.
 I am used to display a polyline on geo view.
 "
 Class {
-	#name : #DPolyline,
-	#superclass : #DLeafShape,
+	#name : #SmockDPolyline,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'points'
 	],
@@ -12,7 +12,7 @@ Class {
 }
 
 { #category : #copying }
-DPolyline >> copy [
+SmockDPolyline >> copy [
 	| copy |
 	copy := super copy.
 	copy points: (self points collect:[ :p | p copy]).
@@ -20,18 +20,18 @@ DPolyline >> copy [
 ]
 
 { #category : #'initialize-release' }
-DPolyline >> initialize [
+SmockDPolyline >> initialize [
 	super initialize.
 	drawMode := #user.
 ]
 
 { #category : #accessing }
-DPolyline >> points [
+SmockDPolyline >> points [
 	points isNil ifTrue:[points := OrderedCollection new].
 	^ points
 ]
 
 { #category : #accessing }
-DPolyline >> points: anObject [
+SmockDPolyline >> points: anObject [
 	points := anObject
 ]

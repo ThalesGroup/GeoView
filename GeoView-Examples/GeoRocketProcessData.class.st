@@ -7,19 +7,19 @@ Class {
 { #category : #processing }
 GeoRocketProcessData >> processCreatedData: aKey incoming: aGeoRocket with: aDCompositeShape context: aContext [
 	| dCompositeShape dCircle dLabel |
-	dCompositeShape := aDCompositeShape ifNil:[DCompositeShape new].
+	dCompositeShape := aDCompositeShape ifNil:[SmockDCompositeShape new].
 	super processCreatedData: aKey incoming: aGeoRocket with: dCompositeShape context: aContext.
 	dCompositeShape key: aKey.
 	
 	"create a symbol as a circle"
-	dCircle := DCircle new.
+	dCircle := SmockDCircle new.
 	dCircle key: #symbol.
 	dCircle radius: 1000000.
 	dCircle fillColor: Color black.
 	dCompositeShape addDShape: dCircle.
 	
 	"create a label"
-	dLabel := DText new.
+	dLabel := SmockDText new.
 	dLabel key: #label.
 	dLabel fillColor: Color black.
 	dLabel fontSize: 11.

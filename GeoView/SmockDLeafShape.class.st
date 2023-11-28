@@ -3,8 +3,8 @@ I am a Display Leaf Shape.
 I display a final graphic element.
 "
 Class {
-	#name : #DLeafShape,
-	#superclass : #DShape,
+	#name : #SmockDLeafShape,
+	#superclass : #SmockDShape,
 	#instVars : [
 		'fillColor',
 		'strokeColor',
@@ -15,7 +15,7 @@ Class {
 }
 
 { #category : #copying }
-DLeafShape >> = aDLeafShape [ 
+SmockDLeafShape >> = aDLeafShape [ 
 	"compare each values of the DLeafShape"
 	super = aDLeafShape ifFalse:[^false].
 	self drawMode ~= aDLeafShape drawMode ifTrue:[^false].
@@ -28,7 +28,7 @@ DLeafShape >> = aDLeafShape [
 ]
 
 { #category : #copying }
-DLeafShape >> copy [
+SmockDLeafShape >> copy [
 	| copy |
 	copy := super copy.
 	copy drawMode: self drawMode.
@@ -40,87 +40,87 @@ DLeafShape >> copy [
 ]
 
 { #category : #accessing }
-DLeafShape >> drawMode [
+SmockDLeafShape >> drawMode [
 	drawMode ifNil: [ ^ #device ].
 	^ drawMode
 ]
 
 { #category : #accessing }
-DLeafShape >> drawMode: anObject [
+SmockDLeafShape >> drawMode: anObject [
 	drawMode := anObject
 ]
 
 { #category : #accessing }
-DLeafShape >> fillColor [
+SmockDLeafShape >> fillColor [
 	^ fillColor
 ]
 
 { #category : #accessing }
-DLeafShape >> fillColor: anObject [
+SmockDLeafShape >> fillColor: anObject [
 	fillColor := anObject
 ]
 
 { #category : #'draw mode' }
-DLeafShape >> isDrawModeDevice [
+SmockDLeafShape >> isDrawModeDevice [
 	^self drawMode = #device
 ]
 
 { #category : #'draw mode' }
-DLeafShape >> isDrawModeUser [
+SmockDLeafShape >> isDrawModeUser [
 	^self drawMode = #user
 ]
 
 { #category : #'draw mode' }
-DLeafShape >> isDrawModeUserProjected [
+SmockDLeafShape >> isDrawModeUserProjected [
 	^self drawMode = #userProjected
 ]
 
 { #category : #'draw mode' }
-DLeafShape >> isLeaf [
+SmockDLeafShape >> isLeaf [
 	^ true
 ]
 
 { #category : #'draw mode' }
-DLeafShape >> setDrawModeDevice [
+SmockDLeafShape >> setDrawModeDevice [
 	self drawMode: #device
 ]
 
 { #category : #'draw mode' }
-DLeafShape >> setDrawModeUser [
+SmockDLeafShape >> setDrawModeUser [
 	self drawMode: #user
 ]
 
 { #category : #'draw mode' }
-DLeafShape >> setDrawModeUserProjected [
+SmockDLeafShape >> setDrawModeUserProjected [
 	self drawMode: #userProjected
 ]
 
 { #category : #accessing }
-DLeafShape >> strokeColor [
+SmockDLeafShape >> strokeColor [
 	^ strokeColor
 ]
 
 { #category : #accessing }
-DLeafShape >> strokeColor: anObject [
+SmockDLeafShape >> strokeColor: anObject [
 	strokeColor := anObject
 ]
 
 { #category : #accessing }
-DLeafShape >> strokePattern [
+SmockDLeafShape >> strokePattern [
 	^ strokePattern
 ]
 
 { #category : #accessing }
-DLeafShape >> strokePattern: anObject [
+SmockDLeafShape >> strokePattern: anObject [
 	strokePattern := anObject
 ]
 
 { #category : #accessing }
-DLeafShape >> strokeWidth [
+SmockDLeafShape >> strokeWidth [
 	^ strokeWidth
 ]
 
 { #category : #accessing }
-DLeafShape >> strokeWidth: anObject [
+SmockDLeafShape >> strokeWidth: anObject [
 	strokeWidth := anObject
 ]

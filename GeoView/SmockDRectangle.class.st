@@ -3,8 +3,8 @@ I am a Display Rectangle.
 I am used to display a rectangle on a geo view.
 "
 Class {
-	#name : #DRectangle,
-	#superclass : #DLeafShape,
+	#name : #SmockDRectangle,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'length1',
 		'length2',
@@ -14,7 +14,7 @@ Class {
 }
 
 { #category : #copying }
-DRectangle >> copy [
+SmockDRectangle >> copy [
 	| copy |
 	copy := super copy.
 	copy length1: self length1.
@@ -24,37 +24,37 @@ DRectangle >> copy [
 ]
 
 { #category : #'initialize-release' }
-DRectangle >> initialize [
+SmockDRectangle >> initialize [
 	super initialize.
 	drawMode := #user.
 ]
 
 { #category : #accessing }
-DRectangle >> length1 [
+SmockDRectangle >> length1 [
 	^ length1
 ]
 
 { #category : #accessing }
-DRectangle >> length1: anObject [
+SmockDRectangle >> length1: anObject [
 	length1 := anObject
 ]
 
 { #category : #accessing }
-DRectangle >> length2 [
+SmockDRectangle >> length2 [
 	^ length2
 ]
 
 { #category : #accessing }
-DRectangle >> length2: anObject [
+SmockDRectangle >> length2: anObject [
 	length2 := anObject
 ]
 
 { #category : #accessing }
-DRectangle >> orientation [
+SmockDRectangle >> orientation [
 	^ orientation
 ]
 
 { #category : #accessing }
-DRectangle >> orientation: anObject [
+SmockDRectangle >> orientation: anObject [
 	orientation := anObject
 ]

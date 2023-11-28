@@ -7,7 +7,7 @@ Class {
 { #category : #processing }
 GeoPolygonProcessData >> processCreatedData: aKey incoming: aGeoPolygon with: aDPolygon context: aContext [
 	| dPolygon points |
-	dPolygon := aDPolygon ifNil:[DPolygon new].
+	dPolygon := aDPolygon ifNil:[SmockDPolygon new].
 	super processCreatedData: aKey incoming: aGeoPolygon with: dPolygon context: aContext.
 	
 	points := aGeoPolygon absolutePositions collect: [ :e | self processor projection projLatLonToCart: e].

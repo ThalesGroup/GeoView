@@ -7,8 +7,8 @@ Orientation in azimuths (radians)
 Radius in meters
 "
 Class {
-	#name : #DSector,
-	#superclass : #DLeafShape,
+	#name : #SmockDSector,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'radius',
 		'orientation',
@@ -18,17 +18,17 @@ Class {
 }
 
 { #category : #accessing }
-DSector >> aperture [
+SmockDSector >> aperture [
 	^ aperture
 ]
 
 { #category : #accessing }
-DSector >> aperture: anObject [
+SmockDSector >> aperture: anObject [
 	aperture := anObject
 ]
 
 { #category : #copying }
-DSector >> copy [
+SmockDSector >> copy [
 	| copy |
 	copy := super copy.
 	copy radius: self radius.
@@ -38,27 +38,27 @@ DSector >> copy [
 ]
 
 { #category : #'initialize-release' }
-DSector >> initialize [
+SmockDSector >> initialize [
 	super initialize.
 	drawMode := #user.
 ]
 
 { #category : #accessing }
-DSector >> orientation [
+SmockDSector >> orientation [
 	^ orientation
 ]
 
 { #category : #accessing }
-DSector >> orientation: anObject [
+SmockDSector >> orientation: anObject [
 	orientation := anObject
 ]
 
 { #category : #accessing }
-DSector >> radius [
+SmockDSector >> radius [
 	^ radius
 ]
 
 { #category : #accessing }
-DSector >> radius: anObject [
+SmockDSector >> radius: anObject [
 	radius := anObject
 ]

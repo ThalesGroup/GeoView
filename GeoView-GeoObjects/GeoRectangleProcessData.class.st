@@ -7,7 +7,7 @@ Class {
 { #category : #processing }
 GeoRectangleProcessData >> processCreatedData: aKey incoming: aGeoRectangle with: aDRectangle context: aContext [
 	| dRectangle |
-	dRectangle := aDRectangle ifNil:[DRectangle new].
+	dRectangle := aDRectangle ifNil:[SmockDRectangle new].
 	super processCreatedData: aKey incoming: aGeoRectangle with: dRectangle context: aContext.
 	self processUpdatedData: aKey incoming: aGeoRectangle with: dRectangle context: aContext.
 	^dRectangle

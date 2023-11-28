@@ -3,7 +3,7 @@ I am a root DisplayShape.
 I am used to convert a geographical coordinate data to a user coordinates graphic data.
 "
 Class {
-	#name : #DShape,
+	#name : #SmockDShape,
 	#superclass : #Object,
 	#instVars : [
 		'key',
@@ -17,7 +17,7 @@ Class {
 }
 
 { #category : #accessing }
-DShape class >> key: aKey [
+SmockDShape class >> key: aKey [
 	| dShape |
 	dShape := self new.
 	dShape key: aKey.
@@ -25,7 +25,7 @@ DShape class >> key: aKey [
 ]
 
 { #category : #accessing }
-DShape >> = aDShape [ 
+SmockDShape >> = aDShape [ 
 	"compare each values of the DShape"
 	self key ~= aDShape key ifTrue:[^false].
 	self coordinates ~= aDShape coordinates ifTrue:[^false].
@@ -37,17 +37,17 @@ DShape >> = aDShape [
 ]
 
 { #category : #accessing }
-DShape >> coordinates [
+SmockDShape >> coordinates [
 	^ coordinates
 ]
 
 { #category : #accessing }
-DShape >> coordinates: anObject [
+SmockDShape >> coordinates: anObject [
 	coordinates := anObject
 ]
 
 { #category : #copying }
-DShape >> copy [
+SmockDShape >> copy [
 	| copy |
 	copy := self class new.
 	copy key: self key copy.		
@@ -59,57 +59,57 @@ DShape >> copy [
 ]
 
 { #category : #accessing }
-DShape >> displayMask [
+SmockDShape >> displayMask [
 	^ displayMask
 ]
 
 { #category : #accessing }
-DShape >> displayMask: anObject [
+SmockDShape >> displayMask: anObject [
 	displayMask := anObject
 ]
 
 { #category : #accessing }
-DShape >> displayOffset [
+SmockDShape >> displayOffset [
 	^ displayOffset
 ]
 
 { #category : #accessing }
-DShape >> displayOffset: anObject [
+SmockDShape >> displayOffset: anObject [
 	displayOffset := anObject
 ]
 
 { #category : #'initialize-release' }
-DShape >> initialize [
+SmockDShape >> initialize [
 	super initialize.
 ]
 
 { #category : #accessing }
-DShape >> isComposite [
+SmockDShape >> isComposite [
 	^false
 ]
 
 { #category : #accessing }
-DShape >> isLeaf [
+SmockDShape >> isLeaf [
 	^ false 
 ]
 
 { #category : #accessing }
-DShape >> isVisible [
+SmockDShape >> isVisible [
 	isVisible ifNil:[isVisible := true].
 	^ isVisible
 ]
 
 { #category : #accessing }
-DShape >> isVisible: anObject [
+SmockDShape >> isVisible: anObject [
 	isVisible := anObject
 ]
 
 { #category : #accessing }
-DShape >> key [
+SmockDShape >> key [
 	^ key
 ]
 
 { #category : #accessing }
-DShape >> key: anObject [
+SmockDShape >> key: anObject [
 	key := anObject
 ]

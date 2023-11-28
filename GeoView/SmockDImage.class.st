@@ -3,8 +3,8 @@ I am a Display Image.
 I am used to display an image on a geo view.
 "
 Class {
-	#name : #DImage,
-	#superclass : #DLeafShape,
+	#name : #SmockDImage,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'image'
 	],
@@ -12,7 +12,7 @@ Class {
 }
 
 { #category : #copying }
-DImage >> copy [
+SmockDImage >> copy [
 	| copy |
 	copy := super copy.
 	copy image: self image copy.
@@ -20,11 +20,11 @@ DImage >> copy [
 ]
 
 { #category : #accessing }
-DImage >> image [
+SmockDImage >> image [
 	^ image
 ]
 
 { #category : #accessing }
-DImage >> image: anObject [
+SmockDImage >> image: anObject [
 	image := anObject
 ]

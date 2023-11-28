@@ -3,8 +3,8 @@ I am a Display Symbol.
 I am used to display a Image (using SymbolProvider and a key) on a geo view.
 "
 Class {
-	#name : #DSymbol,
-	#superclass : #DLeafShape,
+	#name : #SmockDSymbol,
+	#superclass : #SmockDLeafShape,
 	#instVars : [
 		'symbolKey',
 		'orientation'
@@ -13,7 +13,7 @@ Class {
 }
 
 { #category : #accessing }
-DSymbol >> = aDSymbol [ 
+SmockDSymbol >> = aDSymbol [ 
 	"compare each values of the aDSymbol"
 	super = aDSymbol ifFalse:[^false].
 	self symbolKey ~= aDSymbol symbolKey ifTrue:[^false].
@@ -22,7 +22,7 @@ DSymbol >> = aDSymbol [
 ]
 
 { #category : #accessing }
-DSymbol >> copy [
+SmockDSymbol >> copy [
 	| copy |
 	copy := super copy.
 	copy symbolKey: self symbolKey.
@@ -31,27 +31,27 @@ DSymbol >> copy [
 ]
 
 { #category : #accessing }
-DSymbol >> initialize [
+SmockDSymbol >> initialize [
 	super initialize.
 	drawMode := #user.
 ]
 
 { #category : #accessing }
-DSymbol >> orientation [
+SmockDSymbol >> orientation [
 	^ orientation
 ]
 
 { #category : #accessing }
-DSymbol >> orientation: anObject [
+SmockDSymbol >> orientation: anObject [
 	orientation := anObject
 ]
 
 { #category : #accessing }
-DSymbol >> symbolKey [
+SmockDSymbol >> symbolKey [
 	^ symbolKey
 ]
 
 { #category : #accessing }
-DSymbol >> symbolKey: anObject [
+SmockDSymbol >> symbolKey: anObject [
 	symbolKey := anObject
 ]
