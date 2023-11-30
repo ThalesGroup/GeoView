@@ -9,6 +9,21 @@ Class {
 	#category : #'GeoView-Tests-Utils'
 }
 
+{ #category : #events }
+GeoViewUserTestImpl >> geoViewLayerAdded: aKey in: aGeoViewManagerKey [
+	self receivedGeoViewLayerEvents at: #layerAddedEvent put: (aKey -> aGeoViewManagerKey).
+]
+
+{ #category : #events }
+GeoViewUserTestImpl >> geoViewLayerRemoved: aKey in: aGeoViewManagerKey [
+	self receivedGeoViewLayerEvents at: #layerDeletedEvent put: (aKey -> aGeoViewManagerKey).
+]
+
+{ #category : #events }
+GeoViewUserTestImpl >> geoViewLayerUpdated: aKey in: aGeoViewManagerKey [
+	self receivedGeoViewLayerEvents at: #layerUpdatedEvent put: (aKey -> aGeoViewManagerKey).
+]
+
 { #category : #'component accessing' }
 GeoViewUserTestImpl >> getGeoViewManagerEventsSubscriber [
 	| eventsSymbol eventsSubscriber itf |
@@ -31,21 +46,6 @@ GeoViewUserTestImpl >> getGeoViewManagerLayerEventsSubscriber [
 			[eventsSubscriber := MolComponentManager default locatorServices 
 						searchEventsSubscriberFor: GeoViewManagerLayerEvents named: eventsSymbol ]. 
 	^eventsSubscriber
-]
-
-{ #category : #events }
-GeoViewUserTestImpl >> layerAdded: aKey view: aGeoViewManagerKey [
-	self receivedGeoViewLayerEvents at: #layerAddedEvent put: (aKey -> aGeoViewManagerKey).
-]
-
-{ #category : #events }
-GeoViewUserTestImpl >> layerDeleted: aKey view: aGeoViewManagerKey [
-	self receivedGeoViewLayerEvents at: #layerDeletedEvent put: (aKey -> aGeoViewManagerKey).
-]
-
-{ #category : #events }
-GeoViewUserTestImpl >> layerUpdated: aKey view: aGeoViewManagerKey [
-	self receivedGeoViewLayerEvents at: #layerUpdatedEvent put: (aKey -> aGeoViewManagerKey).
 ]
 
 { #category : #callbacks }

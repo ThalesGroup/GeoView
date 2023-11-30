@@ -61,13 +61,13 @@ GeoViewManagerImplTests >> testLayerServices [
 	layer := geoViewManager getLayer: #layer1.
 	self assert: layer notNil.
 	
-	geoViewManager deleteLayer: #layer1.
+	geoViewManager removeLayer: #layer1.
 	self assert: geoViewManager getLayers isEmpty.
 	
 	geoViewManager addLayer: (GeoViewTestLayer new layerName: #layer1).
 	self assert: geoViewManager getLayers size equals: 1.
 	
-	geoViewManager deleteAllLayers.
+	geoViewManager removeAllLayers.
 	self assert: geoViewManager getLayers isEmpty.
 ]
 
@@ -78,9 +78,9 @@ GeoViewManagerImplTests >> testLayerServicesWithoutLayers [
 	layer := geoViewManager getLayer: #nonExistingLayer.
 	self assert: layer isNil.
 	
-	geoViewManager deleteLayer: #nonExistingLayer.
+	geoViewManager removeLayer: #nonExistingLayer.
 	self assert: geoViewManager getLayers isEmpty.
 	
-	geoViewManager deleteAllLayers.
+	geoViewManager removeAllLayers.
 	self assert: geoViewManager getLayers isEmpty.
 ]

@@ -20,11 +20,6 @@ GeoViewTest >> addLayer: aLayer [
 ]
 
 { #category : #layers }
-GeoViewTest >> deleteLayer: aLayer [
-	self layers remove: aLayer
-]
-
-{ #category : #layers }
 GeoViewTest >> getLayers [
 	^self layers
 ]
@@ -43,4 +38,9 @@ GeoViewTest >> layers [
 { #category : #accessing }
 GeoViewTest >> layers: anObject [
 	layers := anObject
+]
+
+{ #category : #layers }
+GeoViewTest >> removeLayer: aLayer [
+	self layers remove: aLayer
 ]

@@ -29,14 +29,16 @@ GeoSymbologyProviderTest class >> image2 [
 
 { #category : #private }
 GeoSymbologyProviderTest >> createSampleImageFiles [
-	| image1 image2 form |
+
+	| directory image1 image2 form |
+	directory := self sampleImageFilesDirectory.
 	
-	image1 := self sampleImageFilesDirectory / 'image1.png'.
+	image1 := directory / 'image1.png'.
 	form := Smalltalk compiler evaluate: self class image1.
 	image1 asFileReference binaryWriteStreamDo: [ :out | (PNGReadWriter on: out) nextPutImage: form ].
 	image1 ensureCreateFile.
 	
-	image2 := self sampleImageFilesDirectory / 'image2.png'.
+	image2 := directory / 'image2.png'.
 	form := Smalltalk compiler evaluate: self class image2.
 	image2 asFileReference binaryWriteStreamDo: [ :out | (PNGReadWriter on: out) nextPutImage: form ].
 	image2 ensureCreateFile.

@@ -67,11 +67,11 @@ GeoViewManagerImpl >> addLayer: aLayer [
 	aLayer mapProjection: self getMapProjectionManagerServicesProvider getProjection.
 	aLayer symbologyProvider: self getGeoSymbologyManagerServicesProvider.
 	aLayer isGeoObjectLayer ifTrue:[
-		aLayer processDataChangedCallback: [ :l | self receiveLayerUpdateFrom: l	]. 
+		aLayer whenProcessDatasChangedDo: [ :l | self layerHasBeenUpdated: l	]. 
 	].
 	self view addLayer: aLayer.
 	
-	self getGeoViewManagerLayerEventsNotifier layerAdded: aLayer layerName view: self componentName.
+	self getGeoViewManagerLayerEventsNotifier geoViewLayerAdded: aLayer layerName in: self componentName.
 	^aLayer
 ]
 
@@ -157,14 +157,6 @@ GeoViewManagerImpl >> cursorPositionChanged: anAssociation [
 	self getGeoViewManagerCursorEventsNotifier cursor: anAssociation key positionChanged: anAssociation value view: self componentName
 ]
 
-{ #category : #'services - layer deletion' }
-GeoViewManagerImpl >> deleteAllLayers [
-	| layers |
-	layers := self view getLayers.
-	layers do:[ :l | (self view deleteLayer: l) ifNotNil:[ self getGeoViewManagerLayerEventsNotifier layerDeleted: l layerName view: self componentName ]].
-	^layers
-]
-
 { #category : #'event strategy' }
 GeoViewManagerImpl >> deleteEventBehavior: aGeoViewEventBehavior [
 
@@ -181,17 +173,6 @@ GeoViewManagerImpl >> deleteEventBehaviors [
 	stack := eventStrategyStack copy.
 	eventStrategyStack removeAll.
 	stack do:[ :e | e geoViewManager: nil ].
-]
-
-{ #category : #'services - layer deletion' }
-GeoViewManagerImpl >> deleteLayer: aKey [
-	| layer |
-	aKey ifNil:[^nil].
-	layer := self getLayer: aKey.
-	layer ifNil:[^nil].
-	layer := self view deleteLayer: layer.
-	layer ifNotNil:[self getGeoViewManagerLayerEventsNotifier layerDeleted: aKey view: self componentName].
-	^layer
 ]
 
 { #category : #'events handling' }
@@ -380,6 +361,12 @@ GeoViewManagerImpl >> initializeView [
 	self setScaleInMeters: 1.4816e7.
 ]
 
+{ #category : #events }
+GeoViewManagerImpl >> layerHasBeenUpdated: aLayer [
+
+	self getGeoViewManagerLayerEventsNotifier geoViewLayerUpdated: (aLayer layerName) in: (self componentName).
+]
+
 { #category : #accessing }
 GeoViewManagerImpl >> maxScaleInMeters [
 	^ maxScaleInMeters
@@ -429,10 +416,12 @@ GeoViewManagerImpl >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 	^ pickingResult 
 ]
 
-{ #category : #private }
-GeoViewManagerImpl >> receiveLayerUpdateFrom: aLayer [
-
-	self getGeoViewManagerLayerEventsNotifier layerUpdated: (aLayer layerName) view: (self componentName).
+{ #category : #'services - layer deletion' }
+GeoViewManagerImpl >> removeAllLayers [
+	| layers |
+	layers := self view getLayers.
+	layers do:[ :l | (self view removeLayer: l) ifNotNil:[ self getGeoViewManagerLayerEventsNotifier geoViewLayerRemoved: l layerName in: self componentName ]].
+	^layers
 ]
 
 { #category : #'aggregated components' }
@@ -452,6 +441,17 @@ GeoViewManagerImpl >> removeGeoObject: aGeoObject [
 { #category : #'geobjects aur' }
 GeoViewManagerImpl >> removeGeoObjects: aGeoObjectList [
 	self view removeGeoObjects: aGeoObjectList
+]
+
+{ #category : #'services - layer deletion' }
+GeoViewManagerImpl >> removeLayer: aKey [
+	| layer |
+	aKey ifNil:[^nil].
+	layer := self getLayer: aKey.
+	layer ifNil:[^nil].
+	layer := self view removeLayer: layer.
+	layer ifNotNil:[self getGeoViewManagerLayerEventsNotifier geoViewLayerRemoved: aKey in: self componentName].
+	^layer
 ]
 
 { #category : #scale }

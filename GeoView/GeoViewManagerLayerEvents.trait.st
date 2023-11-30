@@ -9,13 +9,13 @@ Trait {
 }
 
 { #category : #events }
-GeoViewManagerLayerEvents >> layerAdded: aKey view: aGeoViewManagerKey [
+GeoViewManagerLayerEvents >> geoViewLayerAdded: aKey in: aGeoViewManagerKey [
 ]
 
 { #category : #events }
-GeoViewManagerLayerEvents >> layerDeleted: aKey view: aGeoViewManagerKey [
+GeoViewManagerLayerEvents >> geoViewLayerRemoved: aKey in: aGeoViewManagerKey [
 ]
 
 { #category : #events }
-GeoViewManagerLayerEvents >> layerUpdated: aKey view: aGeoViewManagerKey [
+GeoViewManagerLayerEvents >> geoViewLayerUpdated: aKey in: aGeoViewManagerKey [
 ]

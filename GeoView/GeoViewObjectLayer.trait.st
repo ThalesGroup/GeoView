@@ -1,12 +1,10 @@
 Trait {
 	#name : #GeoViewObjectLayer,
+	#instVars : [
+		'processDataChangedBlock'
+	],
 	#category : #'GeoView-View & Layer'
 }
-
-{ #category : #'process data' }
-GeoViewObjectLayer >> deleteProcessDataFor: aGeoObjectClass [
-	self explicitRequirement
-]
 
 { #category : #'process data' }
 GeoViewObjectLayer >> getAllProcessData [
@@ -23,8 +21,8 @@ GeoViewObjectLayer >> isGeoObjectLayer [
 	^true
 ]
 
-{ #category : #private }
-GeoViewObjectLayer >> processDataChangedCallback: aCallbackBlock [
+{ #category : #'process data' }
+GeoViewObjectLayer >> removeProcessDataFor: aGeoObjectClass [
 	self explicitRequirement
 ]
 
@@ -37,4 +35,10 @@ GeoViewObjectLayer >> setDefaultProcessData: aDataProcessor [
 GeoViewObjectLayer >> setProcessData: aProcessData for: aGeoObjectClass [
 	self explicitRequirement
 	
+]
+
+{ #category : #private }
+GeoViewObjectLayer >> whenProcessDatasChangedDo: aBlock [
+
+	processDataChangedBlock := aBlock
 ]

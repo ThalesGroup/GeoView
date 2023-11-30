@@ -20,14 +20,6 @@ GeoViewManagerLayerServices >> createAndAddGeoObjectLayer: aKey [
 GeoViewManagerLayerServices >> createAndAddGeoObjectLayer: aKey level: anInteger [ 
 ]
 
-{ #category : #'services - layer deletion' }
-GeoViewManagerLayerServices >> deleteAllLayers [
-]
-
-{ #category : #'services - layer deletion' }
-GeoViewManagerLayerServices >> deleteLayer: aKey [
-]
-
 { #category : #'services - layer accessing' }
 GeoViewManagerLayerServices >> getLayer: aKey [
 ]
@@ -38,6 +30,14 @@ GeoViewManagerLayerServices >> getLayerLevel: aKey [
 
 { #category : #'services - layer accessing' }
 GeoViewManagerLayerServices >> getLayers [
+]
+
+{ #category : #'services - layer deletion' }
+GeoViewManagerLayerServices >> removeAllLayers [
+]
+
+{ #category : #'services - layer deletion' }
+GeoViewManagerLayerServices >> removeLayer: aKey [
 ]
 
 { #category : #'services - layer configuration' }

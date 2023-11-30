@@ -22,11 +22,6 @@ GeoView >> addLayer: aLayer [
 ]
 
 { #category : #layers }
-GeoView >> deleteLayer: aLayer [
-	self explicitRequirement
-]
-
-{ #category : #layers }
 GeoView >> getLayers [
 	self explicitRequirement
 ]
@@ -43,6 +38,11 @@ GeoView >> removeGeoObject: aGeoObject [
 
 { #category : #'geobjects aur' }
 GeoView >> removeGeoObjects: aGeoObjectList [
+	self explicitRequirement
+]
+
+{ #category : #layers }
+GeoView >> removeLayer: aLayer [
 	self explicitRequirement
 ]
 
