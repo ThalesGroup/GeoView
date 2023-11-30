@@ -4,6 +4,8 @@ I am the geographical object manipulate by a geo view model.
 Class {
 	#name : #GeoObject,
 	#superclass : #Object,
+	#traits : 'TSmockHaveProperties',
+	#classTraits : 'TSmockHaveProperties classTrait',
 	#instVars : [
 		'key',
 		'isVisible',

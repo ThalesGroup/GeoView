@@ -9,8 +9,7 @@ Class {
 		'fillColor',
 		'strokeColor',
 		'strokeWidth',
-		'strokePattern',
-		'property'
+		'strokePattern'
 	],
 	#category : #'GeoView-GeoObjects-GeoObjects'
 }
@@ -23,20 +22,6 @@ GeoShape >> fillColor [
 { #category : #accessing }
 GeoShape >> fillColor: anObject [
 	fillColor := anObject
-]
-
-{ #category : #updating }
-GeoShape >> getProperty: aSymbol [
-
-	property isNil ifTrue:[property := Dictionary new].
-	^property at: aSymbol ifAbsent: nil. 
-]
-
-{ #category : #updating }
-GeoShape >> setProperty: aSymbol value: aValue [
-
-	property isNil ifTrue:[property := Dictionary new].
-	property at: aSymbol put: aValue. 
 ]
 
 { #category : #accessing }
