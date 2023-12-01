@@ -8,30 +8,30 @@ Trait {
 	#category : #'GeoView-Core'
 }
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerParameters >> addEventBehavior: aGeoViewEventBehavior [
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerParameters >> addEventBehaviorAtFirst: aGeoViewEventBehavior [
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerParameters >> deleteEventBehavior: aGeoViewEventBehavior [
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerParameters >> deleteEventBehaviors [
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerParameters >> getEventBehaviors [
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerParameters >> setEventBehaviors: anEventBehaviorList [
 ]
 
-{ #category : #'selection manager' }
-GeoViewManagerParameters >> setSmockSelectionManager: aSmockSelectionManager [
+{ #category : #'parameters - selection manager' }
+GeoViewManagerParameters >> setSelectionManager: aSmockSelectionManager [
 ]

@@ -28,7 +28,7 @@ GeoViewManagerImpl >> activateComponents [
 	].
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerImpl >> addEventBehavior: aGeoViewEventBehavior [
 
 	aGeoViewEventBehavior ifNil:[^self].
@@ -36,7 +36,7 @@ GeoViewManagerImpl >> addEventBehavior: aGeoViewEventBehavior [
 	eventStrategyStack add: aGeoViewEventBehavior.
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerImpl >> addEventBehaviorAtFirst: aGeoViewEventBehavior [
 
 	aGeoViewEventBehavior ifNil:[^self].
@@ -157,7 +157,7 @@ GeoViewManagerImpl >> cursorPositionChanged: anAssociation [
 	self getGeoViewManagerCursorEventsNotifier cursor: anAssociation key positionChanged: anAssociation value view: self componentName
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerImpl >> deleteEventBehavior: aGeoViewEventBehavior [
 
 	aGeoViewEventBehavior ifNil:[^self].
@@ -166,7 +166,7 @@ GeoViewManagerImpl >> deleteEventBehavior: aGeoViewEventBehavior [
 	eventStrategyStack remove: aGeoViewEventBehavior ifAbsent:[nil].
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerImpl >> deleteEventBehaviors [
 
 	| stack |
@@ -215,7 +215,7 @@ GeoViewManagerImpl >> geoObjectsIndexAccessor: anObject [
 	geoObjectsIndexAccessor := anObject
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerImpl >> getEventBehaviors [
 
 	^eventStrategyStack copy
@@ -497,7 +497,7 @@ GeoViewManagerImpl >> selectionCleared [
 	self selectedKeysHasChanged: OrderedCollection new
 ]
 
-{ #category : #'event strategy' }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerImpl >> setEventBehaviors: anEventBehaviorList [
 
 	self deleteEventBehaviors.
@@ -527,10 +527,12 @@ GeoViewManagerImpl >> setScaleInMeters: aNumber [
 	self scaleInMeters: scale.
 ]
 
-{ #category : #'selection manager' }
-GeoViewManagerImpl >> setSmockSelectionManager: aSmockSelectionManager [
+{ #category : #'parameters - selection manager' }
+GeoViewManagerImpl >> setSelectionManager: aSmockSelectionManager [
 	"Set a selection manager to manage the selection"
 	| component |
+	
+	self flag:'labordep: ecrire setSelectionManagerName: et cabler proprement avec la mécanique molecule'.
 	(aSmockSelectionManager isNil or:[(aSmockSelectionManager isComponent not) or:[aSmockSelectionManager componentName isNil]]) ifTrue:[^ self].
 	
 	"Check if the internal component is already initialized or activated and remove it"
