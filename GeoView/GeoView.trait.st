@@ -67,6 +67,6 @@ GeoView >> updateGeoObjects: aGeoObjectList [
 ]
 
 { #category : #private }
-GeoView >> updateModelToView [
+GeoView >> updateGraphicModel [
 	self explicitRequirement
 ]

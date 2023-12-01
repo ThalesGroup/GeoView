@@ -32,6 +32,6 @@ GeoViewLayer >> symbologyProvider: aSymbologyProvider [
 ]
 
 { #category : #private }
-GeoViewLayer >> updateModelToView [
+GeoViewLayer >> updateGraphicModel [
 	self explicitRequirement
 ]
