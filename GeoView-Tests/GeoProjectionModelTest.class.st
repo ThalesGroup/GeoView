@@ -7,6 +7,6 @@ Class {
 { #category : #tests }
 GeoProjectionModelTest >> testInitialize [
 	| model |
-	model := GeoViewCUDModel new.
+	model := GeoViewModel new.
 	self assert: model projection isNil.
 ]
