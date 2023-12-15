@@ -65,7 +65,7 @@ GeoViewManagerImpl >> addLayer: aLayer [
 	aLayer layerName ifNil:[^nil].
 	
 	aLayer mapProjection: self getMapProjectionManagerServicesProvider getProjection.
-	aLayer symbologyProvider: self getGeoSymbologyManagerServicesProvider.
+	aLayer symbologyProvider: self getSmockSymbologyManagerServicesProvider.
 	aLayer isGeoObjectLayer ifTrue:[
 		aLayer whenProcessDatasChangedDo: [ :l | self layerHasBeenUpdated: l	]. 
 	].
@@ -224,18 +224,6 @@ GeoViewManagerImpl >> getEventBehaviors [
 { #category : #'layer accessing' }
 GeoViewManagerImpl >> getGeoCenter [
 	^ self geoCenter
-]
-
-{ #category : #'component accessing' }
-GeoViewManagerImpl >> getGeoSymbologyManagerServicesProvider [
-	| servicesSymbol servicesProvider itf |
-
-	itf := SmockSymbologyManagerServices.
-	servicesSymbol := self servicesProviders at: itf ifAbsent: [nil].
-	(servicesSymbol isNil or:[servicesSymbol isSymbol not]) ifTrue: [ ^ MolNotFoundServicesProvider new interface: itf name: nil ].
-
-	servicesProvider := MolComponentManager default locatorServices searchServicesProviderFor: SmockSymbologyManagerServices named: servicesSymbol.
-	^servicesProvider
 ]
 
 { #category : #'component accessing' }
