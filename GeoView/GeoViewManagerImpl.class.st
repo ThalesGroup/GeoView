@@ -22,7 +22,7 @@ Class {
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> activateComponents [
 	MolComponentManager default homeServices activateComponent: MapProjectionManagerImpl named: self componentName.
-	MolComponentManager default homeServices activateComponent: GeoSymbologyProvider named: self componentName.
+	MolComponentManager default homeServices activateComponent: SmockSymbologyProvider named: self componentName.
 	(MolComponentManager default homeServices isWaitingForActivation: SmockSelectionManagerImpl named: self componentName) ifTrue:[
 		MolComponentManager default homeServices activateComponent: SmockSelectionManagerImpl named: self componentName.
 	].
@@ -93,7 +93,7 @@ GeoViewManagerImpl >> componentActivate [
 GeoViewManagerImpl >> componentInitialize [
 
 	self forServices: MapProjectionManagerServices useProvider: self componentName.
-	self forServices: GeoSymbologyManagerServices useProvider: self componentName.
+	self forServices: SmockSymbologyManagerServices useProvider: self componentName.
 	self forServices: SmockSelectionManagerServices useProvider: self componentName.
 
 	self initializeComponents.
@@ -230,11 +230,11 @@ GeoViewManagerImpl >> getGeoCenter [
 GeoViewManagerImpl >> getGeoSymbologyManagerServicesProvider [
 	| servicesSymbol servicesProvider itf |
 
-	itf := GeoSymbologyManagerServices.
+	itf := SmockSymbologyManagerServices.
 	servicesSymbol := self servicesProviders at: itf ifAbsent: [nil].
 	(servicesSymbol isNil or:[servicesSymbol isSymbol not]) ifTrue: [ ^ MolNotFoundServicesProvider new interface: itf name: nil ].
 
-	servicesProvider := MolComponentManager default locatorServices searchServicesProviderFor: GeoSymbologyManagerServices named: servicesSymbol.
+	servicesProvider := MolComponentManager default locatorServices searchServicesProviderFor: SmockSymbologyManagerServices named: servicesSymbol.
 	^servicesProvider
 ]
 
@@ -312,6 +312,18 @@ GeoViewManagerImpl >> getSmockSelectionManagerServicesProvider [
 	^servicesProvider
 ]
 
+{ #category : #'component accessing' }
+GeoViewManagerImpl >> getSmockSymbologyManagerServicesProvider [
+	| servicesSymbol servicesProvider itf |
+
+	itf := SmockSymbologyManagerServices.
+	servicesSymbol := self servicesProviders at: itf ifAbsent: [nil].
+	(servicesSymbol isNil or:[servicesSymbol isSymbol not]) ifTrue: [ ^ MolNotFoundServicesProvider new interface: itf name: nil ].
+
+	servicesProvider := MolComponentManager default locatorServices searchServicesProviderFor: SmockSymbologyManagerServices named: servicesSymbol.
+	^servicesProvider
+]
+
 { #category : #accessing }
 GeoViewManagerImpl >> getView [
 	^self view 
@@ -349,8 +361,8 @@ GeoViewManagerImpl >> initializeSelectionManager [
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSymbologyManager [
 
-	MolComponentManager default deploymentServices deployComponentImplementation: GeoSymbologyProvider.
-	MolComponentManager default homeServices instantiateComponent: GeoSymbologyProvider named: self componentName
+	MolComponentManager default deploymentServices deployComponentImplementation: SmockSymbologyProvider.
+	MolComponentManager default homeServices instantiateComponent: SmockSymbologyProvider named: self componentName
 ]
 
 { #category : #initialization }
@@ -390,7 +402,7 @@ GeoViewManagerImpl >> minScaleInMeters: anObject [
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> passivateComponents [
 	MolComponentManager default homeServices passivateComponent: MapProjectionManagerImpl named: self componentName.
-	MolComponentManager default homeServices passivateComponent: GeoSymbologyProvider named: self componentName.
+	MolComponentManager default homeServices passivateComponent: SmockSymbologyProvider named: self componentName.
 	(MolComponentManager default homeServices instanceOf: SmockSelectionManagerImpl named: self componentName) ifNotNil:[
 		MolComponentManager default homeServices passivateComponent: SmockSelectionManagerImpl named: self componentName.
 	].
@@ -427,7 +439,7 @@ GeoViewManagerImpl >> removeAllLayers [
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> removeComponents [
 	MolComponentManager default homeServices removeComponent: MapProjectionManagerImpl named: self componentName.
-	MolComponentManager default homeServices removeComponent: GeoSymbologyProvider named: self componentName.
+	MolComponentManager default homeServices removeComponent: SmockSymbologyProvider named: self componentName.
 	(MolComponentManager default homeServices instanceOf: SmockSelectionManagerImpl named: self componentName) ifNotNil:[
 		MolComponentManager default homeServices removeComponent: SmockSelectionManagerImpl named: self componentName.
 	].

@@ -1,20 +1,20 @@
 Trait {
-	#name : #GeoSymbologyManagerServices,
+	#name : #SmockSymbologyManagerServices,
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
 	#category : #'GeoView-Symbology'
 }
 
 { #category : #'services - symbology manager' }
-GeoSymbologyManagerServices >> getCurrentSymbology [
+SmockSymbologyManagerServices >> getCurrentSymbology [
 ]
 
 { #category : #'services - symbology manager' }
-GeoSymbologyManagerServices >> getSymbol: aKey [
+SmockSymbologyManagerServices >> getSymbol: aKey [
 
 ]
 
 { #category : #'services - symbology manager' }
-GeoSymbologyManagerServices >> setCurrentSymbology: aKey [
+SmockSymbologyManagerServices >> setCurrentSymbology: aKey [
 
 ]

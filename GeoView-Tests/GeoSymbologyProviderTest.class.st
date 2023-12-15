@@ -58,14 +58,14 @@ GeoSymbologyProviderTest >> sampleImageFilesDirectory [
 GeoSymbologyProviderTest >> setUp [ 
 
 	super setUp.
-	GeoSymbologyProvider cleanUpSymbologies.
+	SmockSymbologyProvider cleanUpSymbologies.
 	self createSampleImageFiles.
 ]
 
 { #category : #tests }
 GeoSymbologyProviderTest >> tearDown [ 
 
-	GeoSymbologyProvider cleanUpSymbologies.
+	SmockSymbologyProvider cleanUpSymbologies.
 	super tearDown.
 	directory := nil.
 ]
@@ -75,13 +75,13 @@ GeoSymbologyProviderTest >> testSymbologyCreation [
 	"Create a new Symbology"
 	| symbolDict sym symbology |
 
-	sym := GeoSymbologyProvider getSymbologyInstance.
+	sym := SmockSymbologyProvider getSymbologyInstance.
 	self assert: sym getCurrentSymbology isNil.
 
 	symbolDict := Dictionary new.
 	symbolDict at: #key1 put: (self sampleImageFilesDirectory / 'image1.png') asFileReference.
 	symbolDict at: #key2 put: (self sampleImageFilesDirectory / 'image2.png') asFileReference.
-	GeoSymbologyProvider addSymbology: #SymTest withKeyFilePathDictionary: symbolDict.	
+	SmockSymbologyProvider addSymbology: #SymTest withKeyFilePathDictionary: symbolDict.	
 	symbology := sym getCurrentSymbology.
 	self assert: symbology notNil.
 	self assert: (symbology isKindOf: Dictionary).

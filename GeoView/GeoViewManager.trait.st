@@ -39,5 +39,5 @@ GeoViewManager classSide >> providedComponentServices [
 { #category : #'accessing - services' }
 GeoViewManager classSide >> usedComponentServices [
 <componentContract>	
-	^{MapProjectionManagerServices . GeoSymbologyManagerServices . SmockSelectionManagerServices }
+	^{MapProjectionManagerServices . SmockSymbologyManagerServices . SmockSelectionManagerServices }
 ]

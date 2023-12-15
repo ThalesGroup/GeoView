@@ -1,18 +1,18 @@
 Trait {
-	#name : #GeoSymbologyManager,
+	#name : #SmockSymbologyManager,
 	#traits : 'MolComponentType',
 	#classTraits : 'MolComponentType classTrait',
 	#category : #'GeoView-Symbology'
 }
 
 { #category : #'accessing - events' }
-GeoSymbologyManager classSide >> producedComponentEvents [
+SmockSymbologyManager classSide >> producedComponentEvents [
 <componentContract>		
-	^{ GeoSymbologyManagerEvents }
+	^{ SmockSymbologyManagerEvents }
 ]
 
 { #category : #'accessing - services' }
-GeoSymbologyManager classSide >> providedComponentServices [
+SmockSymbologyManager classSide >> providedComponentServices [
 <componentContract>	
-	^{ GeoSymbologyManagerServices } 
+	^{ SmockSymbologyManagerServices } 
 ]

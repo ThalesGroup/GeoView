@@ -4,10 +4,10 @@ This require as input :
 - a dictionary key / filepath for symbol definition 
 "
 Class {
-	#name : #GeoSymbologyProvider,
+	#name : #SmockSymbologyProvider,
 	#superclass : #Object,
-	#traits : 'MolComponentImpl + GeoSymbologyManager + GeoSymbologyManagerServices',
-	#classTraits : 'MolComponentImpl classTrait + GeoSymbologyManager classTrait + GeoSymbologyManagerServices classTrait',
+	#traits : 'MolComponentImpl + SmockSymbologyManager + SmockSymbologyManagerServices',
+	#classTraits : 'MolComponentImpl classTrait + SmockSymbologyManager classTrait + SmockSymbologyManagerServices classTrait',
 	#instVars : [
 		'currentSymbology'
 	],
@@ -18,7 +18,7 @@ Class {
 }
 
 { #category : #adding }
-GeoSymbologyProvider class >> addSymbology: aKey imageDictionary: aDictionary [
+SmockSymbologyProvider class >> addSymbology: aKey imageDictionary: aDictionary [
 
 	self symbologyTable at: aKey put: (aDictionary copy).
 
@@ -26,7 +26,7 @@ GeoSymbologyProvider class >> addSymbology: aKey imageDictionary: aDictionary [
 ]
 
 { #category : #adding }
-GeoSymbologyProvider class >> addSymbology: aKey key: aSymbolKey image: aSymbolForm [
+SmockSymbologyProvider class >> addSymbology: aKey key: aSymbolKey image: aSymbolForm [
 
 "This require as input :
 - a key for this Symbology 
@@ -42,7 +42,7 @@ self symbologyTable at: aKey ifAbsentPut: [ Dictionary new].
 ]
 
 { #category : #adding }
-GeoSymbologyProvider class >> addSymbology: aKey key: aSymbolKey imageFilePath: aSymbolFilePath [
+SmockSymbologyProvider class >> addSymbology: aKey key: aSymbolKey imageFilePath: aSymbolFilePath [
 
 "This require as input :
 - a key for this Symbology 
@@ -60,7 +60,7 @@ image := (ImageReadWriter formFromStream: ( aSymbolFilePath asFileReference bina
 ]
 
 { #category : #adding }
-GeoSymbologyProvider class >> addSymbology: aKey withKeyFilePathDictionary: aDictionary [
+SmockSymbologyProvider class >> addSymbology: aKey withKeyFilePathDictionary: aDictionary [
 
 "This require as input :
 - a key from this Symbology 
@@ -85,31 +85,31 @@ symbologyTable at: aKey put: symbolDic.
 ]
 
 { #category : #adding }
-GeoSymbologyProvider class >> availableSymbologies [
+SmockSymbologyProvider class >> availableSymbologies [
 	<script:'self availableSymbologies inspect'>
 
 	^self symbologyTable keys
 ]
 
 { #category : #creation }
-GeoSymbologyProvider class >> cleanUp: anObject [
+SmockSymbologyProvider class >> cleanUp: anObject [
 
 	self cleanUpSymbologies.
 ]
 
 { #category : #adding }
-GeoSymbologyProvider class >> cleanUpSymbologies [
+SmockSymbologyProvider class >> cleanUpSymbologies [
 	<script: 'self cleanUpSymbologies'>
 	symbologyTable := nil.
 ]
 
 { #category : #creation }
-GeoSymbologyProvider class >> getSymbologyInstance [
-	^ GeoSymbologyProvider new 
+SmockSymbologyProvider class >> getSymbologyInstance [
+	^ SmockSymbologyProvider new 
 ]
 
 { #category : #adding }
-GeoSymbologyProvider class >> symbologyTable [
+SmockSymbologyProvider class >> symbologyTable [
 	<script:'self symbologyTable inspect'>
 	
 	symbologyTable ifNil:[symbologyTable := Dictionary new].
@@ -117,7 +117,7 @@ GeoSymbologyProvider class >> symbologyTable [
 ]
 
 { #category : #'services - symbology manager' }
-GeoSymbologyProvider >> getCurrentSymbology [
+SmockSymbologyProvider >> getCurrentSymbology [
 
 	currentSymbology ifNil:[
 		"Try to setup a default symbology"
@@ -130,18 +130,18 @@ GeoSymbologyProvider >> getCurrentSymbology [
 ]
 
 { #category : #'component accessing' }
-GeoSymbologyProvider >> getGeoSymbologyManagerEventsNotifier [
-	^self eventsNotifiers at: GeoSymbologyManagerEvents ifAbsent: [^MolNotFoundEventsNotifier new interface: GeoSymbologyManagerEvents name: nil].
+SmockSymbologyProvider >> getSmockSymbologyManagerEventsNotifier [
+	^self eventsNotifiers at: SmockSymbologyManagerEvents ifAbsent: [^MolNotFoundEventsNotifier new interface: SmockSymbologyManagerEvents name: nil].
 ]
 
 { #category : #access }
-GeoSymbologyProvider >> getSymbol: aSymbolKey [
+SmockSymbologyProvider >> getSymbol: aSymbolKey [
 
 	^self getCurrentSymbology at: aSymbolKey ifAbsent:[nil].
 ]
 
 { #category : #access }
-GeoSymbologyProvider >> setCurrentSymbology: aKey [
+SmockSymbologyProvider >> setCurrentSymbology: aKey [
 
 	currentSymbology := symbologyTable at: aKey.
 	
