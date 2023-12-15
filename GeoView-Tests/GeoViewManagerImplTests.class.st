@@ -34,7 +34,7 @@ GeoViewManagerImplTests >> tearDown [
 GeoViewManagerImplTests >> testAggregatedComponentsStart [
 
 	self assert: geoViewManager getMapProjectionManagerServicesProvider isNotFoundServices equals: false.
-	self assert: geoViewManager getGeoSymbologyManagerServicesProvider isNotFoundServices equals: false.
+	self assert: geoViewManager getSmockSymbologyManagerServicesProvider isNotFoundServices equals: false.
 	self assert: geoViewManager getSmockSelectionManagerServicesProvider isNotFoundServices equals: false.
 ]
 
