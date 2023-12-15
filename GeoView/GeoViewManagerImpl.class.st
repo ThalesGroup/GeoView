@@ -346,14 +346,16 @@ GeoViewManagerImpl >> initializeProjectionManager [
 GeoViewManagerImpl >> initializeSelectionManager [
 
 	SmockSelectionManagerImpl deploy.
-	SmockSelectionManagerImpl instantiate: self componentName
+	SmockSelectionManagerImpl instantiate: self componentName.
+	self setSelectionManagerName: self componentName.
 ]
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSymbologyManager [
 
 	SmockSymbologyProvider deploy.
-	SmockSymbologyProvider instantiate: self componentName
+	SmockSymbologyProvider instantiate: self componentName.
+	self setSymbologyManagerName: self componentName.
 ]
 
 { #category : #initialization }
