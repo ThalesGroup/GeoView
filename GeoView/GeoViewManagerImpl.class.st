@@ -21,10 +21,13 @@ Class {
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> activateComponents [
-	MolComponentManager default homeServices activateComponent: MapProjectionManagerImpl named: self componentName.
-	MolComponentManager default homeServices activateComponent: SmockSymbologyProvider named: self componentName.
+
+	MapProjectionManagerImpl activate: self componentName.
+	(MolComponentManager default homeServices isWaitingForActivation: SmockSymbologyProvider named: self componentName) ifTrue:[
+		SmockSymbologyProvider activate: self componentName.
+	].
 	(MolComponentManager default homeServices isWaitingForActivation: SmockSelectionManagerImpl named: self componentName) ifTrue:[
-		MolComponentManager default homeServices activateComponent: SmockSelectionManagerImpl named: self componentName.
+		SmockSelectionManagerImpl activate: self componentName.
 	].
 ]
 
@@ -321,8 +324,8 @@ GeoViewManagerImpl >> getView [
 GeoViewManagerImpl >> initializeComponents [
 
 	self initializeProjectionManager.
-	self initializeSymbologyManager.
 	self initializeSelectionManager.
+	self initializeSymbologyManager.
 ]
 
 { #category : #'events handling' }
@@ -342,15 +345,15 @@ GeoViewManagerImpl >> initializeProjectionManager [
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSelectionManager [
 
-	MolComponentManager default deploymentServices deployComponentImplementation: SmockSelectionManagerImpl.
-	MolComponentManager default homeServices instantiateComponent: SmockSelectionManagerImpl named: self componentName
+	SmockSelectionManagerImpl deploy.
+	SmockSelectionManagerImpl instantiate: self componentName
 ]
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSymbologyManager [
 
-	MolComponentManager default deploymentServices deployComponentImplementation: SmockSymbologyProvider.
-	MolComponentManager default homeServices instantiateComponent: SmockSymbologyProvider named: self componentName
+	SmockSymbologyProvider deploy.
+	SmockSymbologyProvider instantiate: self componentName
 ]
 
 { #category : #initialization }
@@ -389,10 +392,13 @@ GeoViewManagerImpl >> minScaleInMeters: anObject [
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> passivateComponents [
-	MolComponentManager default homeServices passivateComponent: MapProjectionManagerImpl named: self componentName.
-	MolComponentManager default homeServices passivateComponent: SmockSymbologyProvider named: self componentName.
+
+	MapProjectionManagerImpl passivate: self componentName.	
+	(MolComponentManager default homeServices instanceOf: SmockSymbologyProvider named: self componentName) ifNotNil:[
+		SmockSymbologyProvider passivate: self componentName.
+	].
 	(MolComponentManager default homeServices instanceOf: SmockSelectionManagerImpl named: self componentName) ifNotNil:[
-		MolComponentManager default homeServices passivateComponent: SmockSelectionManagerImpl named: self componentName.
+		SmockSelectionManagerImpl passivate: self componentName.
 	].
 ]
 
@@ -426,10 +432,13 @@ GeoViewManagerImpl >> removeAllLayers [
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> removeComponents [
-	MolComponentManager default homeServices removeComponent: MapProjectionManagerImpl named: self componentName.
-	MolComponentManager default homeServices removeComponent: SmockSymbologyProvider named: self componentName.
+
+	MapProjectionManagerImpl remove: self componentName.
+	(MolComponentManager default homeServices instanceOf: SmockSymbologyProvider named: self componentName) ifNotNil:[
+		SmockSymbologyProvider remove: self componentName.
+	].
 	(MolComponentManager default homeServices instanceOf: SmockSelectionManagerImpl named: self componentName) ifNotNil:[
-		MolComponentManager default homeServices removeComponent: SmockSelectionManagerImpl named: self componentName.
+		SmockSelectionManagerImpl remove: self componentName.
 	].
 ]
 
@@ -534,6 +543,7 @@ GeoViewManagerImpl >> setSelectionManager: aSmockSelectionManager [
 	"Set a selection manager to manage the selection"
 	| component |
 	
+	self deprecated:'not use, use setSelectionManagerName: aComponentName'.
 	self flag:'labordep: ecrire setSelectionManagerName: et cabler proprement avec la mécanique molecule'.
 	(aSmockSelectionManager isNil or:[(aSmockSelectionManager isComponent not) or:[aSmockSelectionManager componentName isNil]]) ifTrue:[^ self].
 	
@@ -546,6 +556,26 @@ GeoViewManagerImpl >> setSelectionManager: aSmockSelectionManager [
 	
 	
 	
+]
+
+{ #category : #'parameters - selection manager' }
+GeoViewManagerImpl >> setSelectionManagerName: aComponentName [
+	"Setup a selection manager"
+	
+	self forServices: SmockSelectionManagerServices useProvider: aComponentName.
+	self forEvents: SmockSelectionManagerEvents useProducer: aComponentName.
+	
+	self flag:'labordep: faire une mise à jour de la selection si changement de selection manager et stopper le composant précédent si démarré'.
+]
+
+{ #category : #'parameters - selection manager' }
+GeoViewManagerImpl >> setSymbologyManagerName: aComponentName [
+	"Setup a symbology manager"
+	
+	self forServices: SmockSymbologyManagerServices useProvider: aComponentName.
+	self forEvents: SmockSymbologyManagerEvents useProducer: aComponentName.
+	
+	self flag:'labordep: faire une mise à jour de la vue si changement de symbology manager et stopper le composant précédent si démarré'.
 ]
 
 { #category : #'geobjects aur' }
