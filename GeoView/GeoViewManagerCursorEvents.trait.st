@@ -6,5 +6,5 @@ Trait {
 }
 
 { #category : #events }
-GeoViewManagerCursorEvents >> cursor: aCursorId positionChanged: anAbsoluteCoordinates view: aGeoViewManagerKey [
+GeoViewManagerCursorEvents >> cursorHasChanged: aSmockCursor [
 ]

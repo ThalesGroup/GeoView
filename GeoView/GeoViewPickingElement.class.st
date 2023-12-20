@@ -1,95 +1,48 @@
 Class {
 	#name : #GeoViewPickingElement,
-	#superclass : #Object,
+	#superclass : #SmockPickingElement,
 	#instVars : [
-		'layerLevel',
-		'layerName',
-		'distanceInPixels',
-		'geodesicDistanceInM',
-		'geoObjectKey',
-		'geoObject',
-		'dShape',
-		'gShape'
+		'geodesicDistanceInM'
 	],
-	#category : #'GeoView-Picking'
+	#category : #'GeoView-Model'
 }
 
 { #category : #accessing }
-GeoViewPickingElement >> dShape [
-	^ dShape
-]
-
-{ #category : #accessing }
-GeoViewPickingElement >> dShape: anObject [
-	dShape := anObject
-]
-
-{ #category : #accessing }
-GeoViewPickingElement >> distanceInPixels [
-	^ distanceInPixels
-]
-
-{ #category : #accessing }
-GeoViewPickingElement >> distanceInPixels: anObject [
-	distanceInPixels := anObject
-]
-
-{ #category : #accessing }
-GeoViewPickingElement >> gShape [
-	^ gShape
-]
-
-{ #category : #accessing }
-GeoViewPickingElement >> gShape: anObject [
-	gShape := anObject
-]
-
-{ #category : #accessing }
 GeoViewPickingElement >> geoObject [
-	^ geoObject
+
+	self deprecated: 'use object'.
+	^ self object
 ]
 
 { #category : #accessing }
 GeoViewPickingElement >> geoObject: anObject [
-	geoObject := anObject
+
+	self deprecated: 'use object:'.
+	self object: anObject
 ]
 
 { #category : #accessing }
 GeoViewPickingElement >> geoObjectKey [
-	^ geoObjectKey
+
+	self deprecated: 'use objectKey'.
+	^ self objectKey
 ]
 
 { #category : #accessing }
 GeoViewPickingElement >> geoObjectKey: anObject [
-	geoObjectKey := anObject
+
+	self deprecated: 'use objectKey:'.
+	self objectKey: anObject
 ]
 
 { #category : #accessing }
 GeoViewPickingElement >> geodesicDistanceInM [
+
 	^ geodesicDistanceInM
 ]
 
 { #category : #accessing }
 GeoViewPickingElement >> geodesicDistanceInM: anObject [
+
 	geodesicDistanceInM := anObject
-]
-
-{ #category : #accessing }
-GeoViewPickingElement >> layerLevel [
-	^ layerLevel
-]
-
-{ #category : #accessing }
-GeoViewPickingElement >> layerLevel: anObject [
-	layerLevel := anObject
-]
-
-{ #category : #accessing }
-GeoViewPickingElement >> layerName [
-	^ layerName
-]
-
-{ #category : #accessing }
-GeoViewPickingElement >> layerName: anObject [
-	layerName := anObject
 ]

@@ -4,8 +4,8 @@ I am the generic GeoviewManager implementation.
 Class {
 	#name : #GeoViewManagerImpl,
 	#superclass : #MolAbstractComponentImpl,
-	#traits : 'GeoViewManager + GeoViewManagerGeoObjectsServices + GeoViewManagerParameters + GeoViewManagerGeoObjectsParameters + GeoViewManagerServices + GeoViewPickingServices + GeoViewManagerLayerServices + SmockSelectionManagerEvents',
-	#classTraits : 'GeoViewManager classTrait + GeoViewManagerGeoObjectsServices classTrait + GeoViewManagerParameters classTrait + GeoViewManagerGeoObjectsParameters classTrait + GeoViewManagerServices classTrait + GeoViewPickingServices classTrait + GeoViewManagerLayerServices classTrait + SmockSelectionManagerEvents classTrait',
+	#traits : 'GeoViewManager + GeoViewManagerGeoObjectsServices + GeoViewManagerParameters + GeoViewManagerGeoObjectsParameters + GeoViewManagerServices + GeoViewManagerPickingServices + GeoViewManagerLayerServices + SmockSelectionManagerEvents',
+	#classTraits : 'GeoViewManager classTrait + GeoViewManagerGeoObjectsServices classTrait + GeoViewManagerParameters classTrait + GeoViewManagerGeoObjectsParameters classTrait + GeoViewManagerServices classTrait + GeoViewManagerPickingServices classTrait + GeoViewManagerLayerServices classTrait + SmockSelectionManagerEvents classTrait',
 	#instVars : [
 		'view',
 		'geoCenter',
@@ -149,15 +149,9 @@ GeoViewManagerImpl >> createGeoObjectLayer: aKey [
 	self subclassResponsibility 
 ]
 
-{ #category : #initialization }
+{ #category : #'parameters - event strategy' }
 GeoViewManagerImpl >> createView [
 	self subclassResponsibility 
-]
-
-{ #category : #'events handling' }
-GeoViewManagerImpl >> cursorPositionChanged: anAssociation [
-
-	self getGeoViewManagerCursorEventsNotifier cursor: anAssociation key positionChanged: anAssociation value view: self componentName
 ]
 
 { #category : #'parameters - event strategy' }
@@ -366,7 +360,7 @@ GeoViewManagerImpl >> initializeView [
 	self setScaleInMeters: 1.4816e7.
 ]
 
-{ #category : #events }
+{ #category : #'private - events' }
 GeoViewManagerImpl >> layerHasBeenUpdated: aLayer [
 
 	self getGeoViewManagerLayerEventsNotifier geoViewLayerUpdated: (aLayer layerName) in: (self componentName).
@@ -392,6 +386,18 @@ GeoViewManagerImpl >> minScaleInMeters: anObject [
 	minScaleInMeters := anObject.
 ]
 
+{ #category : #'private - events' }
+GeoViewManagerImpl >> mouseCursorCoordinatesChanged: anAbsoluteCoordinates [
+
+	| cursor |
+	cursor := SmockCursor new.
+	cursor key: #mouse.
+	cursor coordinates: anAbsoluteCoordinates.
+	cursor source: (self class componentType -> self componentName).
+	
+	self getGeoViewManagerCursorEventsNotifier cursorHasChanged: cursor
+]
+
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> passivateComponents [
 
@@ -407,15 +413,16 @@ GeoViewManagerImpl >> passivateComponents [
 { #category : #'services - picking' }
 GeoViewManagerImpl >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 	"Return all geo objects under aPoint with a radius in pixels"
-	| pickingResult absoluteCoordinates |
-	aGlobalPoint ifNil: [ ^ nil ].
-	absoluteCoordinates := self getAbsoluteCoordinatesFromGlobalPoint: aGlobalPoint.
+	
+	| pickingResult absoluteCoordinates localPoint |
+	absoluteCoordinates := (self getAbsoluteCoordinatesFromGlobalPoint: aGlobalPoint) ifNil:[ ^ nil ].
+	localPoint := (self getLocalPointFromGlobalPoint: aGlobalPoint) ifNil:[ ^ nil ].
 	
 	"create picking result"
 	pickingResult := GeoViewPickingResult new
-		date: Date today;
-		time: Time now;
-		globalPoint: aGlobalPoint copy;
+		timestamp: DateAndTime now;
+		globalPoint: aGlobalPoint;
+		localPoint: localPoint;
 		cartesianCoordinates: (self getMapProjectionManagerServicesProvider getProjection projLatLonToCart: absoluteCoordinates);
 		absoluteCoordinates: absoluteCoordinates;
 		radiusInPixels: aRadiusInPixels;

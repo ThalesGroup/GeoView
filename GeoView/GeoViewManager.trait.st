@@ -33,7 +33,7 @@ GeoViewManager classSide >> providedComponentServices [
 	^{ GeoViewManagerServices. 
 		GeoViewManagerLayerServices.
 		GeoViewManagerGeoObjectsServices.
-		GeoViewPickingServices } 
+		GeoViewManagerPickingServices } 
 ]
 
 { #category : #'accessing - services' }
