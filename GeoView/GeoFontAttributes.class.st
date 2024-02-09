@@ -48,3 +48,10 @@ GeoFontAttributes class >> fontWeightThin [
 
 	^#thin
 ]
+
+{ #category : #'font-emphasis' }
+GeoFontAttributes class >> isDeprecated [ 
+
+	"use SmockFont"
+	^ true
+]

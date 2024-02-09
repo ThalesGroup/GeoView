@@ -58,6 +58,7 @@ GeoObject >> key: anObject [
 { #category : #updating }
 GeoObject >> updateWith: aGeoObject [
 
+	self properties: aGeoObject properties copy.
 	self absoluteCoordinates: aGeoObject absoluteCoordinates copy.
 	self isVisible: aGeoObject isVisible.
 ]
