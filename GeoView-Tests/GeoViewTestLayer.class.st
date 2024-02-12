@@ -1,8 +1,8 @@
 Class {
 	#name : #GeoViewTestLayer,
 	#superclass : #Object,
-	#traits : 'GeoViewLayer',
-	#classTraits : 'GeoViewLayer classTrait',
+	#traits : 'TGeoViewLayer',
+	#classTraits : 'TGeoViewLayer classTrait',
 	#instVars : [
 		'layerName'
 	],

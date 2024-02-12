@@ -1,15 +1,15 @@
 Class {
 	#name : #GeoViewTest,
 	#superclass : #Object,
-	#traits : 'GeoView',
-	#classTraits : 'GeoView classTrait',
+	#traits : 'TGeoView',
+	#classTraits : 'TGeoView classTrait',
 	#instVars : [
 		'layers'
 	],
 	#category : #'GeoView-Tests-Utils'
 }
 
-{ #category : #layers }
+{ #category : #'API -- layers management' }
 GeoViewTest >> addLayer: aLayer [
 	self layers add: aLayer
 ]
@@ -19,7 +19,7 @@ GeoViewTest >> addObjects: aGeoObjectList [
 	"do nothing : only for testing"
 ]
 
-{ #category : #layers }
+{ #category : #'API -- layers management' }
 GeoViewTest >> getLayers [
 	^self layers
 ]
@@ -40,7 +40,7 @@ GeoViewTest >> layers: anObject [
 	layers := anObject
 ]
 
-{ #category : #layers }
+{ #category : #'API -- layers management' }
 GeoViewTest >> removeLayer: aLayer [
 	self layers remove: aLayer
 ]

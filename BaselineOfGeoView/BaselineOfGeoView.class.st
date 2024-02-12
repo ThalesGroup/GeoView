@@ -30,11 +30,20 @@ BaselineOfGeoView >> baselineForCommon: spec [
 { #category : #dependencies }
 BaselineOfGeoView >> coreDependencies: spec [
 
-	"OpenSmock workshop"
-	spec baseline: 'OpenSmock' with: [ spec repository: 'github://OpenSmock/OpenSmock' ].
+	"OpenSmock core workshop"
+	spec 
+		baseline: 'OpenSmock' 
+		with: [	spec loads: #('Core'); repository: 'github://OpenSmock/OpenSmock' ].
+
+	"Bloc"
+	spec
+		baseline: 'Bloc'
+		with: [ spec repository: 'github://pharo-graphics/Bloc:dev-1.0/src' ].
 		
 	"GeoTools"
-	spec baseline: 'GeoTools' with: [	spec repository: 'github://OpenSmock/GeoTools:main' ].
+	spec 
+		baseline: 'GeoTools' 
+		with: [	spec repository: 'github://OpenSmock/GeoTools:main' ].
 ]
 
 { #category : #packages }
