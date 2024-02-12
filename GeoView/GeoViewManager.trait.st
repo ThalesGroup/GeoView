@@ -32,7 +32,7 @@ GeoViewManager classSide >> providedComponentServices [
 <componentContract>	
 	^{ GeoViewManagerServices. 
 		GeoViewManagerLayerServices.
-		GeoViewManagerGeoObjectsServices.
+		GeoViewManagerObjectsServices.
 		GeoViewManagerPickingServices } 
 ]
 

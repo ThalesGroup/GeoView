@@ -39,7 +39,7 @@ GeoViewManagerImplTests >> testAggregatedComponentsStart [
 ]
 
 { #category : #tests }
-GeoViewManagerImplTests >> testCreateAndAddGeoObjectLayer [
+GeoViewManagerImplTests >> testCreateAndAddLayer [
 	"Warning : default implementation of GeoViewManager is an abtract engine implementation, all created objets are nil"
 	| layer error |
 	error := nil.

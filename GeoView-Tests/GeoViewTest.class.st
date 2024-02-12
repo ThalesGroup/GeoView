@@ -9,14 +9,14 @@ Class {
 	#category : #'GeoView-Tests-Utils'
 }
 
-{ #category : #'geobjects aur' }
-GeoViewTest >> addGeoObjects: aGeoObjectList [
-	"do nothing : only for testing"
-]
-
 { #category : #layers }
 GeoViewTest >> addLayer: aLayer [
 	self layers add: aLayer
+]
+
+{ #category : #'geobjects aur' }
+GeoViewTest >> addObjects: aGeoObjectList [
+	"do nothing : only for testing"
 ]
 
 { #category : #layers }

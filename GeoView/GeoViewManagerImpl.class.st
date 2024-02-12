@@ -4,8 +4,8 @@ I am the generic GeoviewManager implementation.
 Class {
 	#name : #GeoViewManagerImpl,
 	#superclass : #MolAbstractComponentImpl,
-	#traits : 'GeoViewManager + GeoViewManagerGeoObjectsServices + GeoViewManagerParameters + GeoViewManagerGeoObjectsParameters + GeoViewManagerServices + GeoViewManagerPickingServices + GeoViewManagerLayerServices + SmockSelectionManagerEvents',
-	#classTraits : 'GeoViewManager classTrait + GeoViewManagerGeoObjectsServices classTrait + GeoViewManagerParameters classTrait + GeoViewManagerGeoObjectsParameters classTrait + GeoViewManagerServices classTrait + GeoViewManagerPickingServices classTrait + GeoViewManagerLayerServices classTrait + SmockSelectionManagerEvents classTrait',
+	#traits : 'GeoViewManager + GeoViewManagerObjectsServices + GeoViewManagerParameters + GeoViewManagerGeoObjectsParameters + GeoViewManagerServices + GeoViewManagerPickingServices + GeoViewManagerLayerServices + SmockSelectionManagerEvents',
+	#classTraits : 'GeoViewManager classTrait + GeoViewManagerObjectsServices classTrait + GeoViewManagerParameters classTrait + GeoViewManagerGeoObjectsParameters classTrait + GeoViewManagerServices classTrait + GeoViewManagerPickingServices classTrait + GeoViewManagerLayerServices classTrait + SmockSelectionManagerEvents classTrait',
 	#instVars : [
 		'view',
 		'geoCenter',
@@ -13,8 +13,8 @@ Class {
 		'minScaleInMeters',
 		'maxScaleInMeters',
 		'scaleFactor',
-		'geoObjectsIndexAccessor',
-		'eventStrategyStack'
+		'eventStrategyStack',
+		'objectsIndexAccessor'
 	],
 	#category : #'GeoView-Core-Impl'
 }
@@ -47,20 +47,6 @@ GeoViewManagerImpl >> addEventBehaviorAtFirst: aGeoViewEventBehavior [
 	eventStrategyStack addFirst: aGeoViewEventBehavior.
 ]
 
-{ #category : #'geobjects aur' }
-GeoViewManagerImpl >> addGeoObject: aGeoObject [
-	self
-		assert: [ aGeoObject isNotNil ]
-		description: [ '[GeoView] GeoObject should be not nil.' . ^self].
-	self view addGeoObject: aGeoObject
-]
-
-{ #category : #'geobjects aur' }
-GeoViewManagerImpl >> addGeoObjects: aGeoObjectList [
-	(aGeoObjectList isNil or:[aGeoObjectList isEmpty]) ifTrue:[^self].
-	self view addGeoObjects: aGeoObjectList
-]
-
 { #category : #'services - layer creation' }
 GeoViewManagerImpl >> addLayer: aLayer [
 	"(aLayer class traitComposition allTraits includes: GeoViewLayer) ifFalse:[^nil]."
@@ -76,6 +62,20 @@ GeoViewManagerImpl >> addLayer: aLayer [
 	
 	self getGeoViewManagerLayerEventsNotifier geoViewLayerAdded: aLayer layerName in: self componentName.
 	^aLayer
+]
+
+{ #category : #'geobjects aur' }
+GeoViewManagerImpl >> addObject: aGeoObject [
+	self
+		assert: [ aGeoObject isNotNil ]
+		description: [ '[GeoView] GeoObject should be not nil.' . ^self].
+	self view addObject: aGeoObject
+]
+
+{ #category : #'geobjects aur' }
+GeoViewManagerImpl >> addObjects: aGeoObjectList [
+	(aGeoObjectList isNil or:[aGeoObjectList isEmpty]) ifTrue:[^self].
+	self view addObjects: aGeoObjectList
 ]
 
 { #category : #'projection center' }
@@ -135,6 +135,7 @@ GeoViewManagerImpl >> createAndAddGeoObjectLayer: aKey [
 	"add a layer to the geoplot"
 
 	| existingLayer layer |
+	self deprecated:'use createAndAddLayer:'.
 	aKey ifNil:[ SmockNoIdError signal: 'Cannot add layer with nil key.'. ^ nil ].
 	
 	existingLayer := self getLayer: aKey.
@@ -200,16 +201,6 @@ GeoViewManagerImpl >> geoCenter [
 { #category : #accessing }
 GeoViewManagerImpl >> geoCenter: anAbsoluteCoordinates [
 	geoCenter := anAbsoluteCoordinates
-]
-
-{ #category : #accessing }
-GeoViewManagerImpl >> geoObjectsIndexAccessor [
-	^ geoObjectsIndexAccessor
-]
-
-{ #category : #accessing }
-GeoViewManagerImpl >> geoObjectsIndexAccessor: anObject [
-	geoObjectsIndexAccessor := anObject
 ]
 
 { #category : #'parameters - event strategy' }
@@ -452,16 +443,6 @@ GeoViewManagerImpl >> removeComponents [
 	].
 ]
 
-{ #category : #'geobjects aur' }
-GeoViewManagerImpl >> removeGeoObject: aGeoObject [
-	self view removeGeoObject: aGeoObject
-]
-
-{ #category : #'geobjects aur' }
-GeoViewManagerImpl >> removeGeoObjects: aGeoObjectList [
-	self view removeGeoObjects: aGeoObjectList
-]
-
 { #category : #'services - layer deletion' }
 GeoViewManagerImpl >> removeLayer: aKey [
 	| layer |
@@ -471,6 +452,16 @@ GeoViewManagerImpl >> removeLayer: aKey [
 	layer := self view removeLayer: layer.
 	layer ifNotNil:[self getGeoViewManagerLayerEventsNotifier geoViewLayerRemoved: aKey in: self componentName].
 	^layer
+]
+
+{ #category : #'geobjects aur' }
+GeoViewManagerImpl >> removeObject: aGeoObject [
+	self view removeObject: aGeoObject
+]
+
+{ #category : #'geobjects aur' }
+GeoViewManagerImpl >> removeObjects: aGeoObjectList [
+	self view removeObjects: aGeoObjectList
 ]
 
 { #category : #scale }
@@ -530,9 +521,12 @@ GeoViewManagerImpl >> setGeoCenter: anAbsoluteCoordinates [
 	self geoCenter: anAbsoluteCoordinates copy.
 ]
 
-{ #category : #initialization }
-GeoViewManagerImpl >> setGeoObjectsIndexAccessor: aSymbol [
-	self geoObjectsIndexAccessor: aSymbol.
+{ #category : #'parameters - objects' }
+GeoViewManagerImpl >> setObjectIndexAccessor: aSymbol [
+
+	objectsIndexAccessor = aSymbol ifTrue:[ ^ self ].
+	objectsIndexAccessor := aSymbol.
+	self flag:'labordep : update the model when changed ?'.
 ]
 
 { #category : #scale }
@@ -589,13 +583,13 @@ GeoViewManagerImpl >> setSymbologyManagerName: aComponentName [
 ]
 
 { #category : #'geobjects aur' }
-GeoViewManagerImpl >> updateGeoObject: aGeoObject [
-	self view updateGeoObject: aGeoObject
+GeoViewManagerImpl >> updateObject: aGeoObject [
+	self view updateObject: aGeoObject
 ]
 
 { #category : #'geobjects aur' }
-GeoViewManagerImpl >> updateGeoObjects: aGeoObjectList [
-	self view updateGeoObjects: aGeoObjectList
+GeoViewManagerImpl >> updateObjects: aGeoObjectList [
+	self view updateObjects: aGeoObjectList
 ]
 
 { #category : #accessing }

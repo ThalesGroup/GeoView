@@ -5,14 +5,6 @@ Class {
 }
 
 { #category : #private }
-GeoViewExamplesBloc class >> createGeoCircleProcessData [
-
-	| processData |
-	processData := GeoCircleProcessData new.
-	^ processData
-]
-
-{ #category : #private }
 GeoViewExamplesBloc class >> createGeoObjects [
 
 	| list random nb |
@@ -42,11 +34,17 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	geoViewManager setObjectIndexAccessor: #key.
 	
 	"configure projection"
-	self flag:'laborde: setup a projection as an example'.
+	geoViewManager getMapProjectionManagerServicesProvider setProjection: MercatorProjection new.
 	
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := geoViewManager createAndAddLayer: #layer1.
-	layer setProcessData: self createGeoCircleProcessData for: GeoCircle.
+	layer setProcessData: GeoCircleProcessData for: GeoCircle.
+	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
+	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.
+	layer setProcessData: GeoPolylineProcessData new for: GeoPolyline.
+	layer setProcessData: GeoRectangleProcessData new for: GeoRectangle.
+	layer setProcessData: GeoTextProcessData new for: GeoText.
+	layer setProcessData: GeoArcBandProcessData new for: GeoArcBand.
 	
 	"create sample datas"
 	objects := self createGeoObjects.
