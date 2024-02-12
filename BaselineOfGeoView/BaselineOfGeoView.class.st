@@ -43,7 +43,13 @@ BaselineOfGeoView >> corePackages: spec [
 	spec
 		package: 'GeoView' with:[ spec requires: #('OpenSmock' 'GeoTools') ];
 		package: 'GeoView-GeoObjects' with:[ spec requires: #('GeoView') ];
-		package: 'GeoView-Examples' with:[ spec requires: #('GeoView' 'GeoView-GeoObjects') ].
+		package: 'GeoView-Bloc' with:[ spec requires: #('GeoView' 'Bloc') ];
+		package: 'GeoView-Bloc-Alexandrie' with:[ spec requires: #('GeoView-Bloc') ].
+		
+	"examples packages"
+	spec
+		package: 'GeoView-Examples' with:[ spec requires: #('GeoView' 'GeoView-GeoObjects') ];
+		package: 'GeoView-Examples-Bloc' with:[ spec requires: #('GeoView-Examples') ].
 		
 	"Tests packages"
 	spec
