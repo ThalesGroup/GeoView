@@ -44,11 +44,11 @@ GeoViewManagerImplTests >> testCreateAndAddGeoObjectLayer [
 	| layer error |
 	error := nil.
 	
-	[layer := geoViewManager createAndAddGeoObjectLayer: nil] 
+	[layer := geoViewManager createAndAddLayer: nil] 
 		on: Error do: [ :e | error := e ].
 	self assert: error class equals: SmockNoIdError.
 	
-	layer := geoViewManager createAndAddGeoObjectLayer: #layerA.
+	layer := geoViewManager createAndAddLayer: #layerA.
 	self assert: layer isNil.
 ]
 

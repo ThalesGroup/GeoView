@@ -14,10 +14,16 @@ GeoViewManagerLayerServices >> addLayer: aLayer [
 
 { #category : #'services - layer creation' }
 GeoViewManagerLayerServices >> createAndAddGeoObjectLayer: aKey [
+	self deprecated:'use createAndAddLayer:'.
 ]
 
 { #category : #'services - layer creation' }
 GeoViewManagerLayerServices >> createAndAddGeoObjectLayer: aKey level: anInteger [ 
+	self deprecated:'use createAndAddLayer: and setLevel:forLayer:'.
+]
+
+{ #category : #'services - layer creation' }
+GeoViewManagerLayerServices >> createAndAddLayer: aKey [
 ]
 
 { #category : #'services - layer accessing' }

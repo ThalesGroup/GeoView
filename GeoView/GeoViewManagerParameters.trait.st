@@ -28,8 +28,16 @@ GeoViewManagerParameters >> deleteEventBehaviors [
 GeoViewManagerParameters >> getEventBehaviors [
 ]
 
+{ #category : #'parameters - objects' }
+GeoViewManagerParameters >> getObjectIndexAccessor [
+]
+
 { #category : #'parameters - event strategy' }
 GeoViewManagerParameters >> setEventBehaviors: anEventBehaviorList [
+]
+
+{ #category : #'parameters - objects' }
+GeoViewManagerParameters >> setObjectIndexAccessor: aSymbol [
 ]
 
 { #category : #'parameters - selection manager' }

@@ -311,7 +311,8 @@ GeoViewManagerImpl >> getSmockSymbologyManagerServicesProvider [
 
 { #category : #accessing }
 GeoViewManagerImpl >> getView [
-	^self view 
+
+	^ self view
 ]
 
 { #category : #'aggregated components' }

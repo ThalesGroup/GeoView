@@ -7,4 +7,6 @@ Trait {
 
 { #category : #initialization }
 GeoViewManagerGeoObjectsParameters >> setGeoObjectsIndexAccessor: aSymbol [
+
+	self deprecated:'use GeoViewManagerParameters>>setObjectIndexAccessor: interface'.
 ]
