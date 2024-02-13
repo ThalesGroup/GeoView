@@ -17,6 +17,10 @@ GeoViewManagerObjectsServices >> addObjects: aGeoObjectList [
 ]
 
 { #category : #'geobjects aur' }
+GeoViewManagerObjectsServices >> haveObjectIndex: anIndex [
+]
+
+{ #category : #'geobjects aur' }
 GeoViewManagerObjectsServices >> removeObject: aGeoObject [
 ]
 

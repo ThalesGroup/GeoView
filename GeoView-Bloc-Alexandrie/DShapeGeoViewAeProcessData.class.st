@@ -13,6 +13,9 @@ DShapeGeoViewAeProcessData class >> isAbstract [
 { #category : #processing }
 DShapeGeoViewAeProcessData >> computePositionFor: aDShape context: aContext [
 	
+	aDShape coordinates ifNil:[ ^ nil ].
+	self processor ifNil:[ ^ nil ].
+	
 	^ self processor projection projCartToPixel: aDShape coordinates
 ]
 

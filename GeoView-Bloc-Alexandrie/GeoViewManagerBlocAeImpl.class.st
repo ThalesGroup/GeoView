@@ -145,6 +145,12 @@ GeoViewManagerBlocAeImpl >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 	^ pickingResult
 ]
 
+{ #category : #'services - drawing' }
+GeoViewManagerBlocAeImpl >> requestViewUpdate [
+
+	self view requestRepaint
+]
+
 { #category : #'projection center' }
 GeoViewManagerBlocAeImpl >> setGeoCenter: anAbsoluteCoordinates [
 	| cartesianCoordinates |

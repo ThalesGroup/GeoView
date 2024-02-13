@@ -8,18 +8,10 @@ Trait {
 		'layerName',
 		'processDataChangedBlock'
 	],
+	#traits : 'TGeoViewHandleObjects',
+	#classTraits : 'TGeoViewHandleObjects classTrait',
 	#category : #'GeoView-View'
 }
-
-{ #category : #'API -- objects management' }
-TGeoViewLayer >> addObject: aObject [
-	self explicitRequirement
-]
-
-{ #category : #'API -- objects management' }
-TGeoViewLayer >> addObjects: anObjectList [
-	self explicitRequirement
-]
 
 { #category : #'API -- process datas' }
 TGeoViewLayer >> getAllProcessData [
@@ -66,16 +58,6 @@ TGeoViewLayer >> projection: aProjection [
 	self explicitRequirement
 ]
 
-{ #category : #'API -- objects management' }
-TGeoViewLayer >> removeObject: aObject [
-	self explicitRequirement
-]
-
-{ #category : #'API -- objects management' }
-TGeoViewLayer >> removeObjects: anObjectList [
-	self explicitRequirement
-]
-
 { #category : #'API -- process datas' }
 TGeoViewLayer >> removeProcessDataFor: aGeoObjectClass [
 	self explicitRequirement
@@ -99,16 +81,6 @@ TGeoViewLayer >> symbologyProvider: aSymbologyProvider [
 
 { #category : #'API -- drawing' }
 TGeoViewLayer >> updateGraphicModel [
-	self explicitRequirement
-]
-
-{ #category : #'API -- objects management' }
-TGeoViewLayer >> updateObject: aObject [
-	self explicitRequirement
-]
-
-{ #category : #'API -- objects management' }
-TGeoViewLayer >> updateObjects: anObjectList [
 	self explicitRequirement
 ]
 

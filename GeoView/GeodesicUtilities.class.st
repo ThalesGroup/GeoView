@@ -172,7 +172,7 @@ GeodesicUtilities class >> convertGeodesicToAzimuthInRadiansFrom: startAbsoluteC
 	d28 := 0.
 	break := false.
 	
-	(d28 < 4 and: [ break not ]) whileTrue: 
+	[ d28 < 4 and: [ break not ] ] whileTrue: 
 		[ d16 := d8 * d14.
 		d17 := (d7 * d10) - (d9 * d8 * d15).
 		d20 := ((d16 * d16) + (d17 * d17)) sqrt.

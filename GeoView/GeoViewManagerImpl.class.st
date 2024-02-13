@@ -34,35 +34,31 @@ GeoViewManagerImpl >> activateComponents [
 { #category : #'services - layer creation' }
 GeoViewManagerImpl >> addLayer: aLayer [
 	"(aLayer class traitComposition allTraits includes: GeoViewLayer) ifFalse:[^nil]."
-	self flag:'labordep : regarder les traits dans lheritage pour être sûr que cest une layer'.
+	self flag:'labordep : regarder les traits dans lheritage pour être sûr que cest une layer ?'.
 	aLayer layerName ifNil:[^nil].
 	
 	aLayer projection: self getMapProjectionManagerServicesProvider getProjection.
 	aLayer symbologyProvider: self getSmockSymbologyManagerServicesProvider.
-	"aLayer isGeoObjectLayer ifTrue:["
-		aLayer whenProcessDatasChangedDo: [ :l | self layerHasBeenUpdated: l	]. 
-	"]."
+	aLayer whenProcessDatasChangedDo: [ :l | self layerHasBeenUpdated: l	]. 
 	self view addLayer: aLayer.
 	
-	self getGeoViewManagerLayerEventsNotifier geoViewLayerAdded: aLayer layerName in: self componentName.
-	^aLayer
+	self getGeoViewManagerLayerEventsNotifier geoViewLayerAdded: aLayer layerName in: self componentName
 ]
 
 { #category : #'geobjects aur' }
 GeoViewManagerImpl >> addObject: aGeoObject [
-	self
-		assert: [ aGeoObject isNotNil ]
-		description: [ '[GeoView] GeoObject should be not nil.' . ^self].
+
 	self view addObject: aGeoObject
 ]
 
 { #category : #'geobjects aur' }
 GeoViewManagerImpl >> addObjects: aGeoObjectList [
-	(aGeoObjectList isNil or:[aGeoObjectList isEmpty]) ifTrue:[^self].
+
+	(aGeoObjectList isNil or: [ aGeoObjectList isEmpty ]) ifTrue: [ ^ self ].
 	self view addObjects: aGeoObjectList
 ]
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerImpl >> centerOnPoint: aGlobalPoint [
 	"Center the map on a global point"
 	| absoluteCoordinates |
@@ -202,9 +198,12 @@ GeoViewManagerImpl >> getGeoViewManagerLayerEventsNotifier [
 
 { #category : #'services - layer accessing' }
 GeoViewManagerImpl >> getLayer: aKey [
+
 	| layer |
-	layer := self view getLayers detect:[ :l | l layerName = aKey ] ifNone:[nil].
-	^layer
+	layer := self view getLayers
+		         detect: [ :l | l layerName = aKey ]
+		         ifNone: [ nil ].
+	^ layer
 ]
 
 { #category : #'services - layer accessing' }
@@ -230,12 +229,12 @@ GeoViewManagerImpl >> getObjectIndexAccessor [
 	^ objectIndexAccessor ifNil:[ objectIndexAccessor := #tn ]
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerImpl >> getScaleFactor [
 	^self scaleFactor 
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerImpl >> getScaleInMeters [
 
 	^ self scaleInMeters 
@@ -277,7 +276,7 @@ GeoViewManagerImpl >> getSmockSymbologyManagerServicesProvider [
 	^servicesProvider
 ]
 
-{ #category : #accessing }
+{ #category : #services }
 GeoViewManagerImpl >> getView [
 
 	^ self view
@@ -289,6 +288,12 @@ GeoViewManagerImpl >> handleUIEvent: anEvent [
 	| wrapper |
 	wrapper := SmockEventWrapper wrap: anEvent.
 	self dispatchUIEvent: wrapper.
+]
+
+{ #category : #'geobjects aur' }
+GeoViewManagerImpl >> haveObjectIndex: anIndex [
+
+	^ self view haveObjectIndex: anIndex
 ]
 
 { #category : #initialization }
@@ -308,16 +313,22 @@ GeoViewManagerImpl >> initializeProjectionManager [
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSelectionManager [
 
-	SmockSelectionManagerImpl deploy.
-	SmockSelectionManagerImpl instantiate: self componentName.
+	(MolUtils isInstantiateComponentOf: SmockSelectionManagerImpl named: self componentName) ifFalse:[
+		SmockSelectionManagerImpl deploy.
+		SmockSelectionManagerImpl instantiate: self componentName
+	].
+
 	self setSelectionManagerName: self componentName.
 ]
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSymbologyManager [
 
-	SmockSymbologyProvider deploy.
-	SmockSymbologyProvider instantiate: self componentName.
+	(MolUtils isInstantiateComponentOf: SmockSymbologyProvider named: self componentName) ifFalse:[
+		SmockSymbologyProvider deploy.
+		SmockSymbologyProvider instantiate: self componentName.
+	].
+	
 	self setSymbologyManagerName: self componentName.
 ]
 
@@ -435,15 +446,17 @@ GeoViewManagerImpl >> removeLayer: aKey [
 
 { #category : #'geobjects aur' }
 GeoViewManagerImpl >> removeObject: aGeoObject [
+
 	self view removeObject: aGeoObject
 ]
 
 { #category : #'geobjects aur' }
 GeoViewManagerImpl >> removeObjects: aGeoObjectList [
+
 	self view removeObjects: aGeoObjectList
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerImpl >> scaleDown [
 	self flag: 'PLA : faire un fonctionnement par pallier'.
 	self setScaleInMeters: self scaleInMeters * self scaleFactor
@@ -470,7 +483,7 @@ GeoViewManagerImpl >> scaleInMeters: anObject [
 	scaleInMeters := anObject
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerImpl >> scaleUp [
 	self flag:'PLA : faire un fonctionnement par pallier'.
 	self setScaleInMeters: self scaleInMeters / self scaleFactor
@@ -488,7 +501,7 @@ GeoViewManagerImpl >> selectionCleared [
 	self selectedKeysHasChanged: OrderedCollection new
 ]
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerImpl >> setGeoCenter: anAbsoluteCoordinates [
 
 	self geoCenter: anAbsoluteCoordinates copy
@@ -502,13 +515,13 @@ GeoViewManagerImpl >> setObjectIndexAccessor: aSymbol [
 	self flag:'labordep : update the model when changed ?'.
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerImpl >> setScaleFactor: aNumber [
 
 	self scaleFactor: aNumber
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerImpl >> setScaleInMeters: aNumber [
 	| scale |
 	scale := self evaluateScale: aNumber.
@@ -558,11 +571,13 @@ GeoViewManagerImpl >> setSymbologyManagerName: aComponentName [
 
 { #category : #'geobjects aur' }
 GeoViewManagerImpl >> updateObject: aGeoObject [
+
 	self view updateObject: aGeoObject
 ]
 
 { #category : #'geobjects aur' }
 GeoViewManagerImpl >> updateObjects: aGeoObjectList [
+
 	self view updateObjects: aGeoObjectList
 ]
 

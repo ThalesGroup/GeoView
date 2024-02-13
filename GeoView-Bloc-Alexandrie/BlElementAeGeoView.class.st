@@ -18,14 +18,14 @@ BlElementAeGeoView >> addLayer: aLayer [
 	self layers add: aLayer
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 BlElementAeGeoView >> addObject: anUserObject [
 	
 	self layers do: [ :e | e addObject: anUserObject ].
 	self requestRepaint
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 BlElementAeGeoView >> addObjects: anUserObjectList [
 
 	self layers do: [ :e | e addObjects: anUserObjectList ].
@@ -91,14 +91,14 @@ BlElementAeGeoView >> layers [
 	^ layers ifNil: [ layers := OrderedCollection new ]
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 BlElementAeGeoView >> removeObject: anUserObject [
 	
 	self layers do: [ :e | e removeObject: anUserObject ].
 	self requestRepaint
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 BlElementAeGeoView >> removeObjects: anUserObjectList [
 	
 	self layers do: [ :e | e removeObjects: anUserObjectList ].
@@ -128,14 +128,14 @@ BlElementAeGeoView >> updateGraphicModel [
 	self requestRepaint
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 BlElementAeGeoView >> updateObject: anUserObject [
 	
 	self layers do: [ :e | e updateObject: anUserObject ].
 	self requestRepaint
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 BlElementAeGeoView >> updateObjects: anUserObjectList [
 	
 	self layers do: [ :e | e updateObjects: anUserObjectList ].

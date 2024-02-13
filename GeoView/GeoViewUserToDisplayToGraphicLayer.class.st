@@ -12,7 +12,7 @@ Class {
 	#category : #'GeoView-View'
 }
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 GeoViewUserToDisplayToGraphicLayer >> addObject: anObject [
 
 	| dObject |
@@ -24,7 +24,7 @@ GeoViewUserToDisplayToGraphicLayer >> addObject: anObject [
 	]
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 GeoViewUserToDisplayToGraphicLayer >> addObjects: anObjectList [
 
 	anObjectList do: [ :e | self addObject: e ]
@@ -75,6 +75,12 @@ GeoViewUserToDisplayToGraphicLayer >> graphicalOrderSortBlock: aBlockClosure [
 	]
 ]
 
+{ #category : #'API -- objects management' }
+GeoViewUserToDisplayToGraphicLayer >> haveObjectIndex: anIndex [
+
+	^ self displayModel haveDataIndex: anIndex
+]
+
 { #category : #initialize }
 GeoViewUserToDisplayToGraphicLayer >> initialize [
 
@@ -112,7 +118,7 @@ GeoViewUserToDisplayToGraphicLayer >> projection: aMapProjection [
 	self displayModel projection: aMapProjection
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 GeoViewUserToDisplayToGraphicLayer >> removeObject: anObject [
 
 	| dObject |
@@ -124,7 +130,7 @@ GeoViewUserToDisplayToGraphicLayer >> removeObject: anObject [
 	]
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 GeoViewUserToDisplayToGraphicLayer >> removeObjects: anObjectList [
 
 	anObjectList do: [ :e | self removeObject: e ]
@@ -168,7 +174,7 @@ GeoViewUserToDisplayToGraphicLayer >> updateGraphicModel [
 	model datas valuesDo:[ :dShape | self graphicModel updated: dShape ].
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 GeoViewUserToDisplayToGraphicLayer >> updateObject: anObject [
 
 	| dObject |
@@ -180,7 +186,7 @@ GeoViewUserToDisplayToGraphicLayer >> updateObject: anObject [
 	].
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'as yet unclassified' }
 GeoViewUserToDisplayToGraphicLayer >> updateObjects: anObjectList [
 
 	anObjectList do: [ :e | self updateObject: e ]

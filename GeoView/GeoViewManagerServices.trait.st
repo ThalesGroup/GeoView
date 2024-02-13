@@ -8,71 +8,75 @@ Trait {
 	#category : #'GeoView-Core'
 }
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerServices >> centerOnPoint: aGlobalPoint [ 
 ]
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerServices >> getAbsoluteCoordinatesFromGlobalPoint: aGlobalPoint [
 ]
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerServices >> getAbsoluteCoordinatesFromLocalPoint: aLocalPoint [
 ]
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerServices >> getGeoCenter [ 
 ]
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerServices >> getGlobalPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
 ]
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerServices >> getGlobalPointFromLocalPoint: aLocalPoint [
 ]
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerServices >> getLocalPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
 ]
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerServices >> getLocalPointFromGlobalPoint: aGlobalPoint [
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerServices >> getScaleFactor [
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerServices >> getScaleInMeters [
 ]
 
-{ #category : #accessing }
+{ #category : #services }
 GeoViewManagerServices >> getView [
 ]
 
-{ #category : #scale }
+{ #category : #'services - drawing' }
+GeoViewManagerServices >> requestViewUpdate [
+]
+
+{ #category : #services }
 GeoViewManagerServices >> scaleDown [
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerServices >> scaleUp [
 ]
 
-{ #category : #'projection center' }
+{ #category : #services }
 GeoViewManagerServices >> setGeoCenter: anAbsoluteCoordinates [
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerServices >> setScaleFactor: aNumber [
 ]
 
-{ #category : #scale }
+{ #category : #services }
 GeoViewManagerServices >> setScaleInMeters: aNumber [
 ]
 
-{ #category : #size }
+{ #category : #services }
 GeoViewManagerServices >> setViewBoundsFrom: aPoint1 to: aPoint2 [
 	"Force the view displayed bounds. Recompute View Center and Scale Factor"
 	self deprecated:'the size is delegated to the backend'.

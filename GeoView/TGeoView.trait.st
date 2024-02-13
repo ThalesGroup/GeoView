@@ -6,21 +6,13 @@ Trait {
 	#instVars : [
 		'geoViewBounds'
 	],
+	#traits : 'TGeoViewHandleObjects',
+	#classTraits : 'TGeoViewHandleObjects classTrait',
 	#category : #'GeoView-View'
 }
 
 { #category : #'API -- layers management' }
 TGeoView >> addLayer: aLayer [
-	self explicitRequirement
-]
-
-{ #category : #'API -- objects management' }
-TGeoView >> addObject: aGeoObject [
-	self explicitRequirement
-]
-
-{ #category : #'API -- objects management' }
-TGeoView >> addObjects: aGeoObjectList [
 	self explicitRequirement
 ]
 
@@ -44,13 +36,8 @@ TGeoView >> removeLayer: aLayer [
 	self explicitRequirement
 ]
 
-{ #category : #'API -- objects management' }
-TGeoView >> removeObject: aGeoObject [
-	self explicitRequirement
-]
-
-{ #category : #'API -- objects management' }
-TGeoView >> removeObjects: aGeoObjectList [
+{ #category : #'API -- drawing' }
+TGeoView >> requestRepaint [
 	self explicitRequirement
 ]
 
@@ -61,15 +48,5 @@ TGeoView >> selectedObjectIndexes: aCollection [
 
 { #category : #'API -- drawing' }
 TGeoView >> updateGraphicModel [
-	self explicitRequirement
-]
-
-{ #category : #'API -- objects management' }
-TGeoView >> updateObject: aGeoObject [
-	self explicitRequirement
-]
-
-{ #category : #'API -- objects management' }
-TGeoView >> updateObjects: aGeoObjectList [
 	self explicitRequirement
 ]
