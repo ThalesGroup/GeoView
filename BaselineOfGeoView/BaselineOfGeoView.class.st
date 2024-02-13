@@ -33,7 +33,7 @@ BaselineOfGeoView >> coreDependencies: spec [
 	"OpenSmock core workshop"
 	spec 
 		baseline: 'OpenSmock' 
-		with: [	spec loads: #('Core'); repository: 'github://OpenSmock/OpenSmock' ].
+		with: [	spec repository: 'github://OpenSmock/OpenSmock' ].
 
 	"Bloc"
 	spec
