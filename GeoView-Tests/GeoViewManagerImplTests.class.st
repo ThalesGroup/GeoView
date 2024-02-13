@@ -12,22 +12,21 @@ Class {
 GeoViewManagerImplTests >> setUp [
 
 	super setUp.
-	geoViewManagerName := #myGeoViewManager.
 	MolComponentManager cleanUp.
-	MolComponentManager default deploymentServices deployComponentImplementation: GeoViewManagerTestImpl.
-	geoViewManager := MolComponentManager default homeServices instantiateComponent: GeoViewManagerTestImpl named: geoViewManagerName.
-	MolComponentManager default homeServices activateComponent: GeoViewManagerTestImpl named: geoViewManagerName
+
+	geoViewManagerName := #myGeoViewManager.
+	geoViewManager := GeoViewManagerTestImpl start: geoViewManagerName.
 ]
 
 { #category : #running }
 GeoViewManagerImplTests >> tearDown [
+
 	super tearDown.
-	MolComponentManager default homeServices passivateComponent: GeoViewManagerTestImpl named: geoViewManagerName.
-	MolComponentManager default homeServices removeComponent: GeoViewManagerTestImpl named: geoViewManagerName.
+	GeoViewManagerTestImpl stop: geoViewManagerName.
 	geoViewManager := nil.
 	geoViewManagerName := nil.
-	MolComponentManager default deploymentServices undeployComponentImplementation: GeoViewManagerTestImpl.
-	MolComponentManager cleanUp.
+
+	MolComponentManager cleanUp
 ]
 
 { #category : #tests }
@@ -41,15 +40,10 @@ GeoViewManagerImplTests >> testAggregatedComponentsStart [
 { #category : #tests }
 GeoViewManagerImplTests >> testCreateAndAddLayer [
 	"Warning : default implementation of GeoViewManager is an abtract engine implementation, all created objets are nil"
-	| layer error |
-	error := nil.
-	
-	[layer := geoViewManager createAndAddLayer: nil] 
-		on: Error do: [ :e | error := e ].
-	self assert: error class equals: SmockNoIdError.
-	
+
+	| layer |
 	layer := geoViewManager createAndAddLayer: #layerA.
-	self assert: layer isNil.
+	self assert: layer notNil.
 ]
 
 { #category : #tests }

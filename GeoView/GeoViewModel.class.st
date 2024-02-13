@@ -17,7 +17,7 @@ GeoViewModel >> projection [
 ]
 
 { #category : #accessing }
-GeoViewModel >> projection: aMapProjection [
+GeoViewModel >> projection: aProjection [
 
-	projection := aMapProjection
+	projection := aProjection
 ]

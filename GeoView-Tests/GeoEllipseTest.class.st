@@ -14,10 +14,8 @@ GeoEllipseTest >> geoEllipse1 [
 		absoluteCoordinates: AbsoluteCoordinates zero;
 		isVisible: true;
 		key: #circle1;
-		fillColor: Color black;
-		strokeColor: Color red;
-		strokePattern: nil;
-		strokeWidth: 1;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 1);
 		radiusInMeters1: 5;
 		radiusInMeters2: 10;
 		yourself.
@@ -30,10 +28,8 @@ GeoEllipseTest >> geoEllipse2 [
 		absoluteCoordinates: AbsoluteCoordinates zero;
 		isVisible: true;
 		key: #circle1;
-		fillColor: Color black;
-		strokeColor: Color red;
-		strokePattern: nil;
-		strokeWidth: 1;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 1);
 		radiusInMeters1: 10;
 		radiusInMeters2: 20;
 		yourself.

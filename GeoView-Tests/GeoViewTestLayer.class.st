@@ -19,12 +19,12 @@ GeoViewTestLayer >> layerName: aName [
 	layerName := aName
 ]
 
-{ #category : #testing }
-GeoViewTestLayer >> mapProjection: aProjection [
+{ #category : #'as yet unclassified' }
+GeoViewTestLayer >> projection: aProjection [
 	"do nothing"
 ]
 
-{ #category : #testing }
+{ #category : #accessing }
 GeoViewTestLayer >> symbologyProvider: aSymbologyProvider [
 	"do nothing"
 ]

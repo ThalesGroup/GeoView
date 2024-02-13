@@ -14,10 +14,8 @@ GeoShapeTest >> geoShape1 [
 		absoluteCoordinates: AbsoluteCoordinates zero;
 		isVisible: true;
 		key: #shape1;
-		fillColor: Color black;
-		strokeColor: Color red;
-		strokePattern: #(1 1);
-		strokeWidth: 1;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 1; dashes: #(1 1));
 		yourself.
 ]
 
@@ -28,10 +26,8 @@ GeoShapeTest >> geoShape2 [
 		absoluteCoordinates: (AbsoluteCoordinates latitudeInRadians: 0.5 longitudeInRadians: 0.5);
 		isVisible: false;
 		key: #shape2;
-		fillColor: Color white;
-		strokeColor: Color blue;
-		strokePattern: #(5 5);
-		strokeWidth: 2;
+		fillStyle: Color white asSmockFillStyle;
+		strokeStyle: (Color blue asSmockStrokeStyle width: 2; dashes: #(5 5));
 		yourself.
 ]
 
@@ -42,13 +38,13 @@ GeoShapeTest >> testCopy [
 	geoShape := self geoShape1.
 	geoShapeCopy := geoShape copy.
 	
-	self assert: geoShape fillColor equals: geoShapeCopy fillColor.
-	self assert: geoShape fillColor ~~ geoShapeCopy fillColor.
-	self assert: geoShape strokeColor equals: geoShapeCopy strokeColor.
-	self assert: geoShape strokeColor ~~ geoShapeCopy strokeColor.
-	self assert: geoShape strokePattern equals: geoShapeCopy strokePattern.
-	self assert: geoShape strokePattern ~~ geoShapeCopy strokePattern.
-	self assert: geoShape strokeWidth equals: geoShapeCopy strokeWidth.
+	self assert: geoShape fillStyle equals: geoShapeCopy fillStyle.
+	self assert: geoShape fillStyle ~~ geoShapeCopy fillStyle.
+	self assert: geoShape strokeStyle equals: geoShapeCopy strokeStyle.
+	self assert: geoShape strokeStyle ~~ geoShapeCopy strokeStyle.
+
+	
+	
 ]
 
 { #category : #tests }
@@ -60,11 +56,8 @@ GeoShapeTest >> testUpdateWith [
 	
 	geoShape1 updateWith: geoShape2.
 	
-	self assert: geoShape1 fillColor equals: geoShape2 fillColor.
-	self assert: geoShape1 fillColor ~~ geoShape2 fillColor.
-	self assert: geoShape1 strokeColor equals: geoShape2 strokeColor.
-	self assert: geoShape1 strokeColor ~~ geoShape2 strokeColor.
-	self assert: geoShape1 strokePattern equals: geoShape2 strokePattern.
-	self assert: geoShape1 strokePattern ~~ geoShape2 strokePattern.
-	self assert: geoShape1 strokeWidth equals: geoShape2 strokeWidth.
+	self assert: geoShape1 fillStyle equals: geoShape2 fillStyle.
+	self assert: geoShape1 fillStyle ~~ geoShape2 fillStyle.
+	self assert: geoShape1 strokeStyle equals: geoShape2 strokeStyle.
+	self assert: geoShape1 strokeStyle ~~ geoShape2 strokeStyle.
 ]

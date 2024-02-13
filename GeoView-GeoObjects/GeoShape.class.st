@@ -6,60 +6,41 @@ Class {
 	#name : #GeoShape,
 	#superclass : #GeoObject,
 	#instVars : [
-		'fillColor',
-		'strokeColor',
-		'strokeWidth',
-		'strokePattern'
+		'fillStyle',
+		'strokeStyle'
 	],
 	#category : #'GeoView-GeoObjects-GeoObjects'
 }
 
 { #category : #accessing }
-GeoShape >> fillColor [
-	^ fillColor
+GeoShape >> fillStyle [
+
+	^ fillStyle
 ]
 
 { #category : #accessing }
-GeoShape >> fillColor: anObject [
-	fillColor := anObject
+GeoShape >> fillStyle: anObject [
+
+	fillStyle := anObject
 ]
 
 { #category : #accessing }
-GeoShape >> strokeColor [
-	^ strokeColor
+GeoShape >> strokeStyle [
+
+	^ strokeStyle
 ]
 
 { #category : #accessing }
-GeoShape >> strokeColor: anObject [
-	strokeColor := anObject
-]
+GeoShape >> strokeStyle: anObject [
 
-{ #category : #accessing }
-GeoShape >> strokePattern [
-	^ strokePattern
-]
-
-{ #category : #accessing }
-GeoShape >> strokePattern: anObject [
-	strokePattern := anObject
-]
-
-{ #category : #accessing }
-GeoShape >> strokeWidth [
-	^ strokeWidth
-]
-
-{ #category : #accessing }
-GeoShape >> strokeWidth: anObject [
-	strokeWidth := anObject
+	strokeStyle := anObject
 ]
 
 { #category : #updating }
 GeoShape >> updateWith: aGeoObject [
+
 	super updateWith: aGeoObject.
-	
-	self fillColor: aGeoObject fillColor copy.
-	self strokeColor: aGeoObject strokeColor copy.
-	self strokePattern: aGeoObject strokePattern copy.
-	self strokeWidth: aGeoObject strokeWidth copy.
+
+	self fillStyle: aGeoObject fillStyle copy.
+	self strokeStyle: aGeoObject strokeStyle copy
 ]

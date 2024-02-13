@@ -5,11 +5,13 @@ Class {
 }
 
 { #category : #'layer creation' }
-GeoViewManagerTestImpl >> createGeoObjectLayer: aKey [
-	^GeoViewObjectTestLayer new
+GeoViewManagerTestImpl >> createLayer: aKey [
+
+	^ GeoViewObjectTestLayer new
 ]
 
 { #category : #initialization }
 GeoViewManagerTestImpl >> createView [
-	self view: GeoViewTest new.
+
+	self view: GeoViewTest new
 ]

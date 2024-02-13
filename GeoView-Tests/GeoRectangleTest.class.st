@@ -14,10 +14,8 @@ GeoRectangleTest >> geoRectangle1 [
 		absoluteCoordinates: AbsoluteCoordinates zero;
 		isVisible: true;
 		key: #rectangle1;
-		fillColor: Color black;
-		strokeColor: Color red;
-		strokePattern: nil;
-		strokeWidth: 1;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 1);
 		lengthInMeters1: 15;
 		lengthInMeters2: 100;
 		yourself.
@@ -30,10 +28,8 @@ GeoRectangleTest >> geoRectangle2 [
 		absoluteCoordinates: (AbsoluteCoordinates latitudeInRadians: 0.5 longitudeInRadians: 0.5);
 		isVisible: false;
 		key: #rectangle2;
-		fillColor: Color white;
-		strokeColor: Color blue;
-		strokePattern: nil;
-		strokeWidth: 2;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 2);
 		lengthInMeters1: 50;
 		lengthInMeters2: 200;
 		yourself.

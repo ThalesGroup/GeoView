@@ -10,11 +10,13 @@ GeoViewExamplesBloc class >> createGeoObjects [
 	| list random nb |
 	list := OrderedCollection new.
 	random := Random new.
-	nb := 500.
+	nb := 1000.
 	
 	1 to: nb do:[ :i | | object |
 		object := GeoCircle new.
 		object key: i.
+		object fillStyle: (Color random asSmockFillStyle).
+		object strokeStyle: (Color random asSmockStrokeStyle).
 		object absoluteCoordinates: AbsoluteCoordinates random.
 		object radiusInMeters: (random next * 100000).
 		list add: object.
@@ -33,12 +35,12 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	"parameters"
 	geoViewManager setObjectIndexAccessor: #key.
 	
-	"configure projection"
-	geoViewManager getMapProjectionManagerServicesProvider setProjection: MercatorProjection new.
-	
+	"setup projection example"
+	"geoViewManager getMapProjectionManagerServicesProvider setProjection: MercatorProjection new."
+
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := geoViewManager createAndAddLayer: #layer1.
-	layer setProcessData: GeoCircleProcessData for: GeoCircle.
+	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
 	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
 	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.
 	layer setProcessData: GeoPolylineProcessData new for: GeoPolyline.

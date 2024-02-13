@@ -9,7 +9,7 @@ Class {
 	#instVars : [
 		'projection'
 	],
-	#category : #'GeoView-MapProjection-Impl'
+	#category : #'GeoView-MapProjection'
 }
 
 { #category : #'life cycle' }
@@ -37,6 +37,7 @@ MapProjectionManagerImpl >> componentRemove [
 { #category : #'initalize-release' }
 MapProjectionManagerImpl >> createProjection [
 	"default projection is Mercator"
+
 	self projection: MercatorProjection new
 ]
 

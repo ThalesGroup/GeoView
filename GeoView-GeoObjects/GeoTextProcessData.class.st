@@ -24,15 +24,12 @@ GeoTextProcessData >> processCreatedData: aKey incoming: aGeoText with: aDText c
 
 { #category : #processing }
 GeoTextProcessData >> processUpdatedData: aKey incoming: aGeoText with: aDText context: aContext [
+
 	| dText |
 	dText := aDText.
 	super processUpdatedData: aKey incoming: aGeoText with: dText context: aContext.
-	
-	dText fontName: aGeoText fontName.
-	dText fontSize: aGeoText fontSize.
-	dText fontEmphasis: aGeoText fontEmphasis.
-	dText fontWeight: aGeoText fontWeight.
+
+	dText smockFont: aGeoText smockFont.
 	dText text: aGeoText text.
-	
-	^dText
+	^ dText
 ]

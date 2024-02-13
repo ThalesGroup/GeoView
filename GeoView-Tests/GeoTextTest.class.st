@@ -14,14 +14,9 @@ GeoTextTest >> geoText1 [
 		absoluteCoordinates: AbsoluteCoordinates zero;
 		isVisible: true;
 		key: #text1;
-		fillColor: Color black;
-		strokeColor: Color red;
-		strokePattern: nil;
-		strokeWidth: 1;
-		fontName: 'Arial';
-		fontEmphasis: GeoFontAttributes fontEmphasisNormal;
-		fontWeight: GeoFontAttributes fontWeightNormal;
-		fontSize: 12;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 2);
+		smockFont: ((SmockFont named: 'Arial') fontSize: 12);
 		text: 'Hello !'
 		yourself.
 ]
@@ -33,14 +28,9 @@ GeoTextTest >> geoText2 [
 		absoluteCoordinates: (AbsoluteCoordinates latitudeInRadians: 0.5 longitudeInRadians: 0.5);
 		isVisible: false;
 		key: #text2;
-		fillColor: Color white;
-		strokeColor: Color blue;
-		strokePattern: nil;
-		strokeWidth: 2;
-		fontName: 'times new roman';
-		fontEmphasis: GeoFontAttributes fontEmphasisItalic;
-		fontWeight: GeoFontAttributes fontWeightBold;
-		fontSize: 16;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 2);
+		smockFont: ((SmockFont named: 'times new roman') fontSize: 16; fontWeight: #bold; fontStretch: #italic);
 		text: 'Hello world!';
 		yourself.
 ]
@@ -53,10 +43,7 @@ GeoTextTest >> testCopy [
 	geoTextCopy := geoText copy.
 	
 	self assert: geoText text equals: geoTextCopy text.
-	self assert: geoText fontName equals: geoTextCopy fontName.
-	self assert: geoText fontSize equals: geoTextCopy fontSize.
-	self assert: geoText fontEmphasis equals: geoTextCopy fontEmphasis.
-	self assert: geoText fontWeight equals: geoTextCopy fontWeight.
+	self assert: geoText smockFont equals: geoTextCopy smockFont.
 ]
 
 { #category : #tests }
@@ -67,16 +54,10 @@ GeoTextTest >> testUpdateWith [
 	geoText2 := self geoText2.
 	
 	self assert: geoText1 text ~= geoText2 text.
-	self assert: geoText1 fontName ~= geoText2 fontName.
-	self assert: geoText1 fontSize ~= geoText2 fontSize.
-	self assert: geoText1 fontEmphasis ~= geoText2 fontEmphasis.
-	self assert: geoText1 fontWeight ~= geoText2 fontWeight.
+	self assert: geoText1 smockFont ~= geoText2 smockFont.
 	
 	geoText1 updateWith: geoText2.
 	
 	self assert: geoText1 text equals: geoText2 text.
-	self assert: geoText1 fontName equals: geoText2 fontName.
-	self assert: geoText1 fontSize equals: geoText2 fontSize.
-	self assert: geoText1 fontEmphasis equals: geoText2 fontEmphasis.
-	self assert: geoText1 fontWeight equals: geoText2 fontWeight.
+	self assert: geoText1 smockFont equals: geoText2 smockFont.
 ]

@@ -13,8 +13,8 @@ Class {
 		'minScaleInMeters',
 		'maxScaleInMeters',
 		'scaleFactor',
-		'eventStrategyStack',
-		'objectsIndexAccessor'
+		'inputContext',
+		'objectIndexAccessor'
 	],
 	#category : #'GeoView-Core-Impl'
 }
@@ -31,33 +31,17 @@ GeoViewManagerImpl >> activateComponents [
 	].
 ]
 
-{ #category : #'parameters - event strategy' }
-GeoViewManagerImpl >> addEventBehavior: aGeoViewEventBehavior [
-
-	aGeoViewEventBehavior ifNil:[^self].
-	aGeoViewEventBehavior geoViewManager: self.
-	eventStrategyStack add: aGeoViewEventBehavior.
-]
-
-{ #category : #'parameters - event strategy' }
-GeoViewManagerImpl >> addEventBehaviorAtFirst: aGeoViewEventBehavior [
-
-	aGeoViewEventBehavior ifNil:[^self].
-	aGeoViewEventBehavior geoViewManager: self.
-	eventStrategyStack addFirst: aGeoViewEventBehavior.
-]
-
 { #category : #'services - layer creation' }
 GeoViewManagerImpl >> addLayer: aLayer [
 	"(aLayer class traitComposition allTraits includes: GeoViewLayer) ifFalse:[^nil]."
-	self flag:'PLA : regarder les traits dans lheritage pour être sûr que cest une layer'.
+	self flag:'labordep : regarder les traits dans lheritage pour être sûr que cest une layer'.
 	aLayer layerName ifNil:[^nil].
 	
-	aLayer mapProjection: self getMapProjectionManagerServicesProvider getProjection.
+	aLayer projection: self getMapProjectionManagerServicesProvider getProjection.
 	aLayer symbologyProvider: self getSmockSymbologyManagerServicesProvider.
-	aLayer isGeoObjectLayer ifTrue:[
+	"aLayer isGeoObjectLayer ifTrue:["
 		aLayer whenProcessDatasChangedDo: [ :l | self layerHasBeenUpdated: l	]. 
-	].
+	"]."
 	self view addLayer: aLayer.
 	
 	self getGeoViewManagerLayerEventsNotifier geoViewLayerAdded: aLayer layerName in: self componentName.
@@ -88,34 +72,38 @@ GeoViewManagerImpl >> centerOnPoint: aGlobalPoint [
 
 { #category : #'life cycle' }
 GeoViewManagerImpl >> componentActivate [
+
 	self activateComponents.
-	self getSmockSelectionManagerEventsSubscriber subscribe: self.
+	self getSmockSelectionManagerEventsSubscriber subscribe: self
 ]
 
 { #category : #'life cycle' }
 GeoViewManagerImpl >> componentInitialize [
 
-	self forServices: MapProjectionManagerServices useProvider: self componentName.
-	self forServices: SmockSymbologyManagerServices useProvider: self componentName.
-	self forServices: SmockSelectionManagerServices useProvider: self componentName.
+	super componentInitialize.
 
-	self initializeComponents.
+	self forServices: MapProjectionManagerServices useProvider: self componentName.
+
+	self initializeProjectionManager.
+	self initializeSelectionManager.
+	self initializeSymbologyManager.
+	
 	self createView.
+	self initializeInputContext.
 	self initializeView.
-	self initializeEventStrategyStack.
 ]
 
 { #category : #'life cycle' }
 GeoViewManagerImpl >> componentPassivate [
+
 	self getSmockSelectionManagerEventsSubscriber unsubscribe: self.
-	self passivateComponents.
+	self passivateComponents
 ]
 
 { #category : #'life cycle' }
 GeoViewManagerImpl >> componentRemove [
-	self deleteEventBehaviors.
-	self removeComponents.
-	
+
+	self removeComponents
 ]
 
 { #category : #private }
@@ -141,48 +129,37 @@ GeoViewManagerImpl >> createAndAddGeoObjectLayer: aKey [
 	existingLayer := self getLayer: aKey.
 	existingLayer ifNotNil:[ SmockDuplicateIdError signal: 'Cannot add layer with already existing key.'. ^ nil ].
 		
-	layer := self createGeoObjectLayer: aKey.
+	layer := self createLayer: aKey.
 	^self addLayer: layer
 ]
 
+{ #category : #'services - layer creation' }
+GeoViewManagerImpl >> createAndAddLayer: aKey [
+
+	| layer |
+	layer := self createLayer: aKey.
+	layer ifNil:[ ^ nil ].
+	
+	self addLayer: layer.
+	^ layer
+]
+
 { #category : #'layer creation' }
-GeoViewManagerImpl >> createGeoObjectLayer: aKey [
+GeoViewManagerImpl >> createLayer: aKey [
 	self subclassResponsibility 
 ]
 
-{ #category : #'parameters - event strategy' }
+{ #category : #initialization }
 GeoViewManagerImpl >> createView [
 	self subclassResponsibility 
 ]
 
-{ #category : #'parameters - event strategy' }
-GeoViewManagerImpl >> deleteEventBehavior: aGeoViewEventBehavior [
-
-	aGeoViewEventBehavior ifNil:[^self].
-	(aGeoViewEventBehavior geoViewManager == self) ifFalse:[^self].
-	aGeoViewEventBehavior geoViewManager: nil.
-	eventStrategyStack remove: aGeoViewEventBehavior ifAbsent:[nil].
-]
-
-{ #category : #'parameters - event strategy' }
-GeoViewManagerImpl >> deleteEventBehaviors [
-
-	| stack |
-	stack := eventStrategyStack copy.
-	eventStrategyStack removeAll.
-	stack do:[ :e | e geoViewManager: nil ].
-]
-
-{ #category : #'events handling' }
-GeoViewManagerImpl >> dispatchEvent: anEngineEvent [
+{ #category : #'private - events' }
+GeoViewManagerImpl >> dispatchUIEvent: aSmockEventWrapper [
 	"Transfert event in input strategy stack to each behavior processors"
 
-	eventStrategyStack ifNil: [ ^ self ].
-	eventStrategyStack do: [ :s | | result |
-		result := (s receiveEvent: anEngineEvent). 
-		"Result should be nil or self, but if the result is a true boolean the event is consume and the stack is stopped"
-		result = true ifTrue:[ ^self ].
-	]
+	inputContext ifNil: [ ^ self ].
+	inputContext handleEvent: aSmockEventWrapper
 ]
 
 { #category : #private }
@@ -201,12 +178,6 @@ GeoViewManagerImpl >> geoCenter [
 { #category : #accessing }
 GeoViewManagerImpl >> geoCenter: anAbsoluteCoordinates [
 	geoCenter := anAbsoluteCoordinates
-]
-
-{ #category : #'parameters - event strategy' }
-GeoViewManagerImpl >> getEventBehaviors [
-
-	^eventStrategyStack copy
 ]
 
 { #category : #'layer accessing' }
@@ -251,6 +222,12 @@ GeoViewManagerImpl >> getMapProjectionManagerServicesProvider [
 
 	servicesProvider := MolComponentManager default locatorServices searchServicesProviderFor: MapProjectionManagerServices named: servicesSymbol.
 	^servicesProvider
+]
+
+{ #category : #'parameters - objects' }
+GeoViewManagerImpl >> getObjectIndexAccessor [
+
+	^ objectIndexAccessor ifNil:[ objectIndexAccessor := #tn ]
 ]
 
 { #category : #scale }
@@ -306,19 +283,19 @@ GeoViewManagerImpl >> getView [
 	^ self view
 ]
 
-{ #category : #'aggregated components' }
-GeoViewManagerImpl >> initializeComponents [
+{ #category : #'private - events' }
+GeoViewManagerImpl >> handleUIEvent: anEvent [
 
-	self initializeProjectionManager.
-	self initializeSelectionManager.
-	self initializeSymbologyManager.
+	| wrapper |
+	wrapper := SmockEventWrapper wrap: anEvent.
+	self dispatchUIEvent: wrapper.
 ]
 
-{ #category : #'events handling' }
-GeoViewManagerImpl >> initializeEventStrategyStack [
-	"Define a stack a event processing : strategy"
+{ #category : #initialization }
+GeoViewManagerImpl >> initializeInputContext [
 
-	eventStrategyStack := OrderedCollection new.
+	inputContext := SmockInputContext new.
+	inputContext controller: self.
 ]
 
 { #category : #'aggregated components' }
@@ -346,6 +323,7 @@ GeoViewManagerImpl >> initializeSymbologyManager [
 
 { #category : #initialization }
 GeoViewManagerImpl >> initializeView [
+
 	self setGeoCenter: AbsoluteCoordinates zero.
 	self minScaleInMeters: 1852.0.
 	self maxScaleInMeters: 1.5171584e7.
@@ -406,9 +384,10 @@ GeoViewManagerImpl >> passivateComponents [
 GeoViewManagerImpl >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 	"Return all geo objects under aPoint with a radius in pixels"
 	
-	| pickingResult absoluteCoordinates localPoint |
+	| pickingResult absoluteCoordinates localPoint radius |
 	absoluteCoordinates := (self getAbsoluteCoordinatesFromGlobalPoint: aGlobalPoint) ifNil:[ ^ nil ].
 	localPoint := (self getLocalPointFromGlobalPoint: aGlobalPoint) ifNil:[ ^ nil ].
+	radius := aRadiusInPixels ifNil:[ 0 ].
 	
 	"create picking result"
 	pickingResult := GeoViewPickingResult new
@@ -417,7 +396,7 @@ GeoViewManagerImpl >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 		localPoint: localPoint;
 		cartesianCoordinates: (self getMapProjectionManagerServicesProvider getProjection projLatLonToCart: absoluteCoordinates);
 		absoluteCoordinates: absoluteCoordinates;
-		radiusInPixels: aRadiusInPixels;
+		radiusInPixels: radius;
 		yourself.
 
 	^ pickingResult 
@@ -500,7 +479,7 @@ GeoViewManagerImpl >> scaleUp [
 { #category : #'events - selection manager' }
 GeoViewManagerImpl >> selectedKeysHasChanged: aSmockSelection [
 
-	self view selectedGeoObjectKeys: aSmockSelection keys
+	self view selectedObjectIndexes: aSmockSelection keys
 ]
 
 { #category : #'events - selection manager' }
@@ -509,29 +488,24 @@ GeoViewManagerImpl >> selectionCleared [
 	self selectedKeysHasChanged: OrderedCollection new
 ]
 
-{ #category : #'parameters - event strategy' }
-GeoViewManagerImpl >> setEventBehaviors: anEventBehaviorList [
-
-	self deleteEventBehaviors.
-	anEventBehaviorList do:[ :e | self addEventBehavior: e ].
-]
-
 { #category : #'projection center' }
 GeoViewManagerImpl >> setGeoCenter: anAbsoluteCoordinates [
-	self geoCenter: anAbsoluteCoordinates copy.
+
+	self geoCenter: anAbsoluteCoordinates copy
 ]
 
 { #category : #'parameters - objects' }
 GeoViewManagerImpl >> setObjectIndexAccessor: aSymbol [
 
-	objectsIndexAccessor = aSymbol ifTrue:[ ^ self ].
-	objectsIndexAccessor := aSymbol.
+	objectIndexAccessor = aSymbol ifTrue:[ ^ self ].
+	objectIndexAccessor := aSymbol.
 	self flag:'labordep : update the model when changed ?'.
 ]
 
 { #category : #scale }
 GeoViewManagerImpl >> setScaleFactor: aNumber [
-	^self scaleFactor: aNumber
+
+	self scaleFactor: aNumber
 ]
 
 { #category : #scale }

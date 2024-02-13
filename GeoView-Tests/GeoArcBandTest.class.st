@@ -14,10 +14,8 @@ GeoArcBandTest >> geoArcBand1 [
 		absoluteCoordinates: AbsoluteCoordinates zero;
 		isVisible: true;
 		key: #arcband1;
-		fillColor: Color black;
-		strokeColor: Color red;
-		strokePattern: nil;
-		strokeWidth: 1;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 1);
 		apertureInRadians: 5;
 		orientationInAzimuths: 10;
 		radiusInMeters1: 50;
@@ -32,10 +30,8 @@ GeoArcBandTest >> geoArcBand2 [
 		absoluteCoordinates: AbsoluteCoordinates zero;
 		isVisible: true;
 		key: #arcband2;
-		fillColor: Color black;
-		strokeColor: Color red;
-		strokePattern: nil;
-		strokeWidth: 1;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 1);
 		apertureInRadians: 10;
 		orientationInAzimuths: 20;
 		radiusInMeters1: 100;

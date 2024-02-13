@@ -14,10 +14,8 @@ GeoCircleTest >> geoCircle1 [
 		absoluteCoordinates: AbsoluteCoordinates zero;
 		isVisible: true;
 		key: #circle1;
-		fillColor: Color black;
-		strokeColor: Color red;
-		strokePattern: nil;
-		strokeWidth: 1;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 1);
 		radiusInMeters: 5;
 		yourself.
 ]
@@ -29,10 +27,8 @@ GeoCircleTest >> geoCircle2 [
 		absoluteCoordinates: (AbsoluteCoordinates latitudeInRadians: 0.5 longitudeInRadians: 0.5);
 		isVisible: false;
 		key: #circle2;
-		fillColor: Color white;
-		strokeColor: Color blue;
-		strokePattern: nil;
-		strokeWidth: 2;
+		fillStyle: Color white asSmockFillStyle;
+		strokeStyle: (Color blue asSmockStrokeStyle width: 2);
 		radiusInMeters: 10;
 		yourself.
 ]

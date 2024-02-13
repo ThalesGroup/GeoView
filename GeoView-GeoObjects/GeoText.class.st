@@ -6,84 +6,33 @@ Class {
 	#superclass : #GeoShape,
 	#instVars : [
 		'text',
-		'fontWeight',
-		'fontEmphasis',
-		'fontSize',
-		'fontName'
+		'smockFont'
 	],
 	#category : #'GeoView-GeoObjects-GeoObjects'
 }
 
 { #category : #accessing }
-GeoText >> fontEmphasis [
+GeoText >> smockFont [
 
-	self deprecated: 'use SmockFont'.
-	fontEmphasis isNil ifTrue:[fontEmphasis := GeoFontAttributes fontEmphasisNormal].
-	^ fontEmphasis
+	^ smockFont
 ]
 
 { #category : #accessing }
-GeoText >> fontEmphasis: anObject [
+GeoText >> smockFont: anObject [
 
-	self deprecated: 'use SmockFont'.
-	fontEmphasis := anObject 
-]
-
-{ #category : #accessing }
-GeoText >> fontName [
-
-	self deprecated: 'use SmockFont'.
-	^ fontName
-]
-
-{ #category : #accessing }
-GeoText >> fontName: anObject [
-
-	self deprecated: 'use SmockFont'.
-	fontName := anObject 
-]
-
-{ #category : #accessing }
-GeoText >> fontSize [
-
-	self deprecated: 'use SmockFont'.
-	^ fontSize
-]
-
-{ #category : #accessing }
-GeoText >> fontSize: anObject [
-
-	self deprecated: 'use SmockFont'.
-	fontSize := anObject 
-]
-
-{ #category : #accessing }
-GeoText >> fontWeight [
-
-	self deprecated: 'use SmockFont'.
-	fontWeight isNil ifTrue:[fontWeight := GeoFontAttributes fontWeightNormal].
-	^ fontWeight
-]
-
-{ #category : #accessing }
-GeoText >> fontWeight: anObject [
-
-	self deprecated: 'use SmockFont'.
-	fontWeight := anObject 
+	smockFont := anObject
 ]
 
 { #category : #accessing }
 GeoText >> text [
 
-	self deprecated: 'use SmockFont'.
 	^ text 
 ]
 
 { #category : #accessing }
-GeoText >> text: anObject [
+GeoText >> text: aString [
 
-	self deprecated: 'use SmockFont'.
-	text := anObject
+	text := aString
 ]
 
 { #category : #updating }
@@ -92,8 +41,5 @@ GeoText >> updateWith: aGeoText [
 	super updateWith: aGeoText.
 
 	self text: aGeoText text copy.
-	self fontName: aGeoText fontName.
-	self fontSize: aGeoText fontSize.
-	self fontWeight: aGeoText fontWeight.
-	self fontEmphasis: aGeoText fontEmphasis
+	self smockFont: aGeoText smockFont copy.
 ]

@@ -71,3 +71,9 @@ GeoViewManagerServices >> setScaleFactor: aNumber [
 { #category : #scale }
 GeoViewManagerServices >> setScaleInMeters: aNumber [
 ]
+
+{ #category : #size }
+GeoViewManagerServices >> setViewBoundsFrom: aPoint1 to: aPoint2 [
+	"Force the view displayed bounds. Recompute View Center and Scale Factor"
+	self deprecated:'the size is delegated to the backend'.
+]

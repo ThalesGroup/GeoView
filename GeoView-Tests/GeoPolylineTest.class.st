@@ -13,10 +13,8 @@ GeoPolylineTest >> geoPolyline1 [
 	^ GeoPolyline new
 		isVisible: true;
 		key: #polyline1;
-		fillColor: Color black;
-		strokeColor: Color red;
-		strokePattern: nil;
-		strokeWidth: 1;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 1);
 		absolutePositions: {
 			AbsoluteCoordinates latitudeInRadians: 0.1 longitudeInRadians: 0.2.
 			AbsoluteCoordinates latitudeInRadians: 0.2 longitudeInRadians: 0.3.
@@ -31,10 +29,8 @@ GeoPolylineTest >> geoPolyline2 [
 	^ GeoPolyline new
 		isVisible: false;
 		key: #polyline2;
-		fillColor: Color white;
-		strokeColor: Color blue;
-		strokePattern: nil;
-		strokeWidth: 2;
+		fillStyle: Color black asSmockFillStyle;
+		strokeStyle: (Color red asSmockStrokeStyle width: 2);
 		absolutePositions: {
 			AbsoluteCoordinates latitudeInRadians: 0.3 longitudeInRadians: 0.2.
 			AbsoluteCoordinates latitudeInRadians: 0.2 longitudeInRadians: 0.1.

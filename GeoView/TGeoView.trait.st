@@ -6,7 +6,7 @@ Trait {
 	#instVars : [
 		'geoViewBounds'
 	],
-	#category : #'GeoView-View & Layer'
+	#category : #'GeoView-View'
 }
 
 { #category : #'API -- layers management' }
@@ -14,12 +14,12 @@ TGeoView >> addLayer: aLayer [
 	self explicitRequirement
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'API -- objects management' }
 TGeoView >> addObject: aGeoObject [
 	self explicitRequirement
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'API -- objects management' }
 TGeoView >> addObjects: aGeoObjectList [
 	self explicitRequirement
 ]
@@ -39,46 +39,23 @@ TGeoView >> getLayers [
 	self explicitRequirement
 ]
 
-{ #category : #accessing }
-TGeoView >> getViewSize [
-	self explicitRequirement
-]
-
 { #category : #'API -- layers management' }
 TGeoView >> removeLayer: aLayer [
 	self explicitRequirement
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'API -- objects management' }
 TGeoView >> removeObject: aGeoObject [
 	self explicitRequirement
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'API -- objects management' }
 TGeoView >> removeObjects: aGeoObjectList [
 	self explicitRequirement
 ]
 
-{ #category : #selection }
-TGeoView >> selectedGeoObjectKeys: aCollection [
-	self explicitRequirement
-]
-
-{ #category : #'API -- size' }
-TGeoView >> setBoundsFrom: aFromPoint to: aToPoint [
-
-	| newBounds |
-	newBounds := aFromPoint extent: aToPoint.
-	newBounds = geoViewBounds ifTrue:[ ^ self ].
-	
-	geoViewBounds := newBounds.
-	"TODO : self updateProjection"
-
-	self updateGraphicModel
-]
-
-{ #category : #accessing }
-TGeoView >> setViewSize: aPoint [
+{ #category : #'API -- selection' }
+TGeoView >> selectedObjectIndexes: aCollection [
 	self explicitRequirement
 ]
 
@@ -87,12 +64,12 @@ TGeoView >> updateGraphicModel [
 	self explicitRequirement
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'API -- objects management' }
 TGeoView >> updateObject: aGeoObject [
 	self explicitRequirement
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'API -- objects management' }
 TGeoView >> updateObjects: aGeoObjectList [
 	self explicitRequirement
 ]
