@@ -1,17 +1,17 @@
 Class {
-	#name : #DSymbolGeoViewAeProcessData,
-	#superclass : #DLeafShapeGeoViewAeProcessData,
-	#category : #'GeoView-Bloc-Alexandrie-GShape-ProcessData'
+	#name : #DSymbolGeoViewProcessData,
+	#superclass : #DLeafShapeGeoViewProcessData,
+	#category : #'GeoView-GShape-ProcessData'
 }
 
 { #category : #private }
-DSymbolGeoViewAeProcessData >> createGShape2D [ 
+DSymbolGeoViewProcessData >> createGShape2D [ 
 
 	^ SmockGBitmap2D new
 ]
 
 { #category : #processing }
-DSymbolGeoViewAeProcessData >> processUpdatedData: aKey incoming: aDSymbol with: aGBitmap2D context: aContext [
+DSymbolGeoViewProcessData >> processUpdatedData: aKey incoming: aDSymbol with: aGBitmap2D context: aContext [
 
 	super processUpdatedData: aKey incoming: aDSymbol with: aGBitmap2D context: aContext.
 	
