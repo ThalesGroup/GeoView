@@ -52,6 +52,7 @@ BlElementAeGeoView >> configureLayer: aLayer [
 	aLayer graphicModel setProcessData: DSymbolGeoViewAeProcessData new for: SmockDSymbol.
 	aLayer graphicModel setProcessData: DCircleGeoViewAeProcessData new for: SmockDCircle.
 	aLayer graphicModel setProcessData: DTextGeoViewAeProcessData new for: SmockDText.
+	aLayer graphicModel setProcessData: DPolygonGeoViewAeProcessData new for: SmockDPolygon.
 	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
 ]
 
