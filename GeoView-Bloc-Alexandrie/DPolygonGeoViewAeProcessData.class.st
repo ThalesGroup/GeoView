@@ -21,10 +21,12 @@ DPolygonGeoViewAeProcessData >> processUpdatedData: aKey incoming: aDPolygon wit
 	(aDPolygon points isNil or:[ aDPolygon points isEmpty]) ifTrue:[ ^ aGPolygon2D ].
 	
 	aDPolygon isDrawModeDevice ifTrue:[ 
-		points := aDPolygon points 
+		points := aDPolygon points
 	] ifFalse: [ 
 		( aDPolygon isDrawModeUser or:[ aDPolygon isDrawModeUserProjected ] ) ifTrue:[
-			points := aDPolygon points collect:[:pt | pt * self processor projection metersByPixel].
+			points := aDPolygon points collect:[:pt |
+				self processor projection projCartToPixel: pt
+			].
 		].
 	].
 
