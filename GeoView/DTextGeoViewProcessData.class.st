@@ -1,11 +1,11 @@
 Class {
-	#name : #DTextGeoViewAeProcessData,
-	#superclass : #DLeafShapeGeoViewAeProcessData,
-	#category : #'GeoView-Bloc-Alexandrie-GShape-ProcessData'
+	#name : #DTextGeoViewProcessData,
+	#superclass : #DLeafShapeGeoViewProcessData,
+	#category : #'GeoView-GShape-ProcessData'
 }
 
 { #category : #private }
-DTextGeoViewAeProcessData >> computePositionFor: aDShape context: aContext [
+DTextGeoViewProcessData >> computePositionFor: aDShape context: aContext [
 	"Return a pixel position from an axis coordinates, ignore z axis"
 
 	| position |
@@ -19,13 +19,13 @@ DTextGeoViewAeProcessData >> computePositionFor: aDShape context: aContext [
 ]
 
 { #category : #private }
-DTextGeoViewAeProcessData >> createGShape2D [ 
+DTextGeoViewProcessData >> createGShape2D [ 
 
 	^ SmockGText2D new
 ]
 
 { #category : #processing }
-DTextGeoViewAeProcessData >> processUpdatedData: aKey incoming: aDText with: aGText2D context: aContext [
+DTextGeoViewProcessData >> processUpdatedData: aKey incoming: aDText with: aGText2D context: aContext [
 	
 	super processUpdatedData: aKey incoming: aDText with: aGText2D context: aContext.
 	

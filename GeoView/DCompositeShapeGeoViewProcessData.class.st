@@ -1,11 +1,11 @@
 Class {
-	#name : #DCompositeShapeGeoViewAeProcessData,
-	#superclass : #DShapeGeoViewAeProcessData,
-	#category : #'GeoView-Bloc-Alexandrie-GShape-ProcessData'
+	#name : #DCompositeShapeGeoViewProcessData,
+	#superclass : #DShapeGeoViewProcessData,
+	#category : #'GeoView-GShape-ProcessData'
 }
 
 { #category : #processing }
-DCompositeShapeGeoViewAeProcessData >> createAndAddGChildFrom: aDShape inGComposite: aGComposite2D [
+DCompositeShapeGeoViewProcessData >> createAndAddGChildFrom: aDShape inGComposite: aGComposite2D [
 
 	| processData gShape2D |
 	
@@ -26,7 +26,7 @@ DCompositeShapeGeoViewAeProcessData >> createAndAddGChildFrom: aDShape inGCompos
 ]
 
 { #category : #processing }
-DCompositeShapeGeoViewAeProcessData >> processCreatedData: aKey incoming: aDComposite with: aGComposite2D context: aContext [
+DCompositeShapeGeoViewProcessData >> processCreatedData: aKey incoming: aDComposite with: aGComposite2D context: aContext [
 
 	| gComposite2D |
 	gComposite2D := aGComposite2D 
@@ -46,7 +46,7 @@ DCompositeShapeGeoViewAeProcessData >> processCreatedData: aKey incoming: aDComp
 ]
 
 { #category : #processing }
-DCompositeShapeGeoViewAeProcessData >> processUpdatedData: aKey incoming: aDComposite with: aGComposite2D context: aContext [
+DCompositeShapeGeoViewProcessData >> processUpdatedData: aKey incoming: aDComposite with: aGComposite2D context: aContext [
 
 	super processUpdatedData: aKey incoming: aDComposite with: aGComposite2D context: aContext.
 	
@@ -118,7 +118,7 @@ DCompositeShapeGeoViewAeProcessData >> processUpdatedData: aKey incoming: aDComp
 ]
 
 { #category : #processing }
-DCompositeShapeGeoViewAeProcessData >> removeGChild: aGShape2D createdFrom: aDShape offGComposite: aGComposite2D [
+DCompositeShapeGeoViewProcessData >> removeGChild: aGShape2D createdFrom: aDShape offGComposite: aGComposite2D [
 
 	| processData gChild |
 

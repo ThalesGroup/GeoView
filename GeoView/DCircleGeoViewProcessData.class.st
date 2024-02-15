@@ -1,17 +1,17 @@
 Class {
-	#name : #DCircleGeoViewAeProcessData,
-	#superclass : #DLeafShapeGeoViewAeProcessData,
-	#category : #'GeoView-Bloc-Alexandrie-GShape-ProcessData'
+	#name : #DCircleGeoViewProcessData,
+	#superclass : #DLeafShapeGeoViewProcessData,
+	#category : #'GeoView-GShape-ProcessData'
 }
 
 { #category : #private }
-DCircleGeoViewAeProcessData >> createGShape2D [ 
+DCircleGeoViewProcessData >> createGShape2D [ 
 
 	^ SmockGCircle2D new
 ]
 
 { #category : #private }
-DCircleGeoViewAeProcessData >> processUpdatedData: aKey incoming: aDCircle with: aGCircle2D context: aContext [
+DCircleGeoViewProcessData >> processUpdatedData: aKey incoming: aDCircle with: aGCircle2D context: aContext [
 
 	| radius |
 	super processUpdatedData: aKey incoming: aDCircle with: aGCircle2D context: aContext.

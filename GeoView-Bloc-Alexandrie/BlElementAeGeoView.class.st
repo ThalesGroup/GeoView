@@ -48,12 +48,13 @@ BlElementAeGeoView >> configureLayer: aLayer [
 	aLayer graphicModel projection: self displayToGraphicProjection.
 	
 	"add alexandrie process datas"
-	aLayer graphicModel setProcessData: DCompositeShapeGeoViewAeProcessData new for: SmockDCompositeShape.
-	aLayer graphicModel setProcessData: DSymbolGeoViewAeProcessData new for: SmockDSymbol.
-	aLayer graphicModel setProcessData: DCircleGeoViewAeProcessData new for: SmockDCircle.
-	aLayer graphicModel setProcessData: DTextGeoViewAeProcessData new for: SmockDText.
+	aLayer graphicModel setProcessData: DCompositeShapeGeoViewProcessData new for: SmockDCompositeShape.
+	aLayer graphicModel setProcessData: DSymbolGeoViewProcessData new for: SmockDSymbol.
+	aLayer graphicModel setProcessData: DCircleGeoViewProcessData new for: SmockDCircle.
+	aLayer graphicModel setProcessData: DTextGeoViewProcessData new for: SmockDText.
 	aLayer graphicModel setProcessData: DPolygonGeoViewProcessData new for: SmockDPolygon.
 	aLayer graphicModel setProcessData: DPolylineGeoViewProcessData new for: SmockDPolyline.
+
 	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
 ]
 
