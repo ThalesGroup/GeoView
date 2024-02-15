@@ -3,8 +3,8 @@ ProcessData to convert DPolygon to GPolygon2D
 "
 Class {
 	#name : #DPolygonGeoViewProcessData,
-	#superclass : #DLeafShapeGeoViewAeProcessData,
-	#category : #'GeoView-Bloc-Alexandrie-GShape-ProcessData'
+	#superclass : #DLeafShapeGeoViewProcessData,
+	#category : #'GeoView-GShape-ProcessData'
 }
 
 { #category : #private }

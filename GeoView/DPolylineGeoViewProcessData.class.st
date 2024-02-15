@@ -1,7 +1,7 @@
 Class {
 	#name : #DPolylineGeoViewProcessData,
-	#superclass : #DLeafShapeGeoViewAeProcessData,
-	#category : #'GeoView-Bloc-Alexandrie-GShape-ProcessData'
+	#superclass : #DLeafShapeGeoViewProcessData,
+	#category : #'GeoView-GShape-ProcessData'
 }
 
 { #category : #private }
