@@ -39,12 +39,11 @@ GeoViewManagerBlocAeImpl >> getAbsoluteCoordinatesFromGlobalPoint: aGlobalPoint 
 GeoViewManagerBlocAeImpl >> getAbsoluteCoordinatesFromLocalPoint: aLocalPoint [
 
 	| cartesianCoordinates absoluteCoordinates projection |
-	projection := self getMapProjectionManagerServicesProvider
-		              getProjection.
-	cartesianCoordinates := view displayToGraphicProjection
-		                        projPixelToCart: aLocalPoint.
-	absoluteCoordinates := projection projCartToLatLon:
-		                       cartesianCoordinates.
+	projection := self getMapProjectionManagerServicesProvider getProjection.
+	projection ifNil:[ ^ nil ].
+		
+	cartesianCoordinates := view displayToGraphicProjection projPixelToCart: aLocalPoint.
+	absoluteCoordinates := projection projCartToLatLon: cartesianCoordinates.
 	^ absoluteCoordinates
 ]
 
