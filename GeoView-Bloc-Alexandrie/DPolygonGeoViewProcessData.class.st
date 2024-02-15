@@ -2,19 +2,19 @@
 ProcessData to convert DPolygon to GPolygon2D
 "
 Class {
-	#name : #DPolygonGeoViewAeProcessData,
+	#name : #DPolygonGeoViewProcessData,
 	#superclass : #DLeafShapeGeoViewAeProcessData,
 	#category : #'GeoView-Bloc-Alexandrie-GShape-ProcessData'
 }
 
 { #category : #private }
-DPolygonGeoViewAeProcessData >> createGShape2D [ 
+DPolygonGeoViewProcessData >> createGShape2D [ 
 
 	^ SmockGPolygon2D new
 ]
 
 { #category : #private }
-DPolygonGeoViewAeProcessData >> processUpdatedData: aKey incoming: aDPolygon with: aGPolygon2D context: aContext [
+DPolygonGeoViewProcessData >> processUpdatedData: aKey incoming: aDPolygon with: aGPolygon2D context: aContext [
 
 	| points |
 	super processUpdatedData: aKey incoming: aDPolygon with: aGPolygon2D context: aContext.

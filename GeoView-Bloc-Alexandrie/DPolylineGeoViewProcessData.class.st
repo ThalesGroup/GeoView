@@ -1,17 +1,17 @@
 Class {
-	#name : #DPolylineGeoViewAeProcessData,
+	#name : #DPolylineGeoViewProcessData,
 	#superclass : #DLeafShapeGeoViewAeProcessData,
 	#category : #'GeoView-Bloc-Alexandrie-GShape-ProcessData'
 }
 
 { #category : #private }
-DPolylineGeoViewAeProcessData >> createGShape2D [ 
+DPolylineGeoViewProcessData >> createGShape2D [ 
 
 	^ SmockGPolyline2D new
 ]
 
 { #category : #processing }
-DPolylineGeoViewAeProcessData >> processUpdatedData: aKey incoming: aDPolyline with: aGPolyline2D context: aContext [
+DPolylineGeoViewProcessData >> processUpdatedData: aKey incoming: aDPolyline with: aGPolyline2D context: aContext [
 
 	| points |
 	super processUpdatedData: aKey incoming: aDPolyline with: aGPolyline2D context: aContext.
