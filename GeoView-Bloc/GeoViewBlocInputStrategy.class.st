@@ -1,5 +1,5 @@
 Class {
 	#name : #GeoViewBlocInputStrategy,
-	#superclass : #TechViewInputStrategy,
+	#superclass : #SmockInputStrategy,
 	#category : #'GeoView-Bloc-Events'
 }
