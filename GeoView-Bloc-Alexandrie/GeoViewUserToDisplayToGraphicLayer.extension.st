@@ -6,5 +6,6 @@ GeoViewUserToDisplayToGraphicLayer >> aeDrawOn: aeCanvas [
 	self isVisible ifFalse: [ ^ self ].
 	sortedDatas ifNil:[ ^ self ].
 	
-	sortedDatas do: [ :e | e aeDrawOn: aeCanvas ]
+	self flag: 'Patch to wait correction on issue #9'.
+	sortedDatas copy do: [ :e | e aeDrawOn: aeCanvas ]
 ]
