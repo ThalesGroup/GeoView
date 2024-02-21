@@ -498,7 +498,7 @@ GeoViewManagerImpl >> selectedKeysHasChanged: aSmockSelection [
 { #category : #'events - selection manager' }
 GeoViewManagerImpl >> selectionCleared [
 
-	self selectedKeysHasChanged: OrderedCollection new
+	self view selectedObjectIndexes: OrderedCollection new
 ]
 
 { #category : #services }
