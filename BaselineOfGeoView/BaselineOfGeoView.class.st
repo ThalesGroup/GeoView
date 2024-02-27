@@ -38,7 +38,7 @@ BaselineOfGeoView >> coreDependencies: spec [
 	"Bloc"
 	spec
 		baseline: 'Bloc'
-		with: [ spec repository: 'github://pharo-graphics/Bloc:dev-1.0/src' ].
+		with: [ spec repository: 'github://pharo-graphics/Bloc:master/src' ].
 		
 	"GeoTools"
 	spec 
