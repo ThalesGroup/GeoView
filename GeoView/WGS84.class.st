@@ -8,6 +8,12 @@ Class {
 }
 
 { #category : #'standard values' }
+WGS84 class >> eminorSquare [
+
+^ ((self semiMajorAxisInMeters * self semiMajorAxisInMeters) -  (self semiMinorAxisInMeters * self semiMinorAxisInMeters)) / ((self semiMinorAxisInMeters * self semiMinorAxisInMeters)).
+]
+
+{ #category : #'standard values' }
 WGS84 class >> flattening [
 	"https://en.wikipedia.org/wiki/World_Geodetic_System"
 
