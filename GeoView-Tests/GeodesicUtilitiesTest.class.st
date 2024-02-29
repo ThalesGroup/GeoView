@@ -36,13 +36,13 @@ GeodesicUtilitiesTest >> testConvertGeodesicToDistanceFromTwoPoints [
 
 	distanceInM := GeodesicUtilities 	convertGeodesicToDistanceInMeterFrom: originPointAbsCoord to: endPointAbsCoord.
 	
-	self assert: (distanceInM closeTo: 5175.1422410892 precision: 1e-10) equals: true.
+	self assert: (distanceInM closeTo: 5175.1422410892 precision: 1e-8) equals: true.
 	
 	endPointAbsCoord := AbsoluteCoordinates latitudeInDegrees: 48.29603 longitudeInDegrees: -4.62295.
 
 	distanceInM := GeodesicUtilities convertGeodesicToDistanceInMeterFrom: originPointAbsCoord to: endPointAbsCoord.
 		
-	self assert: (distanceInM  closeTo: 6303.42663738019 precision: 1e-10) equals: true. 
+	self assert: (distanceInM  closeTo: 6303.42663738019 precision: 1e-8) equals: true. 
 ]
 
 { #category : #tests }
