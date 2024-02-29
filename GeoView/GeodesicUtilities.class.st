@@ -153,12 +153,12 @@ GeodesicUtilities class >> convertGeodesicToAzimuthInRadiansFrom: startAbsoluteC
 	(startAbsoluteCoordinate longitudeInRadians closeTo: endAbsoluteCoordinate longitudeInRadians precision: 1e-7) ifTrue: 
 		[ (startAbsoluteCoordinate latitudeInRadians closeTo: endAbsoluteCoordinate latitudeInRadians precision: 1e-7)
 			ifTrue: [^ 0].
-		endAbsoluteCoordinate latitudeInRadians >= startAbsoluteCoordinate latitudeInRadians abs 
+		endAbsoluteCoordinate latitudeInRadians >= startAbsoluteCoordinate latitudeInRadians 
 			ifTrue: [^ 0]
 			ifFalse: [^ Float pi]].
 		
 	d5 := ((startAbsoluteCoordinate latitudeInRadians tan * WGS84 semiMinorAxisInMeters) / WGS84 semiMajorAxisInMeters) arcTan.
-	d6 := ((startAbsoluteCoordinate longitudeInRadians tan * WGS84 semiMinorAxisInMeters) / WGS84 semiMajorAxisInMeters) arcTan.
+	d6 := ((endAbsoluteCoordinate latitudeInRadians tan * WGS84 semiMinorAxisInMeters) / WGS84 semiMajorAxisInMeters) arcTan.
 	d7 := d5 cos.
 	d8 := d6 cos.
 	d9 := d5 sin.
@@ -177,7 +177,8 @@ GeodesicUtilities class >> convertGeodesicToAzimuthInRadiansFrom: startAbsoluteC
 		d17 := (d7 * d10) - (d9 * d8 * d15).
 		d20 := ((d16 * d16) + (d17 * d17)) sqrt.
 		d21 := (d9 * d10) + (d7 * d8 * d15).
-		d22 := (d20 @ d21) theta.
+		" !!! Math.atan2(y,x) => (x,y) theta "
+		d22 := (d21 @ d20) theta.
 		d23 := (d7 * d8 * d14) / d20.
 		d24 := 1 - (d23 * d23).
 		d25 := d24 < 1e-14
@@ -191,9 +192,10 @@ GeodesicUtilities class >> convertGeodesicToAzimuthInRadiansFrom: startAbsoluteC
 		d14 := d12 sin.
 		d15 := d12 cos.
 		break := (d12 - d19) abs < 1e-10.
-		d28 := d28 + 1 ].
+		break ifFalse:[d28 := d28 + 1 ]
+		].
 	
-	d28 := ((d8 * d14) @ ((d7 * d10) - (d9 * d8 * d15))) theta.
+	d28 := ( ((d7 * d10) - (d9 * d8 * d15)) @ (d8 * d14)) theta.
 	^ d28 negative 
 		ifTrue: [ d28 + (2 * Float pi) ]
 		ifFalse: [ d28 ]
@@ -205,7 +207,11 @@ GeodesicUtilities class >> convertGeodesicToDistanceInMeterFrom: startAbsoluteCo
 	"Compute distance between two Geodesic (lat/long) coordinates and return in meter"
 	<tacplot60>
 	| d5 d6 d7 d8 d9 d10 d11 d12 d14 d15 d16 d17 d18 d19 d20 d21 d22 d23 d24 d25 d26 d27 d28 d29 d30 d31 d32 xxx l |
-	startAbsoluteCoordinate = endAbsoluteCoordinate ifTrue: [ ^0 ].
+
+	(startAbsoluteCoordinate longitudeInRadians closeTo: endAbsoluteCoordinate longitudeInRadians precision: 1e-7) ifTrue: 
+		[ (startAbsoluteCoordinate latitudeInRadians closeTo: endAbsoluteCoordinate latitudeInRadians precision: 1e-7)
+			ifTrue: [^ 0]
+	].
 	
 	d5 := ((startAbsoluteCoordinate latitudeInRadians tan * WGS84 semiMinorAxisInMeters) / WGS84 semiMajorAxisInMeters) arcTan.
 	d6 := ((endAbsoluteCoordinate latitudeInRadians tan * WGS84 semiMinorAxisInMeters) / WGS84 semiMajorAxisInMeters) arcTan.
@@ -222,13 +228,14 @@ GeodesicUtilities class >> convertGeodesicToDistanceInMeterFrom: startAbsoluteCo
 	
 	l := 1.
 	xxx := 1.
-	[(xxx > 1e-10 and: [ l < 4 ])] whileTrue:
+	[(xxx >= 1e-10 and: [ l < 4 ])] whileTrue:
 		[ xxx := (d12 - d20) abs.
 		d16 := d8 * d14.
 		d18 := (d7 * d10) - (d9 * d8 * d15).
 		d21 := ((d16 * d16) + (d18 * d18)) sqrt.
 		d22 := (d9 * d10) + (d7 * d8 * d15).
-		d23 := (d21 @ d22) theta.
+		" !!! Math.atan2(y,x) => (x,y) theta "
+		d23 := (d22 @ d21) theta.
 		d24 := (d7 * d8 * d14) / d21.
 		d25 := 1 - (d24 * d24).
 		d26 := d25 < 1e-14
@@ -243,13 +250,36 @@ GeodesicUtilities class >> convertGeodesicToDistanceInMeterFrom: startAbsoluteCo
 		d15 := d12 cos.
 		l := l + 1. ].
 	
-	d29 := d25 * (WGS84 semiMajorAxisInMeters - WGS84 semiMinorAxisInMeters) / WGS84 semiMinorAxisInMeters.
+	d29 := d25 * WGS84 eminorSquare.
 	d30 := 1 + ((d29 / 16384) * (4096 + (d29 * (-768 + (d29 * (320 - (175 * d29))))))).
 	d31 := (d29 / 1024) * (256 + (d29 * (-128 + (d29 * (74 - (47 * d29)))))).
 	d17 := d22 * (-1 + (2 * (d26 * d26))).
 	d19 := d26 * (-3 + (4 * d21 * d21)) * (-3 + (4 * d26 * d26)).
 	d32 := d31 * d21 * (d26 + ((d31 / 4) * (d17 - ((d31 / 6) * d19)))).
 	^ WGS84 semiMinorAxisInMeters * d30 * (d23 - d32)
+]
+
+{ #category : #tools }
+GeodesicUtilities class >> isAzimuthTowardsAreaFrom: anAbsCoordOrigin azimuth: anAzimuthInDegree area: aListOfAbsoluteCoords [
+
+	| listAngles isPointingArea azRad |
+	isPointingArea := false.
+
+	aListOfAbsoluteCoords isEmptyOrNil ifTrue: [ ^ isPointingArea ].
+
+	"Compute angles between origin position and vertices of area"
+	listAngles := (aListOfAbsoluteCoords collect: [ :absCoord |
+		               self convertGeodesicToAzimuthInRadiansFrom: anAbsCoordOrigin to: absCoord ] 
+						) asOrderedCollection.		
+						
+	listAngles := listAngles sort: [ :a :b | a < b ].
+
+	azRad := anAzimuthInDegree degreesToRadians.
+	isPointingArea := azRad between: listAngles first and: listAngles last.
+	isPointingArea := isPointingArea or:[ azRad closeTo: listAngles first precision: 1e-3 ].
+	isPointingArea := isPointingArea or:[ azRad closeTo: listAngles last precision: 1e-3 ].
+
+	^ isPointingArea
 ]
 
 { #category : #tools }
