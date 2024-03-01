@@ -11,7 +11,7 @@ Class {
 GeodesicUtilitiesTest >> testCheckAngleIsBetweenTwoOthers [
 
 	| result |
-	result := GeodesicUtilities checkAngle: 0 isBetween: 340 degreesToRadians and: 15 degreesToRadians.
+	result := GeodesicUtilities checkAngle: 0 isBetween: 355 degreesToRadians and: 5 degreesToRadians.
 	self assert: result equals: true.
 	result := GeodesicUtilities checkAngle: 14 degreesToRadians isBetween: 340 degreesToRadians and: 15 degreesToRadians.
 	self assert: result equals: true.

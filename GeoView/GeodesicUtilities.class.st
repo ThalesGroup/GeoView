@@ -59,7 +59,10 @@ GeodesicUtilities class >> absoluteCoordinatesFrom: anAbsoluteCoordinates distan
 
 { #category : #tools }
 GeodesicUtilities class >> checkAngle: anAngleInRad isBetween: aStartValueInRad and: anEndValueInRad [ 
-
+	"check if anAngleInRad is between startAngle and endAngle. Deal with the 0 :
+	self checkAngle: 0 isBetween: 355 and: 5 => true
+	while (0 between: 355 and: 5) => false  
+	 "
 	| end middle |
 	
 	(anAngleInRad closeTo: aStartValueInRad precision: 1e-7) ifTrue:[^true].
