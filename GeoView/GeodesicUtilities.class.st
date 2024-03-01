@@ -57,6 +57,25 @@ GeodesicUtilities class >> absoluteCoordinatesFrom: anAbsoluteCoordinates distan
 	^absoluteCoordinates
 ]
 
+{ #category : #tools }
+GeodesicUtilities class >> checkAngle: anAngleInRad isBetween: aStartValueInRad and: anEndValueInRad [ 
+	"check if anAngleInRad is between startAngle and endAngle. Deal with the 0 :
+	self checkAngle: 0 isBetween: 355 and: 5 => true
+	while (0 between: 355 and: 5) => false  
+	 "
+	| end middle |
+	
+	(anAngleInRad closeTo: aStartValueInRad precision: 1e-7) ifTrue:[^true].
+	
+	end := anEndValueInRad - aStartValueInRad.
+	end negative ifTrue:[ end := end + (2*Float pi)].
+
+	middle := anAngleInRad - aStartValueInRad.
+	middle negative ifTrue:[ middle := middle + (2*Float pi)].	
+	
+	^middle <= end
+]
+
 { #category : #private }
 GeodesicUtilities class >> computeECEFXYZ: anOriginAbsoluteCoordinates fromLocalXYZ: aLocalCartesianCoordinates [
 
@@ -269,15 +288,27 @@ GeodesicUtilities class >> isAzimuthTowardsAreaFrom: anAbsCoordOrigin azimuth: a
 
 	"Compute angles between origin position and vertices of area"
 	listAngles := (aListOfAbsoluteCoords collect: [ :absCoord |
-		               self convertGeodesicToAzimuthInRadiansFrom: anAbsCoordOrigin to: absCoord ] 
-						) asOrderedCollection.		
-						
-	listAngles := listAngles sort: [ :a :b | a < b ].
+		               self convertGeodesicToAzimuthInRadiansFrom: anAbsCoordOrigin to: absCoord ]) asOrderedCollection.
+	listAngles add: listAngles first.
 
 	azRad := anAzimuthInDegree degreesToRadians.
-	isPointingArea := azRad between: listAngles first and: listAngles last.
-	isPointingArea := isPointingArea or:[ azRad closeTo: listAngles first precision: 1e-3 ].
-	isPointingArea := isPointingArea or:[ azRad closeTo: listAngles last precision: 1e-3 ].
+
+	isPointingArea := false.
+	listAngles withIndexDo: [ :a :i |
+		| nextAngle |
+		isPointingArea := isPointingArea or: [ azRad closeTo: a precision: 1e-3 ].
+
+		i < listAngles size ifTrue: [ | diff |
+			nextAngle := listAngles at: i + 1.
+			diff := nextAngle - a.
+			diff negative ifTrue:[ diff := diff + (2 * Float pi)].
+			isPointingArea := (diff <= Float pi) 
+				ifTrue: [ isPointingArea or: [ self checkAngle: azRad isBetween: a and: nextAngle ] ]
+				ifFalse: [ isPointingArea or: [ self checkAngle: azRad isBetween: nextAngle and: a  ] 
+			].
+			isPointingArea := isPointingArea or: [ azRad closeTo: nextAngle precision: 1e-3 ] 
+		] 
+	].
 
 	^ isPointingArea
 ]
