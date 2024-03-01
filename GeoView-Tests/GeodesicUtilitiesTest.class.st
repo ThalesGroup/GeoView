@@ -8,6 +8,41 @@ Class {
 }
 
 { #category : #tests }
+GeodesicUtilitiesTest >> testCheckAngleIsBetweenTwoOthers [
+
+	| result |
+	result := GeodesicUtilities checkAngle: 0 isBetween: 340 degreesToRadians and: 15 degreesToRadians.
+	self assert: result equals: true.
+	result := GeodesicUtilities checkAngle: 14 degreesToRadians isBetween: 340 degreesToRadians and: 15 degreesToRadians.
+	self assert: result equals: true.
+	result := GeodesicUtilities checkAngle: 341 degreesToRadians isBetween: 340 degreesToRadians and: 15 degreesToRadians.
+	self assert: result equals: true.
+	result := GeodesicUtilities checkAngle: 15 degreesToRadians isBetween: 340 degreesToRadians and: 15 degreesToRadians.
+	self assert: result equals: true.
+	result := GeodesicUtilities checkAngle: 340 degreesToRadians isBetween: 340 degreesToRadians and: 15 degreesToRadians.
+	self assert: result equals: true.
+	result := GeodesicUtilities checkAngle: 16 degreesToRadians isBetween: 340 degreesToRadians and: 15 degreesToRadians.
+	self assert: result equals: false.
+	
+	result := GeodesicUtilities checkAngle: 55 degreesToRadians isBetween: 15 degreesToRadians and: 91 degreesToRadians.
+	self assert: result equals: true.
+	result := GeodesicUtilities checkAngle: 155 degreesToRadians isBetween: 15 degreesToRadians and: 91 degreesToRadians.
+	self assert: result equals: false.
+	result := GeodesicUtilities checkAngle: 155 degreesToRadians isBetween: 91 degreesToRadians and: 180 degreesToRadians.
+	self assert: result equals: true.
+	
+	result := GeodesicUtilities checkAngle: 180 degreesToRadians isBetween: 175 degreesToRadians and: 180 degreesToRadians.
+	self assert: result equals: true.
+	result := GeodesicUtilities checkAngle: -40 degreesToRadians isBetween: 225 degreesToRadians and: 321 degreesToRadians.
+	self assert: result equals: true.
+	result := GeodesicUtilities checkAngle: 345 degreesToRadians isBetween: 215 degreesToRadians and: 321 degreesToRadians.
+	self assert: result equals: false.
+	
+	result := GeodesicUtilities checkAngle: -45 degreesToRadians isBetween: 26.21 degreesToRadians and: 89.969 degreesToRadians.
+	self assert: result equals: false.
+]
+
+{ #category : #tests }
 GeodesicUtilitiesTest >> testConvertGeodesicToAzimuthInRadiansFromTwoPoints [
 
 	| originPointAbsCoord endPointAbsCoord azRad|
@@ -104,4 +139,25 @@ GeodesicUtilitiesTest >> testIsAzimuthTowardsArea [
 	
 	
 
+]
+
+{ #category : #tests }
+GeodesicUtilitiesTest >> testIsAzimuthTowardsRectangleArea [
+
+	| originPointAbsCoord isAzTowardsArea listPointsArea headingInDegree|
+	
+	originPointAbsCoord := AbsoluteCoordinates latitudeInDegrees: 48.20146040354154 longitudeInDegrees: -4.492.
+	
+	listPointsArea := OrderedCollection new.
+	listPointsArea add: (AbsoluteCoordinates latitudeInDegrees: 48.20998 longitudeInDegrees: -4.493).
+	listPointsArea add: (AbsoluteCoordinates latitudeInDegrees: 48.20998 longitudeInDegrees: -4.491).
+	listPointsArea add: (AbsoluteCoordinates latitudeInDegrees: 48.208 longitudeInDegrees: -4.491).
+	listPointsArea add: (AbsoluteCoordinates latitudeInDegrees: 48.208 longitudeInDegrees: -4.493).
+	
+	headingInDegree := 0.
+
+	isAzTowardsArea := GeodesicUtilities isAzimuthTowardsAreaFrom: originPointAbsCoord azimuth: headingInDegree area: listPointsArea.
+	
+	self assert: isAzTowardsArea equals: true.
+	
 ]
