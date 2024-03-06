@@ -18,27 +18,28 @@ BlElementAeGeoView >> addLayer: aLayer [
 	self layers add: aLayer
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 BlElementAeGeoView >> addObject: anUserObject [
-	
-	self layers do: [ :e | e addObject: anUserObject ].
-	self requestRepaint
+
+	self enqueueBlockAsTask: [
+		self layers do: [ :e | e addObject: anUserObject ].
+		self requestRepaint ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 BlElementAeGeoView >> addObjects: anUserObjectList [
 
-	self layers do: [ :e | e addObjects: anUserObjectList ].
-	self requestRepaint
+	self enqueueBlockAsTask: [
+		self layers do: [ :e | e addObjects: anUserObjectList ].
+		self requestRepaint ]
 ]
 
 { #category : #drawing }
 BlElementAeGeoView >> aeDrawOn: aeCanvas [
-
 	"drawing native bloc elements"
+
 	super aeDrawOn: aeCanvas.
-	
-	self layers do:[ :l | l aeDrawOn: aeCanvas ].
+	self layers do: [ :l | l aeDrawOn: aeCanvas ]
 ]
 
 { #category : #private }
@@ -70,6 +71,15 @@ BlElementAeGeoView >> displayToGraphicProjection: anObject [
 	displayToGraphicProjection := anObject
 ]
 
+{ #category : #private }
+BlElementAeGeoView >> enqueueBlockAsTask: aBlockClosure [
+
+	| task |
+	task := BlTaskAction new.
+	task action: aBlockClosure.
+	self enqueueTask: task
+]
+
 { #category : #'API -- size' }
 BlElementAeGeoView >> getBounds [
 
@@ -88,30 +98,38 @@ BlElementAeGeoView >> getLayers [
 	^ self layers
 ]
 
+{ #category : #'API -- objects management' }
+BlElementAeGeoView >> haveObjectIndex: anIndex [
+	"Pay attention before using it because graphical model is out of sync real user model due to usage of BlTask (asynchronous)"
+
+	^ self layers anySatisfy: [ :l | l haveObjectIndex: anIndex ]
+]
+
 { #category : #accessing }
 BlElementAeGeoView >> layers [
 
 	^ layers ifNil: [ layers := OrderedCollection new ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 BlElementAeGeoView >> removeObject: anUserObject [
-	
-	self layers do: [ :e | e removeObject: anUserObject ].
-	self requestRepaint
+
+	self enqueueBlockAsTask: [
+		self layers do: [ :e | e removeObject: anUserObject ].
+		self requestRepaint ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 BlElementAeGeoView >> removeObjects: anUserObjectList [
-	
-	self layers do: [ :e | e removeObjects: anUserObjectList ].
-	self requestRepaint
+
+	self enqueueBlockAsTask: [
+		self layers do: [ :e | e removeObjects: anUserObjectList ].
+		self requestRepaint ]
 ]
 
 { #category : #private }
 BlElementAeGeoView >> requestRepaint [
 
-	self layers ifEmpty: [ ^ self ].
 	self layers do:[ :l | l sortDatas ].
 	self invalidate.
 ]
@@ -131,18 +149,20 @@ BlElementAeGeoView >> updateGraphicModel [
 	self requestRepaint
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 BlElementAeGeoView >> updateObject: anUserObject [
-	
-	self layers do: [ :e | e updateObject: anUserObject ].
-	self requestRepaint
+
+	self enqueueBlockAsTask: [
+		self layers do: [ :e | e updateObject: anUserObject ].
+		self requestRepaint ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 BlElementAeGeoView >> updateObjects: anUserObjectList [
-	
-	self layers do: [ :e | e updateObjects: anUserObjectList ].
-	self requestRepaint
+
+	self enqueueBlockAsTask: [
+		self layers do: [ :e | e updateObjects: anUserObjectList ].
+		self requestRepaint ]
 ]
 
 { #category : #private }

@@ -42,6 +42,8 @@ GeoViewNavigationBlocStrategy >> moveMap: aSmockEventWrapper context: aSmockInpu
 	difPx := self previousPoint - point.
 	difPx := (difPx x) @ (difPx y negated).
 	geoCenterPx := geoViewMng getGlobalPointFromAbsoluteCoordinates: geoViewMng getGeoCenter.
+	geoCenterPx ifNil:[ ^ self ].
+	
 	geoCenterPx := geoCenterPx + difPx.
 	geoViewMng centerOnPoint: geoCenterPx.
 	
@@ -109,6 +111,8 @@ GeoViewNavigationBlocStrategy >> scrollDown: aSmockEventWrapper context: aSmockI
 	point := aSmockEventWrapper event position.
 
 	projection := geoViewMng getMapProjectionManagerServicesProvider getProjection.
+	projection ifNil:[ ^ self ].
+	
 	projection2D := geoViewMng view displayToGraphicProjection.
 
 	geoPoint := geoViewMng getAbsoluteCoordinatesFromGlobalPoint: point.
@@ -139,6 +143,8 @@ GeoViewNavigationBlocStrategy >> scrollUp: aSmockEventWrapper context: aSmockInp
 	point := aSmockEventWrapper event position.
 
 	projection := geoViewMng getMapProjectionManagerServicesProvider getProjection.
+	projection ifNil:[ ^ self ].
+	
 	projection2D := geoViewMng view displayToGraphicProjection.
 
 	geoPoint := geoViewMng getAbsoluteCoordinatesFromGlobalPoint: point.

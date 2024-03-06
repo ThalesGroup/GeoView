@@ -33,7 +33,7 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	geoViewManager := GeoViewManagerBlocAeImpl start: #GeoViewManager , Random new next printString. 
 	
 	"parameters"
-	geoViewManager setObjectIndexAccessor: #key.
+	"geoViewManager setObjectIndexAccessor: #key."
 	
 	"setup projection example"
 	"geoViewManager getMapProjectionManagerServicesProvider setProjection: MercatorProjection new."
@@ -52,7 +52,50 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	objects := self createGeoObjects.
 	geoViewManager addObjects: objects.
 	
-	self openViewInWindow: geoViewManager.
+	^ self openViewInWindow: geoViewManager
+]
+
+{ #category : #examples }
+GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
+	
+	| geoViewManager layer objects space thread |
+	geoViewManager := GeoViewManagerBlocAeImpl start: #GeoViewManager , Random new next printString. 
+
+	"configure layers and process datas : objects that can be displayed and how"
+	layer := geoViewManager createAndAddLayer: #layer1.
+	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
+	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
+	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.
+	layer setProcessData: GeoPolylineProcessData new for: GeoPolyline.
+	layer setProcessData: GeoRectangleProcessData new for: GeoRectangle.
+	layer setProcessData: GeoTextProcessData new for: GeoText.
+	layer setProcessData: GeoArcBandProcessData new for: GeoArcBand.
+	
+	"create sample datas"
+	objects := self createGeoObjects.
+	geoViewManager addObjects: objects.
+	
+	space := self openViewInWindow: geoViewManager.
+	
+	"Objet update thread"
+	thread := [ | random |
+		random := Random new.
+		[ true ] whileTrue:[
+			1 second wait.
+			objects do:[ :o |
+				o radiusInMeters: (random next * 200000).	
+				geoViewManager updateObject: o.
+			].
+		].
+	] forkAt: Processor userBackgroundPriority named: 'GeoView objects update example'.
+	
+	"Stop thread when window is closed"
+	space addEventHandler: (BlEventHandler
+			 on: BlSpaceCloseRequest
+			 do: [ :event | thread terminate. ]).
+
+	^ space
 ]
 
 { #category : #private }
@@ -70,7 +113,9 @@ GeoViewExamplesBloc class >> openViewInWindow: aGeoViewManager [
 	space addEventHandler: (BlEventHandler
 			 on: BlSpaceCloseRequest
 			 do: [ :event |
-			 aGeoViewManager class stop: aGeoViewManager componentName ])
+			 aGeoViewManager class stop: aGeoViewManager componentName ]).
+		
+	^ space
 ]
 
 { #category : #'see class side' }

@@ -59,6 +59,7 @@ GeoViewManagerBlocAeImpl >> getGlobalPointFromAbsoluteCoordinates: anAbsoluteCoo
 { #category : #'projection center' }
 GeoViewManagerBlocAeImpl >> getGlobalPointFromLocalPoint: aLocalPoint [
 
+	aLocalPoint ifNil:[ ^ nil ].
 	^ self view localPointToGlobal: aLocalPoint
 ]
 
@@ -66,8 +67,9 @@ GeoViewManagerBlocAeImpl >> getGlobalPointFromLocalPoint: aLocalPoint [
 GeoViewManagerBlocAeImpl >> getLocalPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
 
 	| projection |
-	projection := self getMapProjectionManagerServicesProvider
-		              getProjection.
+	projection := self getMapProjectionManagerServicesProvider getProjection.
+	projection ifNil:[ ^ nil ].
+	
 	^ self view displayToGraphicProjection projCartToPixel:
 		  (projection projLatLonToCart: anAbsoluteCoordinates)
 ]

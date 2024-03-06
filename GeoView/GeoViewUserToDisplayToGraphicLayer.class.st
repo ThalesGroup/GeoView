@@ -12,7 +12,7 @@ Class {
 	#category : #'GeoView-View'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 GeoViewUserToDisplayToGraphicLayer >> addObject: anObject [
 
 	| dObject |
@@ -24,7 +24,7 @@ GeoViewUserToDisplayToGraphicLayer >> addObject: anObject [
 	]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 GeoViewUserToDisplayToGraphicLayer >> addObjects: anObjectList [
 
 	anObjectList do: [ :e | self addObject: e ]
@@ -118,7 +118,7 @@ GeoViewUserToDisplayToGraphicLayer >> projection: aMapProjection [
 	self displayModel projection: aMapProjection
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 GeoViewUserToDisplayToGraphicLayer >> removeObject: anObject [
 
 	| dObject |
@@ -130,7 +130,7 @@ GeoViewUserToDisplayToGraphicLayer >> removeObject: anObject [
 	]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 GeoViewUserToDisplayToGraphicLayer >> removeObjects: anObjectList [
 
 	anObjectList do: [ :e | self removeObject: e ]
@@ -174,7 +174,7 @@ GeoViewUserToDisplayToGraphicLayer >> updateGraphicModel [
 	model datas valuesDo:[ :dShape | self graphicModel updated: dShape ].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 GeoViewUserToDisplayToGraphicLayer >> updateObject: anObject [
 
 	| dObject |
@@ -186,7 +186,7 @@ GeoViewUserToDisplayToGraphicLayer >> updateObject: anObject [
 	].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 GeoViewUserToDisplayToGraphicLayer >> updateObjects: anObjectList [
 
 	anObjectList do: [ :e | self updateObject: e ]

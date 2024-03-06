@@ -226,7 +226,7 @@ GeoViewManagerImpl >> getMapProjectionManagerServicesProvider [
 { #category : #'parameters - objects' }
 GeoViewManagerImpl >> getObjectIndexAccessor [
 
-	^ objectIndexAccessor ifNil:[ objectIndexAccessor := #tn ]
+	^ objectIndexAccessor ifNil:[ objectIndexAccessor := #key ]
 ]
 
 { #category : #services }
