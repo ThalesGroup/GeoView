@@ -5,7 +5,8 @@ Class {
 	#classTraits : 'TGeoView classTrait',
 	#instVars : [
 		'layers',
-		'displayToGraphicProjection'
+		'displayToGraphicProjection',
+		'isMarkedForSortDatas'
 	],
 	#category : #'GeoView-Bloc-Alexandrie-Core'
 }
@@ -23,6 +24,7 @@ BlElementAeGeoView >> addObject: anUserObject [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e addObject: anUserObject ].
+		self requestSortDatas.
 		self requestRepaint ]
 ]
 
@@ -31,6 +33,7 @@ BlElementAeGeoView >> addObjects: anUserObjectList [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e addObjects: anUserObjectList ].
+		self requestSortDatas.
 		self requestRepaint ]
 ]
 
@@ -38,8 +41,15 @@ BlElementAeGeoView >> addObjects: anUserObjectList [
 BlElementAeGeoView >> aeDrawOn: aeCanvas [
 	"drawing native bloc elements"
 
+	| sort |
 	super aeDrawOn: aeCanvas.
-	self layers do: [ :l | l aeDrawOn: aeCanvas ]
+	
+	sort := self isMarkedForSortDatas.
+	self layers do: [ :l |
+		sort ifTrue: [ l sortDatas ].
+		l aeDrawOn: aeCanvas ].
+
+	isMarkedForSortDatas := false
 ]
 
 { #category : #private }
@@ -106,6 +116,12 @@ BlElementAeGeoView >> haveObjectIndex: anIndex [
 ]
 
 { #category : #accessing }
+BlElementAeGeoView >> isMarkedForSortDatas [
+
+	^ isMarkedForSortDatas ifNil: [ isMarkedForSortDatas := false ]
+]
+
+{ #category : #accessing }
 BlElementAeGeoView >> layers [
 
 	^ layers ifNil: [ layers := OrderedCollection new ]
@@ -130,8 +146,13 @@ BlElementAeGeoView >> removeObjects: anUserObjectList [
 { #category : #private }
 BlElementAeGeoView >> requestRepaint [
 
-	self layers do:[ :l | l sortDatas ].
 	self invalidate.
+]
+
+{ #category : #private }
+BlElementAeGeoView >> requestSortDatas [
+
+	isMarkedForSortDatas := true.
 ]
 
 { #category : #'API -- selection' }
@@ -139,6 +160,7 @@ BlElementAeGeoView >> selectedObjectIndexes: anIndexList [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :l | l updateState: #selected withIndexes: anIndexList ].
+		self requestSortDatas.
 		self requestRepaint ]
 ]
 
@@ -156,6 +178,7 @@ BlElementAeGeoView >> updateObject: anUserObject [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e updateObject: anUserObject ].
+		self requestSortDatas.
 		self requestRepaint ]
 ]
 
@@ -164,6 +187,7 @@ BlElementAeGeoView >> updateObjects: anUserObjectList [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e updateObjects: anUserObjectList ].
+		self requestSortDatas.
 		self requestRepaint ]
 ]
 
@@ -172,6 +196,7 @@ BlElementAeGeoView >> updateState: aStateSymbol withIndexes: aKeyList [
 	
 	self enqueueBlockAsTask: [ 
 		self layers do: [ :l | l updateState: aStateSymbol withIndexes: aKeyList ].
+		self requestSortDatas.
 		self requestRepaint
 	]
 ]
