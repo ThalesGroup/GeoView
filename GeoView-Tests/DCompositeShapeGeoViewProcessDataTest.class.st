@@ -2,13 +2,13 @@
 A DCompositeShapeGeoViewAeProcessDataTest is a test class for testing the behavior of DCompositeShapeGeoViewAeProcessData
 "
 Class {
-	#name : #DCompositeShapeGeoViewAeProcessDataTest,
+	#name : #DCompositeShapeGeoViewProcessDataTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests'
+	#category : #'GeoView-Tests-Cases - ProcessData'
 }
 
 { #category : #tests }
-DCompositeShapeGeoViewAeProcessDataTest >> testProcessCreatedDataIncomingWithContext [
+DCompositeShapeGeoViewProcessDataTest >> testProcessCreatedDataIncomingWithContext [
 
 	| processData dShape gShape |
 	processData := DCompositeShapeGeoViewProcessData new.
@@ -21,7 +21,7 @@ DCompositeShapeGeoViewAeProcessDataTest >> testProcessCreatedDataIncomingWithCon
 ]
 
 { #category : #tests }
-DCompositeShapeGeoViewAeProcessDataTest >> testProcessUpdatedDataIncomingWithContext [
+DCompositeShapeGeoViewProcessDataTest >> testProcessUpdatedDataIncomingWithContext [
 
 	| processData dShape gShape |
 	processData := DCompositeShapeGeoViewProcessData new.
