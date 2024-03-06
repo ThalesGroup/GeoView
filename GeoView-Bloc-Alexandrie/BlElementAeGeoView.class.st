@@ -136,17 +136,19 @@ BlElementAeGeoView >> requestRepaint [
 
 { #category : #'API -- selection' }
 BlElementAeGeoView >> selectedObjectIndexes: anIndexList [
-	
-	self layers do: [ :l | l updateState: #selected withIndexes: anIndexList ].
-	self requestRepaint
+
+	self enqueueBlockAsTask: [
+		self layers do: [ :l | l updateState: #selected withIndexes: anIndexList ].
+		self requestRepaint ]
 ]
 
 { #category : #'API -- drawing' }
 BlElementAeGeoView >> updateGraphicModel [
 	"Update the graphic model with the Display model"
 
-	self layers do: [ :e | e updateGraphicModel ].
-	self requestRepaint
+	self enqueueBlockAsTask: [
+		self layers do: [ :e | e updateGraphicModel ].
+		self requestRepaint ]
 ]
 
 { #category : #'API -- objects management' }
@@ -168,6 +170,8 @@ BlElementAeGeoView >> updateObjects: anUserObjectList [
 { #category : #private }
 BlElementAeGeoView >> updateState: aStateSymbol withIndexes: aKeyList [
 	
-	self layers do: [ :l | l updateState: aStateSymbol withIndexes: aKeyList ].
-	self requestRepaint
+	self enqueueBlockAsTask: [ 
+		self layers do: [ :l | l updateState: aStateSymbol withIndexes: aKeyList ].
+		self requestRepaint
+	]
 ]
