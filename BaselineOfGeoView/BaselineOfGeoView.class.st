@@ -34,11 +34,6 @@ BaselineOfGeoView >> coreDependencies: spec [
 	spec 
 		baseline: 'OpenSmock' 
 		with: [	spec repository: 'github://OpenSmock/OpenSmock' ].
-
-	"Bloc"
-	spec
-		baseline: 'Bloc'
-		with: [ spec repository: 'github://pharo-graphics/Bloc:master/src' ].
 		
 	"GeoTools"
 	spec 
