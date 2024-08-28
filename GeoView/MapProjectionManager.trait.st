@@ -5,7 +5,7 @@ Trait {
 	#name : #MapProjectionManager,
 	#traits : 'MolComponentType',
 	#classTraits : 'MolComponentType classTrait',
-	#category : #'GeoView-MapProjection'
+	#category : #'GeoView-Molecule'
 }
 
 { #category : #'accessing - events' }

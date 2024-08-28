@@ -1,6 +1,6 @@
 Trait {
 	#name : #TGeoViewHandleObjects,
-	#category : #'GeoView-View'
+	#category : #'GeoView-Core'
 }
 
 { #category : #'API -- objects management' }

@@ -5,7 +5,7 @@ Trait {
 	#name : #GeoViewManagerObjectsServices,
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
-	#category : #'GeoView-Core'
+	#category : #'GeoView-Molecule'
 }
 
 { #category : #'geobjects aur' }

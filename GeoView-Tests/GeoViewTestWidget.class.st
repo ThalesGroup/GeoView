@@ -1,8 +1,8 @@
 Class {
-	#name : #GeoViewTest,
+	#name : #GeoViewTestWidget,
 	#superclass : #Object,
-	#traits : 'TGeoView',
-	#classTraits : 'TGeoView classTrait',
+	#traits : 'TGeoViewWidget',
+	#classTraits : 'TGeoViewWidget classTrait',
 	#instVars : [
 		'layers'
 	],
@@ -10,37 +10,37 @@ Class {
 }
 
 { #category : #'API -- layers management' }
-GeoViewTest >> addLayer: aLayer [
+GeoViewTestWidget >> addLayer: aLayer [
 	self layers add: aLayer
 ]
 
 { #category : #'as yet unclassified' }
-GeoViewTest >> addObjects: aGeoObjectList [
+GeoViewTestWidget >> addObjects: aGeoObjectList [
 	"do nothing : only for testing"
 ]
 
 { #category : #accessing }
-GeoViewTest >> getBounds [
+GeoViewTestWidget >> getBounds [
 	^0@0 extent: 0@0
 ]
 
 { #category : #'API -- layers management' }
-GeoViewTest >> getLayers [
+GeoViewTestWidget >> getLayers [
 	^self layers
 ]
 
 { #category : #accessing }
-GeoViewTest >> layers [
+GeoViewTestWidget >> layers [
 
 	^ layers ifNil: [ layers := OrderedCollection new ]
 ]
 
 { #category : #accessing }
-GeoViewTest >> layers: anObject [
+GeoViewTestWidget >> layers: anObject [
 	layers := anObject
 ]
 
 { #category : #'API -- layers management' }
-GeoViewTest >> removeLayer: aLayer [
+GeoViewTestWidget >> removeLayer: aLayer [
 	self layers remove: aLayer
 ]

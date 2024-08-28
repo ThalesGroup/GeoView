@@ -5,15 +5,15 @@ This projection use the altitude in meters to determine the resolution in meters
 Class {
 	#name : #GeoView2DProjection,
 	#superclass : #Object,
-	#traits : 'GeoViewProjection',
-	#classTraits : 'GeoViewProjection classTrait',
+	#traits : 'TGeoViewGraphicProjection',
+	#classTraits : 'TGeoViewGraphicProjection classTrait',
 	#instVars : [
 		'cartesianCenter',
 		'altitudeInMeters',
 		'metersByPixel',
 		'offsetInPixels'
 	],
-	#category : #'GeoView-ViewProjection'
+	#category : #'GeoView-Projection'
 }
 
 { #category : #accessing }

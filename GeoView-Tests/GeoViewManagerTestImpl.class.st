@@ -13,5 +13,5 @@ GeoViewManagerTestImpl >> createLayer: aKey [
 { #category : #initialization }
 GeoViewManagerTestImpl >> createView [
 
-	self view: GeoViewTest new
+	self view: GeoViewTestWidget new
 ]

@@ -2,51 +2,51 @@
 I am trait for geoplot view
 "
 Trait {
-	#name : #TGeoView,
+	#name : #TGeoViewWidget,
 	#instVars : [
 		'geoViewBounds'
 	],
 	#traits : 'TGeoViewHandleObjects',
 	#classTraits : 'TGeoViewHandleObjects classTrait',
-	#category : #'GeoView-View'
+	#category : #'GeoView-Core'
 }
 
 { #category : #'API -- layers management' }
-TGeoView >> addLayer: aLayer [
+TGeoViewWidget >> addLayer: aLayer [
 	self explicitRequirement
 ]
 
 { #category : #'API -- size' }
-TGeoView >> getBounds [
+TGeoViewWidget >> getBounds [
 	self explicitRequirement
 ]
 
 { #category : #'API -- layers management' }
-TGeoView >> getLayer: aKey [
+TGeoViewWidget >> getLayer: aKey [
 	self explicitRequirement
 ]
 
 { #category : #'API -- layers management' }
-TGeoView >> getLayers [
+TGeoViewWidget >> getLayers [
 	self explicitRequirement
 ]
 
 { #category : #'API -- layers management' }
-TGeoView >> removeLayer: aLayer [
+TGeoViewWidget >> removeLayer: aLayer [
 	self explicitRequirement
 ]
 
 { #category : #'API -- drawing' }
-TGeoView >> requestRepaint [
+TGeoViewWidget >> requestRepaint [
 	self explicitRequirement
 ]
 
 { #category : #'API -- selection' }
-TGeoView >> selectedObjectIndexes: aCollection [
+TGeoViewWidget >> selectedObjectIndexes: aCollection [
 	self explicitRequirement
 ]
 
 { #category : #'API -- drawing' }
-TGeoView >> updateGraphicModel [
+TGeoViewWidget >> updateGraphicModel [
 	self explicitRequirement
 ]

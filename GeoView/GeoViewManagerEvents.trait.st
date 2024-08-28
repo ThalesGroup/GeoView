@@ -5,5 +5,5 @@ Trait {
 	#name : #GeoViewManagerEvents,
 	#traits : 'MolComponentEvents',
 	#classTraits : 'MolComponentEvents classTrait',
-	#category : #'GeoView-Core'
+	#category : #'GeoView-Molecule'
 }

@@ -30,7 +30,7 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
 	
 	| element layer objects |
-	element := BlElementAeGeoView new. 
+	element := BlGeoViewAeElement new. 
 	
 	element background: Color black.
 	element displayToGraphicProjection: GeoView2DProjection new.
@@ -41,7 +41,7 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := GeoViewUserToDisplayToGraphicLayer new layerName: #layer1.
 	element addLayer: layer.
-	layer projection: MercatorProjection new.
+	layer projection: GeoViewMercatorProjection new.
 	
 	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
 	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
@@ -73,7 +73,7 @@ GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
 	
 	| element layer objects space thread |
-	element := BlElementAeGeoView new. 
+	element := BlGeoViewAeElement new. 
 	
 	element background: Color black.
 	element displayToGraphicProjection: GeoView2DProjection new.
@@ -84,7 +84,7 @@ GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := GeoViewUserToDisplayToGraphicLayer new layerName: #layer1.
 	element addLayer: layer.
-	layer projection: MercatorProjection new.
+	layer projection: GeoViewMercatorProjection new.
 	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
 	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
 	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.

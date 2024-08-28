@@ -19,7 +19,7 @@ GeoViewManagerBlocAeImpl >> createLayer: aKey [
 GeoViewManagerBlocAeImpl >> createView [
 
 	| aeView |
-	aeView := BlElementAeGeoView new.
+	aeView := BlGeoViewAeElement new.
 	aeView background: Color black.
 	aeView displayToGraphicProjection: GeoView2DProjection new.
 	self installEventHandlers: aeView.

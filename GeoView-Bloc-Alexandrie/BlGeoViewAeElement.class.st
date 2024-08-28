@@ -1,18 +1,11 @@
 Class {
-	#name : #BlElementAeGeoView,
-	#superclass : #BlElement,
-	#traits : 'TGeoView',
-	#classTraits : 'TGeoView classTrait',
-	#instVars : [
-		'layers',
-		'displayToGraphicProjection',
-		'isMarkedForSortDatas'
-	],
+	#name : #BlGeoViewAeElement,
+	#superclass : #BlAbstractGeoViewElement,
 	#category : #'GeoView-Bloc-Alexandrie-Core'
 }
 
 { #category : #'API -- layers management' }
-BlElementAeGeoView >> addLayer: aLayer [
+BlGeoViewAeElement >> addLayer: aLayer [
 	
 	(self layers includes: aLayer) ifTrue: [ ^ self ].
 	self configureLayer: aLayer.
@@ -20,7 +13,7 @@ BlElementAeGeoView >> addLayer: aLayer [
 ]
 
 { #category : #'API -- objects management' }
-BlElementAeGeoView >> addObject: anUserObject [
+BlGeoViewAeElement >> addObject: anUserObject [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e addObject: anUserObject ].
@@ -29,7 +22,7 @@ BlElementAeGeoView >> addObject: anUserObject [
 ]
 
 { #category : #'API -- objects management' }
-BlElementAeGeoView >> addObjects: anUserObjectList [
+BlGeoViewAeElement >> addObjects: anUserObjectList [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e addObjects: anUserObjectList ].
@@ -38,7 +31,7 @@ BlElementAeGeoView >> addObjects: anUserObjectList [
 ]
 
 { #category : #drawing }
-BlElementAeGeoView >> aeDrawOn: aeCanvas [
+BlGeoViewAeElement >> aeDrawOn: aeCanvas [
 	"drawing native bloc elements"
 
 	| sort |
@@ -53,7 +46,7 @@ BlElementAeGeoView >> aeDrawOn: aeCanvas [
 ]
 
 { #category : #private }
-BlElementAeGeoView >> configureLayer: aLayer [
+BlGeoViewAeElement >> configureLayer: aLayer [
 	
 	"Setup the 2D projection of the layer"
 	aLayer graphicModel projection: self displayToGraphicProjection.
@@ -70,19 +63,19 @@ BlElementAeGeoView >> configureLayer: aLayer [
 ]
 
 { #category : #accessing }
-BlElementAeGeoView >> displayToGraphicProjection [
+BlGeoViewAeElement >> displayToGraphicProjection [
 
 	^ displayToGraphicProjection
 ]
 
 { #category : #accessing }
-BlElementAeGeoView >> displayToGraphicProjection: anObject [
+BlGeoViewAeElement >> displayToGraphicProjection: anObject [
 
 	displayToGraphicProjection := anObject
 ]
 
 { #category : #private }
-BlElementAeGeoView >> enqueueBlockAsTask: aBlockClosure [
+BlGeoViewAeElement >> enqueueBlockAsTask: aBlockClosure [
 
 	| task |
 	task := BlTaskAction new.
@@ -91,44 +84,54 @@ BlElementAeGeoView >> enqueueBlockAsTask: aBlockClosure [
 ]
 
 { #category : #'API -- size' }
-BlElementAeGeoView >> getBounds [
+BlGeoViewAeElement >> getBounds [
 
 	^ self bounds
 ]
 
 { #category : #'API -- size' }
-BlElementAeGeoView >> getExtent [
+BlGeoViewAeElement >> getExtent [
 	
 	^ self extent
 ]
 
 { #category : #'API -- layers management' }
-BlElementAeGeoView >> getLayers [
+BlGeoViewAeElement >> getLayer: aKey [
+	self explicitRequirement
+]
+
+{ #category : #'API -- layers management' }
+BlGeoViewAeElement >> getLayers [
 	
 	^ self layers
 ]
 
 { #category : #'API -- objects management' }
-BlElementAeGeoView >> haveObjectIndex: anIndex [
+BlGeoViewAeElement >> haveObjectIndex: anIndex [
 	"Pay attention before using it because graphical model is out of sync real user model due to usage of BlTask (asynchronous)"
 
 	^ self layers anySatisfy: [ :l | l haveObjectIndex: anIndex ]
 ]
 
 { #category : #accessing }
-BlElementAeGeoView >> isMarkedForSortDatas [
+BlGeoViewAeElement >> isMarkedForSortDatas [
 
 	^ isMarkedForSortDatas ifNil: [ isMarkedForSortDatas := false ]
 ]
 
 { #category : #accessing }
-BlElementAeGeoView >> layers [
+BlGeoViewAeElement >> layers [
 
 	^ layers ifNil: [ layers := OrderedCollection new ]
 ]
 
+{ #category : #'API -- layers management' }
+BlGeoViewAeElement >> removeLayer: aLayer [
+	self explicitRequirement
+]
+
 { #category : #'API -- objects management' }
-BlElementAeGeoView >> removeObject: anUserObject [
+BlGeoViewAeElement >> removeObject: anUserObject [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e removeObject: anUserObject ].
@@ -136,7 +139,7 @@ BlElementAeGeoView >> removeObject: anUserObject [
 ]
 
 { #category : #'API -- objects management' }
-BlElementAeGeoView >> removeObjects: anUserObjectList [
+BlGeoViewAeElement >> removeObjects: anUserObjectList [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e removeObjects: anUserObjectList ].
@@ -144,19 +147,19 @@ BlElementAeGeoView >> removeObjects: anUserObjectList [
 ]
 
 { #category : #private }
-BlElementAeGeoView >> requestRepaint [
+BlGeoViewAeElement >> requestRepaint [
 
 	self invalidate.
 ]
 
 { #category : #private }
-BlElementAeGeoView >> requestSortDatas [
+BlGeoViewAeElement >> requestSortDatas [
 
 	isMarkedForSortDatas := true.
 ]
 
 { #category : #'API -- selection' }
-BlElementAeGeoView >> selectedObjectIndexes: anIndexList [
+BlGeoViewAeElement >> selectedObjectIndexes: anIndexList [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :l | l updateState: #selected withIndexes: anIndexList ].
@@ -165,7 +168,7 @@ BlElementAeGeoView >> selectedObjectIndexes: anIndexList [
 ]
 
 { #category : #'API -- drawing' }
-BlElementAeGeoView >> updateGraphicModel [
+BlGeoViewAeElement >> updateGraphicModel [
 	"Update the graphic model with the Display model"
 
 	self enqueueBlockAsTask: [
@@ -174,7 +177,7 @@ BlElementAeGeoView >> updateGraphicModel [
 ]
 
 { #category : #'API -- objects management' }
-BlElementAeGeoView >> updateObject: anUserObject [
+BlGeoViewAeElement >> updateObject: anUserObject [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e updateObject: anUserObject ].
@@ -183,7 +186,7 @@ BlElementAeGeoView >> updateObject: anUserObject [
 ]
 
 { #category : #'API -- objects management' }
-BlElementAeGeoView >> updateObjects: anUserObjectList [
+BlGeoViewAeElement >> updateObjects: anUserObjectList [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e updateObjects: anUserObjectList ].
@@ -192,7 +195,7 @@ BlElementAeGeoView >> updateObjects: anUserObjectList [
 ]
 
 { #category : #private }
-BlElementAeGeoView >> updateState: aStateSymbol withIndexes: aKeyList [
+BlGeoViewAeElement >> updateState: aStateSymbol withIndexes: aKeyList [
 	
 	self enqueueBlockAsTask: [ 
 		self layers do: [ :l | l updateState: aStateSymbol withIndexes: aKeyList ].

@@ -2,7 +2,7 @@ Trait {
 	#name : #GeoViewManagerGeoObjectsParameters,
 	#traits : 'MolComponentParameters',
 	#classTraits : 'MolComponentParameters classTrait',
-	#category : #'GeoView-Core'
+	#category : #'GeoView-Molecule'
 }
 
 { #category : #initialization }

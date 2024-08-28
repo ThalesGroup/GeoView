@@ -10,7 +10,7 @@ Class {
 { #category : #'tests-accessing' }
 GeoViewMercatorProjectionTest >> testReverseProj [
             | projection absoluteCoordinates cartesianCoordinates absoluteCoordinatesRes random precision |
-            projection := MercatorProjection new.
+            projection := GeoViewMercatorProjection new.
             random := Random seed: 42.
             precision := 1e-12. "Precision at 1e-12 degree"
             

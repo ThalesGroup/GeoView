@@ -9,7 +9,7 @@ Class {
 	#instVars : [
 		'projection'
 	],
-	#category : #'GeoView-MapProjection'
+	#category : #'GeoView-Molecule'
 }
 
 { #category : #'life cycle' }
@@ -38,7 +38,7 @@ MapProjectionManagerImpl >> componentRemove [
 MapProjectionManagerImpl >> createProjection [
 	"default projection is Mercator"
 
-	self projection: MercatorProjection new
+	self projection: GeoViewMercatorProjection new
 ]
 
 { #category : #'component accessing' }

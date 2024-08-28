@@ -16,7 +16,7 @@ Class {
 		'inputContext',
 		'objectIndexAccessor'
 	],
-	#category : #'GeoView-Core-Impl'
+	#category : #'GeoView-Molecule'
 }
 
 { #category : #'aggregated components' }
@@ -105,7 +105,7 @@ GeoViewManagerImpl >> componentRemove [
 { #category : #private }
 GeoViewManagerImpl >> correctedScale: aNumberInMeters [
 "Enlarge view on Mercator projection near the poles : used for decrease zoom effect when projection changes"
-	self getMapProjectionManagerServicesProvider getProjection key = #MercatorProjection
+	self getMapProjectionManagerServicesProvider getProjection key = #GeoViewMercatorProjection
 		ifTrue: [ | angle latitudeMaxAngle |
 			latitudeMaxAngle := 89 * (Float pi / 180).
 			angle := self getGeoCenter latitudeInRadians. 

@@ -10,7 +10,7 @@ Trait {
 	],
 	#traits : 'TGeoViewHandleObjects',
 	#classTraits : 'TGeoViewHandleObjects classTrait',
-	#category : #'GeoView-View'
+	#category : #'GeoView-Core'
 }
 
 { #category : #'API -- process datas' }

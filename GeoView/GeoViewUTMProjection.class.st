@@ -2,10 +2,10 @@
 I am a transverse Mercator projection.
 "
 Class {
-	#name : #UTMProjection,
+	#name : #GeoViewUTMProjection,
 	#superclass : #Object,
-	#traits : 'MapProjection',
-	#classTraits : 'MapProjection classTrait',
+	#traits : 'TGeoViewMapProjection',
+	#classTraits : 'TGeoViewMapProjection classTrait',
 	#instVars : [
 		'parallel',
 		's1',
@@ -18,11 +18,11 @@ Class {
 		'e6',
 		'k0'
 	],
-	#category : #'GeoView-MapProjection'
+	#category : #'GeoView-Projection'
 }
 
 { #category : #initialization }
-UTMProjection >> initialize [
+GeoViewUTMProjection >> initialize [
 
 	self parallel: 0.
 	
@@ -39,22 +39,22 @@ UTMProjection >> initialize [
 ]
 
 { #category : #accessing }
-UTMProjection >> key [
-	^#UTMProjection
+GeoViewUTMProjection >> key [
+	^#GeoViewUTMProjection
 ]
 
 { #category : #accessing }
-UTMProjection >> parallel [
+GeoViewUTMProjection >> parallel [
 	^ parallel
 ]
 
 { #category : #accessing }
-UTMProjection >> parallel: aNumber [
+GeoViewUTMProjection >> parallel: aNumber [
 	parallel := aNumber
 ]
 
 { #category : #accessing }
-UTMProjection >> projCartToLatLon: aCartesianCoordinates [
+GeoViewUTMProjection >> projCartToLatLon: aCartesianCoordinates [
 	"Spherical formulas"
 	| x y |
 	x := aCartesianCoordinates xInMeters.
@@ -70,7 +70,7 @@ UTMProjection >> projCartToLatLon: aCartesianCoordinates [
 ]
 
 { #category : #accessing }
-UTMProjection >> projLatLonToCart: anAbsoluteCoordinates [
+GeoViewUTMProjection >> projLatLonToCart: anAbsoluteCoordinates [
 	"Spherical formulas"
 	| lat lon v a t c n0 x y s |
 	lat := anAbsoluteCoordinates latitudeInRadians.

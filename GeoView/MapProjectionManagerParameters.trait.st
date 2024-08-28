@@ -5,5 +5,5 @@ Trait {
 	#name : #MapProjectionManagerParameters,
 	#traits : 'MolComponentParameters',
 	#classTraits : 'MolComponentParameters classTrait',
-	#category : #'GeoView-MapProjection'
+	#category : #'GeoView-Molecule'
 }

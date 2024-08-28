@@ -2,20 +2,20 @@
 I am a Mercator projection. It is a cylindrical map projection.
 "
 Class {
-	#name : #MercatorProjection,
+	#name : #GeoViewMercatorProjection,
 	#superclass : #Object,
-	#traits : 'MapProjection',
-	#classTraits : 'MapProjection classTrait',
-	#category : #'GeoView-MapProjection'
+	#traits : 'TGeoViewMapProjection',
+	#classTraits : 'TGeoViewMapProjection classTrait',
+	#category : #'GeoView-Projection'
 }
 
 { #category : #accessing }
-MercatorProjection >> key [
-	^#MercatorProjection
+GeoViewMercatorProjection >> key [
+	^#GeoViewMercatorProjection
 ]
 
 { #category : #accessing }
-MercatorProjection >> projCartToLatLon: aCartesianCoordinates [
+GeoViewMercatorProjection >> projCartToLatLon: aCartesianCoordinates [
 
 	| lat lon |
 	lat := (2 * (aCartesianCoordinates yInMeters / WGS84 semiMinorAxisInMeters) exp arcTan) 
@@ -29,7 +29,7 @@ MercatorProjection >> projCartToLatLon: aCartesianCoordinates [
 ]
 
 { #category : #accessing }
-MercatorProjection >> projLatLonToCart: anAbsoluteCoordinates [
+GeoViewMercatorProjection >> projLatLonToCart: anAbsoluteCoordinates [
 
 	| x y |
 	(anAbsoluteCoordinates isEmpty or:[anAbsoluteCoordinates isValid not]) ifTrue:[^nil].

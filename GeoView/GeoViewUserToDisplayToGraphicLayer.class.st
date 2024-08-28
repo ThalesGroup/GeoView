@@ -9,7 +9,7 @@ Class {
 		'sortedDatas',
 		'graphicalOrderSortBlock'
 	],
-	#category : #'GeoView-View'
+	#category : #'GeoView-Core'
 }
 
 { #category : #'API -- objects management' }
