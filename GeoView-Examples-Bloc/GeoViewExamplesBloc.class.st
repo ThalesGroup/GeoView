@@ -30,13 +30,7 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
 	
 	| element layer objects |
-	element := BlGeoViewAeElement new. 
-	
-	element background: Color black.
-	element displayToGraphicProjection: GeoView2DProjection new.
-	element displayToGraphicProjection offsetInPixels: ((element getBounds extent) / 2).
-	element displayToGraphicProjection updateResolution: element getBounds extent.
-	element updateGraphicModel.
+	element := BlGeoViewAeElement new.
 
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := GeoViewUserToDisplayToGraphicLayer new layerName: #layer1.
@@ -74,12 +68,6 @@ GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 	
 	| element layer objects space thread |
 	element := BlGeoViewAeElement new. 
-	
-	element background: Color black.
-	element displayToGraphicProjection: GeoView2DProjection new.
-	element displayToGraphicProjection offsetInPixels: ((element getBounds extent) / 2).
-	element displayToGraphicProjection updateResolution: element getBounds extent.
-	element updateGraphicModel.
 
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := GeoViewUserToDisplayToGraphicLayer new layerName: #layer1.

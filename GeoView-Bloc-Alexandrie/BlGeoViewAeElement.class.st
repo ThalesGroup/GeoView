@@ -1,3 +1,6 @@
+"
+I am a BlElement which display a GeoViewWidget using Alexandrie backend drawing.
+"
 Class {
 	#name : #BlGeoViewAeElement,
 	#superclass : #BlAbstractGeoViewElement,
@@ -62,27 +65,6 @@ BlGeoViewAeElement >> configureLayer: aLayer [
 	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
 ]
 
-{ #category : #accessing }
-BlGeoViewAeElement >> displayToGraphicProjection [
-
-	^ displayToGraphicProjection
-]
-
-{ #category : #accessing }
-BlGeoViewAeElement >> displayToGraphicProjection: anObject [
-
-	displayToGraphicProjection := anObject
-]
-
-{ #category : #private }
-BlGeoViewAeElement >> enqueueBlockAsTask: aBlockClosure [
-
-	| task |
-	task := BlTaskAction new.
-	task action: aBlockClosure.
-	self enqueueTask: task
-]
-
 { #category : #'API -- size' }
 BlGeoViewAeElement >> getBounds [
 
@@ -119,12 +101,6 @@ BlGeoViewAeElement >> isMarkedForSortDatas [
 	^ isMarkedForSortDatas ifNil: [ isMarkedForSortDatas := false ]
 ]
 
-{ #category : #accessing }
-BlGeoViewAeElement >> layers [
-
-	^ layers ifNil: [ layers := OrderedCollection new ]
-]
-
 { #category : #'API -- layers management' }
 BlGeoViewAeElement >> removeLayer: aLayer [
 	self explicitRequirement
@@ -147,12 +123,6 @@ BlGeoViewAeElement >> removeObjects: anUserObjectList [
 ]
 
 { #category : #private }
-BlGeoViewAeElement >> requestRepaint [
-
-	self invalidate.
-]
-
-{ #category : #private }
 BlGeoViewAeElement >> requestSortDatas [
 
 	isMarkedForSortDatas := true.
@@ -164,15 +134,6 @@ BlGeoViewAeElement >> selectedObjectIndexes: anIndexList [
 	self enqueueBlockAsTask: [
 		self layers do: [ :l | l updateState: #selected withIndexes: anIndexList ].
 		self requestSortDatas.
-		self requestRepaint ]
-]
-
-{ #category : #'API -- drawing' }
-BlGeoViewAeElement >> updateGraphicModel [
-	"Update the graphic model with the Display model"
-
-	self enqueueBlockAsTask: [
-		self layers do: [ :e | e updateGraphicModel ].
 		self requestRepaint ]
 ]
 

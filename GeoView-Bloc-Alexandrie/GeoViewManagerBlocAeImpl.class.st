@@ -18,13 +18,11 @@ GeoViewManagerBlocAeImpl >> createLayer: aKey [
 { #category : #initialization }
 GeoViewManagerBlocAeImpl >> createView [
 
-	| aeView |
-	aeView := BlGeoViewAeElement new.
-	aeView background: Color black.
-	aeView displayToGraphicProjection: GeoView2DProjection new.
-	self installEventHandlers: aeView.
+	| element |
+	element := BlGeoViewAeElement new.
+	self installEventHandlers: element.
 
-	self view: aeView.
+	self view: element.
 ]
 
 { #category : #'projection center' }
