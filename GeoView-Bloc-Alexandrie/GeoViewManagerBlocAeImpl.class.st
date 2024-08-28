@@ -177,7 +177,7 @@ GeoViewManagerBlocAeImpl >> viewExtentHasChanged: anExtent [
 	anExtent ifNil:[ ^ self ].
 
 	"configure view projection"
-	self view displayToGraphicProjection offsetInPIxels: anExtent / 2.
+	self view displayToGraphicProjection offsetInPixels: anExtent / 2.
 	self view displayToGraphicProjection updateResolution: anExtent.
 
 	self view updateGraphicModel

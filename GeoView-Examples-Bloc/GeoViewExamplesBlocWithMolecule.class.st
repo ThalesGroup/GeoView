@@ -1,11 +1,11 @@
 Class {
-	#name : #GeoViewExamplesBloc,
+	#name : #GeoViewExamplesBlocWithMolecule,
 	#superclass : #Object,
 	#category : #'GeoView-Examples-Bloc'
 }
 
 { #category : #private }
-GeoViewExamplesBloc class >> createGeoObjects [
+GeoViewExamplesBlocWithMolecule class >> createGeoObjects [
 
 	| list random nb |
 	list := OrderedCollection new.
@@ -26,23 +26,20 @@ GeoViewExamplesBloc class >> createGeoObjects [
 ]
 
 { #category : #examples }
-GeoViewExamplesBloc class >> exampleWithGeoObjects [
+GeoViewExamplesBlocWithMolecule class >> exampleWithGeoObjects [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
 	
-	| element layer objects |
-	element := BlElementAeGeoView new. 
+	| geoViewManager layer objects |
+	geoViewManager := GeoViewManagerBlocAeImpl start: #GeoViewManager , Random new next printString. 
 	
-	element background: Color black.
-	element displayToGraphicProjection: GeoView2DProjection new.
-	element displayToGraphicProjection offsetInPixels: ((element getBounds extent) / 2).
-	element displayToGraphicProjection updateResolution: element getBounds extent.
-	element updateGraphicModel.
+	"parameters"
+	"geoViewManager setObjectIndexAccessor: #key."
+	
+	"setup projection example"
+	"geoViewManager getMapProjectionManagerServicesProvider setProjection: MercatorProjection new."
 
 	"configure layers and process datas : objects that can be displayed and how"
-	layer := GeoViewUserToDisplayToGraphicLayer new layerName: #layer1.
-	element addLayer: layer.
-	layer projection: MercatorProjection new.
-	
+	layer := geoViewManager createAndAddLayer: #layer1.
 	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
 	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
 	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.
@@ -53,38 +50,20 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	
 	"create sample datas"
 	objects := self createGeoObjects.
-	element addObjects: objects.
+	geoViewManager addObjects: objects.
 	
-	"event handlers"
-	element addEventHandler: (BlEventHandler
-			 on: BlElementExtentChangedEvent
-			 do: [ :e | 
-				e source displayToGraphicProjection offsetInPixels: ((e source getBounds extent) / 2).
-				e source displayToGraphicProjection updateResolution: e source getBounds extent.
-				e source updateGraphicModel.
-				
-				 ]).
-	
-	^ self openViewInWindow: element
+	^ self openViewInWindow: geoViewManager
 ]
 
 { #category : #examples }
-GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
+GeoViewExamplesBlocWithMolecule class >> exampleWithGeoObjectsUpdated [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
 	
-	| element layer objects space thread |
-	element := BlElementAeGeoView new. 
-	
-	element background: Color black.
-	element displayToGraphicProjection: GeoView2DProjection new.
-	element displayToGraphicProjection offsetInPixels: ((element getBounds extent) / 2).
-	element displayToGraphicProjection updateResolution: element getBounds extent.
-	element updateGraphicModel.
+	| geoViewManager layer objects space thread |
+	geoViewManager := GeoViewManagerBlocAeImpl start: #GeoViewManager , Random new next printString. 
 
 	"configure layers and process datas : objects that can be displayed and how"
-	layer := GeoViewUserToDisplayToGraphicLayer new layerName: #layer1.
-	element addLayer: layer.
-	layer projection: MercatorProjection new.
+	layer := geoViewManager createAndAddLayer: #layer1.
 	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
 	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
 	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.
@@ -95,19 +74,9 @@ GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 	
 	"create sample datas"
 	objects := self createGeoObjects.
-	element addObjects: objects.
+	geoViewManager addObjects: objects.
 	
-	"event handlers"
-	element addEventHandler: (BlEventHandler
-			 on: BlElementExtentChangedEvent
-			 do: [ :e | 
-				e source displayToGraphicProjection offsetInPixels: ((e source getBounds extent) / 2).
-				e source displayToGraphicProjection updateResolution: e source getBounds extent.
-				e source updateGraphicModel.
-				
-				 ]).
-	
-	space := self openViewInWindow: element.
+	space := self openViewInWindow: geoViewManager.
 	
 	"Objet update thread"
 	thread := [ | random |
@@ -116,7 +85,7 @@ GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 			1 second wait.
 			objects do:[ :o |
 				o radiusInMeters: (random next * 200000).	
-				element updateObject: o.
+				geoViewManager updateObject: o.
 			].
 		].
 	] forkAt: Processor userBackgroundPriority named: 'GeoView objects update example'.
@@ -130,19 +99,25 @@ GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 ]
 
 { #category : #private }
-GeoViewExamplesBloc class >> openViewInWindow: aBlGeoViewElement [
+GeoViewExamplesBlocWithMolecule class >> openViewInWindow: aGeoViewManager [
 	"open the view in a window"
 
-	| space |
-	aBlGeoViewElement constraintsDo: [ :c |
+	| blElement space |
+	blElement := aGeoViewManager getView.
+	blElement constraintsDo: [ :c |
 		c vertical matchParent.
 		c horizontal matchParent ].
-	space := aBlGeoViewElement openInSpace.
-	space title: 'GeoView example'.
+	space := blElement openInSpace.
+	space title: 'GeoView Molecule example'.
+
+	space addEventHandler: (BlEventHandler
+			 on: BlSpaceCloseRequest
+			 do: [ :event |
+			 aGeoViewManager class stop: aGeoViewManager componentName ]).
 
 	^ space
 ]
 
 { #category : #'see class side' }
-GeoViewExamplesBloc >> seeClassSide [ 
+GeoViewExamplesBlocWithMolecule >> seeClassSide [ 
 ]
