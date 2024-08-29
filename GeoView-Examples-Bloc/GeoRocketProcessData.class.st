@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoRocketProcessData,
 	#superclass : #GeoObjectProcessData,
-	#category : #'GeoView-Examples'
+	#category : #'GeoView-Examples-Bloc'
 }
 
 { #category : #processing }

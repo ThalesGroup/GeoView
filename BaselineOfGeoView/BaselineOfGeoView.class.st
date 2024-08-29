@@ -58,8 +58,7 @@ BaselineOfGeoView >> corePackages: spec [
 		
 	"examples packages"
 	spec
-		package: 'GeoView-Examples' with:[ spec requires: #('GeoView' 'GeoView-GeoObjects') ];
-		package: 'GeoView-Examples-Bloc' with:[ spec requires: #('GeoView-Examples') ].
+		package: 'GeoView-Examples-Bloc' with:[ spec requires: #('GeoView-Bloc' 'GeoView-GeoObjects') ].
 		
 	"examples with Molecule packages"
 	spec

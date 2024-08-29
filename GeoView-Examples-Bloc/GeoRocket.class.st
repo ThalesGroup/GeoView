@@ -9,7 +9,7 @@ Class {
 		'kinematics',
 		'name'
 	],
-	#category : #'GeoView-Examples'
+	#category : #'GeoView-Examples-Bloc'
 }
 
 { #category : #accessing }

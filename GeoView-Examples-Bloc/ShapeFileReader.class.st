@@ -1,7 +1,7 @@
 Class {
 	#name : #ShapeFileReader,
 	#superclass : #Object,
-	#category : #'GeoView-Examples'
+	#category : #'GeoView-Examples-Bloc'
 }
 
 { #category : #'instance creation' }
