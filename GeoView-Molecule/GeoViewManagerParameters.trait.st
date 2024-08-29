@@ -10,10 +10,14 @@ Trait {
 
 { #category : #'parameters - objects' }
 GeoViewManagerParameters >> getObjectIndexAccessor [
+
+	^ self getView objectIndexAccessor
 ]
 
 { #category : #'parameters - objects' }
 GeoViewManagerParameters >> setObjectIndexAccessor: aSymbol [
+
+	self getView objectIndexAccessor: aSymbol
 ]
 
 { #category : #'parameters - selection manager' }

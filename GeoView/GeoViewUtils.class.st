@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoViewUtils,
 	#superclass : #Object,
-	#category : #'GeoView-Core'
+	#category : #'GeoView-Utils'
 }
 
 { #category : #'layer creation' }

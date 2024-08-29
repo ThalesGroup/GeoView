@@ -8,7 +8,8 @@ Trait {
 		'scaleFactor',
 		'maxScaleInMeters',
 		'minScaleInMeters',
-		'scaleInMeters'
+		'scaleInMeters',
+		'objectIndexAccessor'
 	],
 	#traits : 'TGeoViewHandleObjects + TGeoViewHaveMapProjection',
 	#classTraits : 'TGeoViewHandleObjects classTrait + TGeoViewHaveMapProjection classTrait',
@@ -127,6 +128,18 @@ TGeoViewWidget >> minScaleInMeters [
 TGeoViewWidget >> minScaleInMeters: anObject [
 
 	minScaleInMeters := anObject
+]
+
+{ #category : #'API -- objects parameters' }
+TGeoViewWidget >> objectIndexAccessor [
+
+	^ objectIndexAccessor ifNil: [ objectIndexAccessor := #key ]
+]
+
+{ #category : #'API -- objects parameters' }
+TGeoViewWidget >> objectIndexAccessor: aSymbol [
+
+	objectIndexAccessor := aSymbol
 ]
 
 { #category : #'API -- picking' }

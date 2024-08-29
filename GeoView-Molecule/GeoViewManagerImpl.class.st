@@ -12,8 +12,7 @@ Class {
 		'scaleInMeters',
 		'minScaleInMeters',
 		'maxScaleInMeters',
-		'scaleFactor',
-		'objectIndexAccessor'
+		'scaleFactor'
 	],
 	#category : #'GeoView-Molecule'
 }
@@ -205,12 +204,6 @@ GeoViewManagerImpl >> getLayers [
 GeoViewManagerImpl >> getMapProjection [
 
 	^ self view mapProjection 
-]
-
-{ #category : #'parameters - objects' }
-GeoViewManagerImpl >> getObjectIndexAccessor [
-
-	^ objectIndexAccessor ifNil:[ objectIndexAccessor := #key ]
 ]
 
 { #category : #services }
@@ -474,14 +467,6 @@ GeoViewManagerImpl >> setMapProjection: aMapProjection [
 	(previousProjection class == aMapProjection class) 
 		ifTrue:[ self getGeoViewManagerEventsNotifier mapProjectionUpdated: aMapProjection ]
 		ifFalse:[ self getGeoViewManagerEventsNotifier mapProjectionHasChanged: aMapProjection ]
-]
-
-{ #category : #'parameters - objects' }
-GeoViewManagerImpl >> setObjectIndexAccessor: aSymbol [
-
-	objectIndexAccessor = aSymbol ifTrue:[ ^ self ].
-	objectIndexAccessor := aSymbol.
-	self flag:'labordep : update the model when changed ?'.
 ]
 
 { #category : #services }
