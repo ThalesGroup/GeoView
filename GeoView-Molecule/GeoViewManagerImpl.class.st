@@ -99,18 +99,6 @@ GeoViewManagerImpl >> componentRemove [
 	self removeComponents
 ]
 
-{ #category : #private }
-GeoViewManagerImpl >> correctedScale: aNumberInMeters [
-"Enlarge view on Mercator projection near the poles : used for decrease zoom effect when projection changes"
-	self getMapProjectionManagerServicesProvider getProjection key = #GeoViewMercatorProjection
-		ifTrue: [ | angle latitudeMaxAngle |
-			latitudeMaxAngle := 89 * (Float pi / 180).
-			angle := self getGeoCenter latitudeInRadians. 
-			angle abs > latitudeMaxAngle ifTrue: [ angle := latitudeMaxAngle ]. 
-			^ aNumberInMeters / angle cos ]
-		ifFalse: [ ^ aNumberInMeters ]
-]
-
 { #category : #'services - layer creation' }
 GeoViewManagerImpl >> createAndAddGeoObjectLayer: aKey [
 	"add a layer to the geoplot"
