@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoViewManagerBlocAeImpl,
 	#superclass : #GeoViewManagerImpl,
-	#category : #'GeoView-Bloc-Alexandrie-Core'
+	#category : #'GeoView-Bloc-Alexandrie-Molecule'
 }
 
 { #category : #'layer creation' }
