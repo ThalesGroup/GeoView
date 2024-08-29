@@ -6,7 +6,7 @@ Trait {
 	#name : #GeoViewManager,
 	#traits : 'MolComponentType',
 	#classTraits : 'MolComponentType classTrait',
-	#category : #'GeoView-Molecule-Core'
+	#category : #'GeoView-Molecule'
 }
 
 { #category : #'accessing - events' }

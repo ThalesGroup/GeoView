@@ -5,7 +5,7 @@ Class {
 		'geoViewManagerName',
 		'geoViewManager'
 	],
-	#category : #'GeoView-Tests-Cases - GeoViewManager'
+	#category : #'GeoView-Molecule-Tests-Cases'
 }
 
 { #category : #running }
@@ -32,7 +32,6 @@ GeoViewManagerImplTests >> tearDown [
 { #category : #tests }
 GeoViewManagerImplTests >> testAggregatedComponentsStart [
 
-	self assert: geoViewManager getMapProjectionManagerServicesProvider isNotFoundServices equals: false.
 	self assert: geoViewManager getSmockSymbologyManagerServicesProvider isNotFoundServices equals: false.
 	self assert: geoViewManager getSmockSelectionManagerServicesProvider isNotFoundServices equals: false.
 ]

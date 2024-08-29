@@ -5,7 +5,7 @@ Trait {
 	#name : #MapProjectionManagerEvents,
 	#traits : 'MolComponentEvents',
 	#classTraits : 'MolComponentEvents classTrait',
-	#category : #'GeoView-Molecule-Core'
+	#category : #'GeoView-Molecule'
 }
 
 { #category : #deprecation }

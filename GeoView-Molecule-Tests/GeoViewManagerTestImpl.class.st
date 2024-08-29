@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoViewManagerTestImpl,
 	#superclass : #GeoViewManagerImpl,
-	#category : #'GeoView-Tests-Utils'
+	#category : #'GeoView-Molecule-Tests-Utils'
 }
 
 { #category : #'layer creation' }

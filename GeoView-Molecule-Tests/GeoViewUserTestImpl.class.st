@@ -6,7 +6,7 @@ Class {
 	#instVars : [
 		'receivedGeoViewLayerEvents'
 	],
-	#category : #'GeoView-Tests-Utils'
+	#category : #'GeoView-Molecule-Tests-Utils'
 }
 
 { #category : #events }

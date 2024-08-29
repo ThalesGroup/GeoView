@@ -9,7 +9,7 @@ Class {
 	#instVars : [
 		'projection'
 	],
-	#category : #'GeoView-Molecule-Core'
+	#category : #'GeoView-Molecule'
 }
 
 { #category : #deprecation }

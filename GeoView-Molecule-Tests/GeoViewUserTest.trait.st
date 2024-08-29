@@ -2,7 +2,7 @@ Trait {
 	#name : #GeoViewUserTest,
 	#traits : 'MolComponentType',
 	#classTraits : 'MolComponentType classTrait',
-	#category : #'GeoView-Tests-Utils'
+	#category : #'GeoView-Molecule-Tests-Utils'
 }
 
 { #category : #'accessing - events' }

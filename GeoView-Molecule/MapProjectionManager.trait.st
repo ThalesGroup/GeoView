@@ -5,7 +5,7 @@ Trait {
 	#name : #MapProjectionManager,
 	#traits : 'MolComponentType',
 	#classTraits : 'MolComponentType classTrait',
-	#category : #'GeoView-Molecule-Core'
+	#category : #'GeoView-Molecule'
 }
 
 { #category : #deprecation }

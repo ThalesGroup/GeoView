@@ -15,7 +15,7 @@ Class {
 		'scaleFactor',
 		'objectIndexAccessor'
 	],
-	#category : #'GeoView-Molecule-Core'
+	#category : #'GeoView-Molecule'
 }
 
 { #category : #'aggregated components' }
