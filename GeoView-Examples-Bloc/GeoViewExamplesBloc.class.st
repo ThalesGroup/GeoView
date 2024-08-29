@@ -33,32 +33,13 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	element := BlGeoViewAeElement new.
 
 	"configure layers and process datas : objects that can be displayed and how"
-	layer := GeoViewUserToDisplayToGraphicLayer new layerName: #layer1.
+	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
 	element addLayer: layer.
-	layer projection: GeoViewMercatorProjection new.
-	
-	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
-	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
-	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.
-	layer setProcessData: GeoPolylineProcessData new for: GeoPolyline.
-	layer setProcessData: GeoRectangleProcessData new for: GeoRectangle.
-	layer setProcessData: GeoTextProcessData new for: GeoText.
-	layer setProcessData: GeoArcBandProcessData new for: GeoArcBand.
 	
 	"create sample datas"
 	objects := self createGeoObjects.
 	element addObjects: objects.
-	
-	"event handlers"
-	element addEventHandler: (BlEventHandler
-			 on: BlElementExtentChangedEvent
-			 do: [ :e | 
-				e source displayToGraphicProjection offsetInPixels: ((e source getBounds extent) / 2).
-				e source displayToGraphicProjection updateResolution: e source getBounds extent.
-				e source updateGraphicModel.
-				
-				 ]).
-	
+
 	^ self openViewInWindow: element
 ]
 
@@ -70,30 +51,12 @@ GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 	element := BlGeoViewAeElement new. 
 
 	"configure layers and process datas : objects that can be displayed and how"
-	layer := GeoViewUserToDisplayToGraphicLayer new layerName: #layer1.
+	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
 	element addLayer: layer.
-	layer projection: GeoViewMercatorProjection new.
-	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
-	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
-	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.
-	layer setProcessData: GeoPolylineProcessData new for: GeoPolyline.
-	layer setProcessData: GeoRectangleProcessData new for: GeoRectangle.
-	layer setProcessData: GeoTextProcessData new for: GeoText.
-	layer setProcessData: GeoArcBandProcessData new for: GeoArcBand.
 	
 	"create sample datas"
 	objects := self createGeoObjects.
 	element addObjects: objects.
-	
-	"event handlers"
-	element addEventHandler: (BlEventHandler
-			 on: BlElementExtentChangedEvent
-			 do: [ :e | 
-				e source displayToGraphicProjection offsetInPixels: ((e source getBounds extent) / 2).
-				e source displayToGraphicProjection updateResolution: e source getBounds extent.
-				e source updateGraphicModel.
-				
-				 ]).
 	
 	space := self openViewInWindow: element.
 	

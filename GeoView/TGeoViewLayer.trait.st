@@ -55,7 +55,10 @@ TGeoViewLayer >> processDatasChanged [
 
 { #category : #accessing }
 TGeoViewLayer >> projection: aProjection [
+
+	self deprecated: 'not used internaly'.
 	self explicitRequirement
+	
 ]
 
 { #category : #'API -- process datas' }

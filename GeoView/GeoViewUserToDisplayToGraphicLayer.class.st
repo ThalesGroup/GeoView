@@ -115,6 +115,7 @@ GeoViewUserToDisplayToGraphicLayer >> initializeUserToDisplayModel [
 GeoViewUserToDisplayToGraphicLayer >> projection: aMapProjection [
 	"Setup the map projection of the layer: Mercator, etc."
 	
+	self deprecated: 'not used internaly'.
 	self displayModel projection: aMapProjection
 ]
 

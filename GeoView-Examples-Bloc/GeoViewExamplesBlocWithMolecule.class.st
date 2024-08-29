@@ -31,22 +31,9 @@ GeoViewExamplesBlocWithMolecule class >> exampleWithGeoObjects [
 	
 	| geoViewManager layer objects |
 	geoViewManager := GeoViewManagerBlocAeImpl start: #GeoViewManager , Random new next printString. 
-	
-	"parameters"
-	"geoViewManager setObjectIndexAccessor: #key."
-	
-	"setup projection example"
-	"geoViewManager getMapProjectionManagerServicesProvider setProjection: MercatorProjection new."
 
-	"configure layers and process datas : objects that can be displayed and how"
-	layer := geoViewManager createAndAddLayer: #layer1.
-	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
-	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
-	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.
-	layer setProcessData: GeoPolylineProcessData new for: GeoPolyline.
-	layer setProcessData: GeoRectangleProcessData new for: GeoRectangle.
-	layer setProcessData: GeoTextProcessData new for: GeoText.
-	layer setProcessData: GeoArcBandProcessData new for: GeoArcBand.
+	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
+	layer := geoViewManager addLayer: layer.
 	
 	"create sample datas"
 	objects := self createGeoObjects.
@@ -62,15 +49,8 @@ GeoViewExamplesBlocWithMolecule class >> exampleWithGeoObjectsUpdated [
 	| geoViewManager layer objects space thread |
 	geoViewManager := GeoViewManagerBlocAeImpl start: #GeoViewManager , Random new next printString. 
 
-	"configure layers and process datas : objects that can be displayed and how"
-	layer := geoViewManager createAndAddLayer: #layer1.
-	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
-	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
-	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.
-	layer setProcessData: GeoPolylineProcessData new for: GeoPolyline.
-	layer setProcessData: GeoRectangleProcessData new for: GeoRectangle.
-	layer setProcessData: GeoTextProcessData new for: GeoText.
-	layer setProcessData: GeoArcBandProcessData new for: GeoArcBand.
+	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
+	layer := geoViewManager addLayer: layer.
 	
 	"create sample datas"
 	objects := self createGeoObjects.

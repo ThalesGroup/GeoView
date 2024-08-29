@@ -37,9 +37,9 @@ GeoViewManagerImpl >> addLayer: aLayer [
 	self flag:'labordep : regarder les traits dans lheritage pour être sûr que cest une layer ?'.
 	aLayer layerName ifNil:[^nil].
 	
-	aLayer projection: self getMapProjectionManagerServicesProvider getProjection.
+	"aLayer projection: self getMapProjectionManagerServicesProvider getProjection."
 	aLayer symbologyProvider: self getSmockSymbologyManagerServicesProvider.
-	aLayer whenProcessDatasChangedDo: [ :l | self layerHasBeenUpdated: l	]. 
+	aLayer whenProcessDatasChangedDo: [ :l | self layerHasBeenUpdated: l	]. self flag:'supprimer et mettre un event'.
 	self view addLayer: aLayer.
 	
 	self getGeoViewManagerLayerEventsNotifier geoViewLayerAdded: aLayer layerName in: self componentName

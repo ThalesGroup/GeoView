@@ -6,8 +6,8 @@ Trait {
 	#instVars : [
 		'geoViewBounds'
 	],
-	#traits : 'TGeoViewHandleObjects',
-	#classTraits : 'TGeoViewHandleObjects classTrait',
+	#traits : 'TGeoViewHandleObjects + TGeoViewHaveMapProjection',
+	#classTraits : 'TGeoViewHandleObjects classTrait + TGeoViewHaveMapProjection classTrait',
 	#category : #'GeoView-Core'
 }
 

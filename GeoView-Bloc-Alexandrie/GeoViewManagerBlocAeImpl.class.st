@@ -79,12 +79,6 @@ GeoViewManagerBlocAeImpl >> getLocalPointFromGlobalPoint: aGlobalPoint [
 ]
 
 { #category : #initialization }
-GeoViewManagerBlocAeImpl >> handleExtentChangedEvent: anEvent [
-
-	self viewExtentHasChanged: anEvent source extent
-]
-
-{ #category : #initialization }
 GeoViewManagerBlocAeImpl >> initializeInputContext [
 
 	super initializeInputContext.
@@ -96,9 +90,9 @@ GeoViewManagerBlocAeImpl >> initializeInputContext [
 GeoViewManagerBlocAeImpl >> installEventHandlers: aBlElement [
 	"Properties events"
 
-	aBlElement addEventHandler: (BlEventHandler
+	"aBlElement addEventHandler: (BlEventHandler
 			 on: BlElementExtentChangedEvent
-			 do: [ :e | self handleExtentChangedEvent: e ]).
+			 do: [ :e | self handleExtentChangedEvent: e ])."
 
 	"Interaction events"
 	aBlElement addEventHandler: (BlEventHandler
@@ -166,17 +160,5 @@ GeoViewManagerBlocAeImpl >> setScaleInMeters: aNumber [
 	super setScaleInMeters: aNumber.
 	self view displayToGraphicProjection altitudeInMeters: self scaleInMeters.
 	self view displayToGraphicProjection updateResolution: self view getBounds extent.
-	self view updateGraphicModel
-]
-
-{ #category : #'private - events' }
-GeoViewManagerBlocAeImpl >> viewExtentHasChanged: anExtent [
-
-	anExtent ifNil:[ ^ self ].
-
-	"configure view projection"
-	self view displayToGraphicProjection offsetInPixels: anExtent / 2.
-	self view displayToGraphicProjection updateResolution: anExtent.
-
 	self view updateGraphicModel
 ]
