@@ -19,7 +19,7 @@ GeoViewTestLayer >> layerName: aName [
 	layerName := aName
 ]
 
-{ #category : #accessing }
+{ #category : #'API -- symbology' }
 GeoViewTestLayer >> symbologyProvider: aSymbologyProvider [
 	"do nothing"
 ]

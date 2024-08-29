@@ -9,8 +9,13 @@ Class {
 	#instVars : [
 		'projection'
 	],
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Core'
 }
+
+{ #category : #deprecation }
+MapProjectionManagerImpl class >> isDeprecated [
+	^ true
+]
 
 { #category : #'life cycle' }
 MapProjectionManagerImpl >> componentActivate [

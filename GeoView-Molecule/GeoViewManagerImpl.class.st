@@ -13,16 +13,15 @@ Class {
 		'minScaleInMeters',
 		'maxScaleInMeters',
 		'scaleFactor',
-		'inputContext',
 		'objectIndexAccessor'
 	],
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Core'
 }
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> activateComponents [
 
-	MapProjectionManagerImpl activate: self componentName.
+	"MapProjectionManagerImpl activate: self componentName."
 	(MolComponentManager default homeServices isWaitingForActivation: SmockSymbologyProvider named: self componentName) ifTrue:[
 		SmockSymbologyProvider activate: self componentName.
 	].
@@ -78,9 +77,9 @@ GeoViewManagerImpl >> componentInitialize [
 
 	super componentInitialize.
 
-	self forServices: MapProjectionManagerServices useProvider: self componentName.
+	"self forServices: MapProjectionManagerServices useProvider: self componentName."
 
-	self initializeProjectionManager.
+	"self initializeProjectionManager."
 	self initializeSelectionManager.
 	self initializeSymbologyManager.
 	
@@ -202,16 +201,10 @@ GeoViewManagerImpl >> getLayers [
 	^self view getLayers
 ]
 
-{ #category : #'component accessing' }
-GeoViewManagerImpl >> getMapProjectionManagerServicesProvider [
-	| servicesSymbol servicesProvider itf |
+{ #category : #'services - map projection' }
+GeoViewManagerImpl >> getMapProjection [
 
-	itf := MapProjectionManagerServices.
-	servicesSymbol := self servicesProviders at: itf ifAbsent: [nil].
-	(servicesSymbol isNil or:[servicesSymbol isSymbol not]) ifTrue: [ ^ MolNotFoundServicesProvider new interface: itf name: nil ].
-
-	servicesProvider := MolComponentManager default locatorServices searchServicesProviderFor: MapProjectionManagerServices named: servicesSymbol.
-	^servicesProvider
+	^ self view mapProjection 
 ]
 
 { #category : #'parameters - objects' }
@@ -282,6 +275,7 @@ GeoViewManagerImpl >> haveObjectIndex: anIndex [
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeProjectionManager [
 
+	self deprecated: 'to be remove'.
 	MolComponentManager default deploymentServices deployComponentImplementation: MapProjectionManagerImpl.
 	MolComponentManager default homeServices instantiateComponent: MapProjectionManagerImpl named: self componentName
 ]
@@ -311,10 +305,10 @@ GeoViewManagerImpl >> initializeSymbologyManager [
 { #category : #initialization }
 GeoViewManagerImpl >> initializeView [
 
-	self setGeoCenter: AbsoluteCoordinates zero.
-	self minScaleInMeters: 1852.0.
-	self maxScaleInMeters: 1.5171584e7.
-	self setScaleInMeters: 1.4816e7.
+	self getView geoCenter: AbsoluteCoordinates zero.
+	self getView minScaleInMeters: 1852.0.
+	self getView maxScaleInMeters: 1.5171584e7.
+	self getView scaleInMeters: 1.4816e7.
 ]
 
 { #category : #'private - events' }
@@ -358,7 +352,7 @@ GeoViewManagerImpl >> mouseCursorCoordinatesChanged: anAbsoluteCoordinates [
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> passivateComponents [
 
-	MapProjectionManagerImpl passivate: self componentName.	
+	"MapProjectionManagerImpl passivate: self componentName.	"
 	(MolComponentManager default homeServices instanceOf: SmockSymbologyProvider named: self componentName) ifNotNil:[
 		SmockSymbologyProvider passivate: self componentName.
 	].
@@ -385,7 +379,7 @@ GeoViewManagerImpl >> removeAllLayers [
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> removeComponents [
 
-	MapProjectionManagerImpl remove: self componentName.
+	"MapProjectionManagerImpl remove: self componentName."
 	(MolComponentManager default homeServices instanceOf: SmockSymbologyProvider named: self componentName) ifNotNil:[
 		SmockSymbologyProvider remove: self componentName.
 	].
@@ -468,6 +462,20 @@ GeoViewManagerImpl >> setGeoCenter: anAbsoluteCoordinates [
 	self geoCenter: anAbsoluteCoordinates copy
 ]
 
+{ #category : #'services - map projection' }
+GeoViewManagerImpl >> setMapProjection: aMapProjection [
+
+	| previousProjection |
+	aMapProjection ifNil:[ ^ self ].
+	previousProjection := self view mapProjection.
+	self view mapProjection: aMapProjection copy.
+	
+	self flag:'use GeoViewWidget events to notify these component events'.
+	(previousProjection class == aMapProjection class) 
+		ifTrue:[ self getGeoViewManagerEventsNotifier mapProjectionUpdated: aMapProjection ]
+		ifFalse:[ self getGeoViewManagerEventsNotifier mapProjectionHasChanged: aMapProjection ]
+]
+
 { #category : #'parameters - objects' }
 GeoViewManagerImpl >> setObjectIndexAccessor: aSymbol [
 
@@ -544,10 +552,12 @@ GeoViewManagerImpl >> updateObjects: aGeoObjectList [
 
 { #category : #accessing }
 GeoViewManagerImpl >> view [
+
 	^ view
 ]
 
 { #category : #accessing }
 GeoViewManagerImpl >> view: anObject [
+
 	view := anObject
 ]

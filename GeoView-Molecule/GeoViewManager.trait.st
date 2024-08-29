@@ -6,38 +6,51 @@ Trait {
 	#name : #GeoViewManager,
 	#traits : 'MolComponentType',
 	#classTraits : 'MolComponentType classTrait',
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Core'
 }
 
 { #category : #'accessing - events' }
 GeoViewManager classSide >> consumedComponentEvents [
+
 	<componentContract>
 	^ { SmockSelectionManagerEvents }
 ]
 
 { #category : #'accessing - events' }
 GeoViewManager classSide >> producedComponentEvents [
-<componentContract>		
-	^{ GeoViewManagerEvents . GeoViewManagerLayerEvents . GeoViewManagerCursorEvents }
+
+	<componentContract>
+	^ {
+		  GeoViewManagerEvents.
+		  GeoViewManagerLayerEvents.
+		  GeoViewManagerCursorEvents }
 ]
 
 { #category : #'accessing - parameters' }
 GeoViewManager classSide >> providedComponentParameters [
-<componentContract>		
-	^{ GeoViewManagerParameters . GeoViewManagerGeoObjectsParameters }
+
+	<componentContract>
+	^ {
+		  GeoViewManagerParameters.
+		  GeoViewManagerGeoObjectsParameters }
 ]
 
 { #category : #'accessing - services' }
 GeoViewManager classSide >> providedComponentServices [
-<componentContract>	
-	^{ GeoViewManagerServices. 
-		GeoViewManagerLayerServices.
-		GeoViewManagerObjectsServices.
-		GeoViewManagerPickingServices } 
+
+	<componentContract>
+	^ {
+		  GeoViewManagerServices.
+		  GeoViewManagerLayerServices.
+		  GeoViewManagerObjectsServices.
+		  GeoViewManagerPickingServices }
 ]
 
 { #category : #'accessing - services' }
 GeoViewManager classSide >> usedComponentServices [
-<componentContract>	
-	^{MapProjectionManagerServices . SmockSymbologyManagerServices . SmockSelectionManagerServices }
+
+	<componentContract>
+	^ {
+		  SmockSymbologyManagerServices.
+		  SmockSelectionManagerServices }
 ]

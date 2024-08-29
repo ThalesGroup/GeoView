@@ -75,6 +75,7 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 	"specify default process data"
 	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
 	
+	self flag:'supprimer et mettre un event'.
 	aLayer whenProcessDatasChangedDo: [ :e | self layerHasBeenUpdated: e ].
 ]
 

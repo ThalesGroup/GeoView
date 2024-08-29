@@ -15,11 +15,13 @@ Trait {
 
 { #category : #'API -- process datas' }
 TGeoViewLayer >> getAllProcessData [
+
 	self explicitRequirement
 ]
 
 { #category : #'API -- process datas' }
 TGeoViewLayer >> getProcessDataFor: aGeoObjectClass [
+
 	self explicitRequirement
 ]
 
@@ -49,35 +51,29 @@ TGeoViewLayer >> layerName: anObject [
 
 { #category : #private }
 TGeoViewLayer >> processDatasChanged [
-	
-	processDataChangedBlock ifNotNil:[ :e | e value: self ]
-]
 
-{ #category : #accessing }
-TGeoViewLayer >> projection: aProjection [
-
-	self deprecated: 'not used internaly'.
-	self explicitRequirement
-	
+	processDataChangedBlock ifNotNil: [ :e | e value: self ]
 ]
 
 { #category : #'API -- process datas' }
 TGeoViewLayer >> removeProcessDataFor: aGeoObjectClass [
+
 	self explicitRequirement
 ]
 
 { #category : #'API -- process datas' }
 TGeoViewLayer >> setDefaultProcessData: aDataProcessor [
+
 	self explicitRequirement
 ]
 
 { #category : #'API -- process datas' }
 TGeoViewLayer >> setProcessData: aProcessData for: aGeoObjectClass [
+
 	self explicitRequirement
-	
 ]
 
-{ #category : #accessing }
+{ #category : #'API -- symbology' }
 TGeoViewLayer >> symbologyProvider: aSymbologyProvider [
 	self explicitRequirement
 ]
@@ -90,5 +86,6 @@ TGeoViewLayer >> updateGraphicModel [
 { #category : #'API -- process datas' }
 TGeoViewLayer >> whenProcessDatasChangedDo: aBlock [
 
+	self deprecated: 'to remove and place an event'.
 	processDataChangedBlock := aBlock
 ]

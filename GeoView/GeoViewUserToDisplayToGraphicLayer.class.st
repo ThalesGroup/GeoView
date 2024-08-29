@@ -160,7 +160,7 @@ GeoViewUserToDisplayToGraphicLayer >> sortDatas [
 	sortedDatas addAll: self graphicModel getDatas
 ]
 
-{ #category : #accessing }
+{ #category : #'API -- symbology' }
 GeoViewUserToDisplayToGraphicLayer >> symbologyProvider: aSymbologyProvider [
 	
 	self graphicModel symbologyProvider: aSymbologyProvider

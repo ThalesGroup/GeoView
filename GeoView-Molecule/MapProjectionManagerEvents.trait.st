@@ -5,8 +5,13 @@ Trait {
 	#name : #MapProjectionManagerEvents,
 	#traits : 'MolComponentEvents',
 	#classTraits : 'MolComponentEvents classTrait',
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Core'
 }
+
+{ #category : #deprecation }
+MapProjectionManagerEvents classSide >> isDeprecated [
+	^ true
+]
 
 { #category : #projection }
 MapProjectionManagerEvents >> projectionHasChanged: aProjection [

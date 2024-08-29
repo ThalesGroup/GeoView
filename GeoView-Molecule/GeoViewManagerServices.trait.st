@@ -5,7 +5,7 @@ Trait {
 	#name : #GeoViewManagerServices,
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Core'
 }
 
 { #category : #services }
@@ -54,6 +54,10 @@ GeoViewManagerServices >> getLocalPointFromGlobalPoint: aGlobalPoint [
 	^ self getView localPointFromGlobalPoint: aGlobalPoint
 ]
 
+{ #category : #'services - map projection' }
+GeoViewManagerServices >> getMapProjection [
+]
+
 { #category : #services }
 GeoViewManagerServices >> getScaleFactor [
 ]
@@ -80,6 +84,10 @@ GeoViewManagerServices >> scaleUp [
 
 { #category : #services }
 GeoViewManagerServices >> setGeoCenter: anAbsoluteCoordinates [
+]
+
+{ #category : #'services - map projection' }
+GeoViewManagerServices >> setMapProjection: aMapProjection [
 ]
 
 { #category : #services }

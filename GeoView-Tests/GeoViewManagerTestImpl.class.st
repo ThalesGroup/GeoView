@@ -15,3 +15,7 @@ GeoViewManagerTestImpl >> createView [
 
 	self view: GeoViewTestWidget new
 ]
+
+{ #category : #'services - map projection' }
+GeoViewManagerTestImpl >> getMapProjection [
+]

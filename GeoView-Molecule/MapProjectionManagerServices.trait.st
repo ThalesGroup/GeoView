@@ -5,8 +5,13 @@ Trait {
 	#name : #MapProjectionManagerServices,
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Core'
 }
+
+{ #category : #deprecation }
+MapProjectionManagerServices classSide >> isDeprecated [
+	^ true
+]
 
 { #category : #projection }
 MapProjectionManagerServices >> getProjection [

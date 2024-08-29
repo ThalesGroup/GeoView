@@ -2,7 +2,7 @@ Trait {
 	#name : #GeoViewManagerPickingServices,
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Core'
 }
 
 { #category : #'services - picking' }
