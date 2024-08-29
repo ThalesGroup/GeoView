@@ -79,14 +79,6 @@ GeoViewManagerBlocAeImpl >> getLocalPointFromGlobalPoint: aGlobalPoint [
 ]
 
 { #category : #initialization }
-GeoViewManagerBlocAeImpl >> initializeInputContext [
-
-	super initializeInputContext.
-	inputContext addStrategy: GeoViewNavigationBlocStrategy new.
-	inputContext addStrategy: GeoViewCursorInformationBlocStrategy new.
-]
-
-{ #category : #initialization }
 GeoViewManagerBlocAeImpl >> installEventHandlers: aBlElement [
 	"Properties events"
 
@@ -95,47 +87,9 @@ GeoViewManagerBlocAeImpl >> installEventHandlers: aBlElement [
 			 do: [ :e | self handleExtentChangedEvent: e ])."
 
 	"Interaction events"
-	aBlElement addEventHandler: (BlEventHandler
+	"aBlElement addEventHandler: (BlEventHandler
 			 on: BlUIEvent
-			 do: [ :e | self handleUIEvent: e ])
-]
-
-{ #category : #initialization }
-GeoViewManagerBlocAeImpl >> pickAt: aGlobalPoint radius: aRadiusInPixels [
-
-	"prepare the picking result"
-	| pickingResult distanceBlock radius |
-	pickingResult := (super pickAt: aGlobalPoint radius: aRadiusInPixels) ifNil:[ ^ nil ].
-
-	"labordep: prepare to be setup with others blocks"
-	distanceBlock := [ :gShape :point | gShape distanceTo: point ].
-	radius := aRadiusInPixels ifNil:[ 0 ].
-
-	"Collect all picked elements"
-	self getLayers do:[ :l | 
-		l graphicModel datas keysAndValuesDo:[ :key :gShape | | distanceInPixels pickingElement |
-			
-			"Way to detect if the gShape is picked"
-			distanceInPixels := distanceBlock value: gShape value: pickingResult localPoint.
-			distanceInPixels <= radius ifTrue:[
-
-				"Store the element into the result"				
-				pickingElement := GeoViewPickingElement new.
-				pickingElement layerName: l layerName.
-				pickingElement layerLevel: nil. self flag:'labordep: mettre le level'.
-				pickingElement distanceInPixels: distanceInPixels.
-				pickingElement objectKey: key.
-				pickingElement dShape: (l displayModel getData: key).
-				pickingElement gShape: gShape.
-				
-				pickingResult addPickingElement: pickingElement.
-				
-			].			
-		].
-	].
-
-	pickingResult applyOrder: [ :a :b | a distanceInPixels < b distanceInPixels ].
-	^ pickingResult
+			 do: [ :e | self handleUIEvent: e ])"
 ]
 
 { #category : #'services - drawing' }

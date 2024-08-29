@@ -15,6 +15,20 @@ Class {
 	#category : #'GeoView-Bloc-Core'
 }
 
+{ #category : #'API -- coordinates transformations' }
+BlAbstractGeoViewElement >> absoluteCoordinatesFromLocalPoint: aLocalPoint [
+
+	| cartesianCoordinates absoluteCoordinates projection |
+	projection := self mapProjection.
+	projection ifNil: [ ^ nil ].
+
+	cartesianCoordinates := self displayToGraphicProjection
+		                        projPixelToCart: aLocalPoint.
+	absoluteCoordinates := projection projCartToLatLon:
+		                       cartesianCoordinates.
+	^ absoluteCoordinates
+]
+
 { #category : #'API -- layers management' }
 BlAbstractGeoViewElement >> addLayer: aLayer [
 	
@@ -115,6 +129,13 @@ BlAbstractGeoViewElement >> getLayers [
 	^ self layers
 ]
 
+{ #category : #'API -- coordinates transformations' }
+BlAbstractGeoViewElement >> globalPointFromLocalPoint: aLocalPoint [
+
+	aLocalPoint ifNil: [ ^ nil ].
+	^ self localPointToGlobal: aLocalPoint
+]
+
 { #category : #'API -- objects management' }
 BlAbstractGeoViewElement >> haveObjectIndex: anIndex [
 	"Pay attention before using it because graphical model is out of sync real user model due to usage of BlTask (asynchronous)"
@@ -157,6 +178,23 @@ BlAbstractGeoViewElement >> layerHasBeenUpdated: aLayer [
 BlAbstractGeoViewElement >> layers [
 
 	^ layers ifNil: [ layers := OrderedCollection new ]
+]
+
+{ #category : #'API -- coordinates transformations' }
+BlAbstractGeoViewElement >> localPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
+
+	| projection |
+	projection := self mapProjection.
+	projection ifNil: [ ^ nil ].
+
+	^ self displayToGraphicProjection projCartToPixel:
+		  (projection projLatLonToCart: anAbsoluteCoordinates)
+]
+
+{ #category : #'API -- coordinates transformations' }
+BlAbstractGeoViewElement >> localPointFromGlobalPoint: aGlobalPoint [
+
+	^ self globalPointToLocal: aGlobalPoint
 ]
 
 { #category : #'API -- map projection' }

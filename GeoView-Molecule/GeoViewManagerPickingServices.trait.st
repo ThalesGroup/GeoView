@@ -9,7 +9,7 @@ Trait {
 GeoViewManagerPickingServices >> pickAt: aGlobalPoint [
 	"Return all objects under a global point"
 
-	^ self pickAt: aGlobalPoint radius: 0
+	^ self view pickAt: aGlobalPoint
 ]
 
 { #category : #'services - picking' }

@@ -85,7 +85,6 @@ GeoViewManagerImpl >> componentInitialize [
 	self initializeSymbologyManager.
 	
 	self createView.
-	self initializeInputContext.
 	self initializeView.
 ]
 
@@ -148,14 +147,6 @@ GeoViewManagerImpl >> createLayer: aKey [
 { #category : #initialization }
 GeoViewManagerImpl >> createView [
 	self subclassResponsibility 
-]
-
-{ #category : #'private - events' }
-GeoViewManagerImpl >> dispatchUIEvent: aSmockEventWrapper [
-	"Transfert event in input strategy stack to each behavior processors"
-
-	inputContext ifNil: [ ^ self ].
-	inputContext handleEvent: aSmockEventWrapper
 ]
 
 { #category : #private }
@@ -282,25 +273,10 @@ GeoViewManagerImpl >> getView [
 	^ self view
 ]
 
-{ #category : #'private - events' }
-GeoViewManagerImpl >> handleUIEvent: anEvent [
-
-	| wrapper |
-	wrapper := SmockEventWrapper wrap: anEvent.
-	self dispatchUIEvent: wrapper.
-]
-
 { #category : #'geobjects aur' }
 GeoViewManagerImpl >> haveObjectIndex: anIndex [
 
 	^ self view haveObjectIndex: anIndex
-]
-
-{ #category : #initialization }
-GeoViewManagerImpl >> initializeInputContext [
-
-	inputContext := SmockInputContext new.
-	inputContext controller: self.
 ]
 
 { #category : #'aggregated components' }
@@ -393,24 +369,9 @@ GeoViewManagerImpl >> passivateComponents [
 
 { #category : #'services - picking' }
 GeoViewManagerImpl >> pickAt: aGlobalPoint radius: aRadiusInPixels [
-	"Return all geo objects under aPoint with a radius in pixels"
+	"Return all objects under a global point inside a radius in pixels"
 	
-	| pickingResult absoluteCoordinates localPoint radius |
-	absoluteCoordinates := (self getAbsoluteCoordinatesFromGlobalPoint: aGlobalPoint) ifNil:[ ^ nil ].
-	localPoint := (self getLocalPointFromGlobalPoint: aGlobalPoint) ifNil:[ ^ nil ].
-	radius := aRadiusInPixels ifNil:[ 0 ].
-	
-	"create picking result"
-	pickingResult := GeoViewPickingResult new
-		timestamp: DateAndTime now;
-		globalPoint: aGlobalPoint;
-		localPoint: localPoint;
-		cartesianCoordinates: (self getMapProjectionManagerServicesProvider getProjection projLatLonToCart: absoluteCoordinates);
-		absoluteCoordinates: absoluteCoordinates;
-		radiusInPixels: radius;
-		yourself.
-
-	^ pickingResult 
+	^ self view pickAt: aGlobalPoint radius: aRadiusInPixels
 ]
 
 { #category : #'services - layer deletion' }

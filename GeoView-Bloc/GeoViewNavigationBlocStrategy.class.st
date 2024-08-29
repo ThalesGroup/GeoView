@@ -11,7 +11,7 @@ Class {
 { #category : #accessing }
 GeoViewNavigationBlocStrategy >> isMapMoving [
 
-	^ isMapMoving ifNil:[ isMapMoving := false ]
+	^ isMapMoving ifNil: [ isMapMoving := false ]
 ]
 
 { #category : #accessing }
@@ -34,21 +34,21 @@ GeoViewNavigationBlocStrategy >> keyUp: aSmockEventWrapper context: aSmockInputC
 
 { #category : #'event handling' }
 GeoViewNavigationBlocStrategy >> moveMap: aSmockEventWrapper context: aSmockInputContext [
-	| point difPx geoCenterPx geoViewMng |
-	
-	geoViewMng := aSmockInputContext controller ifNil:[ ^ self ].
-	
+
+	| point difPx geoCenterPx element |
+	element := aSmockInputContext controller ifNil: [ ^ self ].
+
 	point := aSmockEventWrapper event position.
 	difPx := self previousPoint - point.
-	difPx := (difPx x) @ (difPx y negated).
-	geoCenterPx := geoViewMng getGlobalPointFromAbsoluteCoordinates: geoViewMng getGeoCenter.
-	geoCenterPx ifNil:[ ^ self ].
-	
+	difPx := difPx x @ difPx y negated.
+	geoCenterPx := element globalPointFromAbsoluteCoordinates: element geoCenter.
+	geoCenterPx ifNil: [ ^ self ].
+
 	geoCenterPx := geoCenterPx + difPx.
-	geoViewMng centerOnPoint: geoCenterPx.
-	
+	element centerOnGlobalPoint: geoCenterPx.
+
 	self previousPoint: point copy.
-	aSmockEventWrapper isConsumed: true. 
+	aSmockEventWrapper isConsumed: true
 ]
 
 { #category : #accessing }
@@ -105,64 +105,60 @@ GeoViewNavigationBlocStrategy >> processEvent: aSmockEventWrapper context: aSmoc
 
 { #category : #'event handling' }
 GeoViewNavigationBlocStrategy >> scrollDown: aSmockEventWrapper context: aSmockInputContext [
-	| point geoPoint projection projection2D geoPointPx geoPointPxNew geoCenterPx difPx newPointPx geoPointFinal geoViewMng |
+	| point geoPoint mapProjection graphicProjection geoPointPx geoPointPxNew geoCenterPx difPx newPointPx geoPointFinal element |
 	
-	geoViewMng := aSmockInputContext controller ifNil:[ ^ self ].
+	element := aSmockInputContext controller ifNil:[ ^ self ].
 	point := aSmockEventWrapper event position.
 
-	projection := geoViewMng getMapProjectionManagerServicesProvider getProjection.
-	projection ifNil:[ ^ self ].
-	
-	projection2D := geoViewMng view displayToGraphicProjection.
+	mapProjection := element mapProjection ifNil:[ ^ self ].
+	graphicProjection := element displayToGraphicProjection ifNil:[ ^ self ].
 
-	geoPoint := geoViewMng getAbsoluteCoordinatesFromGlobalPoint: point.
-	geoPointPx := projection2D projCartToPixel: (projection projLatLonToCart: geoPoint).
-	geoCenterPx := projection2D projCartToPixel: (projection projLatLonToCart: geoViewMng getGeoCenter).
+	geoPoint := element absoluteCoordinatesFromGlobalPoint: point.
+	geoPointPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: geoPoint).
+	geoCenterPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: element geoCenter).
 	"Compute diff from mouse position to view center in pixel before scale"
 	difPx := geoCenterPx - geoPointPx.
 	
 	"Scale"
-	geoViewMng scaleDown.
+	element scaleDown.
 	
 	"compute new position in pixel for the mouse position before zoom"
-	geoPointPxNew := projection2D projCartToPixel: (projection projLatLonToCart: geoPoint).
+	geoPointPxNew := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: geoPoint).
 	"add the previous diff in pixels to get new center in pixel"
 	newPointPx := geoPointPxNew + difPx.
 	"Compute new position in cartesian for new center"
-	geoPointFinal := geoViewMng getAbsoluteCoordinatesFromGlobalPoint: newPointPx.
-	geoViewMng setGeoCenter: geoPointFinal.
+	geoPointFinal := element absoluteCoordinatesFromGlobalPoint: newPointPx.
+	element geoCenter: geoPointFinal.
 	
 	aSmockEventWrapper isConsumed: true. 
 ]
 
 { #category : #'event handling' }
 GeoViewNavigationBlocStrategy >> scrollUp: aSmockEventWrapper context: aSmockInputContext [
-	| point geoPoint projection projection2D geoPointPx geoPointPxNew geoCenterPx difPx newPointPx geoPointFinal geoViewMng |
+	| point geoPoint mapProjection graphicProjection geoPointPx geoPointPxNew geoCenterPx difPx newPointPx geoPointFinal element |
 	
-	geoViewMng := aSmockInputContext controller ifNil:[ ^ self ].
+	element := aSmockInputContext controller ifNil:[ ^ self ].
 	point := aSmockEventWrapper event position.
 
-	projection := geoViewMng getMapProjectionManagerServicesProvider getProjection.
-	projection ifNil:[ ^ self ].
-	
-	projection2D := geoViewMng view displayToGraphicProjection.
+	mapProjection := element mapProjection ifNil:[ ^ self ].
+	graphicProjection := element displayToGraphicProjection ifNil:[ ^ self ].
 
-	geoPoint := geoViewMng getAbsoluteCoordinatesFromGlobalPoint: point.
-	geoPointPx := projection2D projCartToPixel: (projection projLatLonToCart: geoPoint).
-	geoCenterPx := projection2D projCartToPixel: (projection projLatLonToCart: geoViewMng getGeoCenter).
+	geoPoint := element absoluteCoordinatesFromGlobalPoint: point.
+	geoPointPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: geoPoint).
+	geoCenterPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: element geoCenter).
 	"Compute diff from mouse position to view center in pixel before scale"
 	difPx := geoCenterPx - geoPointPx.
 	
 	"Scale"
-	geoViewMng scaleUp.
+	element scaleUp.
 	
 	"compute new position in pixel for the mouse position before zoom"
-	geoPointPxNew := projection2D projCartToPixel: (projection projLatLonToCart: geoPoint).
+	geoPointPxNew := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: geoPoint).
 	"add the previous diff in pixels to get new center in pixel"
 	newPointPx := geoPointPxNew + difPx.
 	"Compute new position in cartesian for new center"
-	geoPointFinal := geoViewMng getAbsoluteCoordinatesFromGlobalPoint: newPointPx.
-	geoViewMng setGeoCenter: geoPointFinal.
+	geoPointFinal := element absoluteCoordinatesFromGlobalPoint: newPointPx.
+	element geoCenter: geoPointFinal.
 	
 	aSmockEventWrapper isConsumed: true. 
 ]
