@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'projection'
 	],
-	#category : #'GeoView-Model'
+	#category : #'GeoView-Core'
 }
 
 { #category : #accessing }

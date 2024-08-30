@@ -4,7 +4,7 @@ Font attributes for configure Text display
 Class {
 	#name : #GeoFontAttributes,
 	#superclass : #Object,
-	#category : #'GeoView-Model'
+	#category : #'GeoView-Core'
 }
 
 { #category : #'font-emphasis' }

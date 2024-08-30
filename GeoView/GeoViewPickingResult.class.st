@@ -5,7 +5,7 @@ Class {
 		'cartesianCoordinates',
 		'absoluteCoordinates'
 	],
-	#category : #'GeoView-Events'
+	#category : #'GeoView-Core'
 }
 
 { #category : #accessing }

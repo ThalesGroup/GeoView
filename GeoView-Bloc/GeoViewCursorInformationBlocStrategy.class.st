@@ -4,7 +4,7 @@ Class {
 	#category : #'GeoView-Bloc-Events'
 }
 
-{ #category : #'event handling' }
+{ #category : #'as yet unclassified' }
 GeoViewCursorInformationBlocStrategy >> processEvent: aSmockEventWrapper context: aSmockInputContext [
 
 	| event coordinates geoViewMng |
@@ -13,8 +13,11 @@ GeoViewCursorInformationBlocStrategy >> processEvent: aSmockEventWrapper context
 	event isMouseMove ifFalse: [ ^ self ].
 	
 	geoViewMng := aSmockInputContext controller ifNil:[ ^ self ].
-	coordinates := geoViewMng getAbsoluteCoordinatesFromGlobalPoint: event position.
-	coordinates ifNotNil:[ geoViewMng mouseCursorCoordinatesChanged: coordinates ].
+	coordinates := geoViewMng absoluteCoordinatesFromGlobalPoint: event position.
+	coordinates ifNotNil:[ 
+		self flag:'labordep : faire une notification GeoView (avec event handler) ici pour savoir que le curseur a changé'.
+		(geoViewMng isKindOf: GeoViewManager) ifTrue:[ geoViewMng mouseCursorCoordinatesChanged: coordinates ]. 
+	].
 	
 	aSmockEventWrapper isConsumed: true
 ]

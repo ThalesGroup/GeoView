@@ -1,30 +1,10 @@
 Class {
 	#name : #GeoViewTestLayer,
-	#superclass : #Object,
-	#traits : 'TGeoViewLayer',
-	#classTraits : 'TGeoViewLayer classTrait',
-	#instVars : [
-		'layerName'
-	],
+	#superclass : #GeoViewLayer,
 	#category : #'GeoView-Tests-Utils'
 }
 
-{ #category : #accessing }
-GeoViewTestLayer >> layerName [
-	^layerName
-]
-
-{ #category : #accessing }
-GeoViewTestLayer >> layerName: aName [
-	layerName := aName
-]
-
-{ #category : #'as yet unclassified' }
-GeoViewTestLayer >> projection: aProjection [
-	"do nothing"
-]
-
-{ #category : #accessing }
+{ #category : #'API -- symbology' }
 GeoViewTestLayer >> symbologyProvider: aSymbologyProvider [
 	"do nothing"
 ]

@@ -1,11 +1,11 @@
 Class {
-	#name : #GeoViewExamplesBloc,
+	#name : #GeoViewExamplesBlocMolecule,
 	#superclass : #Object,
-	#category : #'GeoView-Examples-Bloc'
+	#category : #'GeoView-Examples-Bloc-Molecule'
 }
 
 { #category : #private }
-GeoViewExamplesBloc class >> createGeoObjects [
+GeoViewExamplesBlocMolecule class >> createGeoObjects [
 
 	| list random nb |
 	list := OrderedCollection new.
@@ -26,47 +26,37 @@ GeoViewExamplesBloc class >> createGeoObjects [
 ]
 
 { #category : #examples }
-GeoViewExamplesBloc class >> exampleWithGeoObjects [
+GeoViewExamplesBlocMolecule class >> exampleWithGeoObjects [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
 	
-	| element layer objects |
-	element := BlGeoViewAeElement new.
-	
-	"configure layers and process datas : objects that can be displayed and how"
+	| geoViewManager layer objects |
+	geoViewManager := GeoViewManagerBlocAeImpl start: #GeoViewManager , Random new next printString. 
+
 	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
-	element addLayer: layer.
+	layer := geoViewManager addLayer: layer.
 	
 	"create sample datas"
 	objects := self createGeoObjects.
-	element addObjects: objects.
-
-	"Example of event handler behavior on geoView domain event"
-	element addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent do: [ :event |
-		event absoluteCoordinates printString traceCr.
-	].
-
-	"Example of custom EventHandler, here a logger"
-	element addEventHandler: (GeoViewEventLogger new).
-
-	^ self openViewInWindow: element
+	geoViewManager addObjects: objects.
+	
+	^ self openViewInWindow: geoViewManager
 ]
 
 { #category : #examples }
-GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
+GeoViewExamplesBlocMolecule class >> exampleWithGeoObjectsUpdated [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
 	
-	| element layer objects space thread |
-	element := BlGeoViewAeElement new. 
+	| geoViewManager layer objects space thread |
+	geoViewManager := GeoViewManagerBlocAeImpl start: #GeoViewManager , Random new next printString. 
 
-	"configure layers and process datas : objects that can be displayed and how"
 	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
-	element addLayer: layer.
+	layer := geoViewManager addLayer: layer.
 	
 	"create sample datas"
 	objects := self createGeoObjects.
-	element addObjects: objects.
+	geoViewManager addObjects: objects.
 	
-	space := self openViewInWindow: element.
+	space := self openViewInWindow: geoViewManager.
 	
 	"Objet update thread"
 	thread := [ | random |
@@ -75,7 +65,7 @@ GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 			1 second wait.
 			objects do:[ :o |
 				o radiusInMeters: (random next * 200000).	
-				element updateObject: o.
+				geoViewManager updateObject: o.
 			].
 		].
 	] forkAt: Processor userBackgroundPriority named: 'GeoView objects update example'.
@@ -89,19 +79,25 @@ GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 ]
 
 { #category : #private }
-GeoViewExamplesBloc class >> openViewInWindow: aBlGeoViewElement [
+GeoViewExamplesBlocMolecule class >> openViewInWindow: aGeoViewManager [
 	"open the view in a window"
 
-	| space |
-	aBlGeoViewElement constraintsDo: [ :c |
+	| blElement space |
+	blElement := aGeoViewManager getView.
+	blElement constraintsDo: [ :c |
 		c vertical matchParent.
 		c horizontal matchParent ].
-	space := aBlGeoViewElement openInSpace.
-	space title: 'GeoView example'.
+	space := blElement openInSpace.
+	space title: 'GeoView Molecule example'.
+
+	space addEventHandler: (BlEventHandler
+			 on: BlSpaceCloseRequest
+			 do: [ :event |
+			 aGeoViewManager class stop: aGeoViewManager componentName ]).
 
 	^ space
 ]
 
 { #category : #'see class side' }
-GeoViewExamplesBloc >> seeClassSide [ 
+GeoViewExamplesBlocMolecule >> seeClassSide [ 
 ]

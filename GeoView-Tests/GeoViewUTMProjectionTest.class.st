@@ -18,7 +18,7 @@ GeoViewUTMProjectionTest >> testProjLatLonToCart [
 	e := 723.80393e3.
 	n := 5004.57704e3.
 	
-	projection := UTMProjection new parallel: 3 degreesToRadians.
+	projection := GeoViewUTMProjection new parallel: 3 degreesToRadians.
 	cartesianCoordinates := projection projLatLonToCart: absoluteCoordinates. 
 	"Precision at centimeter"
 	self assert: (cartesianCoordinates xInMeters closeTo: e precision: 1e-2).

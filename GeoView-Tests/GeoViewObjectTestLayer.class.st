@@ -1,7 +1,5 @@
 Class {
 	#name : #GeoViewObjectTestLayer,
-	#superclass : #GeoViewTestLayer,
-	#traits : 'TGeoViewLayer',
-	#classTraits : 'TGeoViewLayer classTrait',
+	#superclass : #GeoViewGeoObjectsLayer,
 	#category : #'GeoView-Tests-Utils'
 }
