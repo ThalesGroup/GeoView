@@ -1,7 +1,7 @@
-Extension { #name : #GeoViewUserToDisplayToGraphicLayer }
+Extension { #name : #GeoViewGeoObjectsLayer }
 
 { #category : #'*GeoView-Bloc-Alexandrie' }
-GeoViewUserToDisplayToGraphicLayer >> aeDrawOn: aeCanvas [
+GeoViewGeoObjectsLayer >> aeDrawOn: aeCanvas [
 
 	self isVisible ifFalse: [ ^ self ].
 	sortedDatas ifNil: [ ^ self ].

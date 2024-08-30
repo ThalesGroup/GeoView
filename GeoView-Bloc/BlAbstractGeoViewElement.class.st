@@ -39,9 +39,15 @@ BlAbstractGeoViewElement >> absoluteCoordinatesFromLocalPoint: aLocalPoint [
 { #category : #'API -- layers management' }
 BlAbstractGeoViewElement >> addLayer: aLayer [
 	
+	| geoViewEvent |
 	(self layers includes: aLayer) ifTrue: [ ^ self ].
 	self configureLayer: aLayer.
-	self layers add: aLayer
+	self layers add: aLayer.
+	
+	"Send layer added event"
+	geoViewEvent := GeoViewLayerAddedEvent new.
+	geoViewEvent layerName: aLayer name.
+	self dispatchEvent: geoViewEvent
 ]
 
 { #category : #'API -- objects management' }
@@ -83,9 +89,8 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 
 	"specify default process data"
 	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
-	
-	self flag:'supprimer et mettre un event'.
-	aLayer whenProcessDatasChangedDo: [ :e | self layerHasBeenUpdated: e ].
+		
+	aLayer when: #processDataChanged evaluate:[ self layerProcessDataChanged: aLayer ]
 ]
 
 { #category : #accessing }
@@ -193,9 +198,13 @@ BlAbstractGeoViewElement >> isMarkedForSortDatas [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> layerHasBeenUpdated: aLayer [
+BlAbstractGeoViewElement >> layerProcessDataChanged: aLayer [
 
-	
+	"Send scale event"
+	| geoViewEvent |
+	geoViewEvent := GeoViewLayerProcessDataChanged new.
+	geoViewEvent layerName: aLayer name.
+	self dispatchEvent: geoViewEvent.
 ]
 
 { #category : #accessing }
@@ -264,7 +273,14 @@ BlAbstractGeoViewElement >> removeInteractionsStrategy [
 
 { #category : #'API -- layers management' }
 BlAbstractGeoViewElement >> removeLayer: aLayer [
-	self explicitRequirement
+	
+	| geoViewEvent |
+	self flag:'todo'.
+	
+	"Send layer added event"
+	geoViewEvent := GeoViewLayerRemovedEvent new.
+	geoViewEvent layerName: aLayer name.
+	self dispatchEvent: geoViewEvent
 ]
 
 { #category : #'API -- objects management' }

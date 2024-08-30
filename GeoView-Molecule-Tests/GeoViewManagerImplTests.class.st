@@ -37,18 +37,18 @@ GeoViewManagerImplTests >> testAggregatedComponentsStart [
 ]
 
 { #category : #tests }
-GeoViewManagerImplTests >> testCreateAndAddLayer [
+GeoViewManagerImplTests >> testCreateAndAddGeoObjectLayer [
 	"Warning : default implementation of GeoViewManager is an abtract engine implementation, all created objets are nil"
 
 	| layer |
-	layer := geoViewManager createAndAddLayer: #layerA.
+	layer := geoViewManager createAndAddGeoObjectsLayer: #layerA.
 	self assert: layer notNil.
 ]
 
 { #category : #tests }
 GeoViewManagerImplTests >> testLayerServices [
 	| layer |
-	geoViewManager addLayer: (GeoViewTestLayer new layerName: #layer1).
+	geoViewManager addLayer: (GeoViewTestLayer new name: #layer1).
 	self assert: geoViewManager getLayers size equals: 1.
 	
 	layer := geoViewManager getLayer: #layer1.
@@ -57,7 +57,7 @@ GeoViewManagerImplTests >> testLayerServices [
 	geoViewManager removeLayer: #layer1.
 	self assert: geoViewManager getLayers isEmpty.
 	
-	geoViewManager addLayer: (GeoViewTestLayer new layerName: #layer1).
+	geoViewManager addLayer: (GeoViewTestLayer new name: #layer1).
 	self assert: geoViewManager getLayers size equals: 1.
 	
 	geoViewManager removeAllLayers.

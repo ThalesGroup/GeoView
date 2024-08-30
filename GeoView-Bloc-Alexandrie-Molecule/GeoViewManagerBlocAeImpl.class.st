@@ -5,11 +5,11 @@ Class {
 }
 
 { #category : #'layer creation' }
-GeoViewManagerBlocAeImpl >> createLayer: aKey [
+GeoViewManagerBlocAeImpl >> createGeoObjectsLayer: aKey [
 
 	| layer |
-	layer := GeoViewUserToDisplayToGraphicLayer new.
-	layer layerName: aKey.
+	layer := GeoViewGeoObjectsLayer new.
+	layer name: aKey.
 	layer displayModel indexAccessor: self getObjectIndexAccessor.
 
 	^ layer
@@ -27,7 +27,8 @@ GeoViewManagerBlocAeImpl >> createView [
 
 { #category : #initialization }
 GeoViewManagerBlocAeImpl >> installEventHandlers: aBlElement [
-	"do nothing"
+	
+	aBlElement addEventHandlerOn: GeoViewLayerProcessDataChanged do: [ :e | self layerHasBeenUpdated: e layerName ]
 ]
 
 { #category : #'services - drawing' }

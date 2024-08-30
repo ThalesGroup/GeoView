@@ -26,6 +26,24 @@ GeoViewEventLogger >> geoViewCursorCoordinatesChangedEvent: anEvent [
 ]
 
 { #category : #events }
+GeoViewEventLogger >> geoViewLayerAddedEvent: anEvent [
+
+	anEvent traceCr.
+]
+
+{ #category : #events }
+GeoViewEventLogger >> geoViewLayerRemovedEvent: anEvent [
+
+	anEvent traceCr.
+]
+
+{ #category : #events }
+GeoViewEventLogger >> geoViewProcessDataChanged: anEvent [
+
+	anEvent traceCr.
+]
+
+{ #category : #events }
 GeoViewEventLogger >> geoViewScaleChangedEvent: anEvent [
 
 	anEvent traceCr.

@@ -31,16 +31,12 @@ GeoViewManagerImpl >> activateComponents [
 
 { #category : #'services - layer creation' }
 GeoViewManagerImpl >> addLayer: aLayer [
-	"(aLayer class traitComposition allTraits includes: GeoViewLayer) ifFalse:[^nil]."
-	self flag:'labordep : regarder les traits dans lheritage pour être sûr que cest une layer ?'.
-	aLayer layerName ifNil:[^nil].
 	
-	"aLayer projection: self getMapProjectionManagerServicesProvider getProjection."
+	aLayer name ifNil:[ ^ nil ].
 	aLayer symbologyProvider: self getSmockSymbologyManagerServicesProvider.
-	aLayer whenProcessDatasChangedDo: [ :l | self layerHasBeenUpdated: l	]. self flag:'supprimer et mettre un event'.
 	self view addLayer: aLayer.
 	
-	self getGeoViewManagerLayerEventsNotifier geoViewLayerAdded: aLayer layerName in: self componentName
+	self getGeoViewManagerLayerEventsNotifier geoViewLayerAdded: aLayer name in: self componentName
 ]
 
 { #category : #'geobjects aur' }
@@ -98,25 +94,10 @@ GeoViewManagerImpl >> componentRemove [
 ]
 
 { #category : #'services - layer creation' }
-GeoViewManagerImpl >> createAndAddGeoObjectLayer: aKey [
-	"add a layer to the geoplot"
-
-	| existingLayer layer |
-	self deprecated:'use createAndAddLayer:'.
-	aKey ifNil:[ SmockNoIdError signal: 'Cannot add layer with nil key.'. ^ nil ].
-	
-	existingLayer := self getLayer: aKey.
-	existingLayer ifNotNil:[ SmockDuplicateIdError signal: 'Cannot add layer with already existing key.'. ^ nil ].
-		
-	layer := self createLayer: aKey.
-	^self addLayer: layer
-]
-
-{ #category : #'services - layer creation' }
-GeoViewManagerImpl >> createAndAddLayer: aKey [
+GeoViewManagerImpl >> createAndAddGeoObjectsLayer: aKey [
 
 	| layer |
-	layer := self createLayer: aKey.
+	layer := self createGeoObjectsLayer: aKey.
 	layer ifNil:[ ^ nil ].
 	
 	self addLayer: layer.
@@ -124,7 +105,7 @@ GeoViewManagerImpl >> createAndAddLayer: aKey [
 ]
 
 { #category : #'layer creation' }
-GeoViewManagerImpl >> createLayer: aKey [
+GeoViewManagerImpl >> createGeoObjectsLayer: aKey [
 	self subclassResponsibility 
 ]
 
@@ -177,7 +158,7 @@ GeoViewManagerImpl >> getLayer: aKey [
 
 	| layer |
 	layer := self view getLayers
-		         detect: [ :l | l layerName = aKey ]
+		         detect: [ :l | l name = aKey ]
 		         ifNone: [ nil ].
 	^ layer
 ]
@@ -253,14 +234,6 @@ GeoViewManagerImpl >> haveObjectIndex: anIndex [
 ]
 
 { #category : #'aggregated components' }
-GeoViewManagerImpl >> initializeProjectionManager [
-
-	self deprecated: 'to be remove'.
-	MolComponentManager default deploymentServices deployComponentImplementation: MapProjectionManagerImpl.
-	MolComponentManager default homeServices instantiateComponent: MapProjectionManagerImpl named: self componentName
-]
-
-{ #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSelectionManager [
 
 	(MolUtils isInstantiateComponentOf: SmockSelectionManagerImpl named: self componentName) ifFalse:[
@@ -283,9 +256,9 @@ GeoViewManagerImpl >> initializeSymbologyManager [
 ]
 
 { #category : #'private - events' }
-GeoViewManagerImpl >> layerHasBeenUpdated: aLayer [
+GeoViewManagerImpl >> layerHasBeenUpdated: aLayerName [
 
-	self getGeoViewManagerLayerEventsNotifier geoViewLayerUpdated: (aLayer layerName) in: (self componentName).
+	self getGeoViewManagerLayerEventsNotifier geoViewLayerUpdated: aLayerName in: (self componentName).
 ]
 
 { #category : #accessing }
@@ -343,7 +316,7 @@ GeoViewManagerImpl >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 GeoViewManagerImpl >> removeAllLayers [
 	| layers |
 	layers := self view getLayers.
-	layers do:[ :l | (self view removeLayer: l) ifNotNil:[ self getGeoViewManagerLayerEventsNotifier geoViewLayerRemoved: l layerName in: self componentName ]].
+	layers do:[ :l | (self view removeLayer: l) ifNotNil:[ self getGeoViewManagerLayerEventsNotifier geoViewLayerRemoved: l name in: self componentName ]].
 	^layers
 ]
 

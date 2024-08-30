@@ -5,7 +5,7 @@ Class {
 }
 
 { #category : #'layer creation' }
-GeoViewManagerTestImpl >> createLayer: aKey [
+GeoViewManagerTestImpl >> createGeoObjectsLayer: aKey [
 
 	^ GeoViewObjectTestLayer new
 ]

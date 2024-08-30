@@ -24,6 +24,17 @@ BlAbstractGeoViewElementTest >> testNewInteractionsStrategy [
 ]
 
 { #category : #tests }
+BlAbstractGeoViewElementTest >> testObjectIndexAccessor [
+
+	| element |
+	element := BlAbstractGeoViewElement new.
+	self assert: element objectIndexAccessor equals: #key.
+	
+	element objectIndexAccessor: #id.
+	self assert: element objectIndexAccessor equals: #id.
+]
+
+{ #category : #tests }
 BlAbstractGeoViewElementTest >> testRemoveInteractionsStrategy [
 
 	| element |

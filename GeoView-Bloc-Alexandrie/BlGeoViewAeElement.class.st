@@ -46,7 +46,7 @@ BlGeoViewAeElement >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 
 				"Store the element into the result"				
 				pickingElement := GeoViewPickingElement new.
-				pickingElement layerName: l layerName.
+				pickingElement layerName: l name.
 				pickingElement layerLevel: nil. self flag:'labordep: put the level of the layer'.
 				pickingElement distanceInPixels: distanceInPixels.
 				pickingElement objectKey: key.

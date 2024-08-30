@@ -11,8 +11,8 @@ Trait {
 		'scaleInMeters',
 		'objectIndexAccessor'
 	],
-	#traits : 'TGeoViewHandleObjects + TGeoViewHaveMapProjection',
-	#classTraits : 'TGeoViewHandleObjects classTrait + TGeoViewHaveMapProjection classTrait',
+	#traits : 'TGeoViewHaveMapProjection',
+	#classTraits : 'TGeoViewHaveMapProjection classTrait',
 	#category : #'GeoView-Core'
 }
 

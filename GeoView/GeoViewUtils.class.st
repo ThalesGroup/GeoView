@@ -9,7 +9,7 @@ GeoViewUtils class >> createGeoObjectsLayer: aName [
 	"Create a layer to display GeoObjects"
 
 	| layer |
-	layer := GeoViewUserToDisplayToGraphicLayer new layerName: aName.
+	layer := GeoViewGeoObjectsLayer new name: aName.
 
 	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
 	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.

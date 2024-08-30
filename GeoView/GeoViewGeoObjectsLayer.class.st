@@ -1,8 +1,8 @@
 Class {
-	#name : #GeoViewUserToDisplayToGraphicLayer,
-	#superclass : #Object,
-	#traits : 'TGeoViewLayer',
-	#classTraits : 'TGeoViewLayer classTrait',
+	#name : #GeoViewGeoObjectsLayer,
+	#superclass : #GeoViewLayer,
+	#traits : 'TGeoViewHandleProcessDatas + TGeoViewHandleObjects',
+	#classTraits : 'TGeoViewHandleProcessDatas classTrait + TGeoViewHandleObjects classTrait',
 	#instVars : [
 		'graphicModel',
 		'displayModel',
@@ -13,7 +13,7 @@ Class {
 }
 
 { #category : #'API -- objects management' }
-GeoViewUserToDisplayToGraphicLayer >> addObject: anObject [
+GeoViewGeoObjectsLayer >> addObject: anObject [
 
 	| dObject |
 	dObject := self displayModel created: anObject.
@@ -25,37 +25,37 @@ GeoViewUserToDisplayToGraphicLayer >> addObject: anObject [
 ]
 
 { #category : #'API -- objects management' }
-GeoViewUserToDisplayToGraphicLayer >> addObjects: anObjectList [
+GeoViewGeoObjectsLayer >> addObjects: anObjectList [
 
 	anObjectList do: [ :e | self addObject: e ]
 ]
 
 { #category : #accessing }
-GeoViewUserToDisplayToGraphicLayer >> displayModel [
+GeoViewGeoObjectsLayer >> displayModel [
 
 	^ displayModel 
 ]
 
 { #category : #accessing }
-GeoViewUserToDisplayToGraphicLayer >> displayModel: anObject [
+GeoViewGeoObjectsLayer >> displayModel: anObject [
 
 	displayModel := anObject
 ]
 
 { #category : #accessing }
-GeoViewUserToDisplayToGraphicLayer >> graphicModel [
+GeoViewGeoObjectsLayer >> graphicModel [
 
 	^ graphicModel
 ]
 
 { #category : #accessing }
-GeoViewUserToDisplayToGraphicLayer >> graphicModel: anObject [
+GeoViewGeoObjectsLayer >> graphicModel: anObject [
 
 	graphicModel := anObject
 ]
 
 { #category : #'API -- drawing' }
-GeoViewUserToDisplayToGraphicLayer >> graphicalOrderSortBlock [
+GeoViewGeoObjectsLayer >> graphicalOrderSortBlock [
 	"Setup a sort block to change the order of graphic element stack"
 
 	^ graphicalOrderSortBlock ifNil: [
@@ -65,7 +65,7 @@ GeoViewUserToDisplayToGraphicLayer >> graphicalOrderSortBlock [
 ]
 
 { #category : #'API -- drawing' }
-GeoViewUserToDisplayToGraphicLayer >> graphicalOrderSortBlock: aBlockClosure [
+GeoViewGeoObjectsLayer >> graphicalOrderSortBlock: aBlockClosure [
 	"Setup a sort block to change the order of graphic element stack"
 	
 	graphicalOrderSortBlock := aBlockClosure.
@@ -75,14 +75,20 @@ GeoViewUserToDisplayToGraphicLayer >> graphicalOrderSortBlock: aBlockClosure [
 	]
 ]
 
+{ #category : #testing }
+GeoViewGeoObjectsLayer >> haveGeoObjects [
+
+	^ true
+]
+
 { #category : #'API -- objects management' }
-GeoViewUserToDisplayToGraphicLayer >> haveObjectIndex: anIndex [
+GeoViewGeoObjectsLayer >> haveObjectIndex: anIndex [
 
 	^ self displayModel haveDataIndex: anIndex
 ]
 
 { #category : #initialize }
-GeoViewUserToDisplayToGraphicLayer >> initialize [
+GeoViewGeoObjectsLayer >> initialize [
 
 	super initialize.
 	self initializeUserToDisplayModel.
@@ -91,13 +97,13 @@ GeoViewUserToDisplayToGraphicLayer >> initialize [
 ]
 
 { #category : #initialize }
-GeoViewUserToDisplayToGraphicLayer >> initializeDisplayToGraphicModel [
+GeoViewGeoObjectsLayer >> initializeDisplayToGraphicModel [
 
 	self graphicModel: GeoViewModel new
 ]
 
 { #category : #initialize }
-GeoViewUserToDisplayToGraphicLayer >> initializeSortedDatas [
+GeoViewGeoObjectsLayer >> initializeSortedDatas [
 	
 	sortedDatas := SortedCollection new: self graphicModel capacity.
 	
@@ -106,13 +112,13 @@ GeoViewUserToDisplayToGraphicLayer >> initializeSortedDatas [
 ]
 
 { #category : #initialize }
-GeoViewUserToDisplayToGraphicLayer >> initializeUserToDisplayModel [
+GeoViewGeoObjectsLayer >> initializeUserToDisplayModel [
 
 	self displayModel: GeoViewModel new
 ]
 
 { #category : #accessing }
-GeoViewUserToDisplayToGraphicLayer >> projection: aMapProjection [
+GeoViewGeoObjectsLayer >> projection: aMapProjection [
 	"Setup the map projection of the layer: Mercator, etc."
 	
 	self deprecated: 'not used internaly'.
@@ -120,7 +126,7 @@ GeoViewUserToDisplayToGraphicLayer >> projection: aMapProjection [
 ]
 
 { #category : #'API -- objects management' }
-GeoViewUserToDisplayToGraphicLayer >> removeObject: anObject [
+GeoViewGeoObjectsLayer >> removeObject: anObject [
 
 	| dObject |
 	dObject := self displayModel deleted: anObject.
@@ -132,20 +138,20 @@ GeoViewUserToDisplayToGraphicLayer >> removeObject: anObject [
 ]
 
 { #category : #'API -- objects management' }
-GeoViewUserToDisplayToGraphicLayer >> removeObjects: anObjectList [
+GeoViewGeoObjectsLayer >> removeObjects: anObjectList [
 
 	anObjectList do: [ :e | self removeObject: e ]
 ]
 
 { #category : #'API -- process datas' }
-GeoViewUserToDisplayToGraphicLayer >> setDefaultProcessData: aDataProcessor [
+GeoViewGeoObjectsLayer >> setDefaultProcessData: aDataProcessor [
 
 	self displayModel defaultProcessData: aDataProcessor.
 	self processDatasChanged
 ]
 
 { #category : #'API -- process datas' }
-GeoViewUserToDisplayToGraphicLayer >> setProcessData: aProcessData for: anUserObjectClass [
+GeoViewGeoObjectsLayer >> setProcessData: aProcessData for: anUserObjectClass [
 
 	| dModel |
 	dModel := self displayModel.
@@ -154,20 +160,20 @@ GeoViewUserToDisplayToGraphicLayer >> setProcessData: aProcessData for: anUserOb
 ]
 
 { #category : #initialize }
-GeoViewUserToDisplayToGraphicLayer >> sortDatas [
+GeoViewGeoObjectsLayer >> sortDatas [
 
 	sortedDatas removeAll.
 	sortedDatas addAll: self graphicModel getDatas
 ]
 
 { #category : #'API -- symbology' }
-GeoViewUserToDisplayToGraphicLayer >> symbologyProvider: aSymbologyProvider [
+GeoViewGeoObjectsLayer >> symbologyProvider: aSymbologyProvider [
 	
 	self graphicModel symbologyProvider: aSymbologyProvider
 ]
 
 { #category : #'API -- drawing' }
-GeoViewUserToDisplayToGraphicLayer >> updateGraphicModel [
+GeoViewGeoObjectsLayer >> updateGraphicModel [
 	"Update the graphic model with the Display model"
 	
 	| model |
@@ -176,7 +182,7 @@ GeoViewUserToDisplayToGraphicLayer >> updateGraphicModel [
 ]
 
 { #category : #'API -- objects management' }
-GeoViewUserToDisplayToGraphicLayer >> updateObject: anObject [
+GeoViewGeoObjectsLayer >> updateObject: anObject [
 
 	| dObject |
 	dObject := self displayModel updated: anObject.
@@ -188,13 +194,13 @@ GeoViewUserToDisplayToGraphicLayer >> updateObject: anObject [
 ]
 
 { #category : #'API -- objects management' }
-GeoViewUserToDisplayToGraphicLayer >> updateObjects: anObjectList [
+GeoViewGeoObjectsLayer >> updateObjects: anObjectList [
 
 	anObjectList do: [ :e | self updateObject: e ]
 ]
 
 { #category : #private }
-GeoViewUserToDisplayToGraphicLayer >> updateState: aStateSymbol withIndexes: aKeyList [
+GeoViewGeoObjectsLayer >> updateState: aStateSymbol withIndexes: aKeyList [
 
 	| dModel dObjectList |
 	dModel := self displayModel.
