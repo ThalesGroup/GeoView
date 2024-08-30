@@ -26,6 +26,40 @@ GeoViewExamplesBloc class >> createGeoObjects [
 ]
 
 { #category : #examples }
+GeoViewExamplesBloc class >> exampleWithGeoCircle [
+	
+	| element circle |
+	element := BlGeoViewAeElement new.
+	
+	"configure layers and process datas : objects that can be displayed and how"
+	element addLayer: (GeoViewUtils createGeoObjectsLayer: #layer1).
+	
+	"create sample datas"
+	circle := GeoCircle new key: 1; radiusInMeters: 1000000; strokeStyle: (Color white asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates zero.
+	element addObject: circle.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #examples }
+GeoViewExamplesBloc class >> exampleWithGeoLabeledCircle [
+	
+	| element circle layer |
+	element := BlGeoViewAeElement new.
+	
+	"configure layers and process datas : objects that can be displayed and how"
+	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
+	layer setProcessData: GeoLabeledCircleProcessData new for: GeoCircle. 
+	element addLayer: layer.
+	
+	"create sample datas"
+	circle := GeoCircle new key: 1; radiusInMeters: 1000000; strokeStyle: (Color white asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates zero.
+	element addObject: circle.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #examples }
 GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
 	
