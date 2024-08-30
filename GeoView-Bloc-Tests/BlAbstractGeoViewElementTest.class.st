@@ -8,6 +8,27 @@ Class {
 }
 
 { #category : #tests }
+BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
+
+	| element tag layer |
+	"initialize geoview and event handler"
+	element := BlAbstractGeoViewElement new.
+	tag := false.	
+	element addEventHandlerOn: GeoViewLayerProcessDataChanged do: [ :e | tag := true ].
+	self deny: tag.
+	
+	"create and add the layer"
+	layer := GeoViewGeoObjectsLayer new name: #myLayer.
+	element addLayer: layer.
+	self deny: tag.
+	
+	"change layer process datas"
+	layer setProcessData: GeoCircleProcessData for: GeoCircle.
+	
+	self assert: tag.
+]
+
+{ #category : #tests }
 BlAbstractGeoViewElementTest >> testInteractionsStrategy [
 
 	| element |

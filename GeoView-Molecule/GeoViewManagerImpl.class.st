@@ -36,6 +36,7 @@ GeoViewManagerImpl >> addLayer: aLayer [
 	aLayer symbologyProvider: self getSmockSymbologyManagerServicesProvider.
 	self view addLayer: aLayer.
 	
+	self flag:'call this event from GeoView layer Added event'.
 	self getGeoViewManagerLayerEventsNotifier geoViewLayerAdded: aLayer name in: self componentName
 ]
 
@@ -340,6 +341,7 @@ GeoViewManagerImpl >> removeLayer: aKey [
 	layer := self getLayer: aKey.
 	layer ifNil:[^nil].
 	layer := self view removeLayer: layer.
+	self flag:'call this event from GeoView layer removed event'.
 	layer ifNotNil:[self getGeoViewManagerLayerEventsNotifier geoViewLayerRemoved: aKey in: self componentName].
 	^layer
 ]

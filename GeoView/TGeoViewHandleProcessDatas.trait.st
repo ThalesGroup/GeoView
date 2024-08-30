@@ -15,13 +15,6 @@ TGeoViewHandleProcessDatas >> getProcessDataFor: aGeoObjectClass [
 	self explicitRequirement
 ]
 
-{ #category : #private }
-TGeoViewHandleProcessDatas >> processDatasChanged [
-
-	"Notify internaly that process datas changed"
-	self triggerEvent: #processDatasChanged
-]
-
 { #category : #'API -- process datas' }
 TGeoViewHandleProcessDatas >> removeProcessDataFor: aGeoObjectClass [
 

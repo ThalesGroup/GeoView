@@ -117,6 +117,18 @@ GeoViewGeoObjectsLayer >> initializeUserToDisplayModel [
 	self displayModel: GeoViewModel new
 ]
 
+{ #category : #private }
+GeoViewGeoObjectsLayer >> processDatasChanged [
+
+	"Notify internaly that process datas changed"
+	"self triggerEvent: #processDatasChanged"
+	
+	| announcement |
+	announcement := GeoViewLayerProcessDataChanged new.
+	announcement layerName: self name.
+	self announcer announce: announcement
+]
+
 { #category : #accessing }
 GeoViewGeoObjectsLayer >> projection: aMapProjection [
 	"Setup the map projection of the layer: Mercator, etc."

@@ -89,8 +89,9 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 
 	"specify default process data"
 	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
-		
-	aLayer when: #processDataChanged evaluate:[ self layerProcessDataChanged: aLayer ]
+	
+	"notify when process datas changed internaly"
+	aLayer announcer when: GeoViewLayerProcessDataChanged send: #layerProcessDataChanged: to: self.
 ]
 
 { #category : #accessing }
@@ -198,13 +199,13 @@ BlAbstractGeoViewElement >> isMarkedForSortDatas [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> layerProcessDataChanged: aLayer [
+BlAbstractGeoViewElement >> layerProcessDataChanged: anEvent [
 
 	"Send scale event"
 	| geoViewEvent |
 	geoViewEvent := GeoViewLayerProcessDataChanged new.
-	geoViewEvent layerName: aLayer name.
-	self dispatchEvent: geoViewEvent.
+	geoViewEvent layerName: anEvent layerName.
+	self dispatchEvent: geoViewEvent
 ]
 
 { #category : #accessing }

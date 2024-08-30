@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'isVisible',
 		'processDataChangedBlock',
-		'name'
+		'name',
+		'announcer'
 	],
 	#category : #'GeoView-Core'
 }
@@ -13,6 +14,12 @@ Class {
 GeoViewLayer class >> isAbstract [ 
 
 	^ self == GeoViewLayer 
+]
+
+{ #category : #accessing }
+GeoViewLayer >> announcer [
+
+	^ announcer ifNil:[ announcer := Announcer new ]
 ]
 
 { #category : #testing }
