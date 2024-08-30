@@ -327,6 +327,7 @@ BlAbstractGeoViewElement >> setInteractionsStrategy: aBlEventListener [
 	self removeInteractionsStrategy.
 
 	aBlEventListener ifNil:[ ^ self ].
+	interactionsStrategy := aBlEventListener.
 	self addEventHandler: aBlEventListener.
 ]
 
