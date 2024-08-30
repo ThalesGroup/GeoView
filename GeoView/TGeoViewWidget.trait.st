@@ -11,8 +11,8 @@ Trait {
 		'scaleInMeters',
 		'objectIndexAccessor'
 	],
-	#traits : 'TGeoViewHaveMapProjection',
-	#classTraits : 'TGeoViewHaveMapProjection classTrait',
+	#traits : 'TGeoViewHandleObjects',
+	#classTraits : 'TGeoViewHandleObjects classTrait',
 	#category : #'GeoView-Core'
 }
 
@@ -99,6 +99,20 @@ TGeoViewWidget >> localPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
 TGeoViewWidget >> localPointFromGlobalPoint: aGlobalPoint [
 
 	self explicitRequirement 
+]
+
+{ #category : #'API -- map projection' }
+TGeoViewWidget >> mapProjection [
+	"Return the map projection of the object: Mercator, etc."
+
+	self explicitRequirement
+]
+
+{ #category : #'API -- map projection' }
+TGeoViewWidget >> mapProjection: aMapProjection [
+	"Setup the map projection of the object: Mercator, etc."
+
+	self explicitRequirement
 ]
 
 { #category : #'API -- scale and center' }
