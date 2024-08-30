@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'geodesicDistanceInM'
 	],
-	#category : #'GeoView-Events'
+	#category : #'GeoView-Core'
 }
 
 { #category : #accessing }

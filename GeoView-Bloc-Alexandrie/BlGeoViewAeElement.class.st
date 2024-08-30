@@ -57,7 +57,7 @@ BlGeoViewAeElement >> initialize [
 
 	super initialize.
 	
-	self initializeInputContext.
+	"self initializeInputContext."
 ]
 
 { #category : #initialization }
@@ -65,9 +65,9 @@ BlGeoViewAeElement >> initializeEventHandlers [
 
 	super initializeEventHandlers.
 
-	self addEventHandler: (BlEventHandler
+	"self addEventHandler: (BlEventHandler
 			 on: BlUIEvent
-			 do: [ :e | self handleUIEvent: e ]).
+			 do: [ :e | self handleUIEvent: e ])."
 	
 	
 ]
@@ -75,6 +75,7 @@ BlGeoViewAeElement >> initializeEventHandlers [
 { #category : #initialization }
 BlGeoViewAeElement >> initializeInputContext [
 
+	self deprecated:'use event handler'.
 	inputContext := SmockInputContext new.
 	inputContext controller: self.
 	

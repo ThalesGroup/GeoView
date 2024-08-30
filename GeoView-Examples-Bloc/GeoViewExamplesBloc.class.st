@@ -31,7 +31,7 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	
 	| element layer objects |
 	element := BlGeoViewAeElement new.
-
+	
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
 	element addLayer: layer.
@@ -39,6 +39,13 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	"create sample datas"
 	objects := self createGeoObjects.
 	element addObjects: objects.
+
+	"Add event handler to receive domain events"
+	element addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent do: [ :event |
+		event traceCr.
+	].
+
+	element addEventHandler: (GeoViewEventLogger new).
 
 	^ self openViewInWindow: element
 ]

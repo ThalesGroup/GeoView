@@ -10,7 +10,8 @@ Class {
 		'layers',
 		'displayToGraphicProjection',
 		'isMarkedForSortDatas',
-		'mapProjection'
+		'mapProjection',
+		'eventGeneratorStrategy'
 	],
 	#category : #'GeoView-Bloc-Core'
 }
@@ -158,6 +159,10 @@ BlAbstractGeoViewElement >> initialize [
 { #category : #initialization }
 BlAbstractGeoViewElement >> initializeEventHandlers [
 
+	"Add listeners to process Bloc UI events into domains events"
+	eventGeneratorStrategy := self newGeoViewEventGeneratorStrategy.
+	self addEventHandler: eventGeneratorStrategy.
+
 	self addEventHandler: (BlEventHandler
 			 on: BlElementExtentChangedEvent
 			 do: [ :e | self processExtentChangedEvent: e ])
@@ -210,6 +215,12 @@ BlAbstractGeoViewElement >> mapProjection: aMapProjection [
 	"Setup the map projection of the object: Mercator, etc."
 
 	mapProjection := aMapProjection
+]
+
+{ #category : #initialization }
+BlAbstractGeoViewElement >> newGeoViewEventGeneratorStrategy [
+
+	^ GeoViewEventGeneratorStrategy new
 ]
 
 { #category : #private }
