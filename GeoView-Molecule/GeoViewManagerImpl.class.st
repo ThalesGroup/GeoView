@@ -52,7 +52,6 @@ GeoViewManagerImpl >> addObject: aGeoObject [
 { #category : #'geobjects aur' }
 GeoViewManagerImpl >> addObjects: aGeoObjectList [
 
-	(aGeoObjectList isNil or: [ aGeoObjectList isEmpty ]) ifTrue: [ ^ self ].
 	self view addObjects: aGeoObjectList
 ]
 
@@ -82,8 +81,7 @@ GeoViewManagerImpl >> componentInitialize [
 	self initializeSelectionManager.
 	self initializeSymbologyManager.
 	
-	self createView.
-	self initializeView.
+	self createView
 ]
 
 { #category : #'life cycle' }
@@ -132,7 +130,8 @@ GeoViewManagerImpl >> createLayer: aKey [
 
 { #category : #initialization }
 GeoViewManagerImpl >> createView [
-	self subclassResponsibility 
+
+	self subclassResponsibility
 ]
 
 { #category : #private }
@@ -281,15 +280,6 @@ GeoViewManagerImpl >> initializeSymbologyManager [
 	].
 	
 	self setSymbologyManagerName: self componentName.
-]
-
-{ #category : #initialization }
-GeoViewManagerImpl >> initializeView [
-
-	self getView geoCenter: AbsoluteCoordinates zero.
-	self getView minScaleInMeters: 1852.0.
-	self getView maxScaleInMeters: 1.5171584e7.
-	self getView scaleInMeters: 1.4816e7.
 ]
 
 { #category : #'private - events' }

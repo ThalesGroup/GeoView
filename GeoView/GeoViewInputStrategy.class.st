@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoViewInputStrategy,
 	#superclass : #SmockInputStrategy,
-	#category : #'GeoView-Deprecated'
+	#category : #'GeoView-Core'
 }
 
 { #category : #testing }

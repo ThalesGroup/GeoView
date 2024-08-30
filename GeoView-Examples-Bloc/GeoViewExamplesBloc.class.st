@@ -40,11 +40,12 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	objects := self createGeoObjects.
 	element addObjects: objects.
 
-	"Add event handler to receive domain events"
+	"Example of event handler behavior on geoView domain event"
 	element addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent do: [ :event |
-		event traceCr.
+		event absoluteCoordinates printString traceCr.
 	].
 
+	"Example of custom EventHandler, here a logger"
 	element addEventHandler: (GeoViewEventLogger new).
 
 	^ self openViewInWindow: element

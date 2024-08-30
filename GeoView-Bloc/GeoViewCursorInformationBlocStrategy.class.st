@@ -4,7 +4,7 @@ Class {
 	#category : #'GeoView-Bloc-Events'
 }
 
-{ #category : #'event handling' }
+{ #category : #'as yet unclassified' }
 GeoViewCursorInformationBlocStrategy >> processEvent: aSmockEventWrapper context: aSmockInputContext [
 
 	| event coordinates geoViewMng |

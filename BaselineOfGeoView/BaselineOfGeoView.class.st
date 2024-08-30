@@ -66,7 +66,8 @@ BaselineOfGeoView >> corePackages: spec [
 		
 	"Tests packages"
 	spec
-		package: 'GeoView-Tests' with: [ spec requires: #('GeoView' 'GeoView-GeoObjects') ].
+		package: 'GeoView-Tests' with: [ spec requires: #('GeoView' 'GeoView-GeoObjects') ];
+		package: 'GeoView-Bloc-Tests' with: [ spec requires: #('GeoView-Bloc') ].
 		
 	"Tests with Molecule packages"
 	spec

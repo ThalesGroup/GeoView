@@ -64,11 +64,6 @@ TGeoViewWidget >> geoCenter: anAbsoluteCoordinates [
 	geoCenter := anAbsoluteCoordinates copy
 ]
 
-{ #category : #'API -- size' }
-TGeoViewWidget >> getBounds [
-	self explicitRequirement
-]
-
 { #category : #'API -- layers management' }
 TGeoViewWidget >> getLayer: aKey [
 	self explicitRequirement

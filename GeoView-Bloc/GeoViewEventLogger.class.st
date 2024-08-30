@@ -7,12 +7,26 @@ Class {
 { #category : #'api - accessing' }
 GeoViewEventLogger >> eventsToHandle [
 
-	^ { GeoViewCursorCoordinatesChangedEvent }
+	^ {
+		  GeoViewCursorCoordinatesChangedEvent.
+		  GeoViewCenterChangedEvent.
+		  GeoViewScaleChangedEvent }
 ]
 
-{ #category : #'as yet unclassified' }
-GeoViewEventLogger >> geoViewCursorCoordinatesChangedEvent: aGeoViewCursorCoordinatesChangedEvent [
+{ #category : #events }
+GeoViewEventLogger >> geoViewCenterChangedEvent: anEvent [
 
-	"Print lat/lon coordinates on the transcript"
-	aGeoViewCursorCoordinatesChangedEvent absoluteCoordinates printString traceCr.
+	anEvent traceCr.
+]
+
+{ #category : #events }
+GeoViewEventLogger >> geoViewCursorCoordinatesChangedEvent: anEvent [
+
+	anEvent traceCr.
+]
+
+{ #category : #events }
+GeoViewEventLogger >> geoViewScaleChangedEvent: anEvent [
+
+	anEvent traceCr.
 ]

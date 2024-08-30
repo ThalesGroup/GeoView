@@ -11,10 +11,16 @@ Class {
 		'displayToGraphicProjection',
 		'isMarkedForSortDatas',
 		'mapProjection',
-		'eventGeneratorStrategy'
+		'interactionsStrategy'
 	],
 	#category : #'GeoView-Bloc-Core'
 }
+
+{ #category : #testing }
+BlAbstractGeoViewElement class >> isAbstract [
+
+	^ self = BlAbstractGeoViewElement
+]
 
 { #category : #'API -- coordinates transformations' }
 BlAbstractGeoViewElement >> absoluteCoordinatesFromLocalPoint: aLocalPoint [
@@ -49,6 +55,8 @@ BlAbstractGeoViewElement >> addObject: anUserObject [
 
 { #category : #'API -- objects management' }
 BlAbstractGeoViewElement >> addObjects: anUserObjectList [
+
+	(anUserObjectList isNil or: [ anUserObjectList isEmpty ]) ifTrue: [ ^ self ].
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e addObjects: anUserObjectList ].
@@ -93,7 +101,7 @@ BlAbstractGeoViewElement >> displayToGraphicProjection: anObject [
 	displayToGraphicProjection := anObject.
 	displayToGraphicProjection ifNil: [ ^ self ].
 	
-	extent := self getBounds extent.
+	extent := self extent.
 	displayToGraphicProjection offsetInPixels: extent / 2.
 	displayToGraphicProjection updateResolution: extent.
 	self updateGraphicModel
@@ -108,16 +116,20 @@ BlAbstractGeoViewElement >> enqueueBlockAsTask: aBlockClosure [
 	self enqueueTask: task
 ]
 
-{ #category : #'API -- size' }
-BlAbstractGeoViewElement >> getBounds [
+{ #category : #'API -- scale and center' }
+BlAbstractGeoViewElement >> geoCenter: anAbsoluteCoordinates [
 
-	^ self bounds
-]
+	| cartesianCoordinates geoViewEvent |
+	geoCenter := anAbsoluteCoordinates copy.
 
-{ #category : #'API -- size' }
-BlAbstractGeoViewElement >> getExtent [
-	
-	^ self extent
+	cartesianCoordinates := self mapProjection projLatLonToCart: self geoCenter.
+	self displayToGraphicProjection cartesianCenter: cartesianCoordinates.
+	self updateGraphicModel.
+
+	"Send center event"
+	geoViewEvent := GeoViewCenterChangedEvent new.
+	geoViewEvent absoluteCoordinates: anAbsoluteCoordinates.
+	self dispatchEvent: geoViewEvent
 ]
 
 { #category : #'API -- layers management' }
@@ -159,13 +171,19 @@ BlAbstractGeoViewElement >> initialize [
 { #category : #initialization }
 BlAbstractGeoViewElement >> initializeEventHandlers [
 
-	"Add listeners to process Bloc UI events into domains events"
-	eventGeneratorStrategy := self newGeoViewEventGeneratorStrategy.
-	self addEventHandler: eventGeneratorStrategy.
+	"Add listeners to process Bloc UI events interactions"
+	self setInteractionsStrategy: self newInteractionsStrategy.
 
+	"Add listener to compute things when extents changed"
 	self addEventHandler: (BlEventHandler
 			 on: BlElementExtentChangedEvent
 			 do: [ :e | self processExtentChangedEvent: e ])
+]
+
+{ #category : #'strategy management' }
+BlAbstractGeoViewElement >> interactionsStrategy [
+
+	^ interactionsStrategy
 ]
 
 { #category : #accessing }
@@ -217,10 +235,10 @@ BlAbstractGeoViewElement >> mapProjection: aMapProjection [
 	mapProjection := aMapProjection
 ]
 
-{ #category : #initialization }
-BlAbstractGeoViewElement >> newGeoViewEventGeneratorStrategy [
+{ #category : #'strategy management' }
+BlAbstractGeoViewElement >> newInteractionsStrategy [
 
-	^ GeoViewEventGeneratorStrategy new
+	^ GeoViewDefaultInteractionsStrategy new
 ]
 
 { #category : #private }
@@ -234,6 +252,14 @@ BlAbstractGeoViewElement >> processExtentChangedEvent: anEvent [
 	self displayToGraphicProjection updateResolution: extent.
 
 	self updateGraphicModel
+]
+
+{ #category : #'strategy management' }
+BlAbstractGeoViewElement >> removeInteractionsStrategy [
+
+	interactionsStrategy ifNil:[ ^ self ].
+	self removeEventHandler: interactionsStrategy.
+	interactionsStrategy := nil.
 ]
 
 { #category : #'API -- layers management' }
@@ -269,6 +295,23 @@ BlAbstractGeoViewElement >> requestSortDatas [
 	isMarkedForSortDatas := true.
 ]
 
+{ #category : #'API -- scale and center' }
+BlAbstractGeoViewElement >> scaleInMeters: aNumber [
+
+	| scale geoViewEvent |
+	scale := self evaluateScale: aNumber.
+	scaleInMeters := scale.
+	
+	self displayToGraphicProjection altitudeInMeters: self scaleInMeters.
+	self displayToGraphicProjection updateResolution: self extent.
+	self updateGraphicModel.
+	
+	"Send scale event"
+	geoViewEvent := GeoViewScaleChangedEvent new.
+	geoViewEvent scaleInMeters: self scaleInMeters.
+	self dispatchEvent: geoViewEvent.
+]
+
 { #category : #'API -- selection' }
 BlAbstractGeoViewElement >> selectedObjectIndexes: anIndexList [
 
@@ -276,6 +319,15 @@ BlAbstractGeoViewElement >> selectedObjectIndexes: anIndexList [
 		self layers do: [ :l | l updateState: #selected withIndexes: anIndexList ].
 		self requestSortDatas.
 		self requestRepaint ]
+]
+
+{ #category : #'strategy management' }
+BlAbstractGeoViewElement >> setInteractionsStrategy: aBlEventListener [
+
+	self removeInteractionsStrategy.
+
+	aBlEventListener ifNil:[ ^ self ].
+	self addEventHandler: aBlEventListener.
 ]
 
 { #category : #'API -- drawing' }
