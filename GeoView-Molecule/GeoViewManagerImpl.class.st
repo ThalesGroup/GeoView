@@ -104,8 +104,9 @@ GeoViewManagerImpl >> createAndAddGeoObjectsLayer: aKey [
 	^ layer
 ]
 
-{ #category : #'layer creation' }
-GeoViewManagerImpl >> createGeoObjectsLayer: aKey [
+{ #category : #'services - layer creation' }
+GeoViewManagerImpl >> createGeoObjectsLayer: aName [
+
 	self subclassResponsibility 
 ]
 

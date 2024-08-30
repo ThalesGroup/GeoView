@@ -1,5 +1,5 @@
 Class {
 	#name : #GeoViewObjectTestLayer,
-	#superclass : #GeoViewTestLayer,
+	#superclass : #GeoViewGeoObjectsLayer,
 	#category : #'GeoView-Tests-Utils'
 }

@@ -5,11 +5,11 @@ Class {
 }
 
 { #category : #'layer creation' }
-GeoViewManagerBlocAeImpl >> createGeoObjectsLayer: aKey [
+GeoViewManagerBlocAeImpl >> createGeoObjectsLayer: aName [
 
 	| layer |
 	layer := GeoViewGeoObjectsLayer new.
-	layer name: aKey.
+	layer name: aName.
 	layer displayModel indexAccessor: self getObjectIndexAccessor.
 
 	^ layer

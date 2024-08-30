@@ -3,7 +3,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'isVisible',
-		'layerName',
 		'processDataChangedBlock',
 		'name'
 	],
