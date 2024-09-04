@@ -7,15 +7,3 @@ Trait {
 	#classTraits : 'MolComponentEvents classTrait',
 	#category : #'GeoView-Molecule'
 }
-
-{ #category : #events }
-GeoViewManagerLayerEvents >> geoViewLayerAdded: aKey in: aGeoViewManagerKey [
-]
-
-{ #category : #events }
-GeoViewManagerLayerEvents >> geoViewLayerRemoved: aKey in: aGeoViewManagerKey [
-]
-
-{ #category : #events }
-GeoViewManagerLayerEvents >> geoViewLayerUpdated: aKey in: aGeoViewManagerKey [
-]

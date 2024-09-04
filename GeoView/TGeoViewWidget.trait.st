@@ -32,6 +32,7 @@ TGeoViewWidget >> absoluteCoordinatesFromLocalPoint: aLocalPoint [
 
 { #category : #'API -- layers management' }
 TGeoViewWidget >> addLayer: aLayer [
+
 	self explicitRequirement
 ]
 
@@ -66,11 +67,17 @@ TGeoViewWidget >> geoCenter: anAbsoluteCoordinates [
 
 { #category : #'API -- layers management' }
 TGeoViewWidget >> getLayer: aKey [
-	self explicitRequirement
+
+	| layer |
+	layer := self view getLayers
+		         detect: [ :l | l name = aKey ]
+		         ifNone: [ nil ].
+	^ layer
 ]
 
 { #category : #'API -- layers management' }
 TGeoViewWidget >> getLayers [
+
 	self explicitRequirement
 ]
 
@@ -181,7 +188,17 @@ TGeoViewWidget >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 ]
 
 { #category : #'API -- layers management' }
+TGeoViewWidget >> removeAllLayers [
+
+	| layers |
+	layers := self view getLayers.
+	layers copy do: [ :l | self removeLayer: l ].
+	^ layers
+]
+
+{ #category : #'API -- layers management' }
 TGeoViewWidget >> removeLayer: aLayer [
+
 	self explicitRequirement
 ]
 

@@ -140,7 +140,12 @@ BlAbstractGeoViewElement >> geoCenter: anAbsoluteCoordinates [
 
 { #category : #'API -- layers management' }
 BlAbstractGeoViewElement >> getLayer: aKey [
-	self explicitRequirement
+
+	| layer |
+	layer := self getLayers
+		         detect: [ :l | l name = aKey ]
+		         ifNone: [ nil ].
+	^ layer
 ]
 
 { #category : #'API -- layers management' }
@@ -242,7 +247,17 @@ BlAbstractGeoViewElement >> mapProjection [
 BlAbstractGeoViewElement >> mapProjection: aMapProjection [
 	"Setup the map projection of the object: Mercator, etc."
 
-	mapProjection := aMapProjection
+	| geoViewEvent |
+	aMapProjection ~= mapProjection ifFalse:[ ^ self ].
+	mapProjection := aMapProjection copy.
+	
+	self getLayers do:[ :l | l displayModel projection: self mapProjection ].
+	self updateGraphicModel.
+	
+	"Send map projection changed event"
+	geoViewEvent := GeoViewMapProjectionChangedEvent new.
+	geoViewEvent projection: aMapProjection.
+	self dispatchEvent: geoViewEvent
 ]
 
 { #category : #'strategy management' }

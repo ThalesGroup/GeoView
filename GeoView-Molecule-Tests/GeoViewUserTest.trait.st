@@ -8,5 +8,5 @@ Trait {
 { #category : #'accessing - events' }
 GeoViewUserTest classSide >> consumedComponentEvents [
 <componentContract>	
-	^{ GeoViewManagerEvents . GeoViewManagerLayerEvents  } 
+	^{ GeoViewManagerEvents  } 
 ]

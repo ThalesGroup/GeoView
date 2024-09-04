@@ -27,8 +27,19 @@ GeoViewManagerBlocAeImpl >> createView [
 
 { #category : #initialization }
 GeoViewManagerBlocAeImpl >> installEventHandlers: aBlElement [
+
+	"Layers events"
+	aBlElement addEventHandlerOn: GeoViewLayerProcessDataChanged do: [ :e | self layerHasBeenUpdated: e ].
+	aBlElement addEventHandlerOn: GeoViewLayerAddedEvent do: [ :e | self layerAdded: e ]. 
+	aBlElement addEventHandlerOn: GeoViewLayerRemovedEvent do: [ :e | self layerRemoved: e ]. 
 	
-	aBlElement addEventHandlerOn: GeoViewLayerProcessDataChanged do: [ :e | self layerHasBeenUpdated: e layerName ]
+	"Projection events"
+	aBlElement addEventHandlerOn: GeoViewMapProjectionChangedEvent do: [ :e | self mapProjectionHasChanged: e ]. 
+		
+	"Selection events"
+	aBlElement addEventHandlerOn: GeoViewObjectSelectionChanged do: [ :e | self strategyRequestSetSelection: e objectList ].
+	aBlElement addEventHandlerOn: GeoViewObjectSelectionAdded do: [ :e | self strategyRequestAddSelection: e objectList ].
+	aBlElement addEventHandlerOn: GeoViewObjectSelectionCleared do: [ :e | self strategyRequestClearSelection ]
 ]
 
 { #category : #'services - drawing' }
