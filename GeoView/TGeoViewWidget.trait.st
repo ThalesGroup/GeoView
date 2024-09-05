@@ -69,7 +69,7 @@ TGeoViewWidget >> geoCenter: anAbsoluteCoordinates [
 TGeoViewWidget >> getLayer: aKey [
 
 	| layer |
-	layer := self view getLayers
+	layer := self getLayers
 		         detect: [ :l | l name = aKey ]
 		         ifNone: [ nil ].
 	^ layer
@@ -191,7 +191,7 @@ TGeoViewWidget >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 TGeoViewWidget >> removeAllLayers [
 
 	| layers |
-	layers := self view getLayers.
+	layers := self getLayers.
 	layers copy do: [ :l | self removeLayer: l ].
 	^ layers
 ]

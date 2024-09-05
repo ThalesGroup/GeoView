@@ -73,6 +73,8 @@ BlAbstractGeoViewElement >> addObjects: anUserObjectList [
 { #category : #private }
 BlAbstractGeoViewElement >> configureLayer: aLayer [
 	
+	aLayer haveGeoObjects ifFalse:[ ^ self ].
+	
 	"Setup the map projection (from a cartographic point of view) of the layer"
 	aLayer displayModel projection: self mapProjection.
 	

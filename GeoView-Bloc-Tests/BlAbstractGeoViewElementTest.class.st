@@ -8,6 +8,15 @@ Class {
 }
 
 { #category : #tests }
+BlAbstractGeoViewElementTest >> testAddLayer [
+
+	| element layer |
+	element := BlAbstractGeoViewElement new.
+	layer := GeoViewTestLayer new.
+	element addLayer: layer.
+]
+
+{ #category : #tests }
 BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
 
 	| element tag layer |
@@ -26,6 +35,22 @@ BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
 	layer setProcessData: GeoCircleProcessData for: GeoCircle.
 	
 	self assert: tag.
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> testGetLayer [
+
+	| element |
+	element := BlAbstractGeoViewElement new.
+	self assert: (element getLayer: #test) isNil.
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> testGetLayers [
+
+	| element |
+	element := BlAbstractGeoViewElement new.
+	self assert: element getLayers isEmpty.
 ]
 
 { #category : #tests }
