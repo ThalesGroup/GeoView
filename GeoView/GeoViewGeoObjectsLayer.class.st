@@ -54,6 +54,18 @@ GeoViewGeoObjectsLayer >> graphicModel: anObject [
 	graphicModel := anObject
 ]
 
+{ #category : #'API -- projection' }
+GeoViewGeoObjectsLayer >> graphicProjection [
+
+	^ self graphicModel projection
+]
+
+{ #category : #'API -- projection' }
+GeoViewGeoObjectsLayer >> graphicProjection: aGraphicProjection [
+
+	self graphicModel projection: aGraphicProjection
+]
+
 { #category : #'API -- drawing' }
 GeoViewGeoObjectsLayer >> graphicalOrderSortBlock [
 	"Setup a sort block to change the order of graphic element stack"
@@ -117,6 +129,18 @@ GeoViewGeoObjectsLayer >> initializeUserToDisplayModel [
 	self displayModel: GeoViewModel new
 ]
 
+{ #category : #'API -- projection' }
+GeoViewGeoObjectsLayer >> mapProjection [
+
+	^ self displayModel projection
+]
+
+{ #category : #'API -- projection' }
+GeoViewGeoObjectsLayer >> mapProjection: aMapProjection [
+
+	self displayModel projection: aMapProjection
+]
+
 { #category : #private }
 GeoViewGeoObjectsLayer >> processDatasChanged [
 
@@ -124,7 +148,7 @@ GeoViewGeoObjectsLayer >> processDatasChanged [
 	"self triggerEvent: #processDatasChanged"
 	
 	| announcement |
-	announcement := GeoViewLayerProcessDataChanged new.
+	announcement := GeoViewGeoObjectLayerProcessDataChanged new.
 	announcement layerName: self name.
 	self announcer announce: announcement
 ]

@@ -29,7 +29,7 @@ GeoViewManagerBlocAeImpl >> createView [
 GeoViewManagerBlocAeImpl >> installEventHandlers: aBlElement [
 
 	"Layers events"
-	aBlElement addEventHandlerOn: GeoViewLayerProcessDataChanged do: [ :e | self layerHasBeenUpdated: e ].
+	aBlElement addEventHandlerOn: GeoViewGeoObjectLayerProcessDataChanged do: [ :e | self layerHasBeenUpdated: e ].
 	aBlElement addEventHandlerOn: GeoViewLayerAddedEvent do: [ :e | self layerAdded: e ]. 
 	aBlElement addEventHandlerOn: GeoViewLayerRemovedEvent do: [ :e | self layerRemoved: e ]. 
 	

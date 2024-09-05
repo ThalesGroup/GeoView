@@ -23,7 +23,7 @@ BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
 	"initialize geoview and event handler"
 	element := BlAbstractGeoViewElement new.
 	tag := false.	
-	element addEventHandlerOn: GeoViewLayerProcessDataChanged do: [ :e | tag := true ].
+	element addEventHandlerOn: GeoViewGeoObjectLayerProcessDataChanged do: [ :e | tag := true ].
 	self deny: tag.
 	
 	"create and add the layer"

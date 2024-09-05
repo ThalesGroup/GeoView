@@ -22,6 +22,18 @@ GeoViewLayer >> announcer [
 	^ announcer ifNil:[ announcer := Announcer new ]
 ]
 
+{ #category : #'API -- projection' }
+GeoViewLayer >> graphicProjection [
+
+	self explicitRequirement
+]
+
+{ #category : #'API -- projection' }
+GeoViewLayer >> graphicProjection: aGraphicProjection [
+
+	self explicitRequirement
+]
+
 { #category : #testing }
 GeoViewLayer >> haveGeoObjects [
 
@@ -38,6 +50,18 @@ GeoViewLayer >> isVisible [
 GeoViewLayer >> isVisible: aBoolean [
 
 	isVisible := false
+]
+
+{ #category : #'API -- projection' }
+GeoViewLayer >> mapProjection [
+
+	self explicitRequirement
+]
+
+{ #category : #'API -- projection' }
+GeoViewLayer >> mapProjection: aMapProjection [
+
+	self explicitRequirement
 ]
 
 { #category : #accessing }

@@ -1,11 +1,11 @@
 Class {
-	#name : #GeoViewLayerProcessDataChanged,
+	#name : #GeoViewGeoObjectLayerProcessDataChanged,
 	#superclass : #GeoViewLayerEvent,
 	#category : #'GeoView-Bloc-Events'
 }
 
 { #category : #sending }
-GeoViewLayerProcessDataChanged >> sendTo: anObject [
+GeoViewGeoObjectLayerProcessDataChanged >> sendTo: anObject [
 
 	anObject geoViewProcessDataChanged: self
 ]
