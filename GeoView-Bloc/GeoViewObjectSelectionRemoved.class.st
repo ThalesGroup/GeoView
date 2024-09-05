@@ -1,11 +1,11 @@
 Class {
-	#name : #GeoViewObjectSelectionAdded,
+	#name : #GeoViewObjectSelectionRemoved,
 	#superclass : #GeoViewObjectSelectionEvent,
 	#category : #'GeoView-Bloc-Events'
 }
 
 { #category : #sending }
-GeoViewObjectSelectionAdded >> sendTo: anObject [
+GeoViewObjectSelectionRemoved >> sendTo: anObject [
 
 	anObject geoViewObjectSelectionAdded: self
 ]

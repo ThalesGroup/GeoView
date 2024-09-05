@@ -38,7 +38,7 @@ BlGeoViewAeElement >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 
 	"Collect all picked elements"
 	self getLayers do:[ :l | 
-		l graphicModel datas keysAndValuesDo:[ :key :gShape | | distanceInPixels pickingElement |
+		l graphicModel datas keysAndValuesDo:[ :index :gShape | | distanceInPixels pickingElement |
 			
 			"Way to detect if the gShape is picked"
 			distanceInPixels := distanceBlock value: gShape value: pickingResult localPoint.
@@ -49,8 +49,8 @@ BlGeoViewAeElement >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 				pickingElement layerName: l name.
 				pickingElement layerLevel: nil. self flag:'labordep: put the level of the layer'.
 				pickingElement distanceInPixels: distanceInPixels.
-				pickingElement objectKey: key.
-				pickingElement dShape: (l displayModel getData: key).
+				pickingElement objectIndex: index.
+				pickingElement dShape: (l displayModel getData: index).
 				pickingElement gShape: gShape.
 				
 				pickingResult addPickingElement: pickingElement.

@@ -37,8 +37,9 @@ GeoViewManagerBlocAeImpl >> installEventHandlers: aBlElement [
 	aBlElement addEventHandlerOn: GeoViewMapProjectionChangedEvent do: [ :e | self mapProjectionHasChanged: e ]. 
 		
 	"Selection events"
-	aBlElement addEventHandlerOn: GeoViewObjectSelectionChanged do: [ :e | self strategyRequestSetSelection: e objectList ].
-	aBlElement addEventHandlerOn: GeoViewObjectSelectionAdded do: [ :e | self strategyRequestAddSelection: e objectList ].
+	aBlElement addEventHandlerOn: GeoViewObjectSelectionChanged do: [ :e | self strategyRequestSetSelection: e objectIndexesList ].
+	aBlElement addEventHandlerOn: GeoViewObjectSelectionAdded do: [ :e | self strategyRequestAddSelection: e objectIndexesList ].
+	aBlElement addEventHandlerOn: GeoViewObjectSelectionRemoved do: [ :e | self strategyRequestRemoveSelection: e objectIndexesList ].
 	aBlElement addEventHandlerOn: GeoViewObjectSelectionCleared do: [ :e | self strategyRequestClearSelection ]
 ]
 

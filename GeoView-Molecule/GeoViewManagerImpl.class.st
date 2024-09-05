@@ -389,12 +389,10 @@ GeoViewManagerImpl >> setSymbologyManagerName: aComponentName [
 ]
 
 { #category : #'private - selection' }
-GeoViewManagerImpl >> strategyRequestAddSelection: anObjectList [
+GeoViewManagerImpl >> strategyRequestAddSelection: anObjectIndexesList [
 
-	| keyList |
-	anObjectList isEmpty ifTrue:[ ^ self ].
-	keyList := anObjectList collect:[ :e | e objectKey ].
-	self getSmockSelectionManagerServicesProvider addSelectedKeys: keyList
+	anObjectIndexesList isEmpty ifTrue:[ ^ self ].
+	self getSmockSelectionManagerServicesProvider addSelectedKeys: anObjectIndexesList
 ]
 
 { #category : #'private - selection' }
@@ -404,11 +402,16 @@ GeoViewManagerImpl >> strategyRequestClearSelection [
 ]
 
 { #category : #'private - selection' }
-GeoViewManagerImpl >> strategyRequestSetSelection: anObjectList [
+GeoViewManagerImpl >> strategyRequestRemoveSelection: anObjectIndexesList [
 
-	| keyList |
-	keyList := anObjectList collect:[ :e | e objectKey ].
-	self getSmockSelectionManagerServicesProvider setSelectedKeys: keyList
+	anObjectIndexesList isEmpty ifTrue:[ ^ self ].
+	self getSmockSelectionManagerServicesProvider removeSelectedKeys: anObjectIndexesList
+]
+
+{ #category : #'private - selection' }
+GeoViewManagerImpl >> strategyRequestSetSelection: anObjectIndexesList [
+
+	self getSmockSelectionManagerServicesProvider setSelectedKeys: anObjectIndexesList
 ]
 
 { #category : #private }

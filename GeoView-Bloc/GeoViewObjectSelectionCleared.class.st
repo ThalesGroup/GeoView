@@ -1,6 +1,6 @@
 Class {
 	#name : #GeoViewObjectSelectionCleared,
-	#superclass : #GeoViewEvent,
+	#superclass : #GeoViewObjectSelectionEvent,
 	#category : #'GeoView-Bloc-Events'
 }
 

@@ -18,9 +18,13 @@ GeoViewDefaultInteractionsStrategy >> clickEvent: anEvent [
 	"pick the geoview on click"
 
 	| element point pickingResult geoViewEvent |
+
+	self flag:'laborde, need to report bloc bug because there is a click with a drag... patch with checking mouse down position'.
+	self isMapMoving ifTrue:[^ self].
+	
 	element := anEvent currentTarget.
 	point := anEvent position.
-
+	
 	pickingResult := element pickAt: point radius: self pickingRadius.
 
 	"send picking event"
@@ -31,10 +35,26 @@ GeoViewDefaultInteractionsStrategy >> clickEvent: anEvent [
 	"process selection events"
 	anEvent modifiers isCtrl
 		ifTrue: [
-			pickingResult isEmpty ifFalse: [ "When a minimum of 1 object is under the mouse with Ctrl key press, add all objets of the list in the selection"
-				geoViewEvent := GeoViewObjectSelectionAdded new.
-				geoViewEvent objectList: pickingResult getObjects.
-				element dispatchEvent: geoViewEvent ] ifTrue:[ "doing nothing here : stay the selection" ] ] 
+			pickingResult isEmpty ifFalse: [ | selected notSelected |
+				selected := OrderedCollection new.
+				notSelected := OrderedCollection new.
+				
+				"When a minimum of 1 object is under the mouse with Ctrl key press, add all objets of the list in the selection"
+				pickingResult results do:[ :e | e dShape isSelected ifTrue:[ selected add: e objectIndex ] ifFalse:[ notSelected add: e objectIndex ] ].
+				
+				notSelected ifNotEmpty: [ 
+					geoViewEvent := GeoViewObjectSelectionAdded new.
+					geoViewEvent objectIndexesList: notSelected.
+					element dispatchEvent: geoViewEvent
+				].
+			
+				selected ifNotEmpty: [ 
+					geoViewEvent := GeoViewObjectSelectionRemoved new.
+					geoViewEvent objectIndexesList: selected.
+					element dispatchEvent: geoViewEvent
+				].
+				
+			] ifTrue:[ "doing nothing here : stay the selection" ] ] 
 		ifFalse: [
 			pickingResult isEmpty
 				ifTrue: [ 
@@ -43,7 +63,7 @@ GeoViewDefaultInteractionsStrategy >> clickEvent: anEvent [
 				ifFalse: [
 					"When a minimum of 1 object is under the mouse (without Ctrl key press), select only the first object"
 					geoViewEvent := GeoViewObjectSelectionChanged new.
-					geoViewEvent objectList: (OrderedCollection with: pickingResult firstElement) ].
+					geoViewEvent objectIndexesList: (OrderedCollection with: pickingResult firstElement objectIndex) ].
 			element dispatchEvent: geoViewEvent ]
 ]
 
