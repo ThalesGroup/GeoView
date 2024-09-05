@@ -350,7 +350,7 @@ BlAbstractGeoViewElement >> scaleInMeters: aNumber [
 BlAbstractGeoViewElement >> selectedObjectIndexes: anIndexList [
 
 	self enqueueBlockAsTask: [
-		self layers do: [ :l | l updateState: #selected withIndexes: anIndexList ].
+		self layers do: [ :l | l haveGeoObjects ifTrue:[ l updateState: #selected withIndexes: anIndexList ] ].
 		self requestSortDatas.
 		self requestRepaint ]
 ]
