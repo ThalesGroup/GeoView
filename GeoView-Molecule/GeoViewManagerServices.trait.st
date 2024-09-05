@@ -8,8 +8,16 @@ Trait {
 	#category : #'GeoView-Molecule'
 }
 
+{ #category : #'services - layer' }
+GeoViewManagerServices >> addLayer: aLayer [
+]
+
 { #category : #services }
 GeoViewManagerServices >> centerOnPoint: aGlobalPoint [ 
+]
+
+{ #category : #'services - layer' }
+GeoViewManagerServices >> createAndAddGeoObjectsLayer: aKey [
 ]
 
 { #category : #services }
@@ -42,6 +50,18 @@ GeoViewManagerServices >> getGlobalPointFromLocalPoint: aLocalPoint [
 	^ self getView globalPointFromLocalPoint: aLocalPoint
 ]
 
+{ #category : #'services - layer' }
+GeoViewManagerServices >> getLayer: aKey [
+]
+
+{ #category : #'services - layer' }
+GeoViewManagerServices >> getLayerLevel: aKey [
+]
+
+{ #category : #'services - layer' }
+GeoViewManagerServices >> getLayers [
+]
+
 { #category : #services }
 GeoViewManagerServices >> getLocalPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
 
@@ -70,8 +90,12 @@ GeoViewManagerServices >> getScaleInMeters [
 GeoViewManagerServices >> getView [
 ]
 
-{ #category : #'services - drawing' }
-GeoViewManagerServices >> requestViewUpdate [
+{ #category : #'services - layer' }
+GeoViewManagerServices >> removeAllLayers [
+]
+
+{ #category : #'services - layer' }
+GeoViewManagerServices >> removeLayer: aKey [
 ]
 
 { #category : #services }
@@ -86,6 +110,10 @@ GeoViewManagerServices >> scaleUp [
 GeoViewManagerServices >> setGeoCenter: anAbsoluteCoordinates [
 ]
 
+{ #category : #'services - layer' }
+GeoViewManagerServices >> setLevel: anInteger forLayer: aKey [
+]
+
 { #category : #'services - map projection' }
 GeoViewManagerServices >> setMapProjection: aMapProjection [
 ]
@@ -96,10 +124,4 @@ GeoViewManagerServices >> setScaleFactor: aNumber [
 
 { #category : #services }
 GeoViewManagerServices >> setScaleInMeters: aNumber [
-]
-
-{ #category : #services }
-GeoViewManagerServices >> setViewBoundsFrom: aPoint1 to: aPoint2 [
-	"Force the view displayed bounds. Recompute View Center and Scale Factor"
-	self deprecated:'the size is delegated to the backend'.
 ]

@@ -22,7 +22,6 @@ GeoViewManager classSide >> producedComponentEvents [
 	<componentContract>
 	^ {
 		  GeoViewManagerEvents.
-		  GeoViewManagerLayerEvents.
 		  GeoViewManagerCursorEvents }
 ]
 
@@ -31,8 +30,7 @@ GeoViewManager classSide >> providedComponentParameters [
 
 	<componentContract>
 	^ {
-		  GeoViewManagerParameters.
-		  GeoViewManagerGeoObjectsParameters }
+		  GeoViewManagerParameters }
 ]
 
 { #category : #'accessing - services' }
@@ -41,7 +39,6 @@ GeoViewManager classSide >> providedComponentServices [
 	<componentContract>
 	^ {
 		  GeoViewManagerServices.
-		  GeoViewManagerLayerServices.
 		  GeoViewManagerObjectsServices.
 		  GeoViewManagerPickingServices }
 ]

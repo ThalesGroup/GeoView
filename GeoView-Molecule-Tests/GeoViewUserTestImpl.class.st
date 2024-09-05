@@ -9,17 +9,17 @@ Class {
 	#category : #'GeoView-Molecule-Tests-Utils'
 }
 
-{ #category : #events }
+{ #category : #'events - layer' }
 GeoViewUserTestImpl >> geoViewLayerAdded: aKey in: aGeoViewManagerKey [
 	self receivedGeoViewLayerEvents at: #layerAddedEvent put: (aKey -> aGeoViewManagerKey).
 ]
 
-{ #category : #events }
+{ #category : #'events - layer' }
 GeoViewUserTestImpl >> geoViewLayerRemoved: aKey in: aGeoViewManagerKey [
 	self receivedGeoViewLayerEvents at: #layerDeletedEvent put: (aKey -> aGeoViewManagerKey).
 ]
 
-{ #category : #events }
+{ #category : #'events - layer' }
 GeoViewUserTestImpl >> geoViewLayerUpdated: aKey in: aGeoViewManagerKey [
 	self receivedGeoViewLayerEvents at: #layerUpdatedEvent put: (aKey -> aGeoViewManagerKey).
 ]
@@ -33,18 +33,6 @@ GeoViewUserTestImpl >> getGeoViewManagerEventsSubscriber [
 	 	ifTrue: 
 			[eventsSubscriber := MolComponentManager default locatorServices 
 						searchEventsSubscriberFor: GeoViewManagerEvents named: eventsSymbol ]. 
-	^eventsSubscriber
-]
-
-{ #category : #'component accessing' }
-GeoViewUserTestImpl >> getGeoViewManagerLayerEventsSubscriber [
-	| eventsSymbol eventsSubscriber itf |
-	itf := GeoViewManagerLayerEvents.
-	eventsSymbol := self eventsSubscribers at: itf ifAbsent: [^MolNotFoundEventsSubscriber new interface: itf name: nil].
-	eventsSymbol isCollection
-	 	ifTrue: 
-			[eventsSubscriber := MolComponentManager default locatorServices 
-						searchEventsSubscriberFor: GeoViewManagerLayerEvents named: eventsSymbol ]. 
 	^eventsSubscriber
 ]
 

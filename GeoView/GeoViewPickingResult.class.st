@@ -29,15 +29,15 @@ GeoViewPickingResult >> cartesianCoordinates: anObject [
 ]
 
 { #category : #accessing }
-GeoViewPickingResult >> getGeoObjectKeys [
+GeoViewPickingResult >> printString [
 
-	self deprecated: 'use objectkeys'.
-	^ self getObjectKeys 
-]
+	| ws string |
+	string := super printString.
+	ws := WriteStream on: String new.
+	ws nextPutAll: string.
 
-{ #category : #accessing }
-GeoViewPickingResult >> getGeoObjects [
-
-	self deprecated: 'use objects'.
-	^ self getObjects
+	ws space.
+	ws nextPutAll: self absoluteCoordinates printString.
+	
+	^ ws contents
 ]

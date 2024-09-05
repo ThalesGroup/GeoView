@@ -1,12 +1,71 @@
+"
+This class define default user interactions (using Bloc event handler) with a geo view.
+This class provided classical mouse and keyboard ergonomic to move, scale and select objets.
+"
 Class {
 	#name : #GeoViewDefaultInteractionsStrategy,
 	#superclass : #BlEventListener,
 	#instVars : [
 		'isMapMoving',
-		'mouseDownPosition'
+		'mouseDownPosition',
+		'pickingRadius'
 	],
 	#category : #'GeoView-Bloc-Events'
 }
+
+{ #category : #'mouse handlers' }
+GeoViewDefaultInteractionsStrategy >> clickEvent: anEvent [
+	"pick the geoview on click"
+
+	| element point pickingResult geoViewEvent |
+
+	self flag:'laborde, need to report bloc bug because there is a click with a drag... patch with checking mouse down position'.
+	self isMapMoving ifTrue:[^ self].
+	
+	element := anEvent currentTarget.
+	point := anEvent position.
+	
+	pickingResult := element pickAt: point radius: self pickingRadius.
+
+	"send picking event"
+	geoViewEvent := GeoViewPickingEvent new.
+	geoViewEvent pickingResult: pickingResult.
+	element dispatchEvent: geoViewEvent.
+
+	"process selection events"
+	anEvent modifiers isCtrl
+		ifTrue: [
+			pickingResult isEmpty ifFalse: [ | selected notSelected |
+				selected := OrderedCollection new.
+				notSelected := OrderedCollection new.
+				
+				"When a minimum of 1 object is under the mouse with Ctrl key press, add all objets of the list in the selection"
+				pickingResult results do:[ :e | e dShape isSelected ifTrue:[ selected add: e objectIndex ] ifFalse:[ notSelected add: e objectIndex ] ].
+				
+				notSelected ifNotEmpty: [ 
+					geoViewEvent := GeoViewObjectSelectionAdded new.
+					geoViewEvent objectIndexesList: notSelected.
+					element dispatchEvent: geoViewEvent
+				].
+			
+				selected ifNotEmpty: [ 
+					geoViewEvent := GeoViewObjectSelectionRemoved new.
+					geoViewEvent objectIndexesList: selected.
+					element dispatchEvent: geoViewEvent
+				].
+				
+			] ifTrue:[ "doing nothing here : stay the selection" ] ] 
+		ifFalse: [
+			pickingResult isEmpty
+				ifTrue: [ 
+					"When no objects are under the mouse, clear the selection" 
+					geoViewEvent := GeoViewObjectSelectionCleared new ]
+				ifFalse: [
+					"When a minimum of 1 object is under the mouse (without Ctrl key press), select only the first object"
+					geoViewEvent := GeoViewObjectSelectionChanged new.
+					geoViewEvent objectIndexesList: (OrderedCollection with: pickingResult firstElement objectIndex) ].
+			element dispatchEvent: geoViewEvent ]
+]
 
 { #category : #accessing }
 GeoViewDefaultInteractionsStrategy >> isMapMoving [
@@ -104,6 +163,19 @@ GeoViewDefaultInteractionsStrategy >> moveMap: anEvent [
 	self mouseDownPosition: point copy.
 
 	element centerOnGlobalPoint: geoCenterPx.
+]
+
+{ #category : #picking }
+GeoViewDefaultInteractionsStrategy >> pickingRadius [
+	"Consider this radius as a device coordinates (i.e. pixels)"
+	
+	^ pickingRadius ifNil:[ pickingRadius := 5 ]
+]
+
+{ #category : #picking }
+GeoViewDefaultInteractionsStrategy >> pickingRadius: aNumber [
+
+	pickingRadius := aNumber
 ]
 
 { #category : #'events - processing' }

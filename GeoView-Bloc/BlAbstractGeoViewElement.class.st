@@ -54,7 +54,7 @@ BlAbstractGeoViewElement >> addLayer: aLayer [
 BlAbstractGeoViewElement >> addObject: anUserObject [
 
 	self enqueueBlockAsTask: [
-		self layers do: [ :e | e addObject: anUserObject ].
+		self layers do: [ :e | e haveGeoObjects ifTrue:[ e addObject: anUserObject ] ].
 		self requestSortDatas.
 		self requestRepaint ]
 ]
@@ -65,7 +65,7 @@ BlAbstractGeoViewElement >> addObjects: anUserObjectList [
 	(anUserObjectList isNil or: [ anUserObjectList isEmpty ]) ifTrue: [ ^ self ].
 
 	self enqueueBlockAsTask: [
-		self layers do: [ :e | e addObjects: anUserObjectList ].
+		self layers do: [ :e | e haveGeoObjects ifTrue:[ e addObjects: anUserObjectList ] ].
 		self requestSortDatas.
 		self requestRepaint ]
 ]
@@ -74,10 +74,12 @@ BlAbstractGeoViewElement >> addObjects: anUserObjectList [
 BlAbstractGeoViewElement >> configureLayer: aLayer [
 	
 	"Setup the map projection (from a cartographic point of view) of the layer"
-	aLayer displayModel projection: self mapProjection.
+	aLayer mapProjection: self mapProjection.
 	
 	"Setup the graphic projection (from a device point of view) of the layer"
-	aLayer graphicModel projection: self displayToGraphicProjection.
+	aLayer graphicProjection: self displayToGraphicProjection.
+
+	aLayer haveGeoObjects ifFalse:[ ^ self ].
 	
 	"add Alexandrie process datas"
 	aLayer graphicModel setProcessData: DCompositeShapeGeoViewProcessData new for: SmockDCompositeShape.
@@ -91,7 +93,7 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
 	
 	"notify when process datas changed internaly"
-	aLayer announcer when: GeoViewLayerProcessDataChanged send: #layerProcessDataChanged: to: self.
+	aLayer announcer when: GeoViewGeoObjectLayerProcessDataChanged send: #layerProcessDataChanged: to: self.
 ]
 
 { #category : #accessing }
@@ -140,7 +142,12 @@ BlAbstractGeoViewElement >> geoCenter: anAbsoluteCoordinates [
 
 { #category : #'API -- layers management' }
 BlAbstractGeoViewElement >> getLayer: aKey [
-	self explicitRequirement
+
+	| layer |
+	layer := self getLayers
+		         detect: [ :l | l name = aKey ]
+		         ifNone: [ nil ].
+	^ layer
 ]
 
 { #category : #'API -- layers management' }
@@ -160,7 +167,7 @@ BlAbstractGeoViewElement >> globalPointFromLocalPoint: aLocalPoint [
 BlAbstractGeoViewElement >> haveObjectIndex: anIndex [
 	"Pay attention before using it because graphical model is out of sync real user model due to usage of BlTask (asynchronous)"
 
-	^ self layers anySatisfy: [ :l | l haveObjectIndex: anIndex ]
+	^ self layers anySatisfy: [ :e | e haveGeoObjects ifTrue:[ e haveObjectIndex: anIndex ] ]
 ]
 
 { #category : #initialization }
@@ -203,7 +210,7 @@ BlAbstractGeoViewElement >> layerProcessDataChanged: anEvent [
 
 	"Send scale event"
 	| geoViewEvent |
-	geoViewEvent := GeoViewLayerProcessDataChanged new.
+	geoViewEvent := GeoViewGeoObjectLayerProcessDataChanged new.
 	geoViewEvent layerName: anEvent layerName.
 	self dispatchEvent: geoViewEvent
 ]
@@ -242,7 +249,17 @@ BlAbstractGeoViewElement >> mapProjection [
 BlAbstractGeoViewElement >> mapProjection: aMapProjection [
 	"Setup the map projection of the object: Mercator, etc."
 
-	mapProjection := aMapProjection
+	| geoViewEvent |
+	aMapProjection ~= mapProjection ifFalse:[ ^ self ].
+	mapProjection := aMapProjection copy.
+	
+	self getLayers do:[ :l | l displayModel projection: self mapProjection ].
+	self updateGraphicModel.
+	
+	"Send map projection changed event"
+	geoViewEvent := GeoViewMapProjectionChangedEvent new.
+	geoViewEvent projection: aMapProjection.
+	self dispatchEvent: geoViewEvent
 ]
 
 { #category : #'strategy management' }
@@ -288,7 +305,7 @@ BlAbstractGeoViewElement >> removeLayer: aLayer [
 BlAbstractGeoViewElement >> removeObject: anUserObject [
 
 	self enqueueBlockAsTask: [
-		self layers do: [ :e | e removeObject: anUserObject ].
+		self layers do: [ :e | e haveGeoObjects ifTrue:[ e removeObject: anUserObject ] ].
 		self requestRepaint ]
 ]
 
@@ -296,7 +313,7 @@ BlAbstractGeoViewElement >> removeObject: anUserObject [
 BlAbstractGeoViewElement >> removeObjects: anUserObjectList [
 
 	self enqueueBlockAsTask: [
-		self layers do: [ :e | e removeObjects: anUserObjectList ].
+		self layers do: [ :e | e haveGeoObjects ifTrue:[ e removeObjects: anUserObjectList ] ].
 		self requestRepaint ]
 ]
 
@@ -333,7 +350,7 @@ BlAbstractGeoViewElement >> scaleInMeters: aNumber [
 BlAbstractGeoViewElement >> selectedObjectIndexes: anIndexList [
 
 	self enqueueBlockAsTask: [
-		self layers do: [ :l | l updateState: #selected withIndexes: anIndexList ].
+		self layers do: [ :l | l haveGeoObjects ifTrue:[ l updateState: #selected withIndexes: anIndexList ] ].
 		self requestSortDatas.
 		self requestRepaint ]
 ]
@@ -361,7 +378,7 @@ BlAbstractGeoViewElement >> updateGraphicModel [
 BlAbstractGeoViewElement >> updateObject: anUserObject [
 
 	self enqueueBlockAsTask: [
-		self layers do: [ :e | e updateObject: anUserObject ].
+		self layers do: [ :e | e haveGeoObjects ifTrue:[ e updateObject: anUserObject ] ].
 		self requestSortDatas.
 		self requestRepaint ]
 ]
@@ -370,7 +387,7 @@ BlAbstractGeoViewElement >> updateObject: anUserObject [
 BlAbstractGeoViewElement >> updateObjects: anUserObjectList [
 
 	self enqueueBlockAsTask: [
-		self layers do: [ :e | e updateObjects: anUserObjectList ].
+		self layers do: [ :e | e haveGeoObjects ifTrue:[ e updateObjects: anUserObjectList ] ].
 		self requestSortDatas.
 		self requestRepaint ]
 ]
