@@ -1,5 +1,5 @@
 Class {
-	#name : #GeoViewLayer,
+	#name : #AbstractGeoViewLayer,
 	#superclass : #Object,
 	#instVars : [
 		'isVisible',
@@ -11,79 +11,85 @@ Class {
 }
 
 { #category : #testing }
-GeoViewLayer class >> isAbstract [ 
+AbstractGeoViewLayer class >> isAbstract [ 
 
-	^ self == GeoViewLayer 
+	^ self == AbstractGeoViewLayer 
 ]
 
 { #category : #accessing }
-GeoViewLayer >> announcer [
+AbstractGeoViewLayer >> announcer [
 
 	^ announcer ifNil:[ announcer := Announcer new ]
 ]
 
 { #category : #'API -- projection' }
-GeoViewLayer >> graphicProjection [
+AbstractGeoViewLayer >> graphicProjection [
 
 	self explicitRequirement
 ]
 
 { #category : #'API -- projection' }
-GeoViewLayer >> graphicProjection: aGraphicProjection [
+AbstractGeoViewLayer >> graphicProjection: aGraphicProjection [
 
 	self explicitRequirement
 ]
 
 { #category : #testing }
-GeoViewLayer >> haveGeoObjects [
+AbstractGeoViewLayer >> haveGeoObjects [
 
 	^ false
 ]
 
 { #category : #'API -- drawing' }
-GeoViewLayer >> isVisible [
+AbstractGeoViewLayer >> isVisible [
 
 	^ isVisible ifNil:[ isVisible := true ]
 ]
 
 { #category : #'API -- drawing' }
-GeoViewLayer >> isVisible: aBoolean [
+AbstractGeoViewLayer >> isVisible: aBoolean [
 
 	isVisible := false
 ]
 
 { #category : #'API -- projection' }
-GeoViewLayer >> mapProjection [
+AbstractGeoViewLayer >> mapProjection [
 
 	self explicitRequirement
 ]
 
 { #category : #'API -- projection' }
-GeoViewLayer >> mapProjection: aMapProjection [
+AbstractGeoViewLayer >> mapProjection: aMapProjection [
 
 	self explicitRequirement
 ]
 
 { #category : #accessing }
-GeoViewLayer >> name [
+AbstractGeoViewLayer >> name [
 
 	^ name
 ]
 
 { #category : #accessing }
-GeoViewLayer >> name: anObject [
+AbstractGeoViewLayer >> name: anObject [
 
 	name := anObject
 ]
 
+{ #category : #'API -- picking' }
+AbstractGeoViewLayer >> populatePickingResult: aPickingResult [ 
+
+	self explicitRequirement 
+]
+
 { #category : #'API -- symbology' }
-GeoViewLayer >> symbologyProvider: aSymbologyProvider [
+AbstractGeoViewLayer >> symbologyProvider: aSymbologyProvider [
 
 	self explicitRequirement
 ]
 
 { #category : #'API -- drawing' }
-GeoViewLayer >> updateGraphicModel [
+AbstractGeoViewLayer >> updateGraphicModel [
 
 	self explicitRequirement
 ]

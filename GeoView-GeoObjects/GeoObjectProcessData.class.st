@@ -4,19 +4,35 @@ Class {
 	#category : #'GeoView-GeoObjects-ProcessData'
 }
 
+{ #category : #private }
+GeoObjectProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape context: aContext [
+
+	| coordinates absoluteCoordinates |
+	absoluteCoordinates := aGeoObject absoluteCoordinates.
+	absoluteCoordinates
+		ifNotNil: [
+			absoluteCoordinates isEmpty ifTrue: [
+				absoluteCoordinates := AbsoluteCoordinates zero ] ]
+		ifNil: [ absoluteCoordinates := AbsoluteCoordinates zero ].
+
+	absoluteCoordinates isEmpty ifTrue: [
+		absoluteCoordinates := AbsoluteCoordinates zero ].
+	coordinates := self processor projection projLatLonToCart:
+		               absoluteCoordinates.
+	aDShape coordinates: coordinates.
+
+	^ aDShape
+]
+
 { #category : #processing }
 GeoObjectProcessData >> processCreatedData: aKey incoming: aGeoObject with: aDShape context: aContext [
-	| dShape coordinates |
+	| dShape |
 	dShape := aDShape.
 	self assert: [dShape notNil] description: ['[ProcessGeoObject] DShape can not be nil because this process data cannot be used singulary.' ].
 	
 	dShape key: aGeoObject key.
 	dShape isVisible: aGeoObject isVisible.
-	
-	aGeoObject absoluteCoordinates ifNotNil:[
-		coordinates :=  self processor projection projLatLonToCart: (aGeoObject absoluteCoordinates). 
-		dShape coordinates: coordinates.
-	].
+	self computePosition: aKey incoming: aGeoObject with: aDShape context: aContext.
 	
 	^dShape
 ]
@@ -28,15 +44,9 @@ GeoObjectProcessData >> processDeletedData: aKey incoming: aGeoObject with: aDSh
 
 { #category : #processing }
 GeoObjectProcessData >> processUpdatedData: aKey incoming: aGeoObject with: aDShape context: aContext [
-	| coordinates |
-	aDShape isVisible: aGeoObject isVisible.
-	
-	aGeoObject absoluteCoordinates ifNotNil:[
-		coordinates :=  self processor projection projLatLonToCart: (aGeoObject absoluteCoordinates). 
-		aDShape coordinates: coordinates.
-	] ifNil:[
-		aDShape coordinates: nil.
-	].
 
-	^aDShape
+	aDShape isVisible: aGeoObject isVisible.
+	self computePosition: aKey incoming: aGeoObject with: aDShape context: aContext.
+
+	^ aDShape
 ]

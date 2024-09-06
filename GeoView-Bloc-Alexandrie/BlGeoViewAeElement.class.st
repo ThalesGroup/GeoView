@@ -14,13 +14,9 @@ Class {
 BlGeoViewAeElement >> aeDrawOn: aeCanvas [
 	"drawing native bloc elements"
 
-	| sort |
 	super aeDrawOn: aeCanvas.
 
-	sort := self isMarkedForSortDatas.
-	self layers do: [ :l |
-		sort ifTrue: [ l sortDatas ].
-		l aeDrawOn: aeCanvas ].
+	self layers do: [ :l | l aeDrawOn: aeCanvas ].
 
 	isMarkedForSortDatas := false
 ]
@@ -29,36 +25,16 @@ BlGeoViewAeElement >> aeDrawOn: aeCanvas [
 BlGeoViewAeElement >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 	"prepare the picking result"
 
-	| pickingResult distanceBlock radius |
+	| pickingResult |
 	pickingResult := (super pickAt: aGlobalPoint radius: aRadiusInPixels) ifNil:[ ^ nil ].
 
 	"labordep: prepare to be setup with others blocks"
-	distanceBlock := [ :gShape :point | gShape distanceTo: point ].
-	radius := aRadiusInPixels ifNil:[ 0 ].
+	pickingResult distanceBlock: [ :gShape :point | gShape distanceTo: point ].
 
 	"Collect all picked elements"
-	self getLayers do:[ :l | 
-		l graphicModel datas keysAndValuesDo:[ :index :gShape | | distanceInPixels pickingElement |
-			
-			"Way to detect if the gShape is picked"
-			distanceInPixels := distanceBlock value: gShape value: pickingResult localPoint.
-			distanceInPixels <= radius ifTrue:[
-
-				"Store the element into the result"				
-				pickingElement := GeoViewPickingElement new.
-				pickingElement layerName: l name.
-				pickingElement layerLevel: nil. self flag:'labordep: put the level of the layer'.
-				pickingElement distanceInPixels: distanceInPixels.
-				pickingElement objectIndex: index.
-				pickingElement dShape: (l displayModel getData: index).
-				pickingElement gShape: gShape.
-				
-				pickingResult addPickingElement: pickingElement.
-				
-			].			
-		].
-	].
+	self getLayers do:[ :l | l populatePickingResult: pickingResult ].
 
 	pickingResult applyOrder: [ :a :b | a distanceInPixels < b distanceInPixels ].
+	
 	^ pickingResult
 ]

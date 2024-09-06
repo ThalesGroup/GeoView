@@ -3,7 +3,8 @@ Class {
 	#superclass : #SmockPickingResult,
 	#instVars : [
 		'cartesianCoordinates',
-		'absoluteCoordinates'
+		'absoluteCoordinates',
+		'distanceBlock'
 	],
 	#category : #'GeoView-Core'
 }
@@ -26,6 +27,18 @@ GeoViewPickingResult >> cartesianCoordinates [
 { #category : #accessing }
 GeoViewPickingResult >> cartesianCoordinates: anObject [
 	cartesianCoordinates := anObject
+]
+
+{ #category : #accessing }
+GeoViewPickingResult >> distanceBlock [
+
+	^ distanceBlock
+]
+
+{ #category : #accessing }
+GeoViewPickingResult >> distanceBlock: anObject [
+
+	distanceBlock := anObject
 ]
 
 { #category : #accessing }

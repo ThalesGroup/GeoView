@@ -11,7 +11,7 @@ Trait {
 { #category : #'parameters - objects' }
 GeoViewManagerParameters >> getObjectIndexAccessor [
 
-	^ self getView objectIndexAccessor
+	^ self view objectIndexAccessor
 ]
 
 { #category : #'parameters - objects' }

@@ -42,6 +42,12 @@ GeoView2DProjection >> cartesianCenter: aCartesianCoordinates [
 ]
 
 { #category : #accessing }
+GeoView2DProjection >> extentInPixels [
+
+	^ 0@0 extent: (self offsetInPixels * 2) 
+]
+
+{ #category : #accessing }
 GeoView2DProjection >> initialize [ 
 
 	super initialize.
