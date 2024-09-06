@@ -10,8 +10,6 @@ GeoViewManagerBlocAeImpl >> createGeoObjectsLayer: aName [
 	| layer |
 	layer := GeoViewGeoObjectsLayer new.
 	layer name: aName.
-	layer displayModel indexAccessor: self getObjectIndexAccessor.
-
 	^ layer
 ]
 

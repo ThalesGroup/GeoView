@@ -1,6 +1,6 @@
 Class {
 	#name : #GeoViewGeoObjectsLayer,
-	#superclass : #GeoViewLayer,
+	#superclass : #AbstractGeoViewLayer,
 	#traits : 'TGeoViewHandleProcessDatas + TGeoViewHandleObjects',
 	#classTraits : 'TGeoViewHandleProcessDatas classTrait + TGeoViewHandleObjects classTrait',
 	#instVars : [
@@ -139,6 +139,30 @@ GeoViewGeoObjectsLayer >> mapProjection [
 GeoViewGeoObjectsLayer >> mapProjection: aMapProjection [
 
 	self displayModel projection: aMapProjection
+]
+
+{ #category : #'API -- picking' }
+GeoViewGeoObjectsLayer >> populatePickingResult: aPickingResult [
+
+	self graphicModel datas keysAndValuesDo:[ :index :gShape | | distanceInPixels pickingElement |
+			
+			"Way to detect if the gShape is picked"
+			distanceInPixels := aPickingResult distanceBlock value: gShape value: aPickingResult localPoint.
+			(distanceInPixels notNil and:[ distanceInPixels <= aPickingResult radiusInPixels ]) ifTrue:[
+
+				"Store the element into the result"				
+				pickingElement := GeoViewPickingElement new.
+				pickingElement layerName: self name.
+				pickingElement layerLevel: nil. self flag:'labordep: put the level of the layer'.
+				pickingElement distanceInPixels: distanceInPixels.
+				pickingElement objectIndex: index.
+				pickingElement dShape: (self displayModel getData: index).
+				pickingElement gShape: gShape.
+				
+				aPickingResult addPickingElement: pickingElement.
+				
+			].			
+		].
 ]
 
 { #category : #private }

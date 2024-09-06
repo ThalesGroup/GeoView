@@ -1,6 +1,6 @@
 Class {
 	#name : #GeoViewTestLayer,
-	#superclass : #GeoViewLayer,
+	#superclass : #AbstractGeoViewLayer,
 	#instVars : [
 		'graphicProjection',
 		'mapProjection'

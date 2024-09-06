@@ -55,8 +55,7 @@ BlAbstractGeoViewElement >> addObject: anUserObject [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e addObject: anUserObject ] ].
-		self requestSortDatas.
-		self requestRepaint ]
+		self sortDatas ]
 ]
 
 { #category : #'API -- objects management' }
@@ -66,8 +65,7 @@ BlAbstractGeoViewElement >> addObjects: anUserObjectList [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e addObjects: anUserObjectList ] ].
-		self requestSortDatas.
-		self requestRepaint ]
+		self sortDatas ]
 ]
 
 { #category : #private }
@@ -80,6 +78,9 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 	aLayer graphicProjection: self displayToGraphicProjection.
 
 	aLayer haveGeoObjects ifFalse:[ ^ self ].
+	
+	"setup index accessor"
+	aLayer displayModel indexAccessor: self objectIndexAccessor.
 	
 	"add Alexandrie process datas"
 	aLayer graphicModel setProcessData: DCompositeShapeGeoViewProcessData new for: SmockDCompositeShape.
@@ -128,6 +129,9 @@ BlAbstractGeoViewElement >> enqueueBlockAsTask: aBlockClosure [
 BlAbstractGeoViewElement >> geoCenter: anAbsoluteCoordinates [
 
 	| cartesianCoordinates geoViewEvent |
+	
+	geoCenter = anAbsoluteCoordinates ifTrue:[ ^ self ].
+	
 	geoCenter := anAbsoluteCoordinates copy.
 
 	cartesianCoordinates := self mapProjection projLatLonToCart: self geoCenter.
@@ -323,12 +327,6 @@ BlAbstractGeoViewElement >> requestRepaint [
 	self invalidate.
 ]
 
-{ #category : #private }
-BlAbstractGeoViewElement >> requestSortDatas [
-
-	isMarkedForSortDatas := true.
-]
-
 { #category : #'API -- scale and center' }
 BlAbstractGeoViewElement >> scaleInMeters: aNumber [
 
@@ -351,8 +349,7 @@ BlAbstractGeoViewElement >> selectedObjectIndexes: anIndexList [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :l | l haveGeoObjects ifTrue:[ l updateState: #selected withIndexes: anIndexList ] ].
-		self requestSortDatas.
-		self requestRepaint ]
+		self sortDatas ]
 ]
 
 { #category : #'strategy management' }
@@ -365,13 +362,23 @@ BlAbstractGeoViewElement >> setInteractionsStrategy: aBlEventListener [
 	self addEventHandler: aBlEventListener.
 ]
 
+{ #category : #private }
+BlAbstractGeoViewElement >> sortDatas [
+
+	self isMarkedForSortDatas ifTrue: [ ^ self ].
+	isMarkedForSortDatas := true.
+	self layers do: [ :l | l haveGeoObjects ifTrue: [ l sortDatas ] ].
+	self requestRepaint
+]
+
 { #category : #'API -- drawing' }
 BlAbstractGeoViewElement >> updateGraphicModel [
 	"Update the graphic model with the Display model"
 
 	self enqueueBlockAsTask: [
-		self layers do: [ :e | e updateGraphicModel ].
-		self requestRepaint ]
+		self layers do: [ :l |
+			l updateGraphicModel.
+			self requestRepaint ] ]
 ]
 
 { #category : #'API -- objects management' }
@@ -379,8 +386,7 @@ BlAbstractGeoViewElement >> updateObject: anUserObject [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e updateObject: anUserObject ] ].
-		self requestSortDatas.
-		self requestRepaint ]
+		self sortDatas ]
 ]
 
 { #category : #'API -- objects management' }
@@ -388,16 +394,14 @@ BlAbstractGeoViewElement >> updateObjects: anUserObjectList [
 
 	self enqueueBlockAsTask: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e updateObjects: anUserObjectList ] ].
-		self requestSortDatas.
-		self requestRepaint ]
+		self sortDatas ]
 ]
 
 { #category : #private }
 BlAbstractGeoViewElement >> updateState: aStateSymbol withIndexes: aKeyList [
 	
 	self enqueueBlockAsTask: [ 
-		self layers do: [ :l | l updateState: aStateSymbol withIndexes: aKeyList ].
-		self requestSortDatas.
-		self requestRepaint
+		self layers do: [ :l | l haveGeoObjects ifTrue:[ l updateState: aStateSymbol withIndexes: aKeyList ] ].
+		self sortDatas
 	]
 ]

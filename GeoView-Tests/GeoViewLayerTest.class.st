@@ -11,7 +11,7 @@ Class {
 GeoViewLayerTest >> testAnnouncer [
 
 	| layer announcer |
-	layer := GeoViewLayer new.
+	layer := AbstractGeoViewLayer new.
 	announcer := layer announcer.
 	self assert: announcer notNil.
 	self assert: (announcer isKindOf: Announcer).
@@ -25,7 +25,7 @@ GeoViewLayerTest >> testAnnouncer [
 GeoViewLayerTest >> testHaveGeoObjects [
 
 	| layer |
-	layer := GeoViewLayer new.
+	layer := AbstractGeoViewLayer new.
 	self deny: layer haveGeoObjects.
 ]
 
@@ -33,7 +33,7 @@ GeoViewLayerTest >> testHaveGeoObjects [
 GeoViewLayerTest >> testIsVisible [
 
 	| layer |
-	layer := GeoViewLayer new.
+	layer := AbstractGeoViewLayer new.
 	self assert: layer isVisible.
 	
 	layer isVisible: false.
@@ -44,7 +44,7 @@ GeoViewLayerTest >> testIsVisible [
 GeoViewLayerTest >> testName [
 
 	| layer |
-	layer := GeoViewLayer new.
+	layer := AbstractGeoViewLayer new.
 	self assert: layer name isNil.
 	
 	layer name: 'myLayer'.

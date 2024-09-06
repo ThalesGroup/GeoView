@@ -6,12 +6,38 @@ Class {
 	#name : #GeoViewDefaultInteractionsStrategy,
 	#superclass : #BlEventListener,
 	#instVars : [
+		'allowMapMoving',
+		'allowMapScaling',
 		'isMapMoving',
 		'mouseDownPosition',
 		'pickingRadius'
 	],
 	#category : #'GeoView-Bloc-Events'
 }
+
+{ #category : #accessing }
+GeoViewDefaultInteractionsStrategy >> allowMapMoving [
+
+	^ allowMapMoving ifNil:[ allowMapMoving := true ]
+]
+
+{ #category : #accessing }
+GeoViewDefaultInteractionsStrategy >> allowMapMoving: anObject [
+
+	allowMapMoving := anObject
+]
+
+{ #category : #accessing }
+GeoViewDefaultInteractionsStrategy >> allowMapScaling [
+
+	^ allowMapScaling ifNil:[ allowMapScaling := true ]
+]
+
+{ #category : #accessing }
+GeoViewDefaultInteractionsStrategy >> allowMapScaling: anObject [
+
+	allowMapScaling := anObject
+]
 
 { #category : #'mouse handlers' }
 GeoViewDefaultInteractionsStrategy >> clickEvent: anEvent [
@@ -120,6 +146,7 @@ GeoViewDefaultInteractionsStrategy >> mouseWheelEvent: anEvent [
 	
 	| element point mapProjection graphicProjection geoPoint geoPointPx geoCenterPx difPx geoPointPxNew newPointPx geoPointFinal |
 
+	self allowMapScaling ifFalse:[ ^ self ].
 	element := anEvent currentTarget.
 	point := anEvent position.
 	
@@ -137,6 +164,8 @@ GeoViewDefaultInteractionsStrategy >> mouseWheelEvent: anEvent [
 		ifTrue: [ element scaleDown ] 
 		ifFalse:[ anEvent isScrollUp ifTrue: [ element scaleUp ] ifFalse:[ ^ self ] ].
 	
+	self allowMapMoving ifFalse:[ ^ self ].
+	
 	"compute new position in pixel for the mouse position before zoom"
 	geoPointPxNew := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: geoPoint).
 	"add the previous diff in pixels to get new center in pixel"
@@ -150,6 +179,8 @@ GeoViewDefaultInteractionsStrategy >> mouseWheelEvent: anEvent [
 GeoViewDefaultInteractionsStrategy >> moveMap: anEvent [ 
 
 	| point difPx geoCenterPx element |
+	
+	self allowMapMoving ifFalse:[ ^ self ].
 	element := anEvent currentTarget ifNil: [ ^ self ].
 
 	point := anEvent position.
