@@ -77,6 +77,9 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 	"Setup the graphic projection (from a device point of view) of the layer"
 	aLayer graphicProjection: self displayToGraphicProjection.
 
+	"install common layers handlers"
+	aLayer announcer when: GeoViewLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
+
 	aLayer haveGeoObjects ifFalse:[ ^ self ].
 	
 	"setup index accessor"
@@ -89,12 +92,13 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 	aLayer graphicModel setProcessData: DTextGeoViewProcessData new for: SmockDText.
 	aLayer graphicModel setProcessData: DPolygonGeoViewProcessData new for: SmockDPolygon.
 	aLayer graphicModel setProcessData: DPolylineGeoViewProcessData new for: SmockDPolyline.
+	aLayer graphicModel setProcessData: DSegmentGeoViewProcessData new for: SmockDSegment.
 
 	"specify default process data"
 	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
 	
-	"notify when process datas changed internaly"
-	aLayer announcer when: GeoViewGeoObjectLayerProcessDataChanged send: #layerProcessDataChanged: to: self.
+	"install geo objects layers handlers"
+	aLayer announcer when: GeoViewGeoObjectLayerProcessDataChanged send: #layerProcessDataChanged: to: self
 ]
 
 { #category : #accessing }
@@ -134,7 +138,7 @@ BlAbstractGeoViewElement >> geoCenter: anAbsoluteCoordinates [
 	
 	geoCenter := anAbsoluteCoordinates copy.
 
-	cartesianCoordinates := self mapProjection projLatLonToCart: self geoCenter.
+	cartesianCoordinates := self mapProjection projLatLonToCart: geoCenter.
 	self displayToGraphicProjection cartesianCenter: cartesianCoordinates.
 	self updateGraphicModel.
 
@@ -207,6 +211,12 @@ BlAbstractGeoViewElement >> interactionsStrategy [
 BlAbstractGeoViewElement >> isMarkedForSortDatas [
 
 	^ isMarkedForSortDatas ifNil: [ isMarkedForSortDatas := false ]
+]
+
+{ #category : #private }
+BlAbstractGeoViewElement >> layerNeedToBeRepaint: anEvent [
+
+	self requestRepaint 
 ]
 
 { #category : #private }

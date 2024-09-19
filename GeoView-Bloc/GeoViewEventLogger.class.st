@@ -17,7 +17,7 @@ GeoViewEventLogger >> eventsToHandle [
 		  GeoViewGeoObjectLayerProcessDataChanged.
 		  GeoViewObjectSelectionChanged.
 		  GeoViewObjectSelectionAdded.
-		GeoViewObjectSelectionRemoved .
+		  GeoViewObjectSelectionRemoved.
 		  GeoViewObjectSelectionCleared }
 ]
 

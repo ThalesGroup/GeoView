@@ -4,31 +4,99 @@ A BlAbstractGeoViewElementTest is a test class for testing the behavior of BlAbs
 Class {
 	#name : #BlAbstractGeoViewElementTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'geoView'
+	],
 	#category : #'GeoView-Bloc-Tests-Core'
 }
 
 { #category : #tests }
+BlAbstractGeoViewElementTest >> setUp [
+
+	| container |
+	super setUp.
+	geoView := BlAbstractGeoViewElement new.
+	geoView constraintsDo: [ :c | c horizontal matchParent. c vertical matchParent ].
+	container := BlElement new.
+	container size: 100@100.
+	container addChild: geoView.
+	
+	geoView requestLayout.
+	container forceLayout.
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> tearDown [
+
+	geoView := nil.
+	super tearDown.
+	
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint [
+
+	| abs center |
+	center := geoView size / 2.
+	abs := geoView absoluteCoordinatesFromGlobalPoint: center.
+	self assert: abs latitudeInDegrees equals: 0.
+	self assert: abs longitudeInDegrees equals: 0.
+	
+	geoView geoCenter: AbsoluteCoordinates frBrest.
+	abs := geoView absoluteCoordinatesFromGlobalPoint: center.
+	self assert: abs latitudeInDegrees rounded equals: AbsoluteCoordinates frBrest latitudeInDegrees rounded.
+	self assert: abs longitudeInDegrees rounded equals: AbsoluteCoordinates frBrest longitudeInDegrees rounded.
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
+
+	| abs |
+	"Center should be zero"
+	abs := geoView absoluteCoordinatesFromGlobalPoint: (geoView size / 2).
+	self assert: abs latitudeInDegrees equals: 0.
+	self assert: abs longitudeInDegrees equals: 0.
+	
+	"at the top left corner"
+	abs := geoView absoluteCoordinatesFromGlobalPoint: 0@0.
+	self assert: abs latitudeInDegrees > 0.
+	self assert: abs longitudeInDegrees < 0.
+	
+	"at the bottom right"
+	abs := geoView absoluteCoordinatesFromGlobalPoint: (geoView size).
+	self assert: abs latitudeInDegrees < 0.
+	self assert: abs longitudeInDegrees > 0.
+]
+
+{ #category : #tests }
 BlAbstractGeoViewElementTest >> testAddLayer [
 
-	| element layer |
-	element := BlAbstractGeoViewElement new.
+	| layer |
 	layer := GeoViewTestLayer new.
-	element addLayer: layer.
+	geoView addLayer: layer.
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> testGeoCenter [
+
+	geoView geoCenter: AbsoluteCoordinates frBrest.
+
+	self assert: geoView geoCenter equals: AbsoluteCoordinates frBrest.
+	self deny: geoView displayToGraphicProjection cartesianCenter equals: CartesianCoordinates zero.
 ]
 
 { #category : #tests }
 BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
 
-	| element tag layer |
+	| tag layer |
 	"initialize geoview and event handler"
-	element := BlAbstractGeoViewElement new.
 	tag := false.	
-	element addEventHandlerOn: GeoViewGeoObjectLayerProcessDataChanged do: [ :e | tag := true ].
+	geoView addEventHandlerOn: GeoViewGeoObjectLayerProcessDataChanged do: [ :e | tag := true ].
 	self deny: tag.
 	
 	"create and add the layer"
 	layer := GeoViewGeoObjectsLayer new name: #myLayer.
-	element addLayer: layer.
+	geoView addLayer: layer.
 	self deny: tag.
 	
 	"change layer process datas"
@@ -40,60 +108,56 @@ BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
 { #category : #tests }
 BlAbstractGeoViewElementTest >> testGetLayer [
 
-	| element |
-	element := BlAbstractGeoViewElement new.
-	self assert: (element getLayer: #test) isNil.
+	self assert: (geoView getLayer: #test) isNil.
 ]
 
 { #category : #tests }
 BlAbstractGeoViewElementTest >> testGetLayers [
 
-	| element |
-	element := BlAbstractGeoViewElement new.
-	self assert: element getLayers isEmpty.
+	self assert: geoView getLayers isEmpty.
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> testInitialize [
+
+	self assert: geoView size equals: 100@100.
+	self assert: geoView mapProjection class equals: GeoViewMercatorProjection.
+	self assert: geoView displayToGraphicProjection class equals: GeoView2DProjection.
+	self assert: geoView geoCenter equals: AbsoluteCoordinates zero.
+	self assert: geoView displayToGraphicProjection cartesianCenter equals: CartesianCoordinates zero.
 ]
 
 { #category : #tests }
 BlAbstractGeoViewElementTest >> testInteractionsStrategy [
 
-	| element |
-	element := BlAbstractGeoViewElement new.
-	self assert: element interactionsStrategy class equals: GeoViewDefaultInteractionsStrategy
+	self assert: geoView interactionsStrategy class equals: GeoViewDefaultInteractionsStrategy
 ]
 
 { #category : #tests }
 BlAbstractGeoViewElementTest >> testNewInteractionsStrategy [
 
-	| element |
-	element := BlAbstractGeoViewElement new.
-	self assert: element newInteractionsStrategy class equals: GeoViewDefaultInteractionsStrategy.
+	self assert: geoView newInteractionsStrategy class equals: GeoViewDefaultInteractionsStrategy.
 ]
 
 { #category : #tests }
 BlAbstractGeoViewElementTest >> testObjectIndexAccessor [
 
-	| element |
-	element := BlAbstractGeoViewElement new.
-	self assert: element objectIndexAccessor equals: #key.
+	self assert: geoView objectIndexAccessor equals: #key.
 	
-	element objectIndexAccessor: #id.
-	self assert: element objectIndexAccessor equals: #id.
+	geoView objectIndexAccessor: #id.
+	self assert: geoView objectIndexAccessor equals: #id.
 ]
 
 { #category : #tests }
 BlAbstractGeoViewElementTest >> testRemoveInteractionsStrategy [
 
-	| element |
-	element := BlAbstractGeoViewElement new.
-	element removeInteractionsStrategy.
-	self assert: element interactionsStrategy isNil
+	geoView removeInteractionsStrategy.
+	self assert: geoView interactionsStrategy isNil
 ]
 
 { #category : #tests }
 BlAbstractGeoViewElementTest >> testSetInteractionsStrategy [
 
-	| element |
-	element := BlAbstractGeoViewElement new.
-	element setInteractionsStrategy: nil.
-	self assert: element interactionsStrategy isNil
+	geoView setInteractionsStrategy: nil.
+	self assert: geoView interactionsStrategy isNil
 ]

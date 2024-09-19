@@ -82,6 +82,16 @@ AbstractGeoViewLayer >> populatePickingResult: aPickingResult [
 	self explicitRequirement 
 ]
 
+{ #category : #private }
+AbstractGeoViewLayer >> sendRepaintRequest [
+	"Notify that the layer need to be repaint, use it if the layer manage internal changes of his own graphical model"
+	
+	| announcement |
+	announcement := GeoViewLayerRepaintRequest new.
+	announcement layerName: self name.
+	self announcer announce: announcement
+]
+
 { #category : #'API -- symbology' }
 AbstractGeoViewLayer >> symbologyProvider: aSymbologyProvider [
 
