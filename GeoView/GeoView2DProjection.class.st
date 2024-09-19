@@ -32,7 +32,7 @@ GeoView2DProjection >> altitudeInMeters: aNumber [
 GeoView2DProjection >> cartesianCenter [
 
 	^ cartesianCenter ifNil: [
-		  cartesianCenter := AbsoluteCoordinates zero ]
+		  cartesianCenter := CartesianCoordinates zero ]
 ]
 
 { #category : #accessing }
@@ -98,14 +98,25 @@ GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 { #category : #accessing }
 GeoView2DProjection >> projPixelToCart: aPoint [
 
-	| point geoCenter |
-	geoCenter := self cartesianCenter asPoint.
-
-	point := self metersByPixel = 0 
-		ifTrue:[ (aPoint - self offsetInPixels) + geoCenter] 
-		ifFalse:[ (aPoint - self offsetInPixels) / self metersByPixel + geoCenter ].	
+	| xCartesian yCartesian xOffset yOffset scale |
 	
-	^ CartesianCoordinates xInMeters: point x yInMeters: point y
+	"Calculate the X offset from the center of the view"
+    xOffset := aPoint x - self offsetInPixels x.
+	
+	"Calculate the Y offset from the center of the view, reversing the Y direction"
+    yOffset := self offsetInPixels y - aPoint y.
+	
+	 "Calculate the Cartesian coordinates based on the center of the view and the scale"
+	scale := self metersByPixel.
+	scale = 0 ifTrue:[
+		xCartesian := xOffset + self cartesianCenter xInMeters.
+  	 	yCartesian := yOffset + self cartesianCenter yInMeters.
+	] ifFalse:[
+		xCartesian := (xOffset / scale) + self cartesianCenter xInMeters.
+  	 	yCartesian := (yOffset / scale) + self cartesianCenter yInMeters.
+	].
+	
+	^ CartesianCoordinates xInMeters: xCartesian yInMeters: yCartesian
 ]
 
 { #category : #accessing }

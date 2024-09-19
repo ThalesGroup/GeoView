@@ -167,9 +167,7 @@ GeoViewGeoObjectsLayer >> populatePickingResult: aPickingResult [
 
 { #category : #private }
 GeoViewGeoObjectsLayer >> processDatasChanged [
-
 	"Notify internaly that process datas changed"
-	"self triggerEvent: #processDatasChanged"
 	
 	| announcement |
 	announcement := GeoViewGeoObjectLayerProcessDataChanged new.
