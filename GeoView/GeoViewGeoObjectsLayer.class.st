@@ -63,7 +63,10 @@ GeoViewGeoObjectsLayer >> graphicProjection [
 { #category : #'API -- projection' }
 GeoViewGeoObjectsLayer >> graphicProjection: aGraphicProjection [
 
-	self graphicModel projection: aGraphicProjection
+	self displayModel viewInfos: aGraphicProjection.
+	
+	self graphicModel projection: aGraphicProjection.
+	self graphicModel viewInfos: aGraphicProjection
 ]
 
 { #category : #'API -- drawing' }
