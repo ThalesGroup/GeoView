@@ -53,9 +53,9 @@ BlAbstractGeoViewElement >> addLayer: aLayer [
 { #category : #'API -- objects management' }
 BlAbstractGeoViewElement >> addObject: anUserObject [
 
-	self enqueueBlockAsTask: [
+	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e addObject: anUserObject ] ].
-		self sortDatas ]
+		self internalSortDatas ]
 ]
 
 { #category : #'API -- objects management' }
@@ -63,9 +63,42 @@ BlAbstractGeoViewElement >> addObjects: anUserObjectList [
 
 	(anUserObjectList isNil or: [ anUserObjectList isEmpty ]) ifTrue: [ ^ self ].
 
-	self enqueueBlockAsTask: [
+	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e addObjects: anUserObjectList ] ].
-		self sortDatas ]
+		self internalSortDatas ]
+]
+
+{ #category : #private }
+BlAbstractGeoViewElement >> configureGraphicModelForLayer: aLayer [
+	
+	| graphicModel |
+	graphicModel := aLayer graphicModel.
+	
+	"add Alexandrie process datas if not already here"	
+	(graphicModel getProcessDataForClass: SmockDCompositeShape) ifNil:[
+		graphicModel setProcessData: DCompositeShapeGeoViewProcessData new for: SmockDCompositeShape.
+	].
+	(graphicModel getProcessDataForClass: SmockDSymbol) ifNil:[
+		graphicModel setProcessData: DSymbolGeoViewProcessData new for: SmockDSymbol.
+	].
+	(graphicModel getProcessDataForClass: SmockDCircle) ifNil:[
+		graphicModel setProcessData: DCircleGeoViewProcessData new for: SmockDCircle.
+	].
+	(graphicModel getProcessDataForClass: SmockDText) ifNil:[
+		graphicModel setProcessData: DTextGeoViewProcessData new for: SmockDText.
+	].
+	(graphicModel getProcessDataForClass: SmockDPolygon) ifNil:[
+		graphicModel setProcessData: DPolygonGeoViewProcessData new for: SmockDPolygon.
+	].
+	(graphicModel getProcessDataForClass: SmockDPolyline) ifNil:[
+		graphicModel setProcessData: DPolylineGeoViewProcessData new for: SmockDPolyline.
+	].
+	(graphicModel getProcessDataForClass: SmockDSegment) ifNil:[
+		graphicModel setProcessData: DSegmentGeoViewProcessData new for: SmockDSegment.
+	].
+
+	"specify default process data"
+	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
 ]
 
 { #category : #private }
@@ -85,17 +118,7 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 	"setup index accessor"
 	aLayer displayModel indexAccessor: self objectIndexAccessor.
 	
-	"add Alexandrie process datas"
-	aLayer graphicModel setProcessData: DCompositeShapeGeoViewProcessData new for: SmockDCompositeShape.
-	aLayer graphicModel setProcessData: DSymbolGeoViewProcessData new for: SmockDSymbol.
-	aLayer graphicModel setProcessData: DCircleGeoViewProcessData new for: SmockDCircle.
-	aLayer graphicModel setProcessData: DTextGeoViewProcessData new for: SmockDText.
-	aLayer graphicModel setProcessData: DPolygonGeoViewProcessData new for: SmockDPolygon.
-	aLayer graphicModel setProcessData: DPolylineGeoViewProcessData new for: SmockDPolyline.
-	aLayer graphicModel setProcessData: DSegmentGeoViewProcessData new for: SmockDSegment.
-
-	"specify default process data"
-	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
+	self configureGraphicModelForLayer: aLayer.
 	
 	"install geo objects layers handlers"
 	aLayer announcer when: GeoViewGeoObjectLayerProcessDataChanged send: #layerProcessDataChanged: to: self
@@ -121,11 +144,15 @@ BlAbstractGeoViewElement >> displayToGraphicProjection: anObject [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> enqueueBlockAsTask: aBlockClosure [
+BlAbstractGeoViewElement >> enqueueBlockAsTaskAndRequestRepaint: aBlockClosure [
 
 	| task |
 	task := BlTaskAction new.
 	task action: aBlockClosure.
+	self enqueueTask: task.
+	
+	task := BlTaskAction new.
+	task action: [ self requestRepaint ].
 	self enqueueTask: task
 ]
 
@@ -205,6 +232,14 @@ BlAbstractGeoViewElement >> initializeEventHandlers [
 BlAbstractGeoViewElement >> interactionsStrategy [
 
 	^ interactionsStrategy
+]
+
+{ #category : #private }
+BlAbstractGeoViewElement >> internalSortDatas [
+
+	self isMarkedForSortDatas ifTrue: [ ^ self ].
+	isMarkedForSortDatas := true.
+	self layers do: [ :l | l haveGeoObjects ifTrue: [ l sortDatas ] ]
 ]
 
 { #category : #accessing }
@@ -318,17 +353,17 @@ BlAbstractGeoViewElement >> removeLayer: aLayer [
 { #category : #'API -- objects management' }
 BlAbstractGeoViewElement >> removeObject: anUserObject [
 
-	self enqueueBlockAsTask: [
+	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e removeObject: anUserObject ] ].
-		self requestRepaint ]
+		self internalSortDatas ]
 ]
 
 { #category : #'API -- objects management' }
 BlAbstractGeoViewElement >> removeObjects: anUserObjectList [
 
-	self enqueueBlockAsTask: [
+	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e removeObjects: anUserObjectList ] ].
-		self requestRepaint ]
+		self internalSortDatas ]
 ]
 
 { #category : #private }
@@ -357,9 +392,9 @@ BlAbstractGeoViewElement >> scaleInMeters: aNumber [
 { #category : #'API -- selection' }
 BlAbstractGeoViewElement >> selectedObjectIndexes: anIndexList [
 
-	self enqueueBlockAsTask: [
+	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :l | l haveGeoObjects ifTrue:[ l updateState: #selected withIndexes: anIndexList ] ].
-		self sortDatas ]
+		self internalSortDatas ]
 ]
 
 { #category : #'strategy management' }
@@ -375,43 +410,40 @@ BlAbstractGeoViewElement >> setInteractionsStrategy: aBlEventListener [
 { #category : #private }
 BlAbstractGeoViewElement >> sortDatas [
 
-	self isMarkedForSortDatas ifTrue: [ ^ self ].
-	isMarkedForSortDatas := true.
-	self layers do: [ :l | l haveGeoObjects ifTrue: [ l sortDatas ] ].
-	self requestRepaint
+	self internalSortDatas.
+	self requestRepaint.
 ]
 
 { #category : #'API -- drawing' }
 BlAbstractGeoViewElement >> updateGraphicModel [
 	"Update the graphic model with the Display model"
 
-	self enqueueBlockAsTask: [
-		self layers do: [ :l |
-			l updateGraphicModel.
-			self requestRepaint ] ]
+	self enqueueBlockAsTaskAndRequestRepaint: [
+		self layers do: [ :l | l updateGraphicModel ] ].
+	
 ]
 
 { #category : #'API -- objects management' }
 BlAbstractGeoViewElement >> updateObject: anUserObject [
 
-	self enqueueBlockAsTask: [
+	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e updateObject: anUserObject ] ].
-		self sortDatas ]
+		self internalSortDatas ]
 ]
 
 { #category : #'API -- objects management' }
 BlAbstractGeoViewElement >> updateObjects: anUserObjectList [
 
-	self enqueueBlockAsTask: [
+	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e updateObjects: anUserObjectList ] ].
-		self sortDatas ]
+		self internalSortDatas ]
 ]
 
 { #category : #private }
 BlAbstractGeoViewElement >> updateState: aStateSymbol withIndexes: aKeyList [
 	
-	self enqueueBlockAsTask: [ 
+	self enqueueBlockAsTaskAndRequestRepaint: [ 
 		self layers do: [ :l | l haveGeoObjects ifTrue:[ l updateState: aStateSymbol withIndexes: aKeyList ] ].
-		self sortDatas
+		self internalSortDatas
 	]
 ]

@@ -185,7 +185,7 @@ GeoViewDefaultInteractionsStrategy >> moveMap: anEvent [
 
 	point := anEvent position.
 	difPx := self mouseDownPosition - point.
-	difPx := difPx x @ difPx y negated.
+	difPx := difPx x @ difPx y.
 	geoCenterPx := element globalPointFromAbsoluteCoordinates: element geoCenter.
 	geoCenterPx ifNil: [ ^ self ].
 	geoCenterPx := geoCenterPx + difPx.
