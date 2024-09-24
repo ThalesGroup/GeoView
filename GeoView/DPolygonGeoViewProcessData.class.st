@@ -23,7 +23,7 @@ DPolygonGeoViewProcessData >> processUpdatedData: aKey incoming: aDPolygon with:
 	aDPolygon isDrawModeDevice ifTrue:[ 
 		points := aDPolygon points
 	] ifFalse: [ 
-		( aDPolygon isDrawModeUser or:[ aDPolygon isDrawModeUserProjected ] ) ifTrue:[
+		aDPolygon isDrawModeUser ifTrue:[
 			points := aDPolygon points collect:[:pt |
 				self processor projection projCartToPixel: pt
 			].

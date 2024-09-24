@@ -20,7 +20,7 @@ DPolylineGeoViewProcessData >> processUpdatedData: aKey incoming: aDPolyline wit
 	aDPolyline isDrawModeDevice ifTrue:[ 
 		points := aDPolyline points
 	] ifFalse: [ 
-		( aDPolyline isDrawModeUser or:[ aDPolyline isDrawModeUserProjected ] ) ifTrue:[
+		aDPolyline isDrawModeUser ifTrue:[
 			points := aDPolyline points collect:[:pt |
 				self processor projection projCartToPixel: pt
 			].

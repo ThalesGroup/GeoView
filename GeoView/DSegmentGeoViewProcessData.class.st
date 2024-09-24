@@ -21,7 +21,7 @@ DSegmentGeoViewProcessData >> processUpdatedData: aKey incoming: aDSegment with:
 		from := aDSegment coordinates.
 		to := aDSegment coordinates2.
 	] ifFalse: [ 
-		( aDSegment isDrawModeUser or:[ aDSegment isDrawModeUserProjected ] ) ifTrue:[
+		aDSegment isDrawModeUser ifTrue:[
 			from := self processor projection projCartToPixel: aDSegment coordinates.
 			to := self processor projection projCartToPixel: aDSegment coordinates2.
 		].

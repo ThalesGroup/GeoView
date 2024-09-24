@@ -20,7 +20,7 @@ DCircleGeoViewProcessData >> processUpdatedData: aKey incoming: aDCircle with: a
 	aDCircle isDrawModeDevice ifTrue:[ 
 		radius := aDCircle radius 
 	] ifFalse: [ 
-		( aDCircle isDrawModeUser or:[ aDCircle isDrawModeUserProjected ] ) ifTrue:[
+		aDCircle isDrawModeUser ifTrue:[
 			radius := aDCircle radius * self processor projection metersByPixel.
 		].
 	].
