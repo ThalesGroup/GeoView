@@ -131,16 +131,15 @@ BlAbstractGeoViewElement >> displayToGraphicProjection [
 ]
 
 { #category : #accessing }
-BlAbstractGeoViewElement >> displayToGraphicProjection: anObject [
+BlAbstractGeoViewElement >> displayToGraphicProjection: aGeoView2DProjection [
 
-	| extent |
-	displayToGraphicProjection := anObject.
+	displayToGraphicProjection := aGeoView2DProjection.
 	displayToGraphicProjection ifNil: [ ^ self ].
 	
-	extent := self extent.
-	displayToGraphicProjection offsetInPixels: extent / 2.
-	displayToGraphicProjection updateResolution: extent.
-	self updateGraphicModel
+	"change projection to layers"
+	self layers do:[ :l | l graphicProjection: displayToGraphicProjection ].
+	
+	self updateDisplayToGraphicProjection
 ]
 
 { #category : #private }
@@ -320,14 +319,7 @@ BlAbstractGeoViewElement >> newInteractionsStrategy [
 { #category : #private }
 BlAbstractGeoViewElement >> processExtentChangedEvent: anEvent [
 
-	| extent |
-	extent := anEvent source extent ifNil:[ ^ self ].
-	
-	"configure view projection"
-	self displayToGraphicProjection offsetInPixels: extent / 2.
-	self displayToGraphicProjection updateResolution: extent.
-
-	self updateGraphicModel
+	self updateDisplayToGraphicProjection
 ]
 
 { #category : #'strategy management' }
@@ -412,6 +404,16 @@ BlAbstractGeoViewElement >> sortDatas [
 
 	self internalSortDatas.
 	self requestRepaint.
+]
+
+{ #category : #private }
+BlAbstractGeoViewElement >> updateDisplayToGraphicProjection [
+
+	| extent |
+	extent := self extent.
+	displayToGraphicProjection offsetInPixels: extent / 2.
+	displayToGraphicProjection updateResolution: extent.
+	self updateGraphicModel
 ]
 
 { #category : #'API -- drawing' }
