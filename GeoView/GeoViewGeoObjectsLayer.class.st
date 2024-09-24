@@ -233,10 +233,17 @@ GeoViewGeoObjectsLayer >> symbologyProvider: aSymbologyProvider [
 { #category : #'API -- drawing' }
 GeoViewGeoObjectsLayer >> updateGraphicModel [
 	"Update the graphic model with the Display model"
-	
+
 	| model |
 	model := self displayModel.
-	model datas valuesDo:[ :dShape | self graphicModel updated: dShape ].
+	model datas valuesDo: [ :dShape | self updateGraphicModelFor: dShape ]
+]
+
+{ #category : #private }
+GeoViewGeoObjectsLayer >> updateGraphicModelFor: aDShape [
+	"Update the graphic model of a DShape"
+	
+	^ self graphicModel updated: aDShape
 ]
 
 { #category : #'API -- objects management' }
