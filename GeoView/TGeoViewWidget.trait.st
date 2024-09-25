@@ -44,6 +44,18 @@ TGeoViewWidget >> centerOnGlobalPoint: aGlobalPoint [
 	self geoCenter: absoluteCoordinates.
 ]
 
+{ #category : #'API -- graphic projection' }
+TGeoViewWidget >> displayToGraphicProjection [
+
+	self explicitRequirement
+]
+
+{ #category : #'API -- graphic projection' }
+TGeoViewWidget >> displayToGraphicProjection: aGeoView2DProjection [
+
+	self explicitRequirement
+]
+
 { #category : #private }
 TGeoViewWidget >> evaluateScale: aNumberInMeters [
 

@@ -49,7 +49,7 @@ GeoViewExamplesBloc class >> exampleWithGeoLabeledCircle [
 	
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
-	layer setProcessData: GeoLabeledCircleProcessData new for: GeoCircle. 
+	layer setProcessData: GeoLabeledCircleProcessData new forClass: GeoCircle. 
 	element addLayer: layer.
 	
 	"create sample datas"

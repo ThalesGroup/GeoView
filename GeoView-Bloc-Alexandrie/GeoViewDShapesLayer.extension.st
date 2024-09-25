@@ -1,7 +1,7 @@
-Extension { #name : #GeoViewGeoObjectsLayer }
+Extension { #name : #GeoViewDShapesLayer }
 
 { #category : #'*GeoView-Bloc-Alexandrie' }
-GeoViewGeoObjectsLayer >> aeDrawOn: aeCanvas [
+GeoViewDShapesLayer >> aeDrawOn: aeCanvas [
 
 	self isVisible ifFalse: [ ^ self ].
 	sortedDatas ifNil: [ ^ self ].

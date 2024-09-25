@@ -77,6 +77,17 @@ BlAbstractGeoViewElementTest >> testAddLayer [
 ]
 
 { #category : #tests }
+BlAbstractGeoViewElementTest >> testDisplayToGraphicProjection [
+
+	| projection |
+	projection := GeoView2DProjection new.
+	self deny: geoView displayToGraphicProjection identicalTo: projection.
+	
+	geoView displayToGraphicProjection: projection.
+	self assert: geoView displayToGraphicProjection identicalTo: projection.
+]
+
+{ #category : #tests }
 BlAbstractGeoViewElementTest >> testGeoCenter [
 
 	geoView geoCenter: AbsoluteCoordinates frBrest.
@@ -100,7 +111,7 @@ BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
 	self deny: tag.
 	
 	"change layer process datas"
-	layer setProcessData: GeoCircleProcessData for: GeoCircle.
+	layer setProcessData: GeoCircleProcessData forClass: GeoCircle.
 	
 	self assert: tag.
 ]

@@ -2,13 +2,13 @@
 A GeoViewLayerTest is a test class for testing the behavior of GeoViewLayer
 "
 Class {
-	#name : #GeoViewLayerTest,
+	#name : #AbstractGeoViewLayerTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Core'
+	#category : #'GeoView-Tests-Cases'
 }
 
 { #category : #tests }
-GeoViewLayerTest >> testAnnouncer [
+AbstractGeoViewLayerTest >> testAnnouncer [
 
 	| layer announcer |
 	layer := AbstractGeoViewLayer new.
@@ -22,7 +22,7 @@ GeoViewLayerTest >> testAnnouncer [
 ]
 
 { #category : #tests }
-GeoViewLayerTest >> testHaveGeoObjects [
+AbstractGeoViewLayerTest >> testHaveGeoObjects [
 
 	| layer |
 	layer := AbstractGeoViewLayer new.
@@ -30,7 +30,7 @@ GeoViewLayerTest >> testHaveGeoObjects [
 ]
 
 { #category : #tests }
-GeoViewLayerTest >> testIsVisible [
+AbstractGeoViewLayerTest >> testIsVisible [
 
 	| layer |
 	layer := AbstractGeoViewLayer new.
@@ -41,7 +41,7 @@ GeoViewLayerTest >> testIsVisible [
 ]
 
 { #category : #tests }
-GeoViewLayerTest >> testName [
+AbstractGeoViewLayerTest >> testName [
 
 	| layer |
 	layer := AbstractGeoViewLayer new.

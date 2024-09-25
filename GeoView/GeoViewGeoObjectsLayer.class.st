@@ -1,13 +1,10 @@
 Class {
 	#name : #GeoViewGeoObjectsLayer,
-	#superclass : #AbstractGeoViewLayer,
-	#traits : 'TGeoViewHandleProcessDatas + TGeoViewHandleObjects',
-	#classTraits : 'TGeoViewHandleProcessDatas classTrait + TGeoViewHandleObjects classTrait',
+	#superclass : #GeoViewDShapesLayer,
+	#traits : 'TSmockHandleProcessDatas + TGeoViewHandleObjects',
+	#classTraits : 'TSmockHandleProcessDatas classTrait + TGeoViewHandleObjects classTrait',
 	#instVars : [
-		'graphicModel',
-		'displayModel',
-		'sortedDatas',
-		'graphicalOrderSortBlock'
+		'displayModel'
 	],
 	#category : #'GeoView-Core'
 }
@@ -15,19 +12,27 @@ Class {
 { #category : #'API -- objects management' }
 GeoViewGeoObjectsLayer >> addObject: anObject [
 
-	| dObject |
-	dObject := self displayModel created: anObject.
-
-	"convert dShape to gShape"
-	dObject ifNotNil: [ 
-		self graphicModel created: dObject 
-	]
+	self addDShape: (self displayModel created: anObject)
 ]
 
 { #category : #'API -- objects management' }
 GeoViewGeoObjectsLayer >> addObjects: anObjectList [
 
 	anObjectList do: [ :e | self addObject: e ]
+]
+
+{ #category : #private }
+GeoViewGeoObjectsLayer >> checkPickingResultFor: aPickingResult at: index with: aGShape [
+	"Way to detect if the gShape is picked"
+
+	| pickingElement |
+	pickingElement := super checkPickingResultFor: aPickingResult at: index with: aGShape.
+	pickingElement ifNil:[ ^ nil ].
+	
+	"add dShape"
+	pickingElement dShape: (self displayModel getData: index). 
+	
+ 	^ pickingElement 
 ]
 
 { #category : #accessing }
@@ -42,49 +47,29 @@ GeoViewGeoObjectsLayer >> displayModel: anObject [
 	displayModel := anObject
 ]
 
-{ #category : #accessing }
-GeoViewGeoObjectsLayer >> graphicModel [
+{ #category : #'API -- process datas' }
+GeoViewGeoObjectsLayer >> getAllProcessData [
 
-	^ graphicModel
+	^ self displayModel getAllProcessData
 ]
 
-{ #category : #accessing }
-GeoViewGeoObjectsLayer >> graphicModel: anObject [
+{ #category : #'API -- process datas' }
+GeoViewGeoObjectsLayer >> getDefaultProcessData [
 
-	graphicModel := anObject
+	^ self displayModel getDefaultProcessData 
 ]
 
-{ #category : #'API -- projection' }
-GeoViewGeoObjectsLayer >> graphicProjection [
+{ #category : #'API -- process datas' }
+GeoViewGeoObjectsLayer >> getProcessDataForClass: aGeoObjectClass [
 
-	^ self graphicModel projection
+	^ self displayModel getProcessDataForClass: aGeoObjectClass
 ]
 
 { #category : #'API -- projection' }
 GeoViewGeoObjectsLayer >> graphicProjection: aGraphicProjection [
 
-	self graphicModel projection: aGraphicProjection
-]
-
-{ #category : #'API -- drawing' }
-GeoViewGeoObjectsLayer >> graphicalOrderSortBlock [
-	"Setup a sort block to change the order of graphic element stack"
-
-	^ graphicalOrderSortBlock ifNil: [
-		  graphicalOrderSortBlock := [ :gShapeA :gShapeB |
-		                             (gShapeA isPropertyExists: #selected)
-			                             not ] ]
-]
-
-{ #category : #'API -- drawing' }
-GeoViewGeoObjectsLayer >> graphicalOrderSortBlock: aBlockClosure [
-	"Setup a sort block to change the order of graphic element stack"
-	
-	graphicalOrderSortBlock := aBlockClosure.
-	sortedDatas ifNotNil:[ :e | 
-		e sortBlock: self graphicalOrderSortBlock. 
-		self sortDatas 
-	]
+	super graphicProjection: aGraphicProjection.
+	self displayModel viewInfos: aGraphicProjection
 ]
 
 { #category : #testing }
@@ -93,34 +78,17 @@ GeoViewGeoObjectsLayer >> haveGeoObjects [
 	^ true
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'API -- dshapes' }
 GeoViewGeoObjectsLayer >> haveObjectIndex: anIndex [
 
 	^ self displayModel haveDataIndex: anIndex
 ]
 
-{ #category : #initialize }
+{ #category : #initialization }
 GeoViewGeoObjectsLayer >> initialize [
 
 	super initialize.
-	self initializeUserToDisplayModel.
-	self initializeDisplayToGraphicModel.
-	self initializeSortedDatas.
-]
-
-{ #category : #initialize }
-GeoViewGeoObjectsLayer >> initializeDisplayToGraphicModel [
-
-	self graphicModel: GeoViewModel new
-]
-
-{ #category : #initialize }
-GeoViewGeoObjectsLayer >> initializeSortedDatas [
-	
-	sortedDatas := SortedCollection new: self graphicModel capacity.
-	
-	"Sort by selected state"
-	sortedDatas sortBlock: self graphicalOrderSortBlock
+	self initializeUserToDisplayModel
 ]
 
 { #category : #initialize }
@@ -141,30 +109,6 @@ GeoViewGeoObjectsLayer >> mapProjection: aMapProjection [
 	self displayModel projection: aMapProjection
 ]
 
-{ #category : #'API -- picking' }
-GeoViewGeoObjectsLayer >> populatePickingResult: aPickingResult [
-
-	self graphicModel datas keysAndValuesDo:[ :index :gShape | | distanceInPixels pickingElement |
-			
-			"Way to detect if the gShape is picked"
-			distanceInPixels := aPickingResult distanceBlock value: gShape value: aPickingResult localPoint.
-			(distanceInPixels notNil and:[ distanceInPixels <= aPickingResult radiusInPixels ]) ifTrue:[
-
-				"Store the element into the result"				
-				pickingElement := GeoViewPickingElement new.
-				pickingElement layerName: self name.
-				pickingElement layerLevel: nil. self flag:'labordep: put the level of the layer'.
-				pickingElement distanceInPixels: distanceInPixels.
-				pickingElement objectIndex: index.
-				pickingElement dShape: (self displayModel getData: index).
-				pickingElement gShape: gShape.
-				
-				aPickingResult addPickingElement: pickingElement.
-				
-			].			
-		].
-]
-
 { #category : #private }
 GeoViewGeoObjectsLayer >> processDatasChanged [
 	"Notify internaly that process datas changed"
@@ -175,59 +119,39 @@ GeoViewGeoObjectsLayer >> processDatasChanged [
 	self announcer announce: announcement
 ]
 
-{ #category : #accessing }
-GeoViewGeoObjectsLayer >> projection: aMapProjection [
-	"Setup the map projection of the layer: Mercator, etc."
-	
-	self deprecated: 'not used internaly'.
-	self displayModel projection: aMapProjection
-]
-
-{ #category : #'API -- objects management' }
+{ #category : #'API -- dshapes' }
 GeoViewGeoObjectsLayer >> removeObject: anObject [
 
-	| dObject |
-	dObject := self displayModel deleted: anObject.
-
-	"remve gShape"
-	dObject ifNotNil: [ 
-		self graphicModel deleted: dObject.
-	]
+	self removeDShape: (self displayModel deleted: anObject)
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'API -- dshapes' }
 GeoViewGeoObjectsLayer >> removeObjects: anObjectList [
 
 	anObjectList do: [ :e | self removeObject: e ]
 ]
 
 { #category : #'API -- process datas' }
-GeoViewGeoObjectsLayer >> setDefaultProcessData: aDataProcessor [
+GeoViewGeoObjectsLayer >> removeProcessDataForClass: aGeoObjectClass [
 
-	self displayModel defaultProcessData: aDataProcessor.
+	self displayModel removeProcessDataForClass: aGeoObjectClass.
 	self processDatasChanged
 ]
 
 { #category : #'API -- process datas' }
-GeoViewGeoObjectsLayer >> setProcessData: aProcessData for: anUserObjectClass [
+GeoViewGeoObjectsLayer >> setDefaultProcessData: aDataProcessor [
 
-	| dModel |
-	dModel := self displayModel.
-	dModel setProcessData: aProcessData for: anUserObjectClass.
+	self displayModel setDefaultProcessData: aDataProcessor.
 	self processDatasChanged
 ]
 
-{ #category : #initialize }
-GeoViewGeoObjectsLayer >> sortDatas [
+{ #category : #'API -- process datas' }
+GeoViewGeoObjectsLayer >> setProcessData: aProcessData forClass: anUserObjectClass [
 
-	sortedDatas removeAll.
-	sortedDatas addAll: self graphicModel getDatas
-]
-
-{ #category : #'API -- symbology' }
-GeoViewGeoObjectsLayer >> symbologyProvider: aSymbologyProvider [
-	
-	self graphicModel symbologyProvider: aSymbologyProvider
+	| dModel |
+	dModel := self displayModel.
+	dModel setProcessData: aProcessData forClass: anUserObjectClass.
+	self processDatasChanged
 ]
 
 { #category : #'API -- drawing' }
@@ -239,26 +163,13 @@ GeoViewGeoObjectsLayer >> updateGraphicModel [
 	model datas valuesDo: [ :dShape | self updateGraphicModelFor: dShape ]
 ]
 
-{ #category : #private }
-GeoViewGeoObjectsLayer >> updateGraphicModelFor: aDShape [
-	"Update the graphic model of a DShape"
-	
-	^ self graphicModel updated: aDShape
-]
-
-{ #category : #'API -- objects management' }
+{ #category : #'API -- dshapes' }
 GeoViewGeoObjectsLayer >> updateObject: anObject [
 
-	| dObject |
-	dObject := self displayModel updated: anObject.
-
-	"update gShape with dShape"
-	dObject ifNotNil: [ 
-		self graphicModel updated: dObject
-	].
+	self updateDShape: (self displayModel updated: anObject)
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'API -- dshapes' }
 GeoViewGeoObjectsLayer >> updateObjects: anObjectList [
 
 	anObjectList do: [ :e | self updateObject: e ]

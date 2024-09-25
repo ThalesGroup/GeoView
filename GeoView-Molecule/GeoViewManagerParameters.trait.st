@@ -8,10 +8,22 @@ Trait {
 	#category : #'GeoView-Molecule'
 }
 
+{ #category : #'parameters - graphic projection' }
+GeoViewManagerParameters >> getDisplayToGraphicProjection [
+
+	^ self getView displayToGraphicProjection
+]
+
 { #category : #'parameters - objects' }
 GeoViewManagerParameters >> getObjectIndexAccessor [
 
 	^ self view objectIndexAccessor
+]
+
+{ #category : #'parameters - graphic projection' }
+GeoViewManagerParameters >> setDisplayToGraphicProjection: aGeoView2DProjection [
+
+	self getView displayToGraphicProjection: aGeoView2DProjection
 ]
 
 { #category : #'parameters - objects' }

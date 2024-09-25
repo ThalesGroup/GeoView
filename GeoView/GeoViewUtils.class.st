@@ -5,19 +5,28 @@ Class {
 }
 
 { #category : #'layer creation' }
+GeoViewUtils class >> createDShapesLayer: aName [
+	"Create a layer to display DShapes"
+
+	| layer |
+	layer := GeoViewDShapesLayer new name: aName.
+	^ layer
+]
+
+{ #category : #'layer creation' }
 GeoViewUtils class >> createGeoObjectsLayer: aName [
 	"Create a layer to display GeoObjects"
 
 	| layer |
 	layer := GeoViewGeoObjectsLayer new name: aName.
 
-	layer setProcessData: GeoCircleProcessData new for: GeoCircle.
-	layer setProcessData: GeoEllipseProcessData new for: GeoEllipse.
-	layer setProcessData: GeoPolygonProcessData new for: GeoPolygon.
-	layer setProcessData: GeoPolylineProcessData new for: GeoPolyline.
-	layer setProcessData: GeoRectangleProcessData new for: GeoRectangle.
-	layer setProcessData: GeoArcBandProcessData new for: GeoArcBand.
-	layer setProcessData: GeoTextProcessData new for: GeoText.
+	layer setProcessData: GeoCircleProcessData new forClass: GeoCircle.
+	layer setProcessData: GeoEllipseProcessData new forClass: GeoEllipse.
+	layer setProcessData: GeoPolygonProcessData new forClass: GeoPolygon.
+	layer setProcessData: GeoPolylineProcessData new forClass: GeoPolyline.
+	layer setProcessData: GeoRectangleProcessData new forClass: GeoRectangle.
+	layer setProcessData: GeoArcBandProcessData new forClass: GeoArcBand.
+	layer setProcessData: GeoTextProcessData new forClass: GeoText.
 
 	^ layer
 ]
