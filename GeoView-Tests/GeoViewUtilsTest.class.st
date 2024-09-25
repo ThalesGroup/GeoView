@@ -1,0 +1,33 @@
+"
+A GeoViewUtilsTest is a test class for testing the behavior of GeoViewUtils
+"
+Class {
+	#name : #GeoViewUtilsTest,
+	#superclass : #TestCase,
+	#category : #'GeoView-Tests-Cases'
+}
+
+{ #category : #tests }
+GeoViewUtilsTest >> testCreateDShapesLayer [
+
+	| layer |
+	layer := GeoViewUtils createDShapesLayer: #myLayer.
+	self assert: layer name equals: #myLayer.
+	self assert: layer class equals: GeoViewDShapesLayer.
+]
+
+{ #category : #tests }
+GeoViewUtilsTest >> testCreateGeoObjectsLayer [
+
+	| layer |
+	layer := GeoViewUtils createGeoObjectsLayer: #myLayer.
+	self assert: layer name equals: #myLayer.
+	self assert: layer class equals: GeoViewGeoObjectsLayer.
+	self assert: (layer getProcessDataForClass: GeoCircle) class equals: GeoCircleProcessData.
+	self assert: (layer getProcessDataForClass: GeoEllipse) class equals: GeoEllipseProcessData.
+	self assert: (layer getProcessDataForClass: GeoPolygon) class equals: GeoPolygonProcessData.
+	self assert: (layer getProcessDataForClass: GeoPolyline) class equals: GeoPolylineProcessData.
+	self assert: (layer getProcessDataForClass: GeoRectangle) class equals: GeoRectangleProcessData.
+	self assert: (layer getProcessDataForClass: GeoArcBand) class equals: GeoArcBandProcessData.
+	self assert: (layer getProcessDataForClass: GeoText) class equals: GeoTextProcessData.
+]

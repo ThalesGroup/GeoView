@@ -111,7 +111,7 @@ BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
 	self deny: tag.
 	
 	"change layer process datas"
-	layer setProcessData: GeoCircleProcessData for: GeoCircle.
+	layer setProcessData: GeoCircleProcessData forClass: GeoCircle.
 	
 	self assert: tag.
 ]

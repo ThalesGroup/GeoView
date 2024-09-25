@@ -35,6 +35,12 @@ AbstractGeoViewLayer >> graphicProjection: aGraphicProjection [
 ]
 
 { #category : #testing }
+AbstractGeoViewLayer >> haveDShapes [
+
+	^ false
+]
+
+{ #category : #testing }
 AbstractGeoViewLayer >> haveGeoObjects [
 
 	^ false

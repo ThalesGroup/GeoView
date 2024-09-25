@@ -76,25 +76,25 @@ BlAbstractGeoViewElement >> configureGraphicModelForLayer: aLayer [
 	
 	"add Alexandrie process datas if not already here"	
 	(graphicModel getProcessDataForClass: SmockDCompositeShape) ifNil:[
-		graphicModel setProcessData: DCompositeShapeGeoViewProcessData new for: SmockDCompositeShape.
+		graphicModel setProcessData: DCompositeShapeGeoViewProcessData new forClass: SmockDCompositeShape.
 	].
 	(graphicModel getProcessDataForClass: SmockDSymbol) ifNil:[
-		graphicModel setProcessData: DSymbolGeoViewProcessData new for: SmockDSymbol.
+		graphicModel setProcessData: DSymbolGeoViewProcessData new forClass: SmockDSymbol.
 	].
 	(graphicModel getProcessDataForClass: SmockDCircle) ifNil:[
-		graphicModel setProcessData: DCircleGeoViewProcessData new for: SmockDCircle.
+		graphicModel setProcessData: DCircleGeoViewProcessData new forClass: SmockDCircle.
 	].
 	(graphicModel getProcessDataForClass: SmockDText) ifNil:[
-		graphicModel setProcessData: DTextGeoViewProcessData new for: SmockDText.
+		graphicModel setProcessData: DTextGeoViewProcessData new forClass: SmockDText.
 	].
 	(graphicModel getProcessDataForClass: SmockDPolygon) ifNil:[
-		graphicModel setProcessData: DPolygonGeoViewProcessData new for: SmockDPolygon.
+		graphicModel setProcessData: DPolygonGeoViewProcessData new forClass: SmockDPolygon.
 	].
 	(graphicModel getProcessDataForClass: SmockDPolyline) ifNil:[
-		graphicModel setProcessData: DPolylineGeoViewProcessData new for: SmockDPolyline.
+		graphicModel setProcessData: DPolylineGeoViewProcessData new forClass: SmockDPolyline.
 	].
 	(graphicModel getProcessDataForClass: SmockDSegment) ifNil:[
-		graphicModel setProcessData: DSegmentGeoViewProcessData new for: SmockDSegment.
+		graphicModel setProcessData: DSegmentGeoViewProcessData new forClass: SmockDSegment.
 	].
 
 	"specify default process data"
@@ -197,7 +197,7 @@ BlAbstractGeoViewElement >> globalPointFromLocalPoint: aLocalPoint [
 	^ self localPointToGlobal: aLocalPoint
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'API -- dshapes' }
 BlAbstractGeoViewElement >> haveObjectIndex: anIndex [
 	"Pay attention before using it because graphical model is out of sync real user model due to usage of BlTask (asynchronous)"
 
@@ -342,7 +342,7 @@ BlAbstractGeoViewElement >> removeLayer: aLayer [
 	self dispatchEvent: geoViewEvent
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'API -- dshapes' }
 BlAbstractGeoViewElement >> removeObject: anUserObject [
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
@@ -350,7 +350,7 @@ BlAbstractGeoViewElement >> removeObject: anUserObject [
 		self internalSortDatas ]
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'API -- dshapes' }
 BlAbstractGeoViewElement >> removeObjects: anUserObjectList [
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
@@ -425,7 +425,7 @@ BlAbstractGeoViewElement >> updateGraphicModel [
 	
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'API -- dshapes' }
 BlAbstractGeoViewElement >> updateObject: anUserObject [
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
@@ -433,7 +433,7 @@ BlAbstractGeoViewElement >> updateObject: anUserObject [
 		self internalSortDatas ]
 ]
 
-{ #category : #'API -- objects management' }
+{ #category : #'API -- dshapes' }
 BlAbstractGeoViewElement >> updateObjects: anUserObjectList [
 
 	self enqueueBlockAsTaskAndRequestRepaint: [

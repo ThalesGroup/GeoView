@@ -4,7 +4,7 @@ A GeoViewGeoObjectsLayerTest is a test class for testing the behavior of GeoView
 Class {
 	#name : #GeoViewGeoObjectsLayerTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Core'
+	#category : #'GeoView-Tests-Cases'
 }
 
 { #category : #tests }

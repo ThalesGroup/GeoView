@@ -1,5 +1,5 @@
 Class {
-	#name : #GeoViewDisplayLayer,
+	#name : #GeoViewLayer,
 	#superclass : #AbstractGeoViewLayer,
 	#instVars : [
 		'symbologyProvider',
@@ -10,43 +10,43 @@ Class {
 }
 
 { #category : #'API -- projection' }
-GeoViewDisplayLayer >> graphicProjection [
+GeoViewLayer >> graphicProjection [
 
 	^ graphicProjection
 ]
 
 { #category : #'API -- projection' }
-GeoViewDisplayLayer >> graphicProjection: aGraphicProjection [
+GeoViewLayer >> graphicProjection: aGraphicProjection [
 
 	graphicProjection := aGraphicProjection 
 ]
 
 { #category : #'API -- projection' }
-GeoViewDisplayLayer >> mapProjection [
+GeoViewLayer >> mapProjection [
 
 	^ mapProjection
 ]
 
 { #category : #'API -- projection' }
-GeoViewDisplayLayer >> mapProjection: aMapProjection [
+GeoViewLayer >> mapProjection: aMapProjection [
 
 	mapProjection := aMapProjection 
 ]
 
 { #category : #'API -- picking' }
-GeoViewDisplayLayer >> populatePickingResult: aPickingResult [ 
+GeoViewLayer >> populatePickingResult: aPickingResult [ 
 
 	"do nothing"
 ]
 
 { #category : #'API -- symbology' }
-GeoViewDisplayLayer >> symbologyProvider: aSymbologyProvider [
+GeoViewLayer >> symbologyProvider: aSymbologyProvider [
 
 	symbologyProvider := aSymbologyProvider 
 ]
 
 { #category : #'API -- drawing' }
-GeoViewDisplayLayer >> updateGraphicModel [
+GeoViewLayer >> updateGraphicModel [
 
 	"do nothing"
 ]
