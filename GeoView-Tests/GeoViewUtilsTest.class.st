@@ -8,15 +8,6 @@ Class {
 }
 
 { #category : #tests }
-GeoViewUtilsTest >> testCreateDShapesLayer [
-
-	| layer |
-	layer := GeoViewUtils createDShapesLayer: #myLayer.
-	self assert: layer name equals: #myLayer.
-	self assert: layer class equals: GeoViewDShapesLayer.
-]
-
-{ #category : #tests }
 GeoViewUtilsTest >> testCreateGeoObjectsLayer [
 
 	| layer |

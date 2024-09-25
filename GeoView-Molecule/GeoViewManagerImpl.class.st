@@ -194,6 +194,12 @@ GeoViewManagerImpl >> getView [
 	^ self view
 ]
 
+{ #category : #'parameters - view infos' }
+GeoViewManagerImpl >> getViewInfos [
+
+	^ self view viewInfos
+]
+
 { #category : #'geobjects aur' }
 GeoViewManagerImpl >> haveObjectIndex: anIndex [
 
@@ -386,6 +392,12 @@ GeoViewManagerImpl >> setSymbologyManagerName: aComponentName [
 	
 	self forServices: SmockSymbologyManagerServices useProvider: aComponentName.
 	self forEvents: SmockSymbologyManagerEvents useProducer: aComponentName
+]
+
+{ #category : #'parameters - view infos' }
+GeoViewManagerImpl >> setViewInfos: aGeoViewInfos [
+
+	self view viewInfos: aGeoViewInfos 
 ]
 
 { #category : #'private - selection' }

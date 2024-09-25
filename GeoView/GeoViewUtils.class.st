@@ -5,15 +5,6 @@ Class {
 }
 
 { #category : #'layer creation' }
-GeoViewUtils class >> createDShapesLayer: aName [
-	"Create a layer to display DShapes"
-
-	| layer |
-	layer := GeoViewDShapesLayer new name: aName.
-	^ layer
-]
-
-{ #category : #'layer creation' }
 GeoViewUtils class >> createGeoObjectsLayer: aName [
 	"Create a layer to display GeoObjects"
 

@@ -35,12 +35,6 @@ AbstractGeoViewLayer >> graphicProjection: aGraphicProjection [
 ]
 
 { #category : #testing }
-AbstractGeoViewLayer >> haveDShapes [
-
-	^ false
-]
-
-{ #category : #testing }
 AbstractGeoViewLayer >> haveGeoObjects [
 
 	^ false
@@ -106,6 +100,18 @@ AbstractGeoViewLayer >> symbologyProvider: aSymbologyProvider [
 
 { #category : #'API -- drawing' }
 AbstractGeoViewLayer >> updateGraphicModel [
+
+	self explicitRequirement
+]
+
+{ #category : #'API -- projection' }
+AbstractGeoViewLayer >> viewInfos [
+	
+	self explicitRequirement
+]
+
+{ #category : #'API -- projection' }
+AbstractGeoViewLayer >> viewInfos: aViewInfos [
 
 	self explicitRequirement
 ]

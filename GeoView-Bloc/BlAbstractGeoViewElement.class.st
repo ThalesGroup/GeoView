@@ -11,6 +11,7 @@ Class {
 		'displayToGraphicProjection',
 		'isMarkedForSortDatas',
 		'mapProjection',
+		'viewInfos',
 		'interactionsStrategy'
 	],
 	#category : #'GeoView-Bloc-Core'
@@ -104,6 +105,9 @@ BlAbstractGeoViewElement >> configureGraphicModelForLayer: aLayer [
 { #category : #private }
 BlAbstractGeoViewElement >> configureLayer: aLayer [
 	
+	"Set view infos for the layer"
+	aLayer viewInfos: self viewInfos.
+	
 	"Setup the map projection (from a cartographic point of view) of the layer"
 	aLayer mapProjection: self mapProjection.
 	
@@ -114,11 +118,11 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 	aLayer announcer when: GeoViewLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
 
 	aLayer haveGeoObjects ifFalse:[ ^ self ].
-	
+
+	self configureGraphicModelForLayer: aLayer.	
+
 	"setup index accessor"
 	aLayer displayModel indexAccessor: self objectIndexAccessor.
-	
-	self configureGraphicModelForLayer: aLayer.
 	
 	"install geo objects layers handlers"
 	aLayer announcer when: GeoViewGeoObjectLayerProcessDataChanged send: #layerProcessDataChanged: to: self
@@ -208,10 +212,10 @@ BlAbstractGeoViewElement >> haveObjectIndex: anIndex [
 BlAbstractGeoViewElement >> initialize [
 
 	super initialize.
-
+	
 	self mapProjection: GeoViewMercatorProjection new.
-	self background: Color black.
 	self displayToGraphicProjection: GeoView2DProjection new.
+	self background: Color black.
 	self initializeEventHandlers.
 ]
 
@@ -225,6 +229,14 @@ BlAbstractGeoViewElement >> initializeEventHandlers [
 	self addEventHandler: (BlEventHandler
 			 on: BlElementExtentChangedEvent
 			 do: [ :e | self processExtentChangedEvent: e ])
+]
+
+{ #category : #initialization }
+BlAbstractGeoViewElement >> initializeViewInfos [
+
+	| vi |
+	vi := GeoViewInfos new.
+	self viewInfos: vi
 ]
 
 { #category : #'strategy management' }
@@ -319,6 +331,7 @@ BlAbstractGeoViewElement >> newInteractionsStrategy [
 { #category : #private }
 BlAbstractGeoViewElement >> processExtentChangedEvent: anEvent [
 
+	self updateViewInfos.
 	self updateDisplayToGraphicProjection
 ]
 
@@ -448,4 +461,28 @@ BlAbstractGeoViewElement >> updateState: aStateSymbol withIndexes: aKeyList [
 		self layers do: [ :l | l haveGeoObjects ifTrue:[ l updateState: aStateSymbol withIndexes: aKeyList ] ].
 		self internalSortDatas
 	]
+]
+
+{ #category : #private }
+BlAbstractGeoViewElement >> updateViewInfos [
+
+	self viewInfos origin: self position copy.
+	self viewInfos extent: self extent copy.
+	self viewInfos update.
+]
+
+{ #category : #'API -- view infos' }
+BlAbstractGeoViewElement >> viewInfos [
+
+	viewInfos ifNil:[ self initializeViewInfos ].
+	^ viewInfos
+]
+
+{ #category : #'API -- view infos' }
+BlAbstractGeoViewElement >> viewInfos: aViewInfos [
+
+	aViewInfos ifNil: [ ^ self ].
+	viewInfos := aViewInfos.
+	self updateViewInfos.
+	self getLayers do: [ :l | l viewInfos: viewInfos ].
 ]
