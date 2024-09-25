@@ -16,6 +16,10 @@ DShapeGeoViewProcessData >> computePositionFor: aDShape context: aContext [
 	aDShape coordinates ifNil:[ ^ nil ].
 	self processor ifNil:[ ^ nil ].
 	
+	(aDShape isComposite not and:[ aDShape isDrawModeDevice ]) ifTrue:[
+		^ aDShape coordinates
+	].
+
 	^ self processor projection projCartToPixel: aDShape coordinates
 ]
 

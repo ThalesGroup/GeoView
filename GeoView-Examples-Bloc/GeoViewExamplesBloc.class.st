@@ -26,6 +26,33 @@ GeoViewExamplesBloc class >> createGeoObjects [
 ]
 
 { #category : #examples }
+GeoViewExamplesBloc class >> exampleWithDShapesLayer [
+	
+	| element layer circle1 circle2 segment1 segment2 |
+	element := BlGeoViewAeElement new.
+	layer := GeoViewDShapesLayer new name: #shapes. 
+	element addLayer: layer.
+	
+	"User circle (not projected)"
+	circle1 := (SmockDCircle key: #circle1) coordinates: (element mapProjection projLatLonToCart: AbsoluteCoordinates zero); radius: 1000000; strokeColor: Color green; strokeWidth: 2.
+	layer addDShape: circle1.
+
+	"Device circle"
+	circle2 := (SmockDCircle key: #circle2) coordinates: 100@100; radius: 100; strokeColor: Color yellow; strokeWidth: 2; setDrawModeDevice.
+	layer addDShape: circle2.
+
+	"User segment"
+	segment1 := (SmockDSegment key: #segment1) coordinates: (element mapProjection projLatLonToCart: AbsoluteCoordinates frParis); coordinates2: (element mapProjection projLatLonToCart: AbsoluteCoordinates frBrest); strokeColor: Color green; strokeWidth: 2.
+	layer addDShape: segment1.
+	
+	"Device segment"
+	segment2 := (SmockDSegment key: #segment2) coordinates: 150@150; coordinates2: 250@250; strokeColor: Color yellow; strokeWidth: 2; setDrawModeDevice.
+	layer addDShape: segment2.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #examples }
 GeoViewExamplesBloc class >> exampleWithGeoCircle [
 	
 	| element circle |

@@ -1,6 +1,13 @@
+"
+This class represents a layer responsible for displaying domain objects within a specific context.
+The layer manages the addition, updating, and removal of domain objects, with the drawing appearance
+for each object being defined within its respective class through the data processing mechanism.
+The processData method within each domain object class is utilized to define the visual presentation of the object
+when rendered within this layer.
+"
 Class {
 	#name : #GeoViewGeoObjectsLayer,
-	#superclass : #AbstractGeoViewDShapesLayer,
+	#superclass : #AbstractGeoViewGraphicModelLayer,
 	#traits : 'TSmockHandleProcessDatas + TGeoViewHandleObjects',
 	#classTraits : 'TSmockHandleProcessDatas classTrait + TGeoViewHandleObjects classTrait',
 	#instVars : [
@@ -148,12 +155,11 @@ GeoViewGeoObjectsLayer >> setProcessData: aProcessData forClass: anUserObjectCla
 ]
 
 { #category : #'API -- drawing' }
-GeoViewGeoObjectsLayer >> updateGraphicModel [
-	"Update the graphic model with the Display model"
+GeoViewGeoObjectsLayer >> updateModel [
 
 	| model |
 	model := self displayModel.
-	model datas valuesDo: [ :dShape | self updateGraphicModelFor: dShape ]
+	model datas valuesDo: [ :dShape | self updateGraphicModelWith: dShape ]
 ]
 
 { #category : #'API -- dshapes' }

@@ -30,6 +30,14 @@ AbstractGeoViewLayerTest >> testHaveGeoObjects [
 ]
 
 { #category : #tests }
+AbstractGeoViewLayerTest >> testHaveGraphicModel [
+
+	| layer |
+	layer := AbstractGeoViewLayer new.
+	self deny: layer haveGraphicModel.
+]
+
+{ #category : #tests }
 AbstractGeoViewLayerTest >> testIsVisible [
 
 	| layer |
