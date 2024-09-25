@@ -1,6 +1,6 @@
 Class {
 	#name : #GeoViewGeoObjectsLayer,
-	#superclass : #GeoViewDShapesLayer,
+	#superclass : #AbstractGeoViewDShapesLayer,
 	#traits : 'TSmockHandleProcessDatas + TGeoViewHandleObjects',
 	#classTraits : 'TSmockHandleProcessDatas classTrait + TGeoViewHandleObjects classTrait',
 	#instVars : [
@@ -19,20 +19,6 @@ GeoViewGeoObjectsLayer >> addObject: anObject [
 GeoViewGeoObjectsLayer >> addObjects: anObjectList [
 
 	anObjectList do: [ :e | self addObject: e ]
-]
-
-{ #category : #private }
-GeoViewGeoObjectsLayer >> checkPickingResultFor: aPickingResult at: index with: aGShape [
-	"Way to detect if the gShape is picked"
-
-	| pickingElement |
-	pickingElement := super checkPickingResultFor: aPickingResult at: index with: aGShape.
-	pickingElement ifNil:[ ^ nil ].
-	
-	"add dShape"
-	pickingElement dShape: (self displayModel getData: index). 
-	
- 	^ pickingElement 
 ]
 
 { #category : #accessing }
@@ -63,13 +49,6 @@ GeoViewGeoObjectsLayer >> getDefaultProcessData [
 GeoViewGeoObjectsLayer >> getProcessDataForClass: aGeoObjectClass [
 
 	^ self displayModel getProcessDataForClass: aGeoObjectClass
-]
-
-{ #category : #'API -- projection' }
-GeoViewGeoObjectsLayer >> graphicProjection: aGraphicProjection [
-
-	super graphicProjection: aGraphicProjection.
-	self displayModel viewInfos: aGraphicProjection
 ]
 
 { #category : #testing }
@@ -107,6 +86,20 @@ GeoViewGeoObjectsLayer >> mapProjection [
 GeoViewGeoObjectsLayer >> mapProjection: aMapProjection [
 
 	self displayModel projection: aMapProjection
+]
+
+{ #category : #private }
+GeoViewGeoObjectsLayer >> populatePickingResult: aPickingResult at: index with: aGShape [
+	"Way to detect if the gShape is picked"
+
+	| pickingElement |
+	pickingElement := super populatePickingResult: aPickingResult at: index with: aGShape.
+	pickingElement ifNil:[ ^ nil ].
+	
+	"add dShape"
+	pickingElement dShape: (self displayModel getData: index). 
+	
+ 	^ pickingElement 
 ]
 
 { #category : #private }
@@ -186,4 +179,11 @@ GeoViewGeoObjectsLayer >> updateState: aStateSymbol withIndexes: aKeyList [
 	
 	"Update the graphic model to considere the updated state"
 	dObjectList do:[ :dObject | self graphicModel updated: dObject ].
+]
+
+{ #category : #'API -- projection' }
+GeoViewGeoObjectsLayer >> viewInfos: aViewInfos [
+	
+	super viewInfos: aViewInfos.
+	self displayModel viewInfos: aViewInfos
 ]

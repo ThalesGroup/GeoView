@@ -20,6 +20,10 @@ GeoViewManagerParameters >> getObjectIndexAccessor [
 	^ self view objectIndexAccessor
 ]
 
+{ #category : #'parameters - view infos' }
+GeoViewManagerParameters >> getViewInfos [
+]
+
 { #category : #'parameters - graphic projection' }
 GeoViewManagerParameters >> setDisplayToGraphicProjection: aGeoView2DProjection [
 
@@ -40,4 +44,8 @@ GeoViewManagerParameters >> setSelectionManagerName: aComponentName [
 { #category : #'parameters - selection manager' }
 GeoViewManagerParameters >> setSymbologyManagerName: aComponentName [
 	"Setup a symbology manager"
+]
+
+{ #category : #'parameters - view infos' }
+GeoViewManagerParameters >> setViewInfos: aGeoViewInfos [
 ]

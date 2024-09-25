@@ -69,11 +69,30 @@ BlAbstractGeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
 ]
 
 { #category : #tests }
+BlAbstractGeoViewElementTest >> testAddGeoViewGeoObjectsLayer [
+
+	| layer |
+	layer := GeoViewGeoObjectsLayer new name: #test.
+	geoView addLayer: layer.
+	
+	self assert: (geoView getLayer: #test) equals: layer.
+	self assert: (layer graphicModel getProcessDataForClass: SmockDCompositeShape) class equals: DCompositeShapeGeoViewProcessData.
+	self assert: (layer graphicModel getProcessDataForClass: SmockDSymbol) class equals: DSymbolGeoViewProcessData.
+	self assert: (layer graphicModel getProcessDataForClass: SmockDCircle) class equals: DCircleGeoViewProcessData.
+	self assert: (layer graphicModel getProcessDataForClass: SmockDText) class equals: DTextGeoViewProcessData.
+	self assert: (layer graphicModel getProcessDataForClass: SmockDPolygon) class equals: DPolygonGeoViewProcessData.
+	self assert: (layer graphicModel getProcessDataForClass: SmockDPolyline) class equals: DPolylineGeoViewProcessData.
+	self assert: (layer graphicModel getProcessDataForClass: SmockDSegment) class equals: DSegmentGeoViewProcessData.
+]
+
+{ #category : #tests }
 BlAbstractGeoViewElementTest >> testAddLayer [
 
 	| layer |
-	layer := GeoViewTestLayer new.
+	layer := GeoViewTestLayer new name: #test.
 	geoView addLayer: layer.
+	
+	self assert: (geoView getLayer: #test) equals: layer.
 ]
 
 { #category : #tests }
@@ -136,6 +155,7 @@ BlAbstractGeoViewElementTest >> testInitialize [
 	self assert: geoView displayToGraphicProjection class equals: GeoView2DProjection.
 	self assert: geoView geoCenter equals: AbsoluteCoordinates zero.
 	self assert: geoView displayToGraphicProjection cartesianCenter equals: CartesianCoordinates zero.
+	self assert: geoView viewInfos class equals: GeoViewInfos.
 ]
 
 { #category : #tests }

@@ -3,7 +3,8 @@ Class {
 	#superclass : #AbstractGeoViewLayer,
 	#instVars : [
 		'graphicProjection',
-		'mapProjection'
+		'mapProjection',
+		'viewInfos'
 	],
 	#category : #'GeoView-Tests-Utils'
 }
@@ -35,4 +36,16 @@ GeoViewTestLayer >> mapProjection: aMapProjection [
 { #category : #'API -- symbology' }
 GeoViewTestLayer >> symbologyProvider: aSymbologyProvider [
 	"do nothing"
+]
+
+{ #category : #accessing }
+GeoViewTestLayer >> viewInfos [
+
+	^ viewInfos
+]
+
+{ #category : #accessing }
+GeoViewTestLayer >> viewInfos: anObject [
+
+	viewInfos := anObject
 ]

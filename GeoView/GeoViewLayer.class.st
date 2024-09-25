@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'symbologyProvider',
 		'mapProjection',
-		'graphicProjection'
+		'graphicProjection',
+		'viewInfos'
 	],
 	#category : #'GeoView-Core'
 }
@@ -49,4 +50,16 @@ GeoViewLayer >> symbologyProvider: aSymbologyProvider [
 GeoViewLayer >> updateGraphicModel [
 
 	"do nothing"
+]
+
+{ #category : #accessing }
+GeoViewLayer >> viewInfos [
+
+	^ viewInfos
+]
+
+{ #category : #accessing }
+GeoViewLayer >> viewInfos: aViewInfos [
+
+	viewInfos := aViewInfos
 ]
