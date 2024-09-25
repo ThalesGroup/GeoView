@@ -47,7 +47,7 @@ GeoViewLayer >> symbologyProvider: aSymbologyProvider [
 ]
 
 { #category : #'API -- drawing' }
-GeoViewLayer >> updateGraphicModel [
+GeoViewLayer >> updateModel [
 
 	"do nothing"
 ]

@@ -262,11 +262,6 @@ TGeoViewWidget >> selectedObjectIndexes: aCollection [
 	self explicitRequirement
 ]
 
-{ #category : #'API -- drawing' }
-TGeoViewWidget >> updateGraphicModel [
-	self explicitRequirement
-]
-
 { #category : #'API -- view infos' }
 TGeoViewWidget >> viewInfos [
 

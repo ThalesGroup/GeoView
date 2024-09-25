@@ -105,7 +105,6 @@ BlAbstractGeoViewElement >> configureGraphicModelForLayer: aLayer [
 { #category : #private }
 BlAbstractGeoViewElement >> configureLayer: aLayer [
 	
-	"Set view infos for the layer"
 	aLayer viewInfos: self viewInfos.
 	
 	"Setup the map projection (from a cartographic point of view) of the layer"
@@ -113,18 +112,13 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 	
 	"Setup the graphic projection (from a device point of view) of the layer"
 	aLayer graphicProjection: self displayToGraphicProjection.
-
-	"install common layers handlers"
 	aLayer announcer when: GeoViewLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
 
-	aLayer haveGeoObjects ifFalse:[ ^ self ].
-
+	aLayer haveGraphicModel ifFalse:[ ^ self ].
 	self configureGraphicModelForLayer: aLayer.	
 
-	"setup index accessor"
+	aLayer haveGeoObjects ifFalse:[ ^ self ].
 	aLayer displayModel indexAccessor: self objectIndexAccessor.
-	
-	"install geo objects layers handlers"
 	aLayer announcer when: GeoViewGeoObjectLayerProcessDataChanged send: #layerProcessDataChanged: to: self
 ]
 
@@ -170,7 +164,7 @@ BlAbstractGeoViewElement >> geoCenter: anAbsoluteCoordinates [
 
 	cartesianCoordinates := self mapProjection projLatLonToCart: geoCenter.
 	self displayToGraphicProjection cartesianCenter: cartesianCoordinates.
-	self updateGraphicModel.
+	self updateModel.
 
 	"Send center event"
 	geoViewEvent := GeoViewCenterChangedEvent new.
@@ -250,7 +244,7 @@ BlAbstractGeoViewElement >> internalSortDatas [
 
 	self isMarkedForSortDatas ifTrue: [ ^ self ].
 	isMarkedForSortDatas := true.
-	self layers do: [ :l | l haveGeoObjects ifTrue: [ l sortDatas ] ]
+	self layers do: [ :l | l haveGraphicModel ifTrue: [ l sortDatas ] ]
 ]
 
 { #category : #accessing }
@@ -314,7 +308,7 @@ BlAbstractGeoViewElement >> mapProjection: aMapProjection [
 	mapProjection := aMapProjection copy.
 	
 	self getLayers do:[ :l | l displayModel projection: self mapProjection ].
-	self updateGraphicModel.
+	self updateModel.
 	
 	"Send map projection changed event"
 	geoViewEvent := GeoViewMapProjectionChangedEvent new.
@@ -386,7 +380,7 @@ BlAbstractGeoViewElement >> scaleInMeters: aNumber [
 	
 	self displayToGraphicProjection altitudeInMeters: self scaleInMeters.
 	self displayToGraphicProjection updateResolution: self extent.
-	self updateGraphicModel.
+	self updateModel.
 	
 	"Send scale event"
 	geoViewEvent := GeoViewScaleChangedEvent new.
@@ -423,18 +417,17 @@ BlAbstractGeoViewElement >> sortDatas [
 BlAbstractGeoViewElement >> updateDisplayToGraphicProjection [
 
 	| extent |
-	extent := self extent.
+	extent := self viewInfos extent.
 	displayToGraphicProjection offsetInPixels: extent / 2.
 	displayToGraphicProjection updateResolution: extent.
-	self updateGraphicModel
+	self updateModel
 ]
 
-{ #category : #'API -- drawing' }
-BlAbstractGeoViewElement >> updateGraphicModel [
-	"Update the graphic model with the Display model"
+{ #category : #private }
+BlAbstractGeoViewElement >> updateModel [
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :l | l updateGraphicModel ] ].
+		self layers do: [ :l | l updateModel ] ].
 	
 ]
 

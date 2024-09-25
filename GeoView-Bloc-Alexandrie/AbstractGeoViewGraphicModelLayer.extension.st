@@ -1,7 +1,7 @@
-Extension { #name : #AbstractGeoViewDShapesLayer }
+Extension { #name : #AbstractGeoViewGraphicModelLayer }
 
 { #category : #'*GeoView-Bloc-Alexandrie' }
-AbstractGeoViewDShapesLayer >> aeDrawOn: aeCanvas [
+AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 
 	self isVisible ifFalse: [ ^ self ].
 	sortedDatas ifNil: [ ^ self ].

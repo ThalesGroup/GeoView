@@ -1,5 +1,5 @@
 Class {
-	#name : #AbstractGeoViewDShapesLayer,
+	#name : #AbstractGeoViewGraphicModelLayer,
 	#superclass : #AbstractGeoViewLayer,
 	#traits : 'TGeoViewHandleDShapes',
 	#classTraits : 'TGeoViewHandleDShapes classTrait',
@@ -12,13 +12,13 @@ Class {
 }
 
 { #category : #testing }
-AbstractGeoViewDShapesLayer class >> isAbstract [ 
+AbstractGeoViewGraphicModelLayer class >> isAbstract [ 
 
-	^ self == AbstractGeoViewDShapesLayer 
+	^ self == AbstractGeoViewGraphicModelLayer 
 ]
 
 { #category : #'API -- DShapes' }
-AbstractGeoViewDShapesLayer >> addDShape: aDShape [
+AbstractGeoViewGraphicModelLayer >> addDShape: aDShape [
 
 	aDShape ifNil:[ ^ self ].
 
@@ -27,37 +27,37 @@ AbstractGeoViewDShapesLayer >> addDShape: aDShape [
 ]
 
 { #category : #'API -- DShapes' }
-AbstractGeoViewDShapesLayer >> addDShapes: aDShapeList [
+AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 
 	aDShapeList do: [ :e | self addDShape: e ]
 ]
 
 { #category : #accessing }
-AbstractGeoViewDShapesLayer >> graphicModel [
+AbstractGeoViewGraphicModelLayer >> graphicModel [
 
 	^ graphicModel
 ]
 
 { #category : #accessing }
-AbstractGeoViewDShapesLayer >> graphicModel: anObject [
+AbstractGeoViewGraphicModelLayer >> graphicModel: anObject [
 
 	graphicModel := anObject
 ]
 
 { #category : #'API -- projection' }
-AbstractGeoViewDShapesLayer >> graphicProjection [
+AbstractGeoViewGraphicModelLayer >> graphicProjection [
 
 	^ self graphicModel projection
 ]
 
 { #category : #'API -- projection' }
-AbstractGeoViewDShapesLayer >> graphicProjection: aGraphicProjection [
+AbstractGeoViewGraphicModelLayer >> graphicProjection: aGraphicProjection [
 
 	self graphicModel projection: aGraphicProjection
 ]
 
 { #category : #'API -- drawing' }
-AbstractGeoViewDShapesLayer >> graphicalOrderSortBlock [
+AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock [
 	"Setup a sort block to change the order of graphic element stack"
 
 	^ graphicalOrderSortBlock ifNil: [
@@ -67,7 +67,7 @@ AbstractGeoViewDShapesLayer >> graphicalOrderSortBlock [
 ]
 
 { #category : #'API -- drawing' }
-AbstractGeoViewDShapesLayer >> graphicalOrderSortBlock: aBlockClosure [
+AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock: aBlockClosure [
 	"Setup a sort block to change the order of graphic element stack"
 	
 	graphicalOrderSortBlock := aBlockClosure.
@@ -78,13 +78,20 @@ AbstractGeoViewDShapesLayer >> graphicalOrderSortBlock: aBlockClosure [
 ]
 
 { #category : #'API -- DShapes' }
-AbstractGeoViewDShapesLayer >> haveDShapeKey: aKey [
+AbstractGeoViewGraphicModelLayer >> haveDShapeKey: aKey [
+	"check in the graphic model because if not present here, the object is not managed"
 
 	^ self graphicModel haveDataIndex: aKey
 ]
 
+{ #category : #testing }
+AbstractGeoViewGraphicModelLayer >> haveGraphicModel [
+
+	^ true
+]
+
 { #category : #initialization }
-AbstractGeoViewDShapesLayer >> initialize [
+AbstractGeoViewGraphicModelLayer >> initialize [
 
 	super initialize.
 	self initializeDisplayToGraphicModel.
@@ -92,13 +99,13 @@ AbstractGeoViewDShapesLayer >> initialize [
 ]
 
 { #category : #initialize }
-AbstractGeoViewDShapesLayer >> initializeDisplayToGraphicModel [
+AbstractGeoViewGraphicModelLayer >> initializeDisplayToGraphicModel [
 
 	self graphicModel: GeoViewModel new
 ]
 
 { #category : #initialize }
-AbstractGeoViewDShapesLayer >> initializeSortedDatas [
+AbstractGeoViewGraphicModelLayer >> initializeSortedDatas [
 	
 	sortedDatas := SortedCollection new: self graphicModel capacity.
 	
@@ -107,14 +114,14 @@ AbstractGeoViewDShapesLayer >> initializeSortedDatas [
 ]
 
 { #category : #'API -- picking' }
-AbstractGeoViewDShapesLayer >> populatePickingResult: aPickingResult [
+AbstractGeoViewGraphicModelLayer >> populatePickingResult: aPickingResult [
 
 	self graphicModel datas keysAndValuesDo: [ :index :gShape |
 		self populatePickingResult: aPickingResult at: index with: gShape ]
 ]
 
 { #category : #private }
-AbstractGeoViewDShapesLayer >> populatePickingResult: aPickingResult at: index with: aGShape [
+AbstractGeoViewGraphicModelLayer >> populatePickingResult: aPickingResult at: index with: aGShape [
 	"Way to detect if the gShape is picked"
 
 	| distanceInPixels pickingElement |
@@ -136,7 +143,7 @@ AbstractGeoViewDShapesLayer >> populatePickingResult: aPickingResult at: index w
 ]
 
 { #category : #'API -- DShapes' }
-AbstractGeoViewDShapesLayer >> removeDShape: aDShape [
+AbstractGeoViewGraphicModelLayer >> removeDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
@@ -145,26 +152,26 @@ AbstractGeoViewDShapesLayer >> removeDShape: aDShape [
 ]
 
 { #category : #'API -- DShapes' }
-AbstractGeoViewDShapesLayer >> removeDShapes: aDShapeList [
+AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 
 	aDShapeList do: [ :e | self removeDShape: e ]
 ]
 
 { #category : #initialize }
-AbstractGeoViewDShapesLayer >> sortDatas [
+AbstractGeoViewGraphicModelLayer >> sortDatas [
 
 	sortedDatas removeAll.
 	sortedDatas addAll: self graphicModel getDatas
 ]
 
 { #category : #'API -- symbology' }
-AbstractGeoViewDShapesLayer >> symbologyProvider: aSymbologyProvider [
+AbstractGeoViewGraphicModelLayer >> symbologyProvider: aSymbologyProvider [
 	
 	self graphicModel symbologyProvider: aSymbologyProvider
 ]
 
 { #category : #'API -- DShapes' }
-AbstractGeoViewDShapesLayer >> updateDShape: aDShape [
+AbstractGeoViewGraphicModelLayer >> updateDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
@@ -173,26 +180,26 @@ AbstractGeoViewDShapesLayer >> updateDShape: aDShape [
 ]
 
 { #category : #'API -- DShapes' }
-AbstractGeoViewDShapesLayer >> updateDShapes: aDShapeList [
+AbstractGeoViewGraphicModelLayer >> updateDShapes: aDShapeList [
 
 	aDShapeList do: [ :e | self updateDShape: e ]
 ]
 
 { #category : #private }
-AbstractGeoViewDShapesLayer >> updateGraphicModelFor: aDShape [
-	"Update the graphic model of a DShape"
+AbstractGeoViewGraphicModelLayer >> updateGraphicModelWith: aDShape [
+	"Update the graphic model with a DShape"
 	
 	^ self graphicModel updated: aDShape
 ]
 
 { #category : #'API -- projection' }
-AbstractGeoViewDShapesLayer >> viewInfos [
+AbstractGeoViewGraphicModelLayer >> viewInfos [
 
 	^ self graphicModel viewInfos
 ]
 
 { #category : #'API -- projection' }
-AbstractGeoViewDShapesLayer >> viewInfos: aViewInfos [
+AbstractGeoViewGraphicModelLayer >> viewInfos: aViewInfos [
 
 	self graphicModel viewInfos: aViewInfos
 ]

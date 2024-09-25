@@ -40,6 +40,12 @@ AbstractGeoViewLayer >> haveGeoObjects [
 	^ false
 ]
 
+{ #category : #testing }
+AbstractGeoViewLayer >> haveGraphicModel [
+
+	^ false
+]
+
 { #category : #'API -- drawing' }
 AbstractGeoViewLayer >> isVisible [
 
@@ -98,10 +104,10 @@ AbstractGeoViewLayer >> symbologyProvider: aSymbologyProvider [
 	self explicitRequirement
 ]
 
-{ #category : #'API -- drawing' }
-AbstractGeoViewLayer >> updateGraphicModel [
+{ #category : #private }
+AbstractGeoViewLayer >> updateModel [
 
-	self explicitRequirement
+	self explicitRequirement 
 ]
 
 { #category : #'API -- projection' }
