@@ -200,7 +200,7 @@ BlAbstractGeoViewElementTest >> testPickAt [
 	| result |
 	result := geoView pickAt: 0@0.
 	self assert: result class equals: GeoViewPickingResult.
-	self assert: (result timestamp >= DateAndTime now).
+	self assert: (result timestamp <= DateAndTime now).
 	self assert: result globalPoint equals: 0@0.
 	self assert: result localPoint equals: (geoView localPointFromGlobalPoint: 0@0).
 	self assert: result absoluteCoordinates equals: (geoView absoluteCoordinatesFromGlobalPoint: 0@0).
@@ -216,7 +216,7 @@ BlAbstractGeoViewElementTest >> testPickAtGeoOrigin [
 	| result |
 	result := geoView pickAt: (geoView globalPointFromAbsoluteCoordinates: AbsoluteCoordinates zero).	
 	self assert: result class equals: GeoViewPickingResult.
-	self assert: (result timestamp >= DateAndTime now).
+	self assert: (result timestamp <= DateAndTime now).
 	self assert: result globalPoint equals: (self geoViewSize / 2).
 	self assert: result localPoint equals: (geoView localPointFromGlobalPoint: (self geoViewSize / 2)).
 	self assert: result absoluteCoordinates equals: (geoView absoluteCoordinatesFromGlobalPoint: (self geoViewSize / 2)).
@@ -233,7 +233,7 @@ BlAbstractGeoViewElementTest >> testPickAtNil [
 	| result |
 	result := geoView pickAt: nil.
 	self assert: result class equals: GeoViewPickingResult.
-	self assert: (result timestamp >= DateAndTime now).
+	self assert: (result timestamp <= DateAndTime now).
 	self assert: result globalPoint isNil.
 	self assert: result localPoint isNil.
 	self assert: result absoluteCoordinates isNil.
