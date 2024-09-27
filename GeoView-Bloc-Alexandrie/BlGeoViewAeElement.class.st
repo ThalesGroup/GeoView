@@ -16,25 +16,23 @@ BlGeoViewAeElement >> aeDrawOn: aeCanvas [
 
 	super aeDrawOn: aeCanvas.
 
-	self layers do: [ :l | l aeDrawOn: aeCanvas ].
+	self layers do: [ :l | l isVisible ifTrue: [ l aeDrawOn: aeCanvas ] ].
 
 	isMarkedForSortDatas := false
 ]
 
-{ #category : #'API -- picking' }
-BlGeoViewAeElement >> pickAt: aGlobalPoint radius: aRadiusInPixels [
-	"prepare the picking result"
+{ #category : #'private - picking' }
+BlGeoViewAeElement >> postConfigurePickingResult: aPickingResult radius: aRadius [
 
-	| pickingResult |
-	pickingResult := (super pickAt: aGlobalPoint radius: aRadiusInPixels) ifNil:[ ^ nil ].
+	super postConfigurePickingResult: aPickingResult radius: aRadius.
 
-	"labordep: prepare to be setup with others blocks"
-	pickingResult distanceBlock: [ :gShape :point | gShape distanceTo: point ].
+	aPickingResult applyOrder: [ :a :b | a distanceInPixels < b distanceInPixels ].
+]
 
-	"Collect all picked elements"
-	self getLayers do:[ :l | l populatePickingResult: pickingResult ].
-
-	pickingResult applyOrder: [ :a :b | a distanceInPixels < b distanceInPixels ].
+{ #category : #'private - picking' }
+BlGeoViewAeElement >> preConfigurePickingResult: aPickingResult radius: aRadius [
 	
-	^ pickingResult
+	super preConfigurePickingResult: aPickingResult radius: aRadius.
+	
+	aPickingResult distanceBlock: [ :gShape :point | gShape distanceTo: point ]
 ]

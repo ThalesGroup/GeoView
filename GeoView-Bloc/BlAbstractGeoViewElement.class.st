@@ -122,6 +122,27 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 	aLayer announcer when: GeoViewGeoObjectLayerProcessDataChanged send: #layerProcessDataChanged: to: self
 ]
 
+{ #category : #'private - picking' }
+BlAbstractGeoViewElement >> createPickingResultAt: aGlobalPoint [
+
+	| pickingResult absoluteCoordinates localPoint |
+	pickingResult := GeoViewPickingResult new
+		                 timestamp: DateAndTime now;
+		                 yourself.
+
+	aGlobalPoint ifNil:[ ^ pickingResult ].
+	absoluteCoordinates := (self absoluteCoordinatesFromGlobalPoint: aGlobalPoint) ifNil:[ ^ pickingResult ].
+	localPoint := (self localPointFromGlobalPoint: aGlobalPoint) ifNil:[ ^ pickingResult ].
+	
+	pickingResult 
+		globalPoint: aGlobalPoint;
+		localPoint: localPoint;
+		absoluteCoordinates: absoluteCoordinates;
+		cartesianCoordinates: (self mapProjection projLatLonToCart: absoluteCoordinates).
+	
+	^ pickingResult
+]
+
 { #category : #accessing }
 BlAbstractGeoViewElement >> displayToGraphicProjection [
 
@@ -138,6 +159,13 @@ BlAbstractGeoViewElement >> displayToGraphicProjection: aGeoView2DProjection [
 	self layers do:[ :l | l graphicProjection: displayToGraphicProjection ].
 	
 	self updateDisplayToGraphicProjection
+]
+
+{ #category : #'private - picking' }
+BlAbstractGeoViewElement >> doPicking: aPickingResult [
+	"Collect all picked elements"
+
+	self getLayers do: [ :l | l isVisible ifTrue: [ l populatePickingResult: aPickingResult ] ]
 ]
 
 { #category : #private }
@@ -320,6 +348,33 @@ BlAbstractGeoViewElement >> mapProjection: aMapProjection [
 BlAbstractGeoViewElement >> newInteractionsStrategy [
 
 	^ GeoViewDefaultInteractionsStrategy new
+]
+
+{ #category : #'API -- picking' }
+BlAbstractGeoViewElement >> pickAt: aGlobalPoint radius: aRadiusInPixels [
+	"Return all objects under a global point inside a radius in pixels"
+
+	| pickingResult |
+	pickingResult := self createPickingResultAt: aGlobalPoint.
+	self preConfigurePickingResult: pickingResult radius: aRadiusInPixels.
+	self doPicking: pickingResult.
+	self postConfigurePickingResult: pickingResult radius: aRadiusInPixels.
+
+	^ pickingResult
+]
+
+{ #category : #'private - picking' }
+BlAbstractGeoViewElement >> postConfigurePickingResult: aPickingResult radius: aRadiusInPixels [
+	"do nothing"
+]
+
+{ #category : #'private - picking' }
+BlAbstractGeoViewElement >> preConfigurePickingResult: aPickingResult radius: aRadiusInPixels [
+	"do nothing"
+
+	| radius |
+	radius := aRadiusInPixels ifNil: [ 0 ].
+	aPickingResult radiusInPixels: radius
 ]
 
 { #category : #private }

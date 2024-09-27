@@ -10,22 +10,37 @@ Class {
 	#category : #'GeoView-Bloc-Tests-Core'
 }
 
-{ #category : #tests }
-BlAbstractGeoViewElementTest >> setUp [
+{ #category : #private }
+BlAbstractGeoViewElementTest >> createGeoViewElement [
 
-	| container |
-	super setUp.
 	geoView := BlAbstractGeoViewElement new.
-	geoView constraintsDo: [ :c | c horizontal matchParent. c vertical matchParent ].
-	container := BlElement new.
-	container size: 100@100.
-	container addChild: geoView.
-	
-	geoView requestLayout.
-	container forceLayout.
 ]
 
-{ #category : #tests }
+{ #category : #accessing }
+BlAbstractGeoViewElementTest >> geoViewSize [
+
+	^ 100@100
+]
+
+{ #category : #running }
+BlAbstractGeoViewElementTest >> setUp [
+
+	| container aSpace |
+	super setUp.
+	self createGeoViewElement.
+	geoView constraintsDo: [ :c | c horizontal matchParent. c vertical matchParent ].
+	container := BlElement new.
+	container size: self geoViewSize.
+	container addChild: geoView.
+	
+	aSpace := BlSpace new.
+	aSpace host: BlHeadlessHost new.
+	aSpace root addChild: container.
+	container forceLayout.
+	aSpace pulse.
+]
+
+{ #category : #running }
 BlAbstractGeoViewElementTest >> tearDown [
 
 	geoView := nil.
@@ -177,6 +192,65 @@ BlAbstractGeoViewElementTest >> testObjectIndexAccessor [
 	
 	geoView objectIndexAccessor: #id.
 	self assert: geoView objectIndexAccessor equals: #id.
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> testPickAt [
+
+	| result |
+	result := geoView pickAt: 0@0.
+	self assert: result class equals: GeoViewPickingResult.
+	self assert: (result timestamp >= DateAndTime now).
+	self assert: result globalPoint equals: 0@0.
+	self assert: result localPoint equals: (geoView localPointFromGlobalPoint: 0@0).
+	self assert: result absoluteCoordinates equals: (geoView absoluteCoordinatesFromGlobalPoint: 0@0).
+	self assert: result cartesianCoordinates equals: (geoView mapProjection projLatLonToCart: result absoluteCoordinates).
+	self assert: result radiusInPixels equals: 0.
+	
+	self assert: result isEmpty.
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> testPickAtGeoOrigin [
+
+	| result |
+	result := geoView pickAt: (geoView globalPointFromAbsoluteCoordinates: AbsoluteCoordinates zero).	
+	self assert: result class equals: GeoViewPickingResult.
+	self assert: (result timestamp >= DateAndTime now).
+	self assert: result globalPoint equals: (self geoViewSize / 2).
+	self assert: result localPoint equals: (geoView localPointFromGlobalPoint: (self geoViewSize / 2)).
+	self assert: result absoluteCoordinates equals: (geoView absoluteCoordinatesFromGlobalPoint: (self geoViewSize / 2)).
+	self assert: (result cartesianCoordinates xInMeters closeTo: 0 precision: 1e-8).
+	self assert: (result cartesianCoordinates yInMeters closeTo: 0 precision: 1e-8).
+	self assert: result radiusInPixels equals: 0.
+	
+	self assert: result isEmpty.
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> testPickAtNil [
+
+	| result |
+	result := geoView pickAt: nil.
+	self assert: result class equals: GeoViewPickingResult.
+	self assert: (result timestamp >= DateAndTime now).
+	self assert: result globalPoint isNil.
+	self assert: result localPoint isNil.
+	self assert: result absoluteCoordinates isNil.
+	self assert: result cartesianCoordinates isNil.
+	self assert: result radiusInPixels equals: 0.
+	
+	self assert: result isEmpty.
+]
+
+{ #category : #tests }
+BlAbstractGeoViewElementTest >> testPickAtRadius [
+
+	| result |
+	result := geoView pickAt: 0@0 radius: 10.
+	self assert: result radiusInPixels equals: 10.
+	
+	self assert: result isEmpty.
 ]
 
 { #category : #tests }
