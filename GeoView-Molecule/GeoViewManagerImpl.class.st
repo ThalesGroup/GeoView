@@ -210,24 +210,24 @@ GeoViewManagerImpl >> haveObjectIndex: anIndex [
 GeoViewManagerImpl >> initializeSelectionManager [
 
 	"If a selection manager not exists, instanciate one"
-	(MolUtils isInstantiateComponentOf: SmockSelectionManagerImpl named: self componentName) ifFalse:[
+	(MolUtils allComponentInstancesOfType: SmockSelectionManager) ifEmpty:[
 		SmockSelectionManagerImpl deploy.
-		SmockSelectionManagerImpl instantiate: self componentName
+		SmockSelectionManagerImpl instantiate: self componentName.
+		self setSelectionManagerName: self componentName.
 	].
 
-	self setSelectionManagerName: self componentName.
+	
 ]
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSymbologyManager [
 
 	"If a symbology manager not exists, instanciate one"
-	(MolUtils isInstantiateComponentOf: SmockSymbologyProvider named: self componentName) ifFalse:[
+	(MolUtils allComponentInstancesOfType: SmockSymbologyManager) ifEmpty:[
 		SmockSymbologyProvider deploy.
 		SmockSymbologyProvider instantiate: self componentName.
+		self setSymbologyManagerName: self componentName.
 	].
-	
-	self setSymbologyManagerName: self componentName.
 ]
 
 { #category : #'private - events' }
