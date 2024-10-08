@@ -4,6 +4,11 @@ Class {
 	#category : #'GeoView-Molecule-Tests-Utils'
 }
 
+{ #category : #deprecation }
+GeoViewManagerTestImpl class >> isDeprecated [
+	^ true
+]
+
 { #category : #'layer creation' }
 GeoViewManagerTestImpl >> createGeoObjectsLayer: aName [
 

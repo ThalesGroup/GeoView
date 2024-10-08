@@ -227,6 +227,8 @@ BlAbstractGeoViewElement >> globalPointFromLocalPoint: aLocalPoint [
 BlAbstractGeoViewElement >> haveObjectIndex: anIndex [
 	"Pay attention before using it because graphical model is out of sync real user model due to usage of BlTask (asynchronous)"
 
+	anIndex ifNil:[ ^ nil ].
+
 	^ self layers anySatisfy: [ :e | e haveGeoObjects ifTrue:[ e haveObjectIndex: anIndex ] ]
 ]
 
@@ -396,7 +398,9 @@ BlAbstractGeoViewElement >> removeInteractionsStrategy [
 BlAbstractGeoViewElement >> removeLayer: aLayer [
 	
 	| geoViewEvent |
-	self flag:'todo'.
+	(self layers includes: aLayer) ifFalse: [ ^ self ].
+	self unconfigureLayer: aLayer.
+	self layers remove: aLayer.
 	
 	"Send layer added event"
 	geoViewEvent := GeoViewLayerRemovedEvent new.
@@ -407,6 +411,8 @@ BlAbstractGeoViewElement >> removeLayer: aLayer [
 { #category : #'API -- dshapes' }
 BlAbstractGeoViewElement >> removeObject: anUserObject [
 
+	anUserObject ifNil:[ ^ self ].
+
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e removeObject: anUserObject ] ].
 		self internalSortDatas ]
@@ -414,6 +420,9 @@ BlAbstractGeoViewElement >> removeObject: anUserObject [
 
 { #category : #'API -- dshapes' }
 BlAbstractGeoViewElement >> removeObjects: anUserObjectList [
+
+	anUserObjectList ifNil:[ ^ self ].
+	anUserObjectList ifEmpty:[ ^ self ].
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e removeObjects: anUserObjectList ] ].
@@ -446,6 +455,8 @@ BlAbstractGeoViewElement >> scaleInMeters: aNumber [
 { #category : #'API -- selection' }
 BlAbstractGeoViewElement >> selectedObjectIndexes: anIndexList [
 
+	anIndexList ifNil:[ ^ self ].
+
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :l | l haveGeoObjects ifTrue:[ l updateState: #selected withIndexes: anIndexList ] ].
 		self internalSortDatas ]
@@ -469,6 +480,29 @@ BlAbstractGeoViewElement >> sortDatas [
 ]
 
 { #category : #private }
+BlAbstractGeoViewElement >> unconfigureGraphicModelForLayer: aLayer [
+	
+	| graphicModel |
+	graphicModel := aLayer graphicModel.
+	graphicModel removeAllProcessData.
+]
+
+{ #category : #private }
+BlAbstractGeoViewElement >> unconfigureLayer: aLayer [
+	
+	aLayer viewInfos: nil.
+	aLayer mapProjection: nil.
+	aLayer graphicProjection: nil.
+	aLayer announcer unsubscribe: self.
+
+	aLayer haveGraphicModel ifFalse:[ ^ self ].
+	self unconfigureGraphicModelForLayer: aLayer.	
+
+	aLayer haveGeoObjects ifFalse:[ ^ self ].
+	aLayer displayModel indexAccessor: nil.
+]
+
+{ #category : #private }
 BlAbstractGeoViewElement >> updateDisplayToGraphicProjection [
 
 	| extent |
@@ -489,6 +523,8 @@ BlAbstractGeoViewElement >> updateModel [
 { #category : #'API -- dshapes' }
 BlAbstractGeoViewElement >> updateObject: anUserObject [
 
+	anUserObject ifNil:[ ^ self ].
+
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e updateObject: anUserObject ] ].
 		self internalSortDatas ]
@@ -496,6 +532,9 @@ BlAbstractGeoViewElement >> updateObject: anUserObject [
 
 { #category : #'API -- dshapes' }
 BlAbstractGeoViewElement >> updateObjects: anUserObjectList [
+
+	anUserObjectList ifNil:[ ^ self ].
+	anUserObjectList ifEmpty:[ ^ self ].
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e updateObjects: anUserObjectList ] ].

@@ -343,9 +343,9 @@ GeoViewManagerImpl >> scaleUp [
 ]
 
 { #category : #'events - selection manager' }
-GeoViewManagerImpl >> selectedKeysHasChanged: aSmockSelection [
+GeoViewManagerImpl >> selectedKeysHasChanged: aCollection [
 
-	self view selectedObjectIndexes: aSmockSelection keys
+	self view selectedObjectIndexes: aCollection
 ]
 
 { #category : #'events - selection manager' }

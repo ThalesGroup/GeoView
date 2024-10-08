@@ -15,14 +15,14 @@ GeoViewManagerImplTests >> setUp [
 	MolComponentManager cleanUp.
 
 	geoViewManagerName := #myGeoViewManager.
-	geoViewManager := GeoViewManagerTestImpl start: geoViewManagerName.
+	geoViewManager := GeoViewManagerBlocAeImpl start: geoViewManagerName.
 ]
 
 { #category : #running }
 GeoViewManagerImplTests >> tearDown [
 
 	super tearDown.
-	GeoViewManagerTestImpl stop: geoViewManagerName.
+	GeoViewManagerBlocAeImpl stop: geoViewManagerName.
 	geoViewManager := nil.
 	geoViewManagerName := nil.
 
