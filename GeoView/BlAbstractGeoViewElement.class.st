@@ -82,6 +82,9 @@ BlAbstractGeoViewElement >> configureGraphicModelForLayer: aLayer [
 	(graphicModel getProcessDataForClass: SmockDSymbol) ifNil:[
 		graphicModel setProcessData: DSymbolGeoViewProcessData new forClass: SmockDSymbol.
 	].
+	(graphicModel getProcessDataForClass: SmockDImage) ifNil:[
+		graphicModel setProcessData: DImageGeoViewProcessData new forClass: SmockDImage.
+	].
 	(graphicModel getProcessDataForClass: SmockDCircle) ifNil:[
 		graphicModel setProcessData: DCircleGeoViewProcessData new forClass: SmockDCircle.
 	].
