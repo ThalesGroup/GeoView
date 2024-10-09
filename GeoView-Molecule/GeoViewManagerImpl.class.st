@@ -9,7 +9,7 @@ Class {
 	#instVars : [
 		'view'
 	],
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Impl'
 }
 
 { #category : #'aggregated components' }

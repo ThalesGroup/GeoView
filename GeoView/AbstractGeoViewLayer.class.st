@@ -7,7 +7,7 @@ Class {
 		'name',
 		'announcer'
 	],
-	#category : #'GeoView-Core'
+	#category : #'GeoView-Layers'
 }
 
 { #category : #testing }
@@ -55,7 +55,7 @@ AbstractGeoViewLayer >> isVisible [
 { #category : #'API -- drawing' }
 AbstractGeoViewLayer >> isVisible: aBoolean [
 
-	isVisible := false
+	isVisible := aBoolean
 ]
 
 { #category : #'API -- projection' }

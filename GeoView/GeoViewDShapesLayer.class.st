@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'dShapeList'
 	],
-	#category : #'GeoView-Core'
+	#category : #'GeoView-Layers'
 }
 
 { #category : #'API -- DShapes' }

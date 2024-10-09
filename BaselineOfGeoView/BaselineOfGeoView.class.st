@@ -46,28 +46,19 @@ BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
 	spec
-		package: 'GeoView' with:[ spec requires: #('OpenSmock' 'GeoTools') ];
-		package: 'GeoView-GeoObjects' with:[ spec requires: #('GeoView') ];
-		package: 'GeoView-Bloc' with:[ spec requires: #('GeoView') ];
-		package: 'GeoView-Bloc-Alexandrie' with:[ spec requires: #('GeoView-Bloc') ].
-		
-	"Molecule integration packages"
-	spec
-		package: 'GeoView-Molecule' with:[ spec requires: #('GeoView' 'GeoView-GeoObjects') ];
-		package: 'GeoView-Bloc-Alexandrie-Molecule' with:[ spec requires: #('GeoView-Bloc-Alexandrie') ].
+		package: 'GeoView' with:[ spec requires: #('OpenSmock' 'GeoTools') ].
 		
 	"examples packages"
 	spec
-		package: 'GeoView-Examples-Bloc' with:[ spec requires: #('GeoView-Bloc' 'GeoView-GeoObjects') ].
-		
-	"examples with Molecule packages"
+		package: 'GeoView-Examples' with:[ spec requires: #('GeoView') ].
+
+	"Molecule integration packages"
 	spec
-		package: 'GeoView-Examples-Bloc-Molecule' with:[ spec requires: #('GeoView-Molecule' 'GeoView-Bloc-Alexandrie-Molecule') ].
+		package: 'GeoView-Molecule' with:[ spec requires: #('GeoView') ].
 		
 	"Tests packages"
 	spec
-		package: 'GeoView-Tests' with: [ spec requires: #('GeoView' 'GeoView-GeoObjects') ];
-		package: 'GeoView-Bloc-Tests' with: [ spec requires: #('GeoView-Bloc') ].
+		package: 'GeoView-Tests' with: [ spec requires: #('GeoView') ].
 		
 	"Tests with Molecule packages"
 	spec

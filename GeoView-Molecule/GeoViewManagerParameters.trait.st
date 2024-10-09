@@ -5,7 +5,7 @@ Trait {
 	#name : #GeoViewManagerParameters,
 	#traits : 'MolComponentParameters',
 	#classTraits : 'MolComponentParameters classTrait',
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Contract'
 }
 
 { #category : #'parameters - graphic projection' }

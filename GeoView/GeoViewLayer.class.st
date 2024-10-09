@@ -7,7 +7,7 @@ Class {
 		'graphicProjection',
 		'viewInfos'
 	],
-	#category : #'GeoView-Core'
+	#category : #'GeoView-Layers'
 }
 
 { #category : #'API -- projection' }

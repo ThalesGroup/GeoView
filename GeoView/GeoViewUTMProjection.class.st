@@ -18,7 +18,7 @@ Class {
 		'e6',
 		'k0'
 	],
-	#category : #'GeoView-Projection'
+	#category : #'GeoView-Projections'
 }
 
 { #category : #initialization }

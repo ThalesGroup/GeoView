@@ -13,7 +13,7 @@ Class {
 		'metersByPixel',
 		'offsetInPixels'
 	],
-	#category : #'GeoView-Projection'
+	#category : #'GeoView-Projections'
 }
 
 { #category : #accessing }

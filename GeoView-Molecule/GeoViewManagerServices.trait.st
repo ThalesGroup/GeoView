@@ -5,7 +5,7 @@ Trait {
 	#name : #GeoViewManagerServices,
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Contract'
 }
 
 { #category : #'services - layer' }
