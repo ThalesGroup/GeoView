@@ -1,7 +1,7 @@
 Class {
 	#name : #DShapeGeoViewProcessData,
 	#superclass : #SmockProcessData,
-	#category : #'GeoView-GShape-ProcessData'
+	#category : #'GeoView-ProcessDatas'
 }
 
 { #category : #accessing }

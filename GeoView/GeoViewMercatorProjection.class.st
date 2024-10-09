@@ -6,7 +6,7 @@ Class {
 	#superclass : #Object,
 	#traits : 'TGeoViewMapProjection',
 	#classTraits : 'TGeoViewMapProjection classTrait',
-	#category : #'GeoView-Projection'
+	#category : #'GeoView-Projections'
 }
 
 { #category : #accessing }

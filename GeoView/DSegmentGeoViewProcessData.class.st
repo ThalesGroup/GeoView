@@ -1,7 +1,7 @@
 Class {
 	#name : #DSegmentGeoViewProcessData,
 	#superclass : #DLeafShapeGeoViewProcessData,
-	#category : #'GeoView-GShape-ProcessData'
+	#category : #'GeoView-ProcessDatas'
 }
 
 { #category : #private }

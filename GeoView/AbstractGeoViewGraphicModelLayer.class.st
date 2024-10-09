@@ -8,7 +8,7 @@ Class {
 		'graphicModel',
 		'graphicalOrderSortBlock'
 	],
-	#category : #'GeoView-Core'
+	#category : #'GeoView-Layers'
 }
 
 { #category : #testing }
@@ -30,6 +30,15 @@ AbstractGeoViewGraphicModelLayer >> addDShape: aDShape [
 AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 
 	aDShapeList do: [ :e | self addDShape: e ]
+]
+
+{ #category : #'*GeoView-Bloc-Alexandrie' }
+AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
+
+	self isVisible ifFalse: [ ^ self ].
+	sortedDatas ifNil: [ ^ self ].
+	
+	sortedDatas do: [ :e | e aeDrawOn: aeCanvas ]
 ]
 
 { #category : #accessing }

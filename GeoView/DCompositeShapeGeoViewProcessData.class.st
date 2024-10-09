@@ -1,7 +1,7 @@
 Class {
 	#name : #DCompositeShapeGeoViewProcessData,
 	#superclass : #DShapeGeoViewProcessData,
-	#category : #'GeoView-GShape-ProcessData'
+	#category : #'GeoView-ProcessDatas'
 }
 
 { #category : #processing }

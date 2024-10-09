@@ -2,7 +2,7 @@ Trait {
 	#name : #GeoViewManagerCursorEvents,
 	#traits : 'MolComponentEvents',
 	#classTraits : 'MolComponentEvents classTrait',
-	#category : #'GeoView-Molecule'
+	#category : #'GeoView-Molecule-Contract'
 }
 
 { #category : #events }

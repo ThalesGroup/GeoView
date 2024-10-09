@@ -3,7 +3,7 @@ I am Map Projection, convert absolute coordinates to cartesian coordinates.
 "
 Trait {
 	#name : #TGeoViewMapProjection,
-	#category : #'GeoView-Projection'
+	#category : #'GeoView-Projections'
 }
 
 { #category : #accessing }

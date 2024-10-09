@@ -13,7 +13,7 @@ Class {
 	#instVars : [
 		'displayModel'
 	],
-	#category : #'GeoView-Core'
+	#category : #'GeoView-Layers'
 }
 
 { #category : #'API -- objects management' }

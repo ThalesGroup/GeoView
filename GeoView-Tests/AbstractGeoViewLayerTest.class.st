@@ -46,6 +46,9 @@ AbstractGeoViewLayerTest >> testIsVisible [
 	
 	layer isVisible: false.
 	self deny: layer isVisible.
+	
+	layer isVisible: true.
+	self assert: layer isVisible.
 ]
 
 { #category : #tests }
