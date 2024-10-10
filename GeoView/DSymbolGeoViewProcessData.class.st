@@ -23,12 +23,8 @@ DSymbolGeoViewProcessData >> processUpdatedData: aKey incoming: aDSymbol with: a
 		].
 	]].
 
-	"color mask property"
-	(aDSymbol fillStyle notNil and:[ aDSymbol fillStyle isColor ]) ifTrue: [ 
-		aGBitmap2D colorMask: aDSymbol fillStyle paint.
-	] ifFalse:[
-		aGBitmap2D colorMask: nil.
-	].
+	"fill style property"
+	aGBitmap2D fillStyle: aDSymbol fillStyle.
 
 	"transformations from expected trigonometric degrees to trigonometric degrees"
 	aGBitmap2D rotation: (aDSymbol orientation % 360).	
