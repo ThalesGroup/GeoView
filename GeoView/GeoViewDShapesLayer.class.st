@@ -66,7 +66,7 @@ GeoViewDShapesLayer >> updateDShape: aDShape [
 ]
 
 { #category : #private }
-GeoViewDShapesLayer >> updateModel [
+GeoViewDShapesLayer >> updateModel: aContext [
 
 	self dShapeList valuesDo: [ :dShape | self updateGraphicModelWith: dShape ]
 ]

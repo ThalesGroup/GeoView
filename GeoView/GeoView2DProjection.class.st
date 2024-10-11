@@ -48,6 +48,15 @@ GeoView2DProjection >> extentInPixels [
 ]
 
 { #category : #accessing }
+GeoView2DProjection >> haveResolution: aViewSize [
+
+	| viewHeight mapHeight |
+	viewHeight := aViewSize y.
+	mapHeight := 2 * self altitudeInMeters.
+	^ self metersByPixel = (viewHeight / mapHeight)
+]
+
+{ #category : #accessing }
 GeoView2DProjection >> initialize [ 
 
 	super initialize.
