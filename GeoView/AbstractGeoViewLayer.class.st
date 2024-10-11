@@ -105,7 +105,7 @@ AbstractGeoViewLayer >> symbologyProvider: aSymbologyProvider [
 ]
 
 { #category : #private }
-AbstractGeoViewLayer >> updateModel [
+AbstractGeoViewLayer >> updateModel: aContext [
 
 	self explicitRequirement 
 ]

@@ -155,7 +155,7 @@ GeoViewGeoObjectsLayer >> setProcessData: aProcessData forClass: anUserObjectCla
 ]
 
 { #category : #'API -- drawing' }
-GeoViewGeoObjectsLayer >> updateModel [
+GeoViewGeoObjectsLayer >> updateModel: aContext [
 
 	| model |
 	model := self displayModel.

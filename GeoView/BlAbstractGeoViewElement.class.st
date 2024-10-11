@@ -195,7 +195,7 @@ BlAbstractGeoViewElement >> geoCenter: anAbsoluteCoordinates [
 
 	cartesianCoordinates := self mapProjection projLatLonToCart: geoCenter.
 	self displayToGraphicProjection cartesianCenter: cartesianCoordinates.
-	self updateModel.
+	self updateModel: ((GeoViewProjectionChanges new) isCenterChanged: true).
 
 	"Send center event"
 	geoViewEvent := GeoViewCenterChangedEvent new.
@@ -341,7 +341,7 @@ BlAbstractGeoViewElement >> mapProjection: aMapProjection [
 	mapProjection := aMapProjection copy.
 	
 	self getLayers do:[ :l | l displayModel projection: self mapProjection ].
-	self updateModel.
+	self updateModel: ((GeoViewProjectionChanges new) isMapProjectionChange: true).
 	
 	"Send map projection changed event"
 	geoViewEvent := GeoViewMapProjectionChangedEvent new.
@@ -447,7 +447,7 @@ BlAbstractGeoViewElement >> scaleInMeters: aNumber [
 	
 	self displayToGraphicProjection altitudeInMeters: self scaleInMeters.
 	self displayToGraphicProjection updateResolution: self extent.
-	self updateModel.
+	self updateModel: ((GeoViewProjectionChanges new) isScaleChanged: true; isResolutionChanged: true).
 	
 	"Send scale event"
 	geoViewEvent := GeoViewScaleChangedEvent new.
@@ -508,18 +508,22 @@ BlAbstractGeoViewElement >> unconfigureLayer: aLayer [
 { #category : #private }
 BlAbstractGeoViewElement >> updateDisplayToGraphicProjection [
 
-	| extent |
+	| extent offset |
 	extent := self viewInfos extent.
-	displayToGraphicProjection offsetInPixels: extent / 2.
-	displayToGraphicProjection updateResolution: extent.
-	self updateModel
+	offset := extent / 2.
+	
+	(self displayToGraphicProjection offsetInPixels ~= offset or:[(self displayToGraphicProjection haveResolution: extent) not]) ifTrue:[
+		self displayToGraphicProjection offsetInPixels: offset.
+		self displayToGraphicProjection updateResolution: extent.
+		self updateModel: ((GeoViewProjectionChanges new) isExtentChanged: true; isResolutionChanged: true).
+	].
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> updateModel [
+BlAbstractGeoViewElement >> updateModel: aContext [
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :l | l updateModel ] ].
+		self layers do: [ :l | l updateModel: aContext ] ].
 	
 ]
 
