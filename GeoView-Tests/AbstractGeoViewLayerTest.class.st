@@ -22,11 +22,11 @@ AbstractGeoViewLayerTest >> testAnnouncer [
 ]
 
 { #category : #tests }
-AbstractGeoViewLayerTest >> testHaveGeoObjects [
+AbstractGeoViewLayerTest >> testHaveDomainObjects [
 
 	| layer |
 	layer := AbstractGeoViewLayer new.
-	self deny: layer haveGeoObjects.
+	self deny: layer haveDomainObjects.
 ]
 
 { #category : #tests }

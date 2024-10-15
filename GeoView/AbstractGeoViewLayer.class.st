@@ -33,8 +33,8 @@ AbstractGeoViewLayer >> graphicProjection: aGraphicProjection [
 	self explicitRequirement
 ]
 
-{ #category : #'as yet unclassified' }
-AbstractGeoViewLayer >> haveGeoObjects [
+{ #category : #testing }
+AbstractGeoViewLayer >> haveDomainObjects [
 
 	^ false
 ]
@@ -109,13 +109,13 @@ AbstractGeoViewLayer >> updateModel: aContext [
 	self explicitRequirement 
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewLayer >> viewInfos [
 	
 	self explicitRequirement
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewLayer >> viewInfos: aViewInfos [
 
 	self explicitRequirement

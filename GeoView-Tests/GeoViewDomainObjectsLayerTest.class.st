@@ -2,15 +2,15 @@
 A GeoViewGeoObjectsLayerTest is a test class for testing the behavior of GeoViewGeoObjectsLayer
 "
 Class {
-	#name : #GeoViewGeoObjectsLayerTest,
+	#name : #GeoViewDomainObjectsLayerTest,
 	#superclass : #TestCase,
 	#category : #'GeoView-Tests-Cases'
 }
 
 { #category : #tests }
-GeoViewGeoObjectsLayerTest >> testHaveGeoObjects [
+GeoViewDomainObjectsLayerTest >> testHaveDomainObjects [
 
 	| layer |
 	layer := GeoViewDomainObjectsLayer new.
-	self assert: layer haveGeoObjects
+	self assert: layer haveDomainObjects
 ]

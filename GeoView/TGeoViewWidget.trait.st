@@ -202,10 +202,10 @@ TGeoViewWidget >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 { #category : #'API -- layers management' }
 TGeoViewWidget >> removeAllLayers [
 
-	| layers |
-	layers := self getLayers.
-	layers copy do: [ :l | self removeLayer: l ].
-	^ layers
+	| list |
+	list := self getLayers.
+	list copy do: [ :l | self removeLayer: l ].
+	^ list
 ]
 
 { #category : #'API -- layers management' }

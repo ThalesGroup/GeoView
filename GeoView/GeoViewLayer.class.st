@@ -46,19 +46,19 @@ GeoViewLayer >> symbologyProvider: aSymbologyProvider [
 	symbologyProvider := aSymbologyProvider 
 ]
 
-{ #category : #'API -- drawing' }
+{ #category : #private }
 GeoViewLayer >> updateModel: aContext [
 
 	"do nothing"
 ]
 
-{ #category : #accessing }
+{ #category : #'API -- graphic properties' }
 GeoViewLayer >> viewInfos [
 
 	^ viewInfos
 ]
 
-{ #category : #accessing }
+{ #category : #'API -- graphic properties' }
 GeoViewLayer >> viewInfos: aViewInfos [
 
 	viewInfos := aViewInfos

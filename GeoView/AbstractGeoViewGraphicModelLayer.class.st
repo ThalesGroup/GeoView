@@ -107,13 +107,13 @@ AbstractGeoViewGraphicModelLayer >> initialize [
 	self initializeSortedDatas
 ]
 
-{ #category : #initialize }
+{ #category : #initialization }
 AbstractGeoViewGraphicModelLayer >> initializeDisplayToGraphicModel [
 
 	self graphicModel: GeoViewModel new
 ]
 
-{ #category : #initialize }
+{ #category : #initialization }
 AbstractGeoViewGraphicModelLayer >> initializeSortedDatas [
 	
 	sortedDatas := SortedCollection new: self graphicModel capacity.
@@ -166,7 +166,7 @@ AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 	aDShapeList do: [ :e | self removeDShape: e ]
 ]
 
-{ #category : #initialize }
+{ #category : #private }
 AbstractGeoViewGraphicModelLayer >> sortDatas [
 
 	sortedDatas removeAll.
@@ -201,13 +201,13 @@ AbstractGeoViewGraphicModelLayer >> updateGraphicModelWith: aDShape [
 	^ self graphicModel updated: aDShape
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewGraphicModelLayer >> viewInfos [
 
 	^ self graphicModel viewInfos
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewGraphicModelLayer >> viewInfos: aViewInfos [
 
 	self graphicModel viewInfos: aViewInfos

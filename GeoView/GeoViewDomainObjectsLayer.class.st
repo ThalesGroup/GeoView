@@ -53,18 +53,18 @@ GeoViewDomainObjectsLayer >> getDefaultProcessData [
 ]
 
 { #category : #'API -- process datas' }
-GeoViewDomainObjectsLayer >> getProcessDataForClass: aGeoObjectClass [
+GeoViewDomainObjectsLayer >> getProcessDataForClass: aDomainObjectClass [
 
-	^ self displayModel getProcessDataForClass: aGeoObjectClass
+	^ self displayModel getProcessDataForClass: aDomainObjectClass
 ]
 
 { #category : #testing }
-GeoViewDomainObjectsLayer >> haveGeoObjects [
+GeoViewDomainObjectsLayer >> haveDomainObjects [
 
 	^ true
 ]
 
-{ #category : #'API -- dshapes' }
+{ #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> haveObjectIndex: anIndex [
 
 	^ self displayModel haveDataIndex: anIndex
@@ -77,7 +77,7 @@ GeoViewDomainObjectsLayer >> initialize [
 	self initializeUserToDisplayModel
 ]
 
-{ #category : #initialize }
+{ #category : #initialization }
 GeoViewDomainObjectsLayer >> initializeUserToDisplayModel [
 
 	self displayModel: GeoViewModel new
@@ -119,22 +119,22 @@ GeoViewDomainObjectsLayer >> processDatasChanged [
 	self announcer announce: announcement
 ]
 
-{ #category : #'API -- dshapes' }
+{ #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> removeObject: anObject [
 
 	self removeDShape: (self displayModel deleted: anObject)
 ]
 
-{ #category : #'API -- dshapes' }
+{ #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> removeObjects: anObjectList [
 
 	anObjectList do: [ :e | self removeObject: e ]
 ]
 
 { #category : #'API -- process datas' }
-GeoViewDomainObjectsLayer >> removeProcessDataForClass: aGeoObjectClass [
+GeoViewDomainObjectsLayer >> removeProcessDataForClass: aDomainObjectClass [
 
-	self displayModel removeProcessDataForClass: aGeoObjectClass.
+	self displayModel removeProcessDataForClass: aDomainObjectClass.
 	self processDatasChanged
 ]
 
@@ -146,15 +146,15 @@ GeoViewDomainObjectsLayer >> setDefaultProcessData: aDataProcessor [
 ]
 
 { #category : #'API -- process datas' }
-GeoViewDomainObjectsLayer >> setProcessData: aProcessData forClass: anUserObjectClass [
+GeoViewDomainObjectsLayer >> setProcessData: aProcessData forClass: aDomainObjectClass [
 
 	| dModel |
 	dModel := self displayModel.
-	dModel setProcessData: aProcessData forClass: anUserObjectClass.
+	dModel setProcessData: aProcessData forClass: aDomainObjectClass.
 	self processDatasChanged
 ]
 
-{ #category : #'API -- drawing' }
+{ #category : #private }
 GeoViewDomainObjectsLayer >> updateModel: aContext [
 
 	| model |
@@ -162,13 +162,13 @@ GeoViewDomainObjectsLayer >> updateModel: aContext [
 	model datas valuesDo: [ :dShape | self updateGraphicModelWith: dShape ]
 ]
 
-{ #category : #'API -- dshapes' }
+{ #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> updateObject: anObject [
 
 	self updateDShape: (self displayModel updated: anObject)
 ]
 
-{ #category : #'API -- dshapes' }
+{ #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> updateObjects: anObjectList [
 
 	anObjectList do: [ :e | self updateObject: e ]
@@ -187,7 +187,7 @@ GeoViewDomainObjectsLayer >> updateState: aStateSymbol withIndexes: aKeyList [
 	dObjectList do:[ :dObject | self graphicModel updated: dObject ].
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'API -- graphic properties' }
 GeoViewDomainObjectsLayer >> viewInfos: aViewInfos [
 	
 	super viewInfos: aViewInfos.
