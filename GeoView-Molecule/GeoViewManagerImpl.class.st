@@ -99,10 +99,10 @@ GeoViewManagerImpl >> configureLayer: aLayer [
 ]
 
 { #category : #'services - layer' }
-GeoViewManagerImpl >> createAndAddGeoObjectsLayer: aKey [
+GeoViewManagerImpl >> createAndAddDomainObjectsLayer: aKey [
 
 	| layer |
-	layer := self createGeoObjectsLayer: aKey.
+	layer := self createDomainObjectsLayer: aKey.
 	layer ifNil:[ ^ nil ].
 	
 	self addLayer: layer.
@@ -110,10 +110,10 @@ GeoViewManagerImpl >> createAndAddGeoObjectsLayer: aKey [
 ]
 
 { #category : #'private - layer' }
-GeoViewManagerImpl >> createGeoObjectsLayer: aName [
+GeoViewManagerImpl >> createDomainObjectsLayer: aName [
 
 	| layer |
-	layer := GeoViewGeoObjectsLayer new.
+	layer := GeoViewDomainObjectsLayer new.
 	layer name: aName.
 	^ layer
 ]

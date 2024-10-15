@@ -87,7 +87,7 @@ BlAbstractGeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
 BlAbstractGeoViewElementTest >> testAddGeoViewGeoObjectsLayer [
 
 	| layer |
-	layer := GeoViewGeoObjectsLayer new name: #test.
+	layer := GeoViewDomainObjectsLayer new name: #test.
 	geoView addLayer: layer.
 	
 	self assert: (geoView getLayer: #test) equals: layer.
@@ -141,7 +141,7 @@ BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
 	self deny: tag.
 	
 	"create and add the layer"
-	layer := GeoViewGeoObjectsLayer new name: #myLayer.
+	layer := GeoViewDomainObjectsLayer new name: #myLayer.
 	geoView addLayer: layer.
 	self deny: tag.
 	

@@ -17,7 +17,7 @@ GeoViewManagerServices >> centerOnPoint: aGlobalPoint [
 ]
 
 { #category : #'services - layer' }
-GeoViewManagerServices >> createAndAddGeoObjectsLayer: aKey [
+GeoViewManagerServices >> createAndAddDomainObjectsLayer: aKey [
 ]
 
 { #category : #services }

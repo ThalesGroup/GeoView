@@ -11,6 +11,6 @@ Class {
 GeoViewGeoObjectsLayerTest >> testHaveGeoObjects [
 
 	| layer |
-	layer := GeoViewGeoObjectsLayer new.
+	layer := GeoViewDomainObjectsLayer new.
 	self assert: layer haveGeoObjects
 ]

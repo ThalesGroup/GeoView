@@ -1,3 +1,7 @@
+"
+This layer can manage DShapes in a model.
+Use this kind of layers for example to decorate a view with some DShape.
+"
 Class {
 	#name : #GeoViewDShapesLayer,
 	#superclass : #AbstractGeoViewGraphicModelLayer,
