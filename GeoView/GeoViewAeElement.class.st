@@ -4,7 +4,7 @@ I am a BlElement which display a GeoViewWidget using Alexandrie backend drawing.
 Class {
 	#name : #GeoViewAeElement,
 	#superclass : #GeoViewAbstractElement,
-	#category : #'GeoView-Bloc'
+	#category : #'GeoView-Core'
 }
 
 { #category : #drawing }

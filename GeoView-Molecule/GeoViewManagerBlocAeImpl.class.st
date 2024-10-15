@@ -11,7 +11,7 @@ GeoViewManagerBlocAeImpl >> createView [
 	element := GeoViewAeElement new.
 	self installEventHandlers: element.
 
-	self view: element.
+	self view: element
 ]
 
 { #category : #initialization }

@@ -12,7 +12,7 @@ Class {
 		'mouseDownPosition',
 		'pickingRadius'
 	],
-	#category : #'GeoView-Bloc'
+	#category : #'GeoView-Events'
 }
 
 { #category : #accessing }

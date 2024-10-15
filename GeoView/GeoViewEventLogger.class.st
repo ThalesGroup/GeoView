@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoViewEventLogger,
 	#superclass : #BlCustomEventHandler,
-	#category : #'GeoView-Bloc'
+	#category : #'GeoView-Events'
 }
 
 { #category : #'api - accessing' }

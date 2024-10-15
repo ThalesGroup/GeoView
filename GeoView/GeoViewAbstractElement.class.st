@@ -4,9 +4,13 @@ I am an abstract BlElement which contains GeoViewWidget behavior. Not possible t
 Class {
 	#name : #GeoViewAbstractElement,
 	#superclass : #BlElement,
-	#traits : 'TGeoViewWidget',
-	#classTraits : 'TGeoViewWidget classTrait',
 	#instVars : [
+		'geoCenter',
+		'scaleFactor',
+		'maxScaleInMeters',
+		'minScaleInMeters',
+		'scaleInMeters',
+		'objectIndexAccessor',
 		'layers',
 		'displayToGraphicProjection',
 		'isMarkedForSortDatas',
@@ -14,13 +18,21 @@ Class {
 		'viewInfos',
 		'interactionsStrategy'
 	],
-	#category : #'GeoView-Bloc'
+	#category : #'GeoView-Core'
 }
 
 { #category : #testing }
 GeoViewAbstractElement class >> isAbstract [
 
 	^ self = GeoViewAbstractElement
+]
+
+{ #category : #'API -- coordinates transformations' }
+GeoViewAbstractElement >> absoluteCoordinatesFromGlobalPoint: aGlobalPoint [
+
+	| localPoint |
+	localPoint := self localPointFromGlobalPoint: aGlobalPoint.
+	^ self absoluteCoordinatesFromLocalPoint: localPoint
 ]
 
 { #category : #'API -- coordinates transformations' }
@@ -54,6 +66,8 @@ GeoViewAbstractElement >> addLayer: aLayer [
 { #category : #'API -- objects management' }
 GeoViewAbstractElement >> addObject: anUserObject [
 
+	anUserObject ifNil: [ ^ self ].
+
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveDomainObjects ifTrue:[ e addObject: anUserObject ] ].
 		self internalSortDatas ]
@@ -67,6 +81,15 @@ GeoViewAbstractElement >> addObjects: anUserObjectList [
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveDomainObjects ifTrue:[ e addObjects: anUserObjectList ] ].
 		self internalSortDatas ]
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
+	"Center the map on a global point"
+
+	| absoluteCoordinates |
+	absoluteCoordinates := self absoluteCoordinatesFromGlobalPoint: aGlobalPoint.
+	self geoCenter: absoluteCoordinates
 ]
 
 { #category : #private }
@@ -136,14 +159,31 @@ GeoViewAbstractElement >> doPicking: aPickingResult [
 { #category : #private }
 GeoViewAbstractElement >> enqueueBlockAsTaskAndRequestRepaint: aBlockClosure [
 
-	| task |
-	task := BlTaskAction new.
-	task action: aBlockClosure.
-	self enqueueTask: task.
+	| task action |
+	aBlockClosure ifNil:[ ^ self ].
+	aBlockClosure isBlock ifFalse:[ ^ self ].
+	
+	"wrap the block into another one to refresh the view"
+	action := [ aBlockClosure value. self requestRepaint ].
 	
 	task := BlTaskAction new.
-	task action: [ self requestRepaint ].
+	task action: action.
 	self enqueueTask: task
+]
+
+{ #category : #private }
+GeoViewAbstractElement >> evaluateScale: aNumberInMeters [
+
+	aNumberInMeters < self minScaleInMeters ifTrue: [ ^ self minScaleInMeters ].
+	aNumberInMeters > self maxScaleInMeters ifTrue: [ ^ self maxScaleInMeters ].
+	^ aNumberInMeters 
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> geoCenter [
+
+	geoCenter ifNil: [ geoCenter := AbsoluteCoordinates zero ].
+	^ geoCenter
 ]
 
 { #category : #'API -- scale and center' }
@@ -166,9 +206,28 @@ GeoViewAbstractElement >> geoCenter: anAbsoluteCoordinates [
 ]
 
 { #category : #'API -- layers management' }
+GeoViewAbstractElement >> getLayer: aKey [
+
+	| layer |
+	layer := self getLayers
+		         detect: [ :l | l name = aKey ]
+		         ifNone: [ nil ].
+	^ layer 
+]
+
+{ #category : #'API -- layers management' }
 GeoViewAbstractElement >> getLayers [
 	
 	^ self layers
+]
+
+{ #category : #'API -- coordinates transformations' }
+GeoViewAbstractElement >> globalPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
+
+	| localPoint |
+	localPoint := self localPointFromAbsoluteCoordinates:
+		              anAbsoluteCoordinates.
+	^ self globalPointFromLocalPoint: localPoint
 ]
 
 { #category : #'API -- coordinates transformations' }
@@ -178,7 +237,7 @@ GeoViewAbstractElement >> globalPointFromLocalPoint: aLocalPoint [
 	^ self localPointToGlobal: aLocalPoint
 ]
 
-{ #category : #'API -- dshapes' }
+{ #category : #'API -- objects management' }
 GeoViewAbstractElement >> haveObjectIndex: anIndex [
 	"Pay attention before using it because graphical model is out of sync real user model due to usage of BlTask (asynchronous)"
 
@@ -299,10 +358,53 @@ GeoViewAbstractElement >> mapProjection: aMapProjection [
 	self dispatchEvent: geoViewEvent
 ]
 
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> maxScaleInMeters [
+
+	^ maxScaleInMeters ifNil: [ maxScaleInMeters := 1.5171584e7 ]
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> maxScaleInMeters: anObject [
+
+	maxScaleInMeters := anObject
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> minScaleInMeters [
+
+	^ minScaleInMeters ifNil: [ minScaleInMeters := 1852.0 ]
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> minScaleInMeters: anObject [
+
+	minScaleInMeters := anObject
+]
+
 { #category : #'strategy management' }
 GeoViewAbstractElement >> newInteractionsStrategy [
 
 	^ GeoViewDefaultInteractionsStrategy new
+]
+
+{ #category : #'API -- objects parameters' }
+GeoViewAbstractElement >> objectIndexAccessor [
+
+	^ objectIndexAccessor ifNil: [ objectIndexAccessor := #key ]
+]
+
+{ #category : #'API -- objects parameters' }
+GeoViewAbstractElement >> objectIndexAccessor: aSymbol [
+
+	objectIndexAccessor := aSymbol
+]
+
+{ #category : #'API -- picking' }
+GeoViewAbstractElement >> pickAt: aGlobalPoint [
+	"Return all objects under a global point"
+
+	^ self pickAt: aGlobalPoint radius: 0
 ]
 
 { #category : #'API -- picking' }
@@ -342,6 +444,15 @@ GeoViewAbstractElement >> processExtentChangedEvent: anEvent [
 	self updateDisplayToGraphicProjection
 ]
 
+{ #category : #'API -- layers management' }
+GeoViewAbstractElement >> removeAllLayers [
+
+	| list |
+	list := self getLayers.
+	list copy do: [ :l | self removeLayer: l ].
+	^ list 
+]
+
 { #category : #'strategy management' }
 GeoViewAbstractElement >> removeInteractionsStrategy [
 
@@ -364,7 +475,7 @@ GeoViewAbstractElement >> removeLayer: aLayer [
 	self dispatchEvent: event
 ]
 
-{ #category : #'API -- dshapes' }
+{ #category : #'API -- objects management' }
 GeoViewAbstractElement >> removeObject: anUserObject [
 
 	anUserObject ifNil:[ ^ self ].
@@ -374,7 +485,7 @@ GeoViewAbstractElement >> removeObject: anUserObject [
 		self internalSortDatas ]
 ]
 
-{ #category : #'API -- dshapes' }
+{ #category : #'API -- objects management' }
 GeoViewAbstractElement >> removeObjects: anUserObjectList [
 
 	anUserObjectList ifNil:[ ^ self ].
@@ -393,6 +504,30 @@ GeoViewAbstractElement >> requestRepaint [
 ]
 
 { #category : #'API -- scale and center' }
+GeoViewAbstractElement >> scaleDown [
+
+	self scaleInMeters: self scaleInMeters * self scaleFactor
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> scaleFactor [
+
+	^ scaleFactor ifNil: [ scaleFactor := 2 ]
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> scaleFactor: aNumber [
+
+	scaleFactor := aNumber
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> scaleInMeters [
+
+	^ scaleInMeters ifNil: [ scaleInMeters := 1.4816e7 ]
+]
+
+{ #category : #'API -- scale and center' }
 GeoViewAbstractElement >> scaleInMeters: aNumber [
 
 	| scale geoViewEvent |
@@ -407,6 +542,12 @@ GeoViewAbstractElement >> scaleInMeters: aNumber [
 	geoViewEvent := GeoViewScaleChangedEvent new.
 	geoViewEvent scaleInMeters: self scaleInMeters.
 	self dispatchEvent: geoViewEvent.
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> scaleUp [
+
+	self scaleInMeters: self scaleInMeters / self scaleFactor
 ]
 
 { #category : #'API -- selection' }
@@ -427,13 +568,6 @@ GeoViewAbstractElement >> setInteractionsStrategy: aBlEventListener [
 	aBlEventListener ifNil:[ ^ self ].
 	interactionsStrategy := aBlEventListener.
 	self addEventHandler: aBlEventListener.
-]
-
-{ #category : #private }
-GeoViewAbstractElement >> sortDatas [
-
-	self internalSortDatas.
-	self requestRepaint.
 ]
 
 { #category : #private }
@@ -465,12 +599,14 @@ GeoViewAbstractElement >> updateDisplayToGraphicProjection [
 { #category : #private }
 GeoViewAbstractElement >> updateModel: aContext [
 
+	self layers ifEmpty: [ ^ self ].
+
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :l | l updateModel: aContext ] ].
 	
 ]
 
-{ #category : #'API -- dshapes' }
+{ #category : #'API -- objects management' }
 GeoViewAbstractElement >> updateObject: anUserObject [
 
 	anUserObject ifNil:[ ^ self ].
@@ -480,7 +616,7 @@ GeoViewAbstractElement >> updateObject: anUserObject [
 		self internalSortDatas ]
 ]
 
-{ #category : #'API -- dshapes' }
+{ #category : #'API -- objects management' }
 GeoViewAbstractElement >> updateObjects: anUserObjectList [
 
 	anUserObjectList ifNil:[ ^ self ].
