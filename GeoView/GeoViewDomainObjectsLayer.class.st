@@ -114,7 +114,7 @@ GeoViewDomainObjectsLayer >> processDatasChanged [
 	"Notify internaly that process datas changed"
 	
 	| announcement |
-	announcement := GeoViewGeoObjectLayerProcessDataChanged new.
+	announcement := GeoViewDomainObjectsLayerProcessDataChanged new.
 	announcement layerName: self name.
 	self announcer announce: announcement
 ]

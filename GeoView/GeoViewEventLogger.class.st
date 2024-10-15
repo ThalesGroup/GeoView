@@ -14,7 +14,7 @@ GeoViewEventLogger >> eventsToHandle [
 		  GeoViewPickingEvent.
 		  GeoViewLayerAddedEvent.
 		  GeoViewLayerRemovedEvent.
-		  GeoViewGeoObjectLayerProcessDataChanged.
+		  GeoViewDomainObjectsLayerProcessDataChanged.
 		  GeoViewObjectSelectionChanged.
 		  GeoViewObjectSelectionAdded.
 		  GeoViewObjectSelectionRemoved.
@@ -35,6 +35,12 @@ GeoViewEventLogger >> geoViewCursorCoordinatesChangedEvent: anEvent [
 
 { #category : #events }
 GeoViewEventLogger >> geoViewLayerAddedEvent: anEvent [
+
+	anEvent traceCr.
+]
+
+{ #category : #events }
+GeoViewEventLogger >> geoViewLayerProcessDataChanged: anEvent [
 
 	anEvent traceCr.
 ]
@@ -73,12 +79,6 @@ GeoViewEventLogger >> geoViewObjectSelectionRemoved: anEvent [
 GeoViewEventLogger >> geoViewPickingEvent: anEvent [
 
 	anEvent pickingResult traceCr
-]
-
-{ #category : #events }
-GeoViewEventLogger >> geoViewProcessDataChanged: anEvent [
-
-	anEvent traceCr.
 ]
 
 { #category : #events }

@@ -7,13 +7,13 @@ Class {
 	#category : #'GeoView-Events'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 GeoViewLayerEvent >> layerName [
 
 	^ layerName
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 GeoViewLayerEvent >> layerName: anObject [
 
 	layerName := anObject

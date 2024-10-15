@@ -122,7 +122,7 @@ GeoViewAbstractElement >> configureLayer: aLayer [
 
 	aLayer haveGeoObjects ifFalse:[ ^ self ].
 	aLayer displayModel indexAccessor: self objectIndexAccessor.
-	aLayer announcer when: GeoViewGeoObjectLayerProcessDataChanged send: #layerProcessDataChanged: to: self
+	aLayer announcer when: GeoViewDomainObjectsLayerProcessDataChanged send: #layerProcessDataChanged: to: self
 ]
 
 { #category : #'private - picking' }
@@ -297,7 +297,7 @@ GeoViewAbstractElement >> layerProcessDataChanged: anEvent [
 
 	"Send scale event"
 	| geoViewEvent |
-	geoViewEvent := GeoViewGeoObjectLayerProcessDataChanged new.
+	geoViewEvent := GeoViewDomainObjectsLayerProcessDataChanged new.
 	geoViewEvent layerName: anEvent layerName.
 	self dispatchEvent: geoViewEvent
 ]
