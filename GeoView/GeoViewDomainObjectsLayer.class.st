@@ -74,11 +74,11 @@ GeoViewDomainObjectsLayer >> haveObjectIndex: anIndex [
 GeoViewDomainObjectsLayer >> initialize [
 
 	super initialize.
-	self initializeUserToDisplayModel
+	self initializeDisplayModel
 ]
 
 { #category : #initialization }
-GeoViewDomainObjectsLayer >> initializeUserToDisplayModel [
+GeoViewDomainObjectsLayer >> initializeDisplayModel [
 
 	self displayModel: GeoViewModel new
 ]

@@ -70,42 +70,6 @@ GeoViewAbstractElement >> addObjects: anUserObjectList [
 ]
 
 { #category : #private }
-GeoViewAbstractElement >> configureGraphicModelForLayer: aLayer [
-	
-	| graphicModel |
-	graphicModel := aLayer graphicModel.
-	
-	"add Alexandrie process datas if not already here"	
-	(graphicModel getProcessDataForClass: SmockDCompositeShape) ifNil:[
-		graphicModel setProcessData: DCompositeShapeGeoViewProcessData new forClass: SmockDCompositeShape.
-	].
-	(graphicModel getProcessDataForClass: SmockDSymbol) ifNil:[
-		graphicModel setProcessData: DSymbolGeoViewProcessData new forClass: SmockDSymbol.
-	].
-	(graphicModel getProcessDataForClass: SmockDImage) ifNil:[
-		graphicModel setProcessData: DImageGeoViewProcessData new forClass: SmockDImage.
-	].
-	(graphicModel getProcessDataForClass: SmockDCircle) ifNil:[
-		graphicModel setProcessData: DCircleGeoViewProcessData new forClass: SmockDCircle.
-	].
-	(graphicModel getProcessDataForClass: SmockDText) ifNil:[
-		graphicModel setProcessData: DTextGeoViewProcessData new forClass: SmockDText.
-	].
-	(graphicModel getProcessDataForClass: SmockDPolygon) ifNil:[
-		graphicModel setProcessData: DPolygonGeoViewProcessData new forClass: SmockDPolygon.
-	].
-	(graphicModel getProcessDataForClass: SmockDPolyline) ifNil:[
-		graphicModel setProcessData: DPolylineGeoViewProcessData new forClass: SmockDPolyline.
-	].
-	(graphicModel getProcessDataForClass: SmockDSegment) ifNil:[
-		graphicModel setProcessData: DSegmentGeoViewProcessData new forClass: SmockDSegment.
-	].
-
-	"specify default process data"
-	"aLayer displayToGraphicModel defaultProcessData: DShapeAeProcessData new."
-]
-
-{ #category : #private }
 GeoViewAbstractElement >> configureLayer: aLayer [
 	
 	aLayer viewInfos: self viewInfos.
@@ -117,9 +81,6 @@ GeoViewAbstractElement >> configureLayer: aLayer [
 	aLayer graphicProjection: self displayToGraphicProjection.
 	
 	aLayer announcer when: GeoViewLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
-
-	aLayer haveGraphicModel ifFalse:[ ^ self ].
-	self configureGraphicModelForLayer: aLayer.	
 
 	aLayer haveDomainObjects ifFalse:[ ^ self ].
 	aLayer displayModel indexAccessor: self objectIndexAccessor.
@@ -476,23 +437,12 @@ GeoViewAbstractElement >> sortDatas [
 ]
 
 { #category : #private }
-GeoViewAbstractElement >> unconfigureGraphicModelForLayer: aLayer [
-	
-	| graphicModel |
-	graphicModel := aLayer graphicModel.
-	graphicModel removeAllProcessData.
-]
-
-{ #category : #private }
 GeoViewAbstractElement >> unconfigureLayer: aLayer [
 	
 	aLayer viewInfos: nil.
 	aLayer mapProjection: nil.
 	aLayer graphicProjection: nil.
 	aLayer announcer unsubscribe: self.
-
-	aLayer haveGraphicModel ifFalse:[ ^ self ].
-	self unconfigureGraphicModelForLayer: aLayer.	
 
 	aLayer haveDomainObjects ifFalse:[ ^ self ].
 	aLayer displayModel indexAccessor: nil.

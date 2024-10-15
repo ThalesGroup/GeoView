@@ -103,14 +103,25 @@ AbstractGeoViewGraphicModelLayer >> haveGraphicModel [
 AbstractGeoViewGraphicModelLayer >> initialize [
 
 	super initialize.
-	self initializeDisplayToGraphicModel.
-	self initializeSortedDatas
+	self initializeGraphicModel.
+	self initializeSortedDatas.
 ]
 
 { #category : #initialization }
-AbstractGeoViewGraphicModelLayer >> initializeDisplayToGraphicModel [
+AbstractGeoViewGraphicModelLayer >> initializeGraphicModel [
 
-	self graphicModel: GeoViewModel new
+	self graphicModel: GeoViewModel new.
+	
+	"Setup all DShape process datas"
+	self graphicModel setProcessData: DCompositeShapeGeoViewProcessData new forClass: SmockDCompositeShape.
+	self graphicModel setProcessData: DSymbolGeoViewProcessData new forClass: SmockDSymbol.
+	self graphicModel setProcessData: DImageGeoViewProcessData new forClass: SmockDImage.
+	self graphicModel setProcessData: DCircleGeoViewProcessData new forClass: SmockDCircle.
+	self graphicModel setProcessData: DTextGeoViewProcessData new forClass: SmockDText.
+	self graphicModel setProcessData: DPolygonGeoViewProcessData new forClass: SmockDPolygon.
+	self graphicModel setProcessData: DPolylineGeoViewProcessData new forClass: SmockDPolyline.
+	self graphicModel setProcessData: DSegmentGeoViewProcessData new forClass: SmockDSegment.
+	
 ]
 
 { #category : #initialization }
