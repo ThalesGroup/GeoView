@@ -204,16 +204,6 @@ GeoViewAbstractElement >> geoCenter: anAbsoluteCoordinates [
 ]
 
 { #category : #'API -- layers management' }
-GeoViewAbstractElement >> getLayer: aKey [
-
-	| layer |
-	layer := self getLayers
-		         detect: [ :l | l name = aKey ]
-		         ifNone: [ nil ].
-	^ layer
-]
-
-{ #category : #'API -- layers management' }
 GeoViewAbstractElement >> getLayers [
 	
 	^ self layers

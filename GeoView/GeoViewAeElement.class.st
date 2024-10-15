@@ -4,9 +4,6 @@ I am a BlElement which display a GeoViewWidget using Alexandrie backend drawing.
 Class {
 	#name : #GeoViewAeElement,
 	#superclass : #GeoViewAbstractElement,
-	#instVars : [
-		'inputContext'
-	],
 	#category : #'GeoView-Bloc'
 }
 
