@@ -3,7 +3,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'isVisible',
-		'processDataChangedBlock',
 		'name',
 		'announcer'
 	],
@@ -58,13 +57,13 @@ AbstractGeoViewLayer >> isVisible: aBoolean [
 	isVisible := aBoolean
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- projection' }
 AbstractGeoViewLayer >> mapProjection [
 
 	self explicitRequirement
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- projection' }
 AbstractGeoViewLayer >> mapProjection: aMapProjection [
 
 	self explicitRequirement
