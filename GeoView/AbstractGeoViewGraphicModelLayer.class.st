@@ -32,7 +32,7 @@ AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 	aDShapeList do: [ :e | self addDShape: e ]
 ]
 
-{ #category : #'*GeoView-Bloc-Alexandrie' }
+{ #category : #'drawing - bloc' }
 AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 
 	self isVisible ifFalse: [ ^ self ].
