@@ -34,7 +34,7 @@ AbstractGeoViewLayer >> graphicProjection: aGraphicProjection [
 	self explicitRequirement
 ]
 
-{ #category : #testing }
+{ #category : #'as yet unclassified' }
 AbstractGeoViewLayer >> haveGeoObjects [
 
 	^ false
@@ -46,25 +46,25 @@ AbstractGeoViewLayer >> haveGraphicModel [
 	^ false
 ]
 
-{ #category : #'API -- drawing' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewLayer >> isVisible [
 
 	^ isVisible ifNil:[ isVisible := true ]
 ]
 
-{ #category : #'API -- drawing' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewLayer >> isVisible: aBoolean [
 
 	isVisible := aBoolean
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'as yet unclassified' }
 AbstractGeoViewLayer >> mapProjection [
 
 	self explicitRequirement
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'as yet unclassified' }
 AbstractGeoViewLayer >> mapProjection: aMapProjection [
 
 	self explicitRequirement

@@ -14,7 +14,7 @@ GeoViewTestWidget >> addLayer: aLayer [
 	self layers add: aLayer
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'API -- objects management' }
 GeoViewTestWidget >> addObjects: aGeoObjectList [
 	"do nothing : only for testing"
 ]

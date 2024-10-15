@@ -11,8 +11,8 @@ Trait {
 		'scaleInMeters',
 		'objectIndexAccessor'
 	],
-	#traits : 'TGeoViewHandleObjects',
-	#classTraits : 'TGeoViewHandleObjects classTrait',
+	#traits : 'TSmockHandleObjects',
+	#classTraits : 'TSmockHandleObjects classTrait',
 	#category : #'GeoView-Core'
 }
 

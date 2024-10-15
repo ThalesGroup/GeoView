@@ -8,8 +8,8 @@ when rendered within this layer.
 Class {
 	#name : #GeoViewGeoObjectsLayer,
 	#superclass : #AbstractGeoViewGraphicModelLayer,
-	#traits : 'TSmockHandleProcessDatas + TGeoViewHandleObjects',
-	#classTraits : 'TSmockHandleProcessDatas classTrait + TGeoViewHandleObjects classTrait',
+	#traits : 'TSmockHandleProcessDatas + TSmockHandleObjects',
+	#classTraits : 'TSmockHandleProcessDatas classTrait + TSmockHandleObjects classTrait',
 	#instVars : [
 		'displayModel'
 	],

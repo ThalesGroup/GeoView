@@ -1,8 +1,8 @@
 Class {
 	#name : #AbstractGeoViewGraphicModelLayer,
 	#superclass : #AbstractGeoViewLayer,
-	#traits : 'TGeoViewHandleDShapes',
-	#classTraits : 'TGeoViewHandleDShapes classTrait',
+	#traits : 'TSmockHandleDShapes',
+	#classTraits : 'TSmockHandleDShapes classTrait',
 	#instVars : [
 		'sortedDatas',
 		'graphicModel',
