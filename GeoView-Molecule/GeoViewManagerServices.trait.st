@@ -22,32 +22,22 @@ GeoViewManagerServices >> createAndAddGeoObjectsLayer: aKey [
 
 { #category : #services }
 GeoViewManagerServices >> getAbsoluteCoordinatesFromGlobalPoint: aGlobalPoint [
-
-	^ self getView absoluteCoordinatesFromGlobalPoint: aGlobalPoint 
 ]
 
 { #category : #services }
 GeoViewManagerServices >> getAbsoluteCoordinatesFromLocalPoint: aLocalPoint [
-
-	^ self getView absoluteCoordinatesFromLocalPoint: aLocalPoint 
 ]
 
 { #category : #services }
 GeoViewManagerServices >> getGeoCenter [ 
-
-	^ self getView geoCenter
 ]
 
 { #category : #services }
 GeoViewManagerServices >> getGlobalPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
-
-	^ self getView globalPointFromAbsoluteCoordinates: anAbsoluteCoordinates
 ]
 
 { #category : #services }
 GeoViewManagerServices >> getGlobalPointFromLocalPoint: aLocalPoint [
-
-	^ self getView globalPointFromLocalPoint: aLocalPoint
 ]
 
 { #category : #'services - layer' }
@@ -64,14 +54,10 @@ GeoViewManagerServices >> getLayers [
 
 { #category : #services }
 GeoViewManagerServices >> getLocalPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
-
-	^ self getView localPointFromAbsoluteCoordinates: anAbsoluteCoordinates
 ]
 
 { #category : #services }
 GeoViewManagerServices >> getLocalPointFromGlobalPoint: aGlobalPoint [
-
-	^ self getView localPointFromGlobalPoint: aGlobalPoint
 ]
 
 { #category : #'services - map projection' }

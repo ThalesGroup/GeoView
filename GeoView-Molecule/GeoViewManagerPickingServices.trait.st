@@ -8,8 +8,6 @@ Trait {
 { #category : #'services - picking' }
 GeoViewManagerPickingServices >> pickAt: aGlobalPoint [
 	"Return all objects under a global point"
-
-	^ self view pickAt: aGlobalPoint
 ]
 
 { #category : #'services - picking' }

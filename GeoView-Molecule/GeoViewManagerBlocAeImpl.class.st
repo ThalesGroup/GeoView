@@ -4,20 +4,11 @@ Class {
 	#category : #'GeoView-Molecule-Impl'
 }
 
-{ #category : #'layer creation' }
-GeoViewManagerBlocAeImpl >> createGeoObjectsLayer: aName [
-
-	| layer |
-	layer := GeoViewGeoObjectsLayer new.
-	layer name: aName.
-	^ layer
-]
-
 { #category : #initialization }
 GeoViewManagerBlocAeImpl >> createView [
 
 	| element |
-	element := BlGeoViewAeElement new.
+	element := GeoViewAeElement new.
 	self installEventHandlers: element.
 
 	self view: element.
@@ -39,10 +30,4 @@ GeoViewManagerBlocAeImpl >> installEventHandlers: aBlElement [
 	aBlElement addEventHandlerOn: GeoViewObjectSelectionAdded do: [ :e | self strategyRequestAddSelection: e objectIndexesList ].
 	aBlElement addEventHandlerOn: GeoViewObjectSelectionRemoved do: [ :e | self strategyRequestRemoveSelection: e objectIndexesList ].
 	aBlElement addEventHandlerOn: GeoViewObjectSelectionCleared do: [ :e | self strategyRequestClearSelection ]
-]
-
-{ #category : #'services - drawing' }
-GeoViewManagerBlocAeImpl >> requestViewUpdate [
-
-	self view requestRepaint
 ]

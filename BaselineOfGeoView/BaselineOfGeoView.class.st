@@ -29,11 +29,6 @@ BaselineOfGeoView >> baselineForCommon: spec [
 
 { #category : #dependencies }
 BaselineOfGeoView >> coreDependencies: spec [
-
-	"OpenSmock core workshop"
-	spec 
-		baseline: 'OpenSmock' 
-		with: [	spec repository: 'github://OpenSmock/OpenSmock' ].
 		
 	"GeoTools"
 	spec 
@@ -46,9 +41,9 @@ BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
 	spec
-		package: 'GeoView' with:[ spec requires: #('OpenSmock' 'GeoTools') ].
+		package: 'GeoView' with:[ spec requires: #('GeoTools') ].
 		
-	"examples packages"
+	"Examples packages"
 	spec
 		package: 'GeoView-Examples' with:[ spec requires: #('GeoView') ].
 

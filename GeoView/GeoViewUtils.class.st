@@ -21,3 +21,7 @@ GeoViewUtils class >> createGeoObjectsLayer: aName [
 
 	^ layer
 ]
+
+{ #category : #'see class side' }
+GeoViewUtils >> seeClassSide [ 
+]

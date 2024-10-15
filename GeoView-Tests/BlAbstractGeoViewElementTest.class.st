@@ -7,13 +7,13 @@ Class {
 	#instVars : [
 		'geoView'
 	],
-	#category : #'GeoView-Tests'
+	#category : #'GeoView-Tests-Cases'
 }
 
 { #category : #private }
 BlAbstractGeoViewElementTest >> createGeoViewElement [
 
-	geoView := BlAbstractGeoViewElement new.
+	geoView := GeoViewAbstractElement new.
 ]
 
 { #category : #accessing }

@@ -2,7 +2,7 @@
 I am an abstract BlElement which contains GeoViewWidget behavior. Not possible to use directly, to use a GeoViewWidget select a subclass element with the targeted backend.
 "
 Class {
-	#name : #BlAbstractGeoViewElement,
+	#name : #GeoViewAbstractElement,
 	#superclass : #BlElement,
 	#traits : 'TGeoViewWidget',
 	#classTraits : 'TGeoViewWidget classTrait',
@@ -18,13 +18,13 @@ Class {
 }
 
 { #category : #testing }
-BlAbstractGeoViewElement class >> isAbstract [
+GeoViewAbstractElement class >> isAbstract [
 
-	^ self = BlAbstractGeoViewElement
+	^ self = GeoViewAbstractElement
 ]
 
 { #category : #'API -- coordinates transformations' }
-BlAbstractGeoViewElement >> absoluteCoordinatesFromLocalPoint: aLocalPoint [
+GeoViewAbstractElement >> absoluteCoordinatesFromLocalPoint: aLocalPoint [
 
 	| cartesianCoordinates absoluteCoordinates projection |
 	projection := self mapProjection.
@@ -38,7 +38,7 @@ BlAbstractGeoViewElement >> absoluteCoordinatesFromLocalPoint: aLocalPoint [
 ]
 
 { #category : #'API -- layers management' }
-BlAbstractGeoViewElement >> addLayer: aLayer [
+GeoViewAbstractElement >> addLayer: aLayer [
 	
 	| geoViewEvent |
 	(self layers includes: aLayer) ifTrue: [ ^ self ].
@@ -52,7 +52,7 @@ BlAbstractGeoViewElement >> addLayer: aLayer [
 ]
 
 { #category : #'API -- objects management' }
-BlAbstractGeoViewElement >> addObject: anUserObject [
+GeoViewAbstractElement >> addObject: anUserObject [
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :e | e haveGeoObjects ifTrue:[ e addObject: anUserObject ] ].
@@ -60,7 +60,7 @@ BlAbstractGeoViewElement >> addObject: anUserObject [
 ]
 
 { #category : #'API -- objects management' }
-BlAbstractGeoViewElement >> addObjects: anUserObjectList [
+GeoViewAbstractElement >> addObjects: anUserObjectList [
 
 	(anUserObjectList isNil or: [ anUserObjectList isEmpty ]) ifTrue: [ ^ self ].
 
@@ -70,7 +70,7 @@ BlAbstractGeoViewElement >> addObjects: anUserObjectList [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> configureGraphicModelForLayer: aLayer [
+GeoViewAbstractElement >> configureGraphicModelForLayer: aLayer [
 	
 	| graphicModel |
 	graphicModel := aLayer graphicModel.
@@ -106,7 +106,7 @@ BlAbstractGeoViewElement >> configureGraphicModelForLayer: aLayer [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> configureLayer: aLayer [
+GeoViewAbstractElement >> configureLayer: aLayer [
 	
 	aLayer viewInfos: self viewInfos.
 	
@@ -126,7 +126,7 @@ BlAbstractGeoViewElement >> configureLayer: aLayer [
 ]
 
 { #category : #'private - picking' }
-BlAbstractGeoViewElement >> createPickingResultAt: aGlobalPoint [
+GeoViewAbstractElement >> createPickingResultAt: aGlobalPoint [
 
 	| pickingResult absoluteCoordinates localPoint |
 	pickingResult := GeoViewPickingResult new
@@ -147,13 +147,13 @@ BlAbstractGeoViewElement >> createPickingResultAt: aGlobalPoint [
 ]
 
 { #category : #accessing }
-BlAbstractGeoViewElement >> displayToGraphicProjection [
+GeoViewAbstractElement >> displayToGraphicProjection [
 
 	^ displayToGraphicProjection
 ]
 
 { #category : #accessing }
-BlAbstractGeoViewElement >> displayToGraphicProjection: aGeoView2DProjection [
+GeoViewAbstractElement >> displayToGraphicProjection: aGeoView2DProjection [
 
 	displayToGraphicProjection := aGeoView2DProjection.
 	displayToGraphicProjection ifNil: [ ^ self ].
@@ -165,14 +165,14 @@ BlAbstractGeoViewElement >> displayToGraphicProjection: aGeoView2DProjection [
 ]
 
 { #category : #'private - picking' }
-BlAbstractGeoViewElement >> doPicking: aPickingResult [
+GeoViewAbstractElement >> doPicking: aPickingResult [
 	"Collect all picked elements"
 
 	self getLayers do: [ :l | l isVisible ifTrue: [ l populatePickingResult: aPickingResult ] ]
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> enqueueBlockAsTaskAndRequestRepaint: aBlockClosure [
+GeoViewAbstractElement >> enqueueBlockAsTaskAndRequestRepaint: aBlockClosure [
 
 	| task |
 	task := BlTaskAction new.
@@ -185,7 +185,7 @@ BlAbstractGeoViewElement >> enqueueBlockAsTaskAndRequestRepaint: aBlockClosure [
 ]
 
 { #category : #'API -- scale and center' }
-BlAbstractGeoViewElement >> geoCenter: anAbsoluteCoordinates [
+GeoViewAbstractElement >> geoCenter: anAbsoluteCoordinates [
 
 	| cartesianCoordinates geoViewEvent |
 	
@@ -204,7 +204,7 @@ BlAbstractGeoViewElement >> geoCenter: anAbsoluteCoordinates [
 ]
 
 { #category : #'API -- layers management' }
-BlAbstractGeoViewElement >> getLayer: aKey [
+GeoViewAbstractElement >> getLayer: aKey [
 
 	| layer |
 	layer := self getLayers
@@ -214,20 +214,20 @@ BlAbstractGeoViewElement >> getLayer: aKey [
 ]
 
 { #category : #'API -- layers management' }
-BlAbstractGeoViewElement >> getLayers [
+GeoViewAbstractElement >> getLayers [
 	
 	^ self layers
 ]
 
 { #category : #'API -- coordinates transformations' }
-BlAbstractGeoViewElement >> globalPointFromLocalPoint: aLocalPoint [
+GeoViewAbstractElement >> globalPointFromLocalPoint: aLocalPoint [
 
 	aLocalPoint ifNil: [ ^ nil ].
 	^ self localPointToGlobal: aLocalPoint
 ]
 
 { #category : #'API -- dshapes' }
-BlAbstractGeoViewElement >> haveObjectIndex: anIndex [
+GeoViewAbstractElement >> haveObjectIndex: anIndex [
 	"Pay attention before using it because graphical model is out of sync real user model due to usage of BlTask (asynchronous)"
 
 	anIndex ifNil:[ ^ nil ].
@@ -236,7 +236,7 @@ BlAbstractGeoViewElement >> haveObjectIndex: anIndex [
 ]
 
 { #category : #initialization }
-BlAbstractGeoViewElement >> initialize [
+GeoViewAbstractElement >> initialize [
 
 	super initialize.
 	
@@ -247,7 +247,7 @@ BlAbstractGeoViewElement >> initialize [
 ]
 
 { #category : #initialization }
-BlAbstractGeoViewElement >> initializeEventHandlers [
+GeoViewAbstractElement >> initializeEventHandlers [
 
 	"Add listeners to process Bloc UI events interactions"
 	self setInteractionsStrategy: self newInteractionsStrategy.
@@ -259,7 +259,7 @@ BlAbstractGeoViewElement >> initializeEventHandlers [
 ]
 
 { #category : #initialization }
-BlAbstractGeoViewElement >> initializeViewInfos [
+GeoViewAbstractElement >> initializeViewInfos [
 
 	| vi |
 	vi := GeoViewInfos new.
@@ -267,13 +267,13 @@ BlAbstractGeoViewElement >> initializeViewInfos [
 ]
 
 { #category : #'strategy management' }
-BlAbstractGeoViewElement >> interactionsStrategy [
+GeoViewAbstractElement >> interactionsStrategy [
 
 	^ interactionsStrategy
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> internalSortDatas [
+GeoViewAbstractElement >> internalSortDatas [
 
 	self isMarkedForSortDatas ifTrue: [ ^ self ].
 	isMarkedForSortDatas := true.
@@ -281,19 +281,19 @@ BlAbstractGeoViewElement >> internalSortDatas [
 ]
 
 { #category : #accessing }
-BlAbstractGeoViewElement >> isMarkedForSortDatas [
+GeoViewAbstractElement >> isMarkedForSortDatas [
 
 	^ isMarkedForSortDatas ifNil: [ isMarkedForSortDatas := false ]
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> layerNeedToBeRepaint: anEvent [
+GeoViewAbstractElement >> layerNeedToBeRepaint: anEvent [
 
 	self requestRepaint 
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> layerProcessDataChanged: anEvent [
+GeoViewAbstractElement >> layerProcessDataChanged: anEvent [
 
 	"Send scale event"
 	| geoViewEvent |
@@ -303,13 +303,13 @@ BlAbstractGeoViewElement >> layerProcessDataChanged: anEvent [
 ]
 
 { #category : #accessing }
-BlAbstractGeoViewElement >> layers [
+GeoViewAbstractElement >> layers [
 
 	^ layers ifNil: [ layers := OrderedCollection new ]
 ]
 
 { #category : #'API -- coordinates transformations' }
-BlAbstractGeoViewElement >> localPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
+GeoViewAbstractElement >> localPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
 
 	| projection |
 	projection := self mapProjection.
@@ -320,20 +320,20 @@ BlAbstractGeoViewElement >> localPointFromAbsoluteCoordinates: anAbsoluteCoordin
 ]
 
 { #category : #'API -- coordinates transformations' }
-BlAbstractGeoViewElement >> localPointFromGlobalPoint: aGlobalPoint [
+GeoViewAbstractElement >> localPointFromGlobalPoint: aGlobalPoint [
 
 	^ self globalPointToLocal: aGlobalPoint
 ]
 
 { #category : #'API -- map projection' }
-BlAbstractGeoViewElement >> mapProjection [
+GeoViewAbstractElement >> mapProjection [
 	"Return the map projection of the object: Mercator, etc."
 
 	^ mapProjection
 ]
 
 { #category : #'API -- map projection' }
-BlAbstractGeoViewElement >> mapProjection: aMapProjection [
+GeoViewAbstractElement >> mapProjection: aMapProjection [
 	"Setup the map projection of the object: Mercator, etc."
 
 	| geoViewEvent |
@@ -350,13 +350,13 @@ BlAbstractGeoViewElement >> mapProjection: aMapProjection [
 ]
 
 { #category : #'strategy management' }
-BlAbstractGeoViewElement >> newInteractionsStrategy [
+GeoViewAbstractElement >> newInteractionsStrategy [
 
 	^ GeoViewDefaultInteractionsStrategy new
 ]
 
 { #category : #'API -- picking' }
-BlAbstractGeoViewElement >> pickAt: aGlobalPoint radius: aRadiusInPixels [
+GeoViewAbstractElement >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 	"Return all objects under a global point inside a radius in pixels"
 
 	| pickingResult |
@@ -369,28 +369,31 @@ BlAbstractGeoViewElement >> pickAt: aGlobalPoint radius: aRadiusInPixels [
 ]
 
 { #category : #'private - picking' }
-BlAbstractGeoViewElement >> postConfigurePickingResult: aPickingResult radius: aRadiusInPixels [
-	"do nothing"
+GeoViewAbstractElement >> postConfigurePickingResult: aPickingResult radius: aRadius [
+
+	aPickingResult applyOrder: [ :a :b | a distanceInPixels < b distanceInPixels ].
 ]
 
 { #category : #'private - picking' }
-BlAbstractGeoViewElement >> preConfigurePickingResult: aPickingResult radius: aRadiusInPixels [
+GeoViewAbstractElement >> preConfigurePickingResult: aPickingResult radius: aRadiusInPixels [
 	"do nothing"
 
 	| radius |
 	radius := aRadiusInPixels ifNil: [ 0 ].
-	aPickingResult radiusInPixels: radius
+	aPickingResult radiusInPixels: radius.
+	
+	aPickingResult distanceBlock: [ :gShape :point | gShape distanceTo: point ]
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> processExtentChangedEvent: anEvent [
+GeoViewAbstractElement >> processExtentChangedEvent: anEvent [
 
 	self updateViewInfos.
 	self updateDisplayToGraphicProjection
 ]
 
 { #category : #'strategy management' }
-BlAbstractGeoViewElement >> removeInteractionsStrategy [
+GeoViewAbstractElement >> removeInteractionsStrategy [
 
 	interactionsStrategy ifNil:[ ^ self ].
 	self removeEventHandler: interactionsStrategy.
@@ -398,7 +401,7 @@ BlAbstractGeoViewElement >> removeInteractionsStrategy [
 ]
 
 { #category : #'API -- layers management' }
-BlAbstractGeoViewElement >> removeLayer: aLayer [
+GeoViewAbstractElement >> removeLayer: aLayer [
 	
 	| geoViewEvent |
 	(self layers includes: aLayer) ifFalse: [ ^ self ].
@@ -412,7 +415,7 @@ BlAbstractGeoViewElement >> removeLayer: aLayer [
 ]
 
 { #category : #'API -- dshapes' }
-BlAbstractGeoViewElement >> removeObject: anUserObject [
+GeoViewAbstractElement >> removeObject: anUserObject [
 
 	anUserObject ifNil:[ ^ self ].
 
@@ -422,7 +425,7 @@ BlAbstractGeoViewElement >> removeObject: anUserObject [
 ]
 
 { #category : #'API -- dshapes' }
-BlAbstractGeoViewElement >> removeObjects: anUserObjectList [
+GeoViewAbstractElement >> removeObjects: anUserObjectList [
 
 	anUserObjectList ifNil:[ ^ self ].
 	anUserObjectList ifEmpty:[ ^ self ].
@@ -433,13 +436,13 @@ BlAbstractGeoViewElement >> removeObjects: anUserObjectList [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> requestRepaint [
+GeoViewAbstractElement >> requestRepaint [
 
 	self invalidate.
 ]
 
 { #category : #'API -- scale and center' }
-BlAbstractGeoViewElement >> scaleInMeters: aNumber [
+GeoViewAbstractElement >> scaleInMeters: aNumber [
 
 	| scale geoViewEvent |
 	scale := self evaluateScale: aNumber.
@@ -456,7 +459,7 @@ BlAbstractGeoViewElement >> scaleInMeters: aNumber [
 ]
 
 { #category : #'API -- selection' }
-BlAbstractGeoViewElement >> selectedObjectIndexes: anIndexList [
+GeoViewAbstractElement >> selectedObjectIndexes: anIndexList [
 
 	anIndexList ifNil:[ ^ self ].
 
@@ -466,7 +469,7 @@ BlAbstractGeoViewElement >> selectedObjectIndexes: anIndexList [
 ]
 
 { #category : #'strategy management' }
-BlAbstractGeoViewElement >> setInteractionsStrategy: aBlEventListener [
+GeoViewAbstractElement >> setInteractionsStrategy: aBlEventListener [
 
 	self removeInteractionsStrategy.
 
@@ -476,14 +479,14 @@ BlAbstractGeoViewElement >> setInteractionsStrategy: aBlEventListener [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> sortDatas [
+GeoViewAbstractElement >> sortDatas [
 
 	self internalSortDatas.
 	self requestRepaint.
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> unconfigureGraphicModelForLayer: aLayer [
+GeoViewAbstractElement >> unconfigureGraphicModelForLayer: aLayer [
 	
 	| graphicModel |
 	graphicModel := aLayer graphicModel.
@@ -491,7 +494,7 @@ BlAbstractGeoViewElement >> unconfigureGraphicModelForLayer: aLayer [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> unconfigureLayer: aLayer [
+GeoViewAbstractElement >> unconfigureLayer: aLayer [
 	
 	aLayer viewInfos: nil.
 	aLayer mapProjection: nil.
@@ -506,7 +509,7 @@ BlAbstractGeoViewElement >> unconfigureLayer: aLayer [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> updateDisplayToGraphicProjection [
+GeoViewAbstractElement >> updateDisplayToGraphicProjection [
 
 	| extent offset |
 	extent := self viewInfos extent.
@@ -520,7 +523,7 @@ BlAbstractGeoViewElement >> updateDisplayToGraphicProjection [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> updateModel: aContext [
+GeoViewAbstractElement >> updateModel: aContext [
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :l | l updateModel: aContext ] ].
@@ -528,7 +531,7 @@ BlAbstractGeoViewElement >> updateModel: aContext [
 ]
 
 { #category : #'API -- dshapes' }
-BlAbstractGeoViewElement >> updateObject: anUserObject [
+GeoViewAbstractElement >> updateObject: anUserObject [
 
 	anUserObject ifNil:[ ^ self ].
 
@@ -538,7 +541,7 @@ BlAbstractGeoViewElement >> updateObject: anUserObject [
 ]
 
 { #category : #'API -- dshapes' }
-BlAbstractGeoViewElement >> updateObjects: anUserObjectList [
+GeoViewAbstractElement >> updateObjects: anUserObjectList [
 
 	anUserObjectList ifNil:[ ^ self ].
 	anUserObjectList ifEmpty:[ ^ self ].
@@ -549,7 +552,7 @@ BlAbstractGeoViewElement >> updateObjects: anUserObjectList [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> updateState: aStateSymbol withIndexes: aKeyList [
+GeoViewAbstractElement >> updateState: aStateSymbol withIndexes: aKeyList [
 	
 	self enqueueBlockAsTaskAndRequestRepaint: [ 
 		self layers do: [ :l | l haveGeoObjects ifTrue:[ l updateState: aStateSymbol withIndexes: aKeyList ] ].
@@ -558,7 +561,7 @@ BlAbstractGeoViewElement >> updateState: aStateSymbol withIndexes: aKeyList [
 ]
 
 { #category : #private }
-BlAbstractGeoViewElement >> updateViewInfos [
+GeoViewAbstractElement >> updateViewInfos [
 
 	self viewInfos origin: self position copy.
 	self viewInfos extent: self extent copy.
@@ -566,14 +569,14 @@ BlAbstractGeoViewElement >> updateViewInfos [
 ]
 
 { #category : #'API -- view infos' }
-BlAbstractGeoViewElement >> viewInfos [
+GeoViewAbstractElement >> viewInfos [
 
 	viewInfos ifNil:[ self initializeViewInfos ].
 	^ viewInfos
 ]
 
 { #category : #'API -- view infos' }
-BlAbstractGeoViewElement >> viewInfos: aViewInfos [
+GeoViewAbstractElement >> viewInfos: aViewInfos [
 
 	aViewInfos ifNil: [ ^ self ].
 	viewInfos := aViewInfos.
