@@ -113,6 +113,32 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 ]
 
 { #category : #examples }
+GeoViewExamplesBloc class >> exampleWithGeoObjectsAlt [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	
+	| element layer objects |
+	element := GeoViewAeElement new.
+	
+	"configure layers and process datas : objects that can be displayed and how"
+	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
+	element addLayer: layer.
+	
+	"create sample datas"
+	objects := self createGeoObjects.
+	objects do: [ :e | element addObject: e ].
+
+	"Example of event handler behavior on geoView domain event"
+	element addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent do: [ :event |
+		event absoluteCoordinates printString traceCr.
+	].
+
+	"Example of custom EventHandler, here a logger"
+	element addEventHandler: (GeoViewEventLogger new).
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #examples }
 GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
 	

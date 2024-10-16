@@ -13,7 +13,10 @@ GeoViewAeElement >> aeDrawOn: aeCanvas [
 
 	super aeDrawOn: aeCanvas.
 
-	self layers do: [ :l | l isVisible ifTrue: [ l aeDrawOn: aeCanvas ] ].
+	self layers do: [ :l | 
+		self isMarkedForSortDatas ifTrue: [ l haveGraphicModel ifTrue: [ l sortDatas ] ].
+		l isVisible ifTrue: [ l aeDrawOn: aeCanvas ] 
+	].
 
-	isMarkedForSortDatas := false
+	isMarkedForSortDatas := false.
 ]
