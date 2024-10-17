@@ -3,9 +3,7 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'origin',
-		'extents',
-		'extent',
-		'bounds'
+		'extent'
 	],
 	#category : #'GeoView-Core'
 }

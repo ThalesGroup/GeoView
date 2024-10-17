@@ -7,13 +7,13 @@ Class {
 	#instVars : [
 		'geoView'
 	],
-	#category : #'GeoView-Tests'
+	#category : #'GeoView-Tests-Cases'
 }
 
 { #category : #private }
 BlAbstractGeoViewElementTest >> createGeoViewElement [
 
-	geoView := BlAbstractGeoViewElement new.
+	geoView := GeoViewAbstractElement new.
 ]
 
 { #category : #accessing }
@@ -87,7 +87,7 @@ BlAbstractGeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
 BlAbstractGeoViewElementTest >> testAddGeoViewGeoObjectsLayer [
 
 	| layer |
-	layer := GeoViewGeoObjectsLayer new name: #test.
+	layer := GeoViewDomainObjectsLayer new name: #test.
 	geoView addLayer: layer.
 	
 	self assert: (geoView getLayer: #test) equals: layer.
@@ -137,11 +137,11 @@ BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
 	| tag layer |
 	"initialize geoview and event handler"
 	tag := false.	
-	geoView addEventHandlerOn: GeoViewGeoObjectLayerProcessDataChanged do: [ :e | tag := true ].
+	geoView addEventHandlerOn: GeoViewDomainObjectsLayerProcessDataChanged do: [ :e | tag := true ].
 	self deny: tag.
 	
 	"create and add the layer"
-	layer := GeoViewGeoObjectsLayer new name: #myLayer.
+	layer := GeoViewDomainObjectsLayer new name: #myLayer.
 	geoView addLayer: layer.
 	self deny: tag.
 	

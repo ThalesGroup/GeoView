@@ -1,8 +1,8 @@
 Class {
 	#name : #AbstractGeoViewGraphicModelLayer,
 	#superclass : #AbstractGeoViewLayer,
-	#traits : 'TGeoViewHandleDShapes',
-	#classTraits : 'TGeoViewHandleDShapes classTrait',
+	#traits : 'TSmockHandleDShapes',
+	#classTraits : 'TSmockHandleDShapes classTrait',
 	#instVars : [
 		'sortedDatas',
 		'graphicModel',
@@ -32,7 +32,7 @@ AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 	aDShapeList do: [ :e | self addDShape: e ]
 ]
 
-{ #category : #'*GeoView-Bloc-Alexandrie' }
+{ #category : #'drawing - bloc' }
 AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 
 	self isVisible ifFalse: [ ^ self ].
@@ -103,17 +103,28 @@ AbstractGeoViewGraphicModelLayer >> haveGraphicModel [
 AbstractGeoViewGraphicModelLayer >> initialize [
 
 	super initialize.
-	self initializeDisplayToGraphicModel.
-	self initializeSortedDatas
+	self initializeGraphicModel.
+	self initializeSortedDatas.
 ]
 
-{ #category : #initialize }
-AbstractGeoViewGraphicModelLayer >> initializeDisplayToGraphicModel [
+{ #category : #initialization }
+AbstractGeoViewGraphicModelLayer >> initializeGraphicModel [
 
-	self graphicModel: GeoViewModel new
+	self graphicModel: GeoViewModel new.
+	
+	"Setup all DShape process datas"
+	self graphicModel setProcessData: DCompositeShapeGeoViewProcessData new forClass: SmockDCompositeShape.
+	self graphicModel setProcessData: DSymbolGeoViewProcessData new forClass: SmockDSymbol.
+	self graphicModel setProcessData: DImageGeoViewProcessData new forClass: SmockDImage.
+	self graphicModel setProcessData: DCircleGeoViewProcessData new forClass: SmockDCircle.
+	self graphicModel setProcessData: DTextGeoViewProcessData new forClass: SmockDText.
+	self graphicModel setProcessData: DPolygonGeoViewProcessData new forClass: SmockDPolygon.
+	self graphicModel setProcessData: DPolylineGeoViewProcessData new forClass: SmockDPolyline.
+	self graphicModel setProcessData: DSegmentGeoViewProcessData new forClass: SmockDSegment.
+	
 ]
 
-{ #category : #initialize }
+{ #category : #initialization }
 AbstractGeoViewGraphicModelLayer >> initializeSortedDatas [
 	
 	sortedDatas := SortedCollection new: self graphicModel capacity.
@@ -166,7 +177,7 @@ AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 	aDShapeList do: [ :e | self removeDShape: e ]
 ]
 
-{ #category : #initialize }
+{ #category : #private }
 AbstractGeoViewGraphicModelLayer >> sortDatas [
 
 	sortedDatas removeAll.
@@ -201,13 +212,13 @@ AbstractGeoViewGraphicModelLayer >> updateGraphicModelWith: aDShape [
 	^ self graphicModel updated: aDShape
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewGraphicModelLayer >> viewInfos [
 
 	^ self graphicModel viewInfos
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewGraphicModelLayer >> viewInfos: aViewInfos [
 
 	self graphicModel viewInfos: aViewInfos

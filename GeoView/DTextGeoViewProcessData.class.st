@@ -5,20 +5,6 @@ Class {
 }
 
 { #category : #private }
-DTextGeoViewProcessData >> computePositionFor: aDShape context: aContext [
-	"Return a pixel position from an axis coordinates, ignore z axis"
-
-	| position |
-	position := super computePositionFor: aDShape context: aContext.
-	
-	aDShape coordinatesDeviceOffset ifNotNil: [ :offset |
-		position := (position ifNil:[ 0@0 ]) + offset.
-	].
-	
-	^ position
-]
-
-{ #category : #private }
 DTextGeoViewProcessData >> createGShape2D [ 
 
 	^ SmockGText2D new

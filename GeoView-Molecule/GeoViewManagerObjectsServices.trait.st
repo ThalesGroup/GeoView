@@ -8,30 +8,30 @@ Trait {
 	#category : #'GeoView-Molecule-Contract'
 }
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerObjectsServices >> addObject: aGeoObject [
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerObjectsServices >> addObjects: aGeoObjectList [
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerObjectsServices >> haveObjectIndex: anIndex [
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerObjectsServices >> removeObject: aGeoObject [
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerObjectsServices >> removeObjects: aGeoObjectList [
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerObjectsServices >> updateObject: aGeoObject [
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerObjectsServices >> updateObjects: aGeoObjectList [
 ]

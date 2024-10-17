@@ -6,10 +6,10 @@ The processData method within each domain object class is utilized to define the
 when rendered within this layer.
 "
 Class {
-	#name : #GeoViewGeoObjectsLayer,
+	#name : #GeoViewDomainObjectsLayer,
 	#superclass : #AbstractGeoViewGraphicModelLayer,
-	#traits : 'TSmockHandleProcessDatas + TGeoViewHandleObjects',
-	#classTraits : 'TSmockHandleProcessDatas classTrait + TGeoViewHandleObjects classTrait',
+	#traits : 'TSmockHandleProcessDatas + TSmockHandleObjects',
+	#classTraits : 'TSmockHandleProcessDatas classTrait + TSmockHandleObjects classTrait',
 	#instVars : [
 		'displayModel'
 	],
@@ -17,86 +17,86 @@ Class {
 }
 
 { #category : #'API -- objects management' }
-GeoViewGeoObjectsLayer >> addObject: anObject [
+GeoViewDomainObjectsLayer >> addObject: anObject [
 
 	self addDShape: (self displayModel created: anObject)
 ]
 
 { #category : #'API -- objects management' }
-GeoViewGeoObjectsLayer >> addObjects: anObjectList [
+GeoViewDomainObjectsLayer >> addObjects: anObjectList [
 
 	anObjectList do: [ :e | self addObject: e ]
 ]
 
 { #category : #accessing }
-GeoViewGeoObjectsLayer >> displayModel [
+GeoViewDomainObjectsLayer >> displayModel [
 
 	^ displayModel 
 ]
 
 { #category : #accessing }
-GeoViewGeoObjectsLayer >> displayModel: anObject [
+GeoViewDomainObjectsLayer >> displayModel: anObject [
 
 	displayModel := anObject
 ]
 
 { #category : #'API -- process datas' }
-GeoViewGeoObjectsLayer >> getAllProcessData [
+GeoViewDomainObjectsLayer >> getAllProcessData [
 
 	^ self displayModel getAllProcessData
 ]
 
 { #category : #'API -- process datas' }
-GeoViewGeoObjectsLayer >> getDefaultProcessData [
+GeoViewDomainObjectsLayer >> getDefaultProcessData [
 
 	^ self displayModel getDefaultProcessData 
 ]
 
 { #category : #'API -- process datas' }
-GeoViewGeoObjectsLayer >> getProcessDataForClass: aGeoObjectClass [
+GeoViewDomainObjectsLayer >> getProcessDataForClass: aDomainObjectClass [
 
-	^ self displayModel getProcessDataForClass: aGeoObjectClass
+	^ self displayModel getProcessDataForClass: aDomainObjectClass
 ]
 
 { #category : #testing }
-GeoViewGeoObjectsLayer >> haveGeoObjects [
+GeoViewDomainObjectsLayer >> haveDomainObjects [
 
 	^ true
 ]
 
-{ #category : #'API -- dshapes' }
-GeoViewGeoObjectsLayer >> haveObjectIndex: anIndex [
+{ #category : #'API -- objects management' }
+GeoViewDomainObjectsLayer >> haveObjectIndex: anIndex [
 
 	^ self displayModel haveDataIndex: anIndex
 ]
 
 { #category : #initialization }
-GeoViewGeoObjectsLayer >> initialize [
+GeoViewDomainObjectsLayer >> initialize [
 
 	super initialize.
-	self initializeUserToDisplayModel
+	self initializeDisplayModel
 ]
 
-{ #category : #initialize }
-GeoViewGeoObjectsLayer >> initializeUserToDisplayModel [
+{ #category : #initialization }
+GeoViewDomainObjectsLayer >> initializeDisplayModel [
 
 	self displayModel: GeoViewModel new
 ]
 
 { #category : #'API -- projection' }
-GeoViewGeoObjectsLayer >> mapProjection [
+GeoViewDomainObjectsLayer >> mapProjection [
 
 	^ self displayModel projection
 ]
 
 { #category : #'API -- projection' }
-GeoViewGeoObjectsLayer >> mapProjection: aMapProjection [
+GeoViewDomainObjectsLayer >> mapProjection: aMapProjection [
 
 	self displayModel projection: aMapProjection
 ]
 
 { #category : #private }
-GeoViewGeoObjectsLayer >> populatePickingResult: aPickingResult at: index with: aGShape [
+GeoViewDomainObjectsLayer >> populatePickingResult: aPickingResult at: index with: aGShape [
 	"Way to detect if the gShape is picked"
 
 	| pickingElement |
@@ -110,72 +110,72 @@ GeoViewGeoObjectsLayer >> populatePickingResult: aPickingResult at: index with: 
 ]
 
 { #category : #private }
-GeoViewGeoObjectsLayer >> processDatasChanged [
+GeoViewDomainObjectsLayer >> processDatasChanged [
 	"Notify internaly that process datas changed"
 	
 	| announcement |
-	announcement := GeoViewGeoObjectLayerProcessDataChanged new.
+	announcement := GeoViewDomainObjectsLayerProcessDataChanged new.
 	announcement layerName: self name.
 	self announcer announce: announcement
 ]
 
-{ #category : #'API -- dshapes' }
-GeoViewGeoObjectsLayer >> removeObject: anObject [
+{ #category : #'API -- objects management' }
+GeoViewDomainObjectsLayer >> removeObject: anObject [
 
 	self removeDShape: (self displayModel deleted: anObject)
 ]
 
-{ #category : #'API -- dshapes' }
-GeoViewGeoObjectsLayer >> removeObjects: anObjectList [
+{ #category : #'API -- objects management' }
+GeoViewDomainObjectsLayer >> removeObjects: anObjectList [
 
 	anObjectList do: [ :e | self removeObject: e ]
 ]
 
 { #category : #'API -- process datas' }
-GeoViewGeoObjectsLayer >> removeProcessDataForClass: aGeoObjectClass [
+GeoViewDomainObjectsLayer >> removeProcessDataForClass: aDomainObjectClass [
 
-	self displayModel removeProcessDataForClass: aGeoObjectClass.
+	self displayModel removeProcessDataForClass: aDomainObjectClass.
 	self processDatasChanged
 ]
 
 { #category : #'API -- process datas' }
-GeoViewGeoObjectsLayer >> setDefaultProcessData: aDataProcessor [
+GeoViewDomainObjectsLayer >> setDefaultProcessData: aDataProcessor [
 
 	self displayModel setDefaultProcessData: aDataProcessor.
 	self processDatasChanged
 ]
 
 { #category : #'API -- process datas' }
-GeoViewGeoObjectsLayer >> setProcessData: aProcessData forClass: anUserObjectClass [
+GeoViewDomainObjectsLayer >> setProcessData: aProcessData forClass: aDomainObjectClass [
 
 	| dModel |
 	dModel := self displayModel.
-	dModel setProcessData: aProcessData forClass: anUserObjectClass.
+	dModel setProcessData: aProcessData forClass: aDomainObjectClass.
 	self processDatasChanged
 ]
 
-{ #category : #'API -- drawing' }
-GeoViewGeoObjectsLayer >> updateModel: aContext [
+{ #category : #private }
+GeoViewDomainObjectsLayer >> updateModel: aContext [
 
 	| model |
 	model := self displayModel.
 	model datas valuesDo: [ :dShape | self updateGraphicModelWith: dShape ]
 ]
 
-{ #category : #'API -- dshapes' }
-GeoViewGeoObjectsLayer >> updateObject: anObject [
+{ #category : #'API -- objects management' }
+GeoViewDomainObjectsLayer >> updateObject: anObject [
 
 	self updateDShape: (self displayModel updated: anObject)
 ]
 
-{ #category : #'API -- dshapes' }
-GeoViewGeoObjectsLayer >> updateObjects: anObjectList [
+{ #category : #'API -- objects management' }
+GeoViewDomainObjectsLayer >> updateObjects: anObjectList [
 
 	anObjectList do: [ :e | self updateObject: e ]
 ]
 
 { #category : #private }
-GeoViewGeoObjectsLayer >> updateState: aStateSymbol withIndexes: aKeyList [
+GeoViewDomainObjectsLayer >> updateState: aStateSymbol withIndexes: aKeyList [
 
 	| dModel dObjectList |
 	dModel := self displayModel.
@@ -187,8 +187,8 @@ GeoViewGeoObjectsLayer >> updateState: aStateSymbol withIndexes: aKeyList [
 	dObjectList do:[ :dObject | self graphicModel updated: dObject ].
 ]
 
-{ #category : #'API -- projection' }
-GeoViewGeoObjectsLayer >> viewInfos: aViewInfos [
+{ #category : #'API -- graphic properties' }
+GeoViewDomainObjectsLayer >> viewInfos: aViewInfos [
 	
 	super viewInfos: aViewInfos.
 	self displayModel viewInfos: aViewInfos

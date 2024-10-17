@@ -9,7 +9,6 @@ Class {
 	#instVars : [
 		'key',
 		'isVisible',
-		'isSelectable',
 		'absoluteCoordinates'
 	],
 	#category : #'GeoView-GeoObjects'
@@ -36,22 +35,25 @@ GeoObject >> copy [
 
 { #category : #accessing }
 GeoObject >> isVisible [
-	isVisible isNil ifTrue:[isVisible := true].
-	^ isVisible
+
+	^ isVisible ifNil: [ isVisible := true ]
 ]
 
 { #category : #accessing }
 GeoObject >> isVisible: aBoolean [
+
 	isVisible := aBoolean
 ]
 
 { #category : #accessing }
 GeoObject >> key [
+
 	^ key
 ]
 
 { #category : #accessing }
 GeoObject >> key: anObject [
+
 	key := anObject
 ]
 

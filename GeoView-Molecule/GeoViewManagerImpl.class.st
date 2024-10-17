@@ -15,30 +15,32 @@ Class {
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> activateComponents [
 
-	"MapProjectionManagerImpl activate: self componentName."
-	(MolComponentManager default homeServices isWaitingForActivation: SmockSymbologyProvider named: self componentName) ifTrue:[
-		SmockSymbologyProvider activate: self componentName.
-	].
-	(MolComponentManager default homeServices isWaitingForActivation: SmockSelectionManagerImpl named: self componentName) ifTrue:[
-		SmockSelectionManagerImpl activate: self componentName.
-	].
+	(MolComponentManager default homeServices
+		 isWaitingForActivation: SmockSymbologyProvider
+		 named: self componentName) ifTrue: [
+		SmockSymbologyProvider activate: self componentName ].
+
+	(MolComponentManager default homeServices
+		 isWaitingForActivation: SmockSelectionManagerImpl
+		 named: self componentName) ifTrue: [
+		SmockSelectionManagerImpl activate: self componentName ]
 ]
 
 { #category : #'services - layer' }
 GeoViewManagerImpl >> addLayer: aLayer [
-	
-	aLayer name ifNil:[ ^ nil ].
+
+	aLayer name ifNil: [ ^ nil ].
 	self configureLayer: aLayer.
 	self view addLayer: aLayer
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerImpl >> addObject: aGeoObject [
 
 	self view addObject: aGeoObject
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerImpl >> addObjects: aGeoObjectList [
 
 	self view addObjects: aGeoObjectList
@@ -56,6 +58,8 @@ GeoViewManagerImpl >> centerOnPoint: aGlobalPoint [
 { #category : #'life cycle' }
 GeoViewManagerImpl >> componentActivate [
 
+	super componentActivate.
+	
 	self activateComponents.
 	self getSmockSelectionManagerEventsSubscriber subscribe: self
 ]
@@ -64,6 +68,7 @@ GeoViewManagerImpl >> componentActivate [
 GeoViewManagerImpl >> componentInitialize [
 
 	super componentInitialize.
+	
 	self initializeSelectionManager.
 	self initializeSymbologyManager.
 	
@@ -74,13 +79,17 @@ GeoViewManagerImpl >> componentInitialize [
 GeoViewManagerImpl >> componentPassivate [
 
 	self getSmockSelectionManagerEventsSubscriber unsubscribe: self.
-	self passivateComponents
+	self passivateComponents.
+	
+	super componentPassivate
 ]
 
 { #category : #'life cycle' }
 GeoViewManagerImpl >> componentRemove [
 
-	self removeComponents
+	self removeComponents.
+
+	super componentRemove
 ]
 
 { #category : #private }
@@ -90,26 +99,53 @@ GeoViewManagerImpl >> configureLayer: aLayer [
 ]
 
 { #category : #'services - layer' }
-GeoViewManagerImpl >> createAndAddGeoObjectsLayer: aKey [
+GeoViewManagerImpl >> createAndAddDomainObjectsLayer: aKey [
 
 	| layer |
-	layer := self createGeoObjectsLayer: aKey.
+	layer := self createDomainObjectsLayer: aKey.
 	layer ifNil:[ ^ nil ].
 	
 	self addLayer: layer.
 	^ layer
 ]
 
-{ #category : #'services - layer creation' }
-GeoViewManagerImpl >> createGeoObjectsLayer: aName [
+{ #category : #'private - layer' }
+GeoViewManagerImpl >> createDomainObjectsLayer: aName [
 
-	self subclassResponsibility 
+	| layer |
+	layer := GeoViewDomainObjectsLayer new.
+	layer name: aName.
+	^ layer
 ]
 
 { #category : #initialization }
 GeoViewManagerImpl >> createView [
 
 	self subclassResponsibility
+]
+
+{ #category : #services }
+GeoViewManagerImpl >> getAbsoluteCoordinatesFromGlobalPoint: aGlobalPoint [
+
+	^ self getView absoluteCoordinatesFromGlobalPoint: aGlobalPoint 
+]
+
+{ #category : #services }
+GeoViewManagerImpl >> getAbsoluteCoordinatesFromLocalPoint: aLocalPoint [
+
+	^ self getView absoluteCoordinatesFromLocalPoint: aLocalPoint
+]
+
+{ #category : #'parameters - graphic projection' }
+GeoViewManagerImpl >> getDisplayToGraphicProjection [
+
+	^ self getView displayToGraphicProjection
+]
+
+{ #category : #services }
+GeoViewManagerImpl >> getGeoCenter [ 
+
+	^ self getView geoCenter 
 ]
 
 { #category : #'component accessing' }
@@ -120,6 +156,18 @@ GeoViewManagerImpl >> getGeoViewManagerCursorEventsNotifier [
 { #category : #'component accessing' }
 GeoViewManagerImpl >> getGeoViewManagerEventsNotifier [
 	^self eventsNotifiers at: GeoViewManagerEvents ifAbsent: [^MolNotFoundEventsNotifier new interface: GeoViewManagerEvents name: nil].
+]
+
+{ #category : #services }
+GeoViewManagerImpl >> getGlobalPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
+
+	^ self getView globalPointFromAbsoluteCoordinates: anAbsoluteCoordinates 
+]
+
+{ #category : #services }
+GeoViewManagerImpl >> getGlobalPointFromLocalPoint: aLocalPoint [
+
+	^ self getView globalPointFromLocalPoint: aLocalPoint 
 ]
 
 { #category : #'services - layer' }
@@ -134,10 +182,28 @@ GeoViewManagerImpl >> getLayers [
 	^ self view getLayers
 ]
 
+{ #category : #services }
+GeoViewManagerImpl >> getLocalPointFromAbsoluteCoordinates: anAbsoluteCoordinates [
+
+	^ self getView localPointFromAbsoluteCoordinates: anAbsoluteCoordinates 
+]
+
+{ #category : #services }
+GeoViewManagerImpl >> getLocalPointFromGlobalPoint: aGlobalPoint [
+
+	^ self getView localPointFromGlobalPoint: aGlobalPoint 
+]
+
 { #category : #'services - map projection' }
 GeoViewManagerImpl >> getMapProjection [
 
 	^ self view mapProjection 
+]
+
+{ #category : #'parameters - objects' }
+GeoViewManagerImpl >> getObjectIndexAccessor [
+
+	^ self view objectIndexAccessor 
 ]
 
 { #category : #services }
@@ -200,7 +266,7 @@ GeoViewManagerImpl >> getViewInfos [
 	^ self view viewInfos
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerImpl >> haveObjectIndex: anIndex [
 
 	^ self view haveObjectIndex: anIndex
@@ -208,26 +274,24 @@ GeoViewManagerImpl >> haveObjectIndex: anIndex [
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSelectionManager [
-
 	"If a selection manager not exists, instanciate one"
-	(MolUtils allComponentInstancesOfType: SmockSelectionManager) ifEmpty:[
-		SmockSelectionManagerImpl deploy.
-		SmockSelectionManagerImpl instantiate: self componentName.
-		self setSelectionManagerName: self componentName.
-	].
 
-	
+	(MolUtils allComponentInstancesOfType: SmockSelectionManager)
+		ifEmpty: [
+			SmockSelectionManagerImpl deploy.
+			SmockSelectionManagerImpl instantiate: self componentName.
+			self setSelectionManagerName: self componentName ]
 ]
 
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> initializeSymbologyManager [
-
 	"If a symbology manager not exists, instanciate one"
-	(MolUtils allComponentInstancesOfType: SmockSymbologyManager) ifEmpty:[
-		SmockSymbologyProvider deploy.
-		SmockSymbologyProvider instantiate: self componentName.
-		self setSymbologyManagerName: self componentName.
-	].
+
+	(MolUtils allComponentInstancesOfType: SmockSymbologyManager)
+		ifEmpty: [
+			SmockSymbologyProvider deploy.
+			SmockSymbologyProvider instantiate: self componentName.
+			self setSymbologyManagerName: self componentName ]
 ]
 
 { #category : #'private - events' }
@@ -239,7 +303,7 @@ GeoViewManagerImpl >> layerAdded: anEvent [
 { #category : #'private - events' }
 GeoViewManagerImpl >> layerHasBeenUpdated: anEvent [
 
-	self getGeoViewManagerEventsNotifier geoViewLayerUpdated: anEvent layerName in: (self componentName).
+	self getGeoViewManagerEventsNotifier geoViewLayerUpdated: anEvent layerName in: self componentName.
 ]
 
 { #category : #'private - events' }
@@ -251,7 +315,7 @@ GeoViewManagerImpl >> layerRemoved: anEvent [
 { #category : #'private - events' }
 GeoViewManagerImpl >> mapProjectionHasChanged: anEvent [
 
-	self getGeoViewManagerEventsNotifier mapProjectionHasChanged: anEvent projection
+	self getGeoViewManagerEventsNotifier mapProjectionHasChanged: anEvent projection in: self componentName
 ]
 
 { #category : #'private - events' }
@@ -269,13 +333,22 @@ GeoViewManagerImpl >> mouseCursorCoordinatesChanged: anAbsoluteCoordinates [
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> passivateComponents [
 
-	"MapProjectionManagerImpl passivate: self componentName.	"
-	(MolComponentManager default homeServices instanceOf: SmockSymbologyProvider named: self componentName) ifNotNil:[
-		SmockSymbologyProvider passivate: self componentName.
-	].
-	(MolComponentManager default homeServices instanceOf: SmockSelectionManagerImpl named: self componentName) ifNotNil:[
-		SmockSelectionManagerImpl passivate: self componentName.
-	].
+	(MolComponentManager default homeServices
+		 instanceOf: SmockSymbologyProvider
+		 named: self componentName) ifNotNil: [
+		SmockSymbologyProvider passivate: self componentName ].
+	
+	(MolComponentManager default homeServices
+		 instanceOf: SmockSelectionManagerImpl
+		 named: self componentName) ifNotNil: [
+		SmockSelectionManagerImpl passivate: self componentName ]
+]
+
+{ #category : #'services - picking' }
+GeoViewManagerImpl >> pickAt: aGlobalPoint [
+	"Return all objects under a global point"
+
+	^ self view pickAt: aGlobalPoint
 ]
 
 { #category : #'services - picking' }
@@ -297,13 +370,15 @@ GeoViewManagerImpl >> removeAllLayers [
 { #category : #'aggregated components' }
 GeoViewManagerImpl >> removeComponents [
 
-	"MapProjectionManagerImpl remove: self componentName."
-	(MolComponentManager default homeServices instanceOf: SmockSymbologyProvider named: self componentName) ifNotNil:[
-		SmockSymbologyProvider remove: self componentName.
-	].
-	(MolComponentManager default homeServices instanceOf: SmockSelectionManagerImpl named: self componentName) ifNotNil:[
-		SmockSelectionManagerImpl remove: self componentName.
-	].
+	(MolComponentManager default homeServices
+		 instanceOf: SmockSymbologyProvider
+		 named: self componentName) ifNotNil: [
+		SmockSymbologyProvider remove: self componentName ].
+	
+	(MolComponentManager default homeServices
+		 instanceOf: SmockSelectionManagerImpl
+		 named: self componentName) ifNotNil: [
+		SmockSelectionManagerImpl remove: self componentName ]
 ]
 
 { #category : #'services - layer' }
@@ -318,13 +393,13 @@ GeoViewManagerImpl >> removeLayer: aKey [
 	^ layer
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerImpl >> removeObject: aGeoObject [
 
 	self view removeObject: aGeoObject
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerImpl >> removeObjects: aGeoObjectList [
 
 	self view removeObjects: aGeoObjectList
@@ -343,15 +418,15 @@ GeoViewManagerImpl >> scaleUp [
 ]
 
 { #category : #'events - selection manager' }
-GeoViewManagerImpl >> selectedKeysHasChanged: aCollection [
+GeoViewManagerImpl >> selectionHasChanged: aSmockSelection [
 
-	self view selectedObjectIndexes: aCollection
+	self view selectedObjectIndexes: aSmockSelection keys
 ]
 
-{ #category : #'events - selection manager' }
-GeoViewManagerImpl >> selectionCleared [
+{ #category : #'parameters - graphic projection' }
+GeoViewManagerImpl >> setDisplayToGraphicProjection: aGeoView2DProjection [
 
-	self view selectedObjectIndexes: OrderedCollection new
+	self getView displayToGraphicProjection: aGeoView2DProjection
 ]
 
 { #category : #services }
@@ -364,6 +439,12 @@ GeoViewManagerImpl >> setGeoCenter: anAbsoluteCoordinates [
 GeoViewManagerImpl >> setMapProjection: aMapProjection [
 
 	self view mapProjection: aMapProjection
+]
+
+{ #category : #'parameters - objects' }
+GeoViewManagerImpl >> setObjectIndexAccessor: aSymbol [
+
+	self getView objectIndexAccessor: aSymbol 
 ]
 
 { #category : #services }
@@ -381,17 +462,27 @@ GeoViewManagerImpl >> setScaleInMeters: aNumber [
 { #category : #'parameters - selection manager' }
 GeoViewManagerImpl >> setSelectionManagerName: aComponentName [
 	"Setup a selection manager"
-	
-	self forServices: SmockSelectionManagerServices useProvider: aComponentName.
-	self forEvents: SmockSelectionManagerEvents useProducer: aComponentName
+
+	self
+		forServices: SmockSelectionManagerServices
+		useProvider: aComponentName.
+		
+	self
+		forEvents: SmockSelectionManagerEvents
+		useProducer: aComponentName
 ]
 
 { #category : #'parameters - selection manager' }
 GeoViewManagerImpl >> setSymbologyManagerName: aComponentName [
 	"Setup a symbology manager"
-	
-	self forServices: SmockSymbologyManagerServices useProvider: aComponentName.
-	self forEvents: SmockSymbologyManagerEvents useProducer: aComponentName
+
+	self
+		forServices: SmockSymbologyManagerServices
+		useProvider: aComponentName.
+		
+	self
+		forEvents: SmockSymbologyManagerEvents
+		useProducer: aComponentName
 ]
 
 { #category : #'parameters - view infos' }
@@ -432,13 +523,13 @@ GeoViewManagerImpl >> unconfigureLayer: aLayer [
 	aLayer symbologyProvider: nil
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerImpl >> updateObject: aGeoObject [
 
 	self view updateObject: aGeoObject
 ]
 
-{ #category : #'geobjects aur' }
+{ #category : #'services - object' }
 GeoViewManagerImpl >> updateObjects: aGeoObjectList [
 
 	self view updateObjects: aGeoObjectList

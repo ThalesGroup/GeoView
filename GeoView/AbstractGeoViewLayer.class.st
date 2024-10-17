@@ -3,7 +3,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'isVisible',
-		'processDataChangedBlock',
 		'name',
 		'announcer'
 	],
@@ -35,7 +34,7 @@ AbstractGeoViewLayer >> graphicProjection: aGraphicProjection [
 ]
 
 { #category : #testing }
-AbstractGeoViewLayer >> haveGeoObjects [
+AbstractGeoViewLayer >> haveDomainObjects [
 
 	^ false
 ]
@@ -46,13 +45,13 @@ AbstractGeoViewLayer >> haveGraphicModel [
 	^ false
 ]
 
-{ #category : #'API -- drawing' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewLayer >> isVisible [
 
 	^ isVisible ifNil:[ isVisible := true ]
 ]
 
-{ #category : #'API -- drawing' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewLayer >> isVisible: aBoolean [
 
 	isVisible := aBoolean
@@ -110,13 +109,13 @@ AbstractGeoViewLayer >> updateModel: aContext [
 	self explicitRequirement 
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewLayer >> viewInfos [
 	
 	self explicitRequirement
 ]
 
-{ #category : #'API -- projection' }
+{ #category : #'API -- graphic properties' }
 AbstractGeoViewLayer >> viewInfos: aViewInfos [
 
 	self explicitRequirement

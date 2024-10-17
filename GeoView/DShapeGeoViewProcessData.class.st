@@ -12,15 +12,18 @@ DShapeGeoViewProcessData class >> isAbstract [
 
 { #category : #processing }
 DShapeGeoViewProcessData >> computePositionFor: aDShape context: aContext [
-	
-	aDShape coordinates ifNil:[ ^ nil ].
-	self processor ifNil:[ ^ nil ].
-	
-	(aDShape isComposite not and:[ aDShape isDrawModeDevice ]) ifTrue:[
-		^ aDShape coordinates
-	].
 
-	^ self processor projection projCartToPixel: aDShape coordinates
+	| offset |
+	aDShape coordinates ifNil: [ ^ aDShape coordinatesDeviceOffset ].
+	self processor ifNil: [ ^ nil ].
+
+	offset := aDShape coordinatesDeviceOffset ifNil: [ 0 @ 0 ].
+
+	(aDShape isComposite not and: [ aDShape isDrawModeDevice ]) ifTrue: [
+		^ aDShape coordinates + offset ].
+
+	^ (self processor projection projCartToPixel: aDShape coordinates)
+	  + offset
 ]
 
 { #category : #processing }

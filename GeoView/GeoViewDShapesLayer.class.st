@@ -1,3 +1,7 @@
+"
+This layer can manage DShapes in a model.
+Use this kind of layers for example to decorate a view with some DShape.
+"
 Class {
 	#name : #GeoViewDShapesLayer,
 	#superclass : #AbstractGeoViewGraphicModelLayer,
@@ -9,11 +13,11 @@ Class {
 
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> addDShape: aDShape [
-	
-	(self dShapeList includesKey: (aDShape key)) ifTrue:[ ^ self ].
+
+	(self dShapeList includesKey: aDShape key) ifTrue: [ ^ self ].
 	self dShapeList at: aDShape key put: aDShape.
 	super addDShape: aDShape.
-	self sortDatas.
+	self sortDatas
 ]
 
 { #category : #accessing }
@@ -29,7 +33,7 @@ GeoViewDShapesLayer >> initialize [
 	self initializeDShapeList.
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 GeoViewDShapesLayer >> initializeDShapeList [
 
 	dShapeList := Dictionary new
@@ -49,20 +53,20 @@ GeoViewDShapesLayer >> mapProjection: aMapProjection [
 
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> removeDShape: aDShape [
-	
-	(self dShapeList includesKey: (aDShape key)) ifFalse:[ ^ self ].
+
+	(self dShapeList includesKey: aDShape key) ifFalse: [ ^ self ].
 	self dShapeList removeKey: aDShape key.
 	super removeDShape: aDShape.
-	self sortDatas.
+	self sortDatas
 ]
 
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> updateDShape: aDShape [
-	
-	(self dShapeList includesKey: (aDShape key)) ifFalse:[ ^ self ].
+
+	(self dShapeList includesKey: aDShape key) ifFalse: [ ^ self ].
 	self dShapeList at: aDShape key put: aDShape.
 	super updateDShape: aDShape.
-	self sortDatas.
+	self sortDatas
 ]
 
 { #category : #private }

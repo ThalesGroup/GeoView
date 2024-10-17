@@ -1,8 +1,8 @@
 Class {
 	#name : #GeoViewUserTestImpl,
 	#superclass : #MolAbstractComponentImpl,
-	#traits : 'GeoViewUserTest + GeoViewManagerEvents + GeoViewManagerLayerEvents',
-	#classTraits : 'GeoViewUserTest classTrait + GeoViewManagerEvents classTrait + GeoViewManagerLayerEvents classTrait',
+	#traits : 'GeoViewUserTest + GeoViewManagerEvents',
+	#classTraits : 'GeoViewUserTest classTrait + GeoViewManagerEvents classTrait',
 	#instVars : [
 		'receivedGeoViewLayerEvents'
 	],

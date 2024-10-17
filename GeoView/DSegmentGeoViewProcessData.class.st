@@ -7,7 +7,7 @@ Class {
 { #category : #private }
 DSegmentGeoViewProcessData >> createGShape2D [ 
 
-	^ SmockGSSegment2D new
+	^ SmockGSegment2D new
 ]
 
 { #category : #processing }

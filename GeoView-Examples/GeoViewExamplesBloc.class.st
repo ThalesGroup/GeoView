@@ -29,7 +29,7 @@ GeoViewExamplesBloc class >> createGeoObjects [
 GeoViewExamplesBloc class >> exampleWithDShapesLayer [
 	
 	| element layer circle1 circle2 segment1 segment2 |
-	element := BlGeoViewAeElement new.
+	element := GeoViewAeElement new.
 	layer := GeoViewDShapesLayer new name: #shapes. 
 	element addLayer: layer.
 	
@@ -56,7 +56,7 @@ GeoViewExamplesBloc class >> exampleWithDShapesLayer [
 GeoViewExamplesBloc class >> exampleWithGeoCircle [
 	
 	| element circle |
-	element := BlGeoViewAeElement new.
+	element := GeoViewAeElement new.
 	
 	"configure layers and process datas : objects that can be displayed and how"
 	element addLayer: (GeoViewUtils createGeoObjectsLayer: #layer1).
@@ -72,7 +72,7 @@ GeoViewExamplesBloc class >> exampleWithGeoCircle [
 GeoViewExamplesBloc class >> exampleWithGeoLabeledCircle [
 	
 	| element circle layer |
-	element := BlGeoViewAeElement new.
+	element := GeoViewAeElement new.
 	
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
@@ -91,7 +91,7 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
 	
 	| element layer objects |
-	element := BlGeoViewAeElement new.
+	element := GeoViewAeElement new.
 	
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
@@ -113,11 +113,37 @@ GeoViewExamplesBloc class >> exampleWithGeoObjects [
 ]
 
 { #category : #examples }
+GeoViewExamplesBloc class >> exampleWithGeoObjectsAlt [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	
+	| element layer objects |
+	element := GeoViewAeElement new.
+	
+	"configure layers and process datas : objects that can be displayed and how"
+	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
+	element addLayer: layer.
+	
+	"create sample datas"
+	objects := self createGeoObjects.
+	objects do: [ :e | element addObject: e ].
+
+	"Example of event handler behavior on geoView domain event"
+	element addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent do: [ :event |
+		event absoluteCoordinates printString traceCr.
+	].
+
+	"Example of custom EventHandler, here a logger"
+	element addEventHandler: (GeoViewEventLogger new).
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #examples }
 GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
 	
 	| element layer objects space thread |
-	element := BlGeoViewAeElement new. 
+	element := GeoViewAeElement new. 
 
 	"configure layers and process datas : objects that can be displayed and how"
 	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
@@ -150,14 +176,14 @@ GeoViewExamplesBloc class >> exampleWithGeoObjectsUpdated [
 ]
 
 { #category : #private }
-GeoViewExamplesBloc class >> openViewInWindow: aBlGeoViewElement [
+GeoViewExamplesBloc class >> openViewInWindow: aGeoViewElement [
 	"open the view in a window"
 
 	| space |
-	aBlGeoViewElement constraintsDo: [ :c |
+	aGeoViewElement constraintsDo: [ :c |
 		c vertical matchParent.
 		c horizontal matchParent ].
-	space := aBlGeoViewElement openInSpace.
+	space := aGeoViewElement openInSpace.
 	space title: 'GeoView example'.
 
 	^ space

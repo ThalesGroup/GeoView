@@ -21,5 +21,5 @@ GeoViewManagerEvents >> geoViewLayerUpdated: aKey in: aGeoViewManagerKey [
 ]
 
 { #category : #'events - map projection' }
-GeoViewManagerEvents >> mapProjectionHasChanged: aMapProjection [
+GeoViewManagerEvents >> mapProjectionHasChanged: aMapProjection in: aGeoViewManagerKey [
 ]
