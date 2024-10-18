@@ -430,9 +430,7 @@ GeoViewAbstractElement >> preConfigurePickingResult: aPickingResult radius: aRad
 
 	| radius |
 	radius := aRadiusInPixels ifNil: [ 0 ].
-	aPickingResult radiusInPixels: radius.
-	
-	aPickingResult distanceBlock: [ :gShape :point | gShape distanceTo: point ]
+	aPickingResult radiusInPixels: radius
 ]
 
 { #category : #'private - events' }
@@ -552,6 +550,7 @@ GeoViewAbstractElement >> scaleUp [
 GeoViewAbstractElement >> selectedObjectIndexes: anIndexList [
 
 	anIndexList ifNil:[ ^ self ].
+	self layers ifEmpty: [ ^ self ].
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
 		self layers do: [ :l | l haveDomainObjects ifTrue:[ l updateState: #selected withIndexes: anIndexList ] ].

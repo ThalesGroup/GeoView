@@ -30,12 +30,23 @@ DShapeGeoViewProcessData >> computePositionFor: aDShape context: aContext [
 DShapeGeoViewProcessData >> processCreatedData: aKey incoming: aDShape with: aGShape2D context: aContext [
 
 	(aDShape isNil or: [ aGShape2D isNil ]) ifTrue: [ ^ nil ].
-	aGShape2D id: aKey asString.
+	aGShape2D id: aKey.
 	^ aGShape2D
 ]
 
 { #category : #processing }
 DShapeGeoViewProcessData >> processDeletedData: aKey incoming: aDShape with: aGShape2D context: aContext [
+
+	^ aGShape2D
+]
+
+{ #category : #processing }
+DShapeGeoViewProcessData >> processRecycledData: aKey incoming: aDShape with: aGShape2D context: aContext [
+
+	"clean the GShape"
+	aGShape2D id: nil.
+	aGShape2D removeProperties.
+	aGShape2D isComposite ifTrue:[ aGShape2D removeChildren ].
 
 	^ aGShape2D
 ]

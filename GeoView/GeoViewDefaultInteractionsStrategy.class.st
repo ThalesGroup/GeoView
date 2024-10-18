@@ -44,7 +44,6 @@ GeoViewDefaultInteractionsStrategy >> clickEvent: anEvent [
 	"pick the geoview on click"
 
 	| element point pickingResult event |
-
 	self flag:'laborde, need to report bloc bug because there is a click with a drag... patch with checking mouse down position'.
 	self isMapMoving ifTrue:[^ self].
 	

@@ -34,4 +34,6 @@ DLeafShapeGeoViewProcessData >> processUpdatedData: aKey incoming: aDShape with:
 	
 	aGShape2D fillStyle: aDShape fillStyle.
 	aGShape2D strokeStyle: aDShape strokeStyle.
+	
+	^ aGShape2D 
 ]
