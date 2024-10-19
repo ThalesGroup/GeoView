@@ -16,8 +16,7 @@ GeoViewDShapesLayer >> addDShape: aDShape [
 
 	(self dShapeList includesKey: aDShape key) ifTrue: [ ^ self ].
 	self dShapeList at: aDShape key put: aDShape.
-	super addDShape: aDShape.
-	self sortDatas
+	super addDShape: aDShape
 ]
 
 { #category : #accessing }
@@ -56,8 +55,7 @@ GeoViewDShapesLayer >> removeDShape: aDShape [
 
 	(self dShapeList includesKey: aDShape key) ifFalse: [ ^ self ].
 	self dShapeList removeKey: aDShape key.
-	super removeDShape: aDShape.
-	self sortDatas
+	super removeDShape: aDShape
 ]
 
 { #category : #'API -- DShapes' }
@@ -65,12 +63,12 @@ GeoViewDShapesLayer >> updateDShape: aDShape [
 
 	(self dShapeList includesKey: aDShape key) ifFalse: [ ^ self ].
 	self dShapeList at: aDShape key put: aDShape.
-	super updateDShape: aDShape.
-	self sortDatas
+	super updateDShape: aDShape
 ]
 
 { #category : #private }
 GeoViewDShapesLayer >> updateModel: aContext [
 
-	self dShapeList valuesDo: [ :dShape | self updateGraphicModelWith: dShape ]
+	self dShapeList valuesDo: [ :dShape |
+		self updateGraphicModelWith: dShape ]
 ]

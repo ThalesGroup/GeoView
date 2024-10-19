@@ -15,10 +15,16 @@ GeoViewExamples class >> createAndStartTask: aBlockClosure [
 { #category : #private }
 GeoViewExamples class >> createGeoObjects [
 
+	^ self createGeoObjects: 1000
+]
+
+{ #category : #private }
+GeoViewExamples class >> createGeoObjects: aQuantity [
+
 	| list random nb |
 	list := OrderedCollection new.
 	random := Random new.
-	nb := 1000.
+	nb := aQuantity.
 	
 	1 to: nb do:[ :i | | object |
 		object := GeoCircle new.
@@ -130,7 +136,7 @@ GeoViewExamples class >> exampleWithGeoObjects [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 	
 	"create sample datas"
-	objects := self createGeoObjects.
+	objects := self createGeoObjects: 5000.
 	element addObjects: objects.
 
 	"Example of event handler behavior on geoView domain event"
@@ -181,9 +187,9 @@ GeoViewExamples class >> exampleWithGeoObjectsCUD [
 
 	"Objet update thread"
 	task := self createAndStartTask: [ 
-		index := self stimulateGeoCirclesIn: list geoView: element index: index. 
+		index := self stimulateGeoCirclesIn: list geoView: element fromIndex: (index + 1). 
 	].
-	task stepDelay: 30 milliSecond.
+	task stepDelay: 100 milliSecond.
 
 	"Stop thread when window is closed"
 	space addEventHandler: (BlEventHandler
@@ -236,7 +242,7 @@ GeoViewExamples class >> openViewInWindow: aGeoViewElement [
 ]
 
 { #category : #private }
-GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView index: index [
+GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex: index [
 	"at each step create / update and delete some GeoObjects"
 
 	| random color radiusInM createList updateList removeList newIndex maxRadiusInM maxNbOfCircles unchangeList |
@@ -270,7 +276,7 @@ GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView index: i
 
 	"create objects when removed, to have between one and 1000"
 	(removeList isNotEmpty and: [ aList size < maxNbOfCircles ]) ifTrue:[
-		(self createRandomPositionGeoCircles: (random next * 100 rounded) color: color radius: radiusInM) do:[ :circle |
+		(self createRandomPositionGeoCircles: ((random next * 100) asInteger) color: color radius: radiusInM) do:[ :circle |
 			newIndex := newIndex + 1.
 			circle key: newIndex.
 			createList add: circle.
@@ -278,9 +284,9 @@ GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView index: i
 	].
 
 	"update geoview"
-	aGeoView addObjects: createList.
-	aGeoView updateObjects: updateList.
 	aGeoView removeObjects: removeList.
+	aGeoView updateObjects: updateList.
+	aGeoView addObjects: createList.
 
 	aList removeAll.
 	aList	addAll: createList; addAll: updateList; addAll: unchangeList.

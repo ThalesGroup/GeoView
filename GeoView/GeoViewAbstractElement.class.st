@@ -13,7 +13,6 @@ Class {
 		'objectIndexAccessor',
 		'layers',
 		'displayToGraphicProjection',
-		'isMarkedForSortDatas',
 		'mapProjection',
 		'viewInfos',
 		'interactionsStrategy'
@@ -69,18 +68,19 @@ GeoViewAbstractElement >> addObject: anUserObject [
 	anUserObject ifNil: [ ^ self ].
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e | e haveDomainObjects ifTrue:[ e addObject: anUserObject ] ].
-		self needToSortDatas ]
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e addObject: anUserObject ] ] ]
 ]
 
 { #category : #'API -- objects management' }
 GeoViewAbstractElement >> addObjects: anUserObjectList [
 
-	(anUserObjectList isNil or: [ anUserObjectList isEmpty ]) ifTrue: [ ^ self ].
+	(anUserObjectList isNil or: [ anUserObjectList isEmpty ]) ifTrue: [
+		^ self ].
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e | e haveDomainObjects ifTrue:[ e addObjects: anUserObjectList ] ].
-		self needToSortDatas ]
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e addObjects: anUserObjectList ] ] ]
 ]
 
 { #category : #'API -- scale and center' }
@@ -281,12 +281,6 @@ GeoViewAbstractElement >> interactionsStrategy [
 	^ interactionsStrategy
 ]
 
-{ #category : #private }
-GeoViewAbstractElement >> isMarkedForSortDatas [
-
-	^ isMarkedForSortDatas ifNil: [ isMarkedForSortDatas := false ]
-]
-
 { #category : #'private - events' }
 GeoViewAbstractElement >> layerNeedToBeRepaint: anEvent [
 
@@ -372,12 +366,6 @@ GeoViewAbstractElement >> minScaleInMeters [
 GeoViewAbstractElement >> minScaleInMeters: anObject [
 
 	minScaleInMeters := anObject
-]
-
-{ #category : #private }
-GeoViewAbstractElement >> needToSortDatas [
-
-	isMarkedForSortDatas := true
 ]
 
 { #category : #'strategy management' }
@@ -474,22 +462,22 @@ GeoViewAbstractElement >> removeLayer: aLayer [
 { #category : #'API -- objects management' }
 GeoViewAbstractElement >> removeObject: anUserObject [
 
-	anUserObject ifNil:[ ^ self ].
+	anUserObject ifNil: [ ^ self ].
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e | e haveDomainObjects ifTrue:[ e removeObject: anUserObject ] ].
-		self needToSortDatas ]
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e removeObject: anUserObject ] ] ]
 ]
 
 { #category : #'API -- objects management' }
 GeoViewAbstractElement >> removeObjects: anUserObjectList [
 
-	anUserObjectList ifNil:[ ^ self ].
-	anUserObjectList ifEmpty:[ ^ self ].
+	anUserObjectList ifNil: [ ^ self ].
+	anUserObjectList ifEmpty: [ ^ self ].
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e | e haveDomainObjects ifTrue:[ e removeObjects: anUserObjectList ] ].
-		self needToSortDatas ]
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e removeObjects: anUserObjectList ] ] ]
 ]
 
 { #category : #private }
@@ -549,12 +537,13 @@ GeoViewAbstractElement >> scaleUp [
 { #category : #'API -- selection' }
 GeoViewAbstractElement >> selectedObjectIndexes: anIndexList [
 
-	anIndexList ifNil:[ ^ self ].
+	anIndexList ifNil: [ ^ self ].
 	self layers ifEmpty: [ ^ self ].
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :l | l haveDomainObjects ifTrue:[ l updateState: #selected withIndexes: anIndexList ] ].
-		self needToSortDatas ]
+		self layers do: [ :l |
+			l haveDomainObjects ifTrue: [
+				l updateState: #selected withIndexes: anIndexList ] ] ]
 ]
 
 { #category : #'strategy management' }
@@ -606,31 +595,31 @@ GeoViewAbstractElement >> updateModel: aContext [
 { #category : #'API -- objects management' }
 GeoViewAbstractElement >> updateObject: anUserObject [
 
-	anUserObject ifNil:[ ^ self ].
+	anUserObject ifNil: [ ^ self ].
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e | e haveDomainObjects ifTrue:[ e updateObject: anUserObject ] ].
-		self needToSortDatas ]
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e updateObject: anUserObject ] ] ]
 ]
 
 { #category : #'API -- objects management' }
 GeoViewAbstractElement >> updateObjects: anUserObjectList [
 
-	anUserObjectList ifNil:[ ^ self ].
-	anUserObjectList ifEmpty:[ ^ self ].
+	anUserObjectList ifNil: [ ^ self ].
+	anUserObjectList ifEmpty: [ ^ self ].
 
 	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e | e haveDomainObjects ifTrue:[ e updateObjects: anUserObjectList ] ].
-		self needToSortDatas ]
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e updateObjects: anUserObjectList ] ] ]
 ]
 
 { #category : #private }
 GeoViewAbstractElement >> updateState: aStateSymbol withIndexes: aKeyList [
-	
-	self enqueueBlockAsTaskAndRequestRepaint: [ 
-		self layers do: [ :l | l haveDomainObjects ifTrue:[ l updateState: aStateSymbol withIndexes: aKeyList ] ].
-		self needToSortDatas
-	]
+
+	self enqueueBlockAsTaskAndRequestRepaint: [
+		self layers do: [ :l |
+			l haveDomainObjects ifTrue: [
+				l updateState: aStateSymbol withIndexes: aKeyList ] ] ]
 ]
 
 { #category : #private }

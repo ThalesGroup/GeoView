@@ -12,11 +12,5 @@ GeoViewAeElement >> aeDrawOn: aeCanvas [
 	"drawing native bloc elements"
 
 	super aeDrawOn: aeCanvas.
-
-	self layers do: [ :l | 
-		self isMarkedForSortDatas ifTrue: [ l haveGraphicModel ifTrue: [ l sortDatas ] ].
-		l isVisible ifTrue: [ l aeDrawOn: aeCanvas ] 
-	].
-
-	isMarkedForSortDatas := false.
+	self layers do: [ :l | l isVisible ifTrue: [ l aeDrawOn: aeCanvas ] ]
 ]

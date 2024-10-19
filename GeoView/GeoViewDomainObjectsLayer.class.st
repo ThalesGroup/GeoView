@@ -174,17 +174,17 @@ GeoViewDomainObjectsLayer >> updateObjects: anObjectList [
 	anObjectList do: [ :e | self updateObject: e ]
 ]
 
-{ #category : #private }
+{ #category : #'private - state' }
 GeoViewDomainObjectsLayer >> updateState: aStateSymbol withIndexes: aKeyList [
 
 	| dModel dObjectList |
 	dModel := self displayModel.
-	
+
 	"Update the state"
 	dObjectList := dModel updateState: aStateSymbol withIndexes: aKeyList.
-	
+
 	"Update the graphic model to considere the updated state"
-	dObjectList do:[ :dObject | self graphicModel updated: dObject ].
+	self updateDShapes: dObjectList
 ]
 
 { #category : #'API -- graphic properties' }

@@ -6,7 +6,8 @@ Class {
 	#instVars : [
 		'sortedDatas',
 		'graphicModel',
-		'graphicalOrderSortBlock'
+		'graphicalOrderSortBlock',
+		'isDatasChanged'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -23,12 +24,14 @@ AbstractGeoViewGraphicModelLayer >> addDShape: aDShape [
 	aDShape ifNil:[ ^ self ].
 
 	"convert dShape to gShape"
-	self graphicModel created: aDShape
+	self graphicModel created: aDShape.
+	self isDatasChanged: true.
 ]
 
 { #category : #'API -- DShapes' }
 AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 
+	aDShapeList ifNil: [ ^ self ].
 	aDShapeList do: [ :e | self addDShape: e ]
 ]
 
@@ -36,8 +39,12 @@ AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 
 	self isVisible ifFalse: [ ^ self ].
-	sortedDatas ifNil: [ ^ self ].
+	self isDatasChanged ifTrue:[
+		"flag labordep: need to this on a dedicated phase instead of in the render"
+		self sortDatas.	
+	].
 	
+	sortedDatas ifNil: [ ^ self ].
 	sortedDatas do: [ :e | e aeDrawOn: aeCanvas ]
 ]
 
@@ -70,7 +77,7 @@ AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock [
 	"Setup a sort block to change the order of graphic element stack"
 
 	^ graphicalOrderSortBlock ifNil: [
-		  graphicalOrderSortBlock := [ :gShapeA :gShapeB |
+		  graphicalOrderSortBlock := [ :gShapeA :gShapeB | "this default sort block place all selected shapes on top of the drawing"
 		                             (gShapeA isPropertyExists: #selected)
 			                             not ] ]
 ]
@@ -82,7 +89,6 @@ AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock: aBlockClosure [
 	graphicalOrderSortBlock := aBlockClosure.
 	sortedDatas ifNotNil:[ :e | 
 		e sortBlock: self graphicalOrderSortBlock. 
-		self sortDatas 
 	]
 ]
 
@@ -90,6 +96,7 @@ AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock: aBlockClosure [
 AbstractGeoViewGraphicModelLayer >> haveDShapeKey: aKey [
 	"check in the graphic model because if not present here, the object is not managed"
 
+	aKey ifNil: [ ^ self ].
 	^ self graphicModel haveDataIndex: aKey
 ]
 
@@ -126,11 +133,21 @@ AbstractGeoViewGraphicModelLayer >> initializeGraphicModel [
 
 { #category : #initialization }
 AbstractGeoViewGraphicModelLayer >> initializeSortedDatas [
-	
+
 	sortedDatas := SortedCollection new: self graphicModel capacity.
-	
-	"Sort by selected state"
 	sortedDatas sortBlock: self graphicalOrderSortBlock
+]
+
+{ #category : #'private - sort' }
+AbstractGeoViewGraphicModelLayer >> isDatasChanged [
+
+	^ isDatasChanged ifNil: [ isDatasChanged := false ]
+]
+
+{ #category : #'private - sort' }
+AbstractGeoViewGraphicModelLayer >> isDatasChanged: aBoolean [
+
+	isDatasChanged := aBoolean
 ]
 
 { #category : #'API -- picking' }
@@ -168,20 +185,24 @@ AbstractGeoViewGraphicModelLayer >> removeDShape: aDShape [
 	aDShape ifNil: [ ^ self ].
 
 	"remove gShape"
-	self graphicModel deleted: aDShape
+	self graphicModel deleted: aDShape.
+	self isDatasChanged: true
 ]
 
 { #category : #'API -- DShapes' }
 AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 
+	aDShapeList ifNil: [ ^ self ].
 	aDShapeList do: [ :e | self removeDShape: e ]
 ]
 
-{ #category : #private }
+{ #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> sortDatas [
 
+	"force sorted to remove and add datas"
 	sortedDatas removeAll.
-	sortedDatas addAll: self graphicModel getDatas
+	sortedDatas addAll: self graphicModel getDatas.
+	self isDatasChanged: false.
 ]
 
 { #category : #'API -- symbology' }
@@ -196,12 +217,14 @@ AbstractGeoViewGraphicModelLayer >> updateDShape: aDShape [
 	aDShape ifNil: [ ^ self ].
 
 	"update gShape with dShape"
-	self graphicModel updated: aDShape
+	self graphicModel updated: aDShape.
+	self isDatasChanged: true
 ]
 
 { #category : #'API -- DShapes' }
 AbstractGeoViewGraphicModelLayer >> updateDShapes: aDShapeList [
 
+	aDShapeList ifNil: [ ^ self ].
 	aDShapeList do: [ :e | self updateDShape: e ]
 ]
 
