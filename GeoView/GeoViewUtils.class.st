@@ -22,6 +22,21 @@ GeoViewUtils class >> createGeoObjectsLayer: aName [
 	^ layer
 ]
 
+{ #category : #'geoview creation' }
+GeoViewUtils class >> createGeoView [
+
+	^ GeoViewAeElement new
+]
+
+{ #category : #'geoview creation' }
+GeoViewUtils class >> createGeoViewForGeoObjects [
+
+	| element |
+	element := self createGeoView.
+	element addLayer: (self createGeoObjectsLayer: #GeoObjectsLayer).
+	^ element
+]
+
 { #category : #'see class side' }
 GeoViewUtils >> seeClassSide [ 
 ]

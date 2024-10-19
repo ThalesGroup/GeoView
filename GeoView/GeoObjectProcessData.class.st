@@ -39,7 +39,24 @@ GeoObjectProcessData >> processCreatedData: aKey incoming: aGeoObject with: aDSh
 
 { #category : #processing }
 GeoObjectProcessData >> processDeletedData: aKey incoming: aGeoObject with: aDShape context: aContext [
-	^aDShape
+
+	^ aDShape
+]
+
+{ #category : #processing }
+GeoObjectProcessData >> processRecycledData: aKey incoming: aGeoObject with: aDShape context: aContext [
+	
+	aDShape key: nil.
+	aDShape removeProperties.
+	aDShape isComposite ifTrue:[ aDShape removeChildren ].
+
+	^ aDShape
+]
+
+{ #category : #processing }
+GeoObjectProcessData >> processStateChanged: aKey state: aState value: aValueOrNil with: aDShape context: aContext [
+
+	^ aDShape
 ]
 
 { #category : #processing }

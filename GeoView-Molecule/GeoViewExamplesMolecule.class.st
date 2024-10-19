@@ -1,11 +1,11 @@
 Class {
-	#name : #GeoViewExamplesBlocMolecule,
+	#name : #GeoViewExamplesMolecule,
 	#superclass : #Object,
 	#category : #'GeoView-Molecule-Examples'
 }
 
 { #category : #private }
-GeoViewExamplesBlocMolecule class >> createGeoObjects [
+GeoViewExamplesMolecule class >> createGeoObjects [
 
 	| list random nb |
 	list := OrderedCollection new.
@@ -26,7 +26,7 @@ GeoViewExamplesBlocMolecule class >> createGeoObjects [
 ]
 
 { #category : #examples }
-GeoViewExamplesBlocMolecule class >> exampleWithGeoObjects [
+GeoViewExamplesMolecule class >> exampleWithGeoObjects [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
 	
 	| geoViewManager layer objects |
@@ -43,7 +43,7 @@ GeoViewExamplesBlocMolecule class >> exampleWithGeoObjects [
 ]
 
 { #category : #examples }
-GeoViewExamplesBlocMolecule class >> exampleWithGeoObjectsUpdated [
+GeoViewExamplesMolecule class >> exampleWithGeoObjectsUpdated [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
 	
 	| geoViewManager layer objects space thread |
@@ -79,7 +79,7 @@ GeoViewExamplesBlocMolecule class >> exampleWithGeoObjectsUpdated [
 ]
 
 { #category : #private }
-GeoViewExamplesBlocMolecule class >> openViewInWindow: aGeoViewManager [
+GeoViewExamplesMolecule class >> openViewInWindow: aGeoViewManager [
 	"open the view in a window"
 
 	| blElement space |
@@ -99,5 +99,5 @@ GeoViewExamplesBlocMolecule class >> openViewInWindow: aGeoViewManager [
 ]
 
 { #category : #'see class side' }
-GeoViewExamplesBlocMolecule >> seeClassSide [ 
+GeoViewExamplesMolecule >> seeClassSide [ 
 ]
