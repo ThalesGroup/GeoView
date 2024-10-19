@@ -14,15 +14,39 @@ Class {
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> addDShape: aDShape [
 
-	(self dShapeList includesKey: aDShape key) ifTrue: [ ^ self ].
+	aDShape ifNil:[ ^ self ].
+	
+	(self haveDShapeKey: aDShape key) ifTrue: [ ^ self ].
 	self dShapeList at: aDShape key put: aDShape.
 	super addDShape: aDShape
+]
+
+{ #category : #'API -- DShapes' }
+GeoViewDShapesLayer >> addDShapes: aDShapeList [
+
+	| toAdd |
+	aDShapeList ifNil:[ ^ self ].
+	toAdd := OrderedCollection new.
+	aDShapeList do:[ :e |  
+		(self haveDShapeKey: e key) ifFalse:[
+			self dShapeList at: e key put: e.
+			toAdd add: e.
+		].
+	].
+	super addDShapes: toAdd
 ]
 
 { #category : #accessing }
 GeoViewDShapesLayer >> dShapeList [
 
 	^ dShapeList
+]
+
+{ #category : #'API -- DShapes' }
+GeoViewDShapesLayer >> haveDShapeKey: aKey [
+
+	aKey ifNil: [ ^ self ].
+	^ self dShapeList includesKey: aKey
 ]
 
 { #category : #initialization }
@@ -53,22 +77,53 @@ GeoViewDShapesLayer >> mapProjection: aMapProjection [
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> removeDShape: aDShape [
 
-	(self dShapeList includesKey: aDShape key) ifFalse: [ ^ self ].
+	(self haveDShapeKey: aDShape key) ifFalse: [ ^ self ].
 	self dShapeList removeKey: aDShape key.
 	super removeDShape: aDShape
 ]
 
 { #category : #'API -- DShapes' }
+GeoViewDShapesLayer >> removeDShapes: aDShapeList [
+
+	| toRemove |
+	aDShapeList ifNil:[ ^ self ].
+	toRemove := OrderedCollection new.
+	aDShapeList do:[ :e |  
+		(self haveDShapeKey: e key) ifFalse:[
+			self dShapeList at: e key put: e.
+			toRemove add: e.
+		].
+	].
+	super removeDShapes: toRemove
+]
+
+{ #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> updateDShape: aDShape [
 
-	(self dShapeList includesKey: aDShape key) ifFalse: [ ^ self ].
+	(self haveDShapeKey: aDShape key) ifFalse: [ ^ self ].
 	self dShapeList at: aDShape key put: aDShape.
 	super updateDShape: aDShape
+]
+
+{ #category : #'API -- DShapes' }
+GeoViewDShapesLayer >> updateDShapes: aDShapeList [
+
+	| toUpdate |
+	aDShapeList ifNil:[ ^ self ].
+	toUpdate := OrderedCollection new.
+	aDShapeList do:[ :e |  
+		(self haveDShapeKey: e key) ifFalse:[
+			self dShapeList at: e key put: e.
+			toUpdate add: e.
+		].
+	].
+	super updateDShapes: toUpdate
 ]
 
 { #category : #private }
 GeoViewDShapesLayer >> updateModel: aContext [
 
-	self dShapeList valuesDo: [ :dShape |
-		self updateGraphicModelWith: dShape ]
+	self graphicModelMutex critical: [
+		self dShapeList valuesDo: [ :dShape |
+			self updateGraphicModelWith: dShape ] ]
 ]

@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'isVisible',
 		'name',
-		'announcer'
+		'announcer',
+		'taskHandler'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -19,6 +20,13 @@ AbstractGeoViewLayer class >> isAbstract [
 AbstractGeoViewLayer >> announcer [
 
 	^ announcer ifNil:[ announcer := Announcer new ]
+]
+
+{ #category : #private }
+AbstractGeoViewLayer >> enqueueTaskAndRequestRepaint: aBlockClosure [
+
+	self taskHandler ifNil:[ ^ self ].
+	self taskHandler enqueueTaskAndRequestRepaint: aBlockClosure
 ]
 
 { #category : #'API -- projection' }
@@ -101,6 +109,18 @@ AbstractGeoViewLayer >> sendRepaintRequest [
 AbstractGeoViewLayer >> symbologyProvider: aSymbologyProvider [
 
 	self explicitRequirement
+]
+
+{ #category : #accessing }
+AbstractGeoViewLayer >> taskHandler [
+
+	^ taskHandler
+]
+
+{ #category : #accessing }
+AbstractGeoViewLayer >> taskHandler: anObject [
+
+	taskHandler := anObject
 ]
 
 { #category : #private }

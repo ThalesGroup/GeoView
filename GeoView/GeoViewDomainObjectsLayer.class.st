@@ -25,7 +25,14 @@ GeoViewDomainObjectsLayer >> addObject: anObject [
 { #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> addObjects: anObjectList [
 
-	anObjectList do: [ :e | self addObject: e ]
+	| dShapeList |
+	anObjectList ifNil: [ ^ self ].
+
+	dShapeList := OrderedCollection new.
+	anObjectList do: [ :e |
+		(self displayModel created: e) ifNotNil: [ :f | dShapeList add: f ] ].
+
+	self addDShapes: dShapeList
 ]
 
 { #category : #accessing }
@@ -128,7 +135,14 @@ GeoViewDomainObjectsLayer >> removeObject: anObject [
 { #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> removeObjects: anObjectList [
 
-	anObjectList do: [ :e | self removeObject: e ]
+	| dShapeList |
+	anObjectList ifNil: [ ^ self ].
+
+	dShapeList := OrderedCollection new.
+	anObjectList do: [ :e |
+		(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ] ].
+
+	self removeDShapes: dShapeList
 ]
 
 { #category : #'API -- process datas' }
@@ -171,7 +185,12 @@ GeoViewDomainObjectsLayer >> updateObject: anObject [
 { #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> updateObjects: anObjectList [
 
-	anObjectList do: [ :e | self updateObject: e ]
+	| dShapeList |
+	dShapeList := OrderedCollection new.
+	anObjectList do: [ :e |
+		(self displayModel updated: e) ifNotNil: [ :f | dShapeList add: f ] ].
+
+	self updateDShapes: dShapeList
 ]
 
 { #category : #'private - state' }

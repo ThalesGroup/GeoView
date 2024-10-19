@@ -15,7 +15,8 @@ Class {
 		'displayToGraphicProjection',
 		'mapProjection',
 		'viewInfos',
-		'interactionsStrategy'
+		'interactionsStrategy',
+		'taskHandler'
 	],
 	#category : #'GeoView-Core'
 }
@@ -67,9 +68,8 @@ GeoViewAbstractElement >> addObject: anUserObject [
 
 	anUserObject ifNil: [ ^ self ].
 
-	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e |
-			e haveDomainObjects ifTrue: [ e addObject: anUserObject ] ] ]
+	self layers do: [ :e |
+		e haveDomainObjects ifTrue: [ e addObject: anUserObject ] ]
 ]
 
 { #category : #'API -- objects management' }
@@ -78,9 +78,8 @@ GeoViewAbstractElement >> addObjects: anUserObjectList [
 	(anUserObjectList isNil or: [ anUserObjectList isEmpty ]) ifTrue: [
 		^ self ].
 
-	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e |
-			e haveDomainObjects ifTrue: [ e addObjects: anUserObjectList ] ] ]
+	self layers do: [ :e |
+		e haveDomainObjects ifTrue: [ e addObjects: anUserObjectList ] ]
 ]
 
 { #category : #'API -- scale and center' }
@@ -96,6 +95,7 @@ GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 GeoViewAbstractElement >> configureLayer: aLayer [
 	
 	aLayer viewInfos: self viewInfos.
+	aLayer taskHandler: self taskHandler.
 	
 	"Setup the map projection (from a cartographic point of view) of the layer"
 	aLayer mapProjection: self mapProjection.
@@ -157,18 +157,10 @@ GeoViewAbstractElement >> doPicking: aPickingResult [
 ]
 
 { #category : #private }
-GeoViewAbstractElement >> enqueueBlockAsTaskAndRequestRepaint: aBlockClosure [
+GeoViewAbstractElement >> enqueueTaskAndRequestRepaint: aBlockClosure [
 
-	| task action |
-	aBlockClosure ifNil:[ ^ self ].
-	aBlockClosure isBlock ifFalse:[ ^ self ].
-	
-	"wrap the block into another one to refresh the view"
-	action := [ aBlockClosure value. self requestRepaint ].
-	
-	task := BlTaskAction new.
-	task action: action.
-	self enqueueTask: task
+	self taskHandler ifNil:[ ^ self ].
+	self taskHandler enqueueTaskAndRequestRepaint: aBlockClosure
 ]
 
 { #category : #private }
@@ -255,6 +247,7 @@ GeoViewAbstractElement >> initialize [
 	self displayToGraphicProjection: GeoView2DProjection new.
 	self background: Color black.
 	self initializeEventHandlers.
+	self initializeTaskHandler.
 ]
 
 { #category : #initialization }
@@ -267,6 +260,13 @@ GeoViewAbstractElement >> initializeEventHandlers [
 	self addEventHandler: (BlEventHandler
 			 on: BlElementExtentChangedEvent
 			 do: [ :e | self processExtentChangedEvent: e ])
+]
+
+{ #category : #initialization }
+GeoViewAbstractElement >> initializeTaskHandler [
+
+	taskHandler := GeoViewTaskHandler new.
+	taskHandler handler: self.
 ]
 
 { #category : #initialization }
@@ -464,9 +464,9 @@ GeoViewAbstractElement >> removeObject: anUserObject [
 
 	anUserObject ifNil: [ ^ self ].
 
-	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e |
-			e haveDomainObjects ifTrue: [ e removeObject: anUserObject ] ] ]
+
+	self layers do: [ :e |
+		e haveDomainObjects ifTrue: [ e removeObject: anUserObject ] ]
 ]
 
 { #category : #'API -- objects management' }
@@ -475,9 +475,8 @@ GeoViewAbstractElement >> removeObjects: anUserObjectList [
 	anUserObjectList ifNil: [ ^ self ].
 	anUserObjectList ifEmpty: [ ^ self ].
 
-	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e |
-			e haveDomainObjects ifTrue: [ e removeObjects: anUserObjectList ] ] ]
+	self layers do: [ :e |
+		e haveDomainObjects ifTrue: [ e removeObjects: anUserObjectList ] ]
 ]
 
 { #category : #private }
@@ -540,7 +539,7 @@ GeoViewAbstractElement >> selectedObjectIndexes: anIndexList [
 	anIndexList ifNil: [ ^ self ].
 	self layers ifEmpty: [ ^ self ].
 
-	self enqueueBlockAsTaskAndRequestRepaint: [
+	self enqueueTaskAndRequestRepaint: [
 		self layers do: [ :l |
 			l haveDomainObjects ifTrue: [
 				l updateState: #selected withIndexes: anIndexList ] ] ]
@@ -556,16 +555,23 @@ GeoViewAbstractElement >> setInteractionsStrategy: aBlEventListener [
 	self addEventHandler: aBlEventListener.
 ]
 
+{ #category : #accessing }
+GeoViewAbstractElement >> taskHandler [
+
+	^ taskHandler
+]
+
 { #category : #private }
 GeoViewAbstractElement >> unconfigureLayer: aLayer [
-	
+
 	aLayer viewInfos: nil.
 	aLayer mapProjection: nil.
 	aLayer graphicProjection: nil.
 	aLayer announcer unsubscribe: self.
+	aLayer taskHandler: nil.
 
-	aLayer haveDomainObjects ifFalse:[ ^ self ].
-	aLayer displayModel indexAccessor: nil.
+	aLayer haveDomainObjects ifFalse: [ ^ self ].
+	aLayer displayModel indexAccessor: nil
 ]
 
 { #category : #private }
@@ -587,7 +593,7 @@ GeoViewAbstractElement >> updateModel: aContext [
 
 	self layers ifEmpty: [ ^ self ].
 
-	self enqueueBlockAsTaskAndRequestRepaint: [
+	self enqueueTaskAndRequestRepaint: [
 		self layers do: [ :l | l updateModel: aContext ] ].
 	
 ]
@@ -597,9 +603,8 @@ GeoViewAbstractElement >> updateObject: anUserObject [
 
 	anUserObject ifNil: [ ^ self ].
 
-	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e |
-			e haveDomainObjects ifTrue: [ e updateObject: anUserObject ] ] ]
+	self layers do: [ :e |
+		e haveDomainObjects ifTrue: [ e updateObject: anUserObject ] ]
 ]
 
 { #category : #'API -- objects management' }
@@ -608,15 +613,14 @@ GeoViewAbstractElement >> updateObjects: anUserObjectList [
 	anUserObjectList ifNil: [ ^ self ].
 	anUserObjectList ifEmpty: [ ^ self ].
 
-	self enqueueBlockAsTaskAndRequestRepaint: [
-		self layers do: [ :e |
-			e haveDomainObjects ifTrue: [ e updateObjects: anUserObjectList ] ] ]
+	self layers do: [ :e |
+		e haveDomainObjects ifTrue: [ e updateObjects: anUserObjectList ] ]
 ]
 
 { #category : #private }
 GeoViewAbstractElement >> updateState: aStateSymbol withIndexes: aKeyList [
 
-	self enqueueBlockAsTaskAndRequestRepaint: [
+	self enqueueTaskAndRequestRepaint: [
 		self layers do: [ :l |
 			l haveDomainObjects ifTrue: [
 				l updateState: aStateSymbol withIndexes: aKeyList ] ] ]

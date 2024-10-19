@@ -136,7 +136,7 @@ GeoViewExamples class >> exampleWithGeoObjects [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 	
 	"create sample datas"
-	objects := self createGeoObjects: 5000.
+	objects := self createGeoObjects.
 	element addObjects: objects.
 
 	"Example of event handler behavior on geoView domain event"
@@ -276,10 +276,10 @@ GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView fromInde
 
 	"create objects when removed, to have between one and 1000"
 	(removeList isNotEmpty and: [ aList size < maxNbOfCircles ]) ifTrue:[
-		(self createRandomPositionGeoCircles: ((random next * 100) asInteger) color: color radius: radiusInM) do:[ :circle |
+		(self createRandomPositionGeoCircles: ((random next * 100) asInteger) color: color radius: radiusInM) do:[ :e |
 			newIndex := newIndex + 1.
-			circle key: newIndex.
-			createList add: circle.
+			e key: newIndex.
+			createList add: e.
 		].
 	].
 

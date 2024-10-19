@@ -6,6 +6,7 @@ Class {
 	#instVars : [
 		'sortedDatas',
 		'graphicModel',
+		'graphicModelMutex',
 		'graphicalOrderSortBlock',
 		'isDatasChanged'
 	],
@@ -23,16 +24,23 @@ AbstractGeoViewGraphicModelLayer >> addDShape: aDShape [
 
 	aDShape ifNil:[ ^ self ].
 
-	"convert dShape to gShape"
-	self graphicModel created: aDShape.
-	self isDatasChanged: true.
+	self enqueueTaskAndRequestRepaint: [
+		"convert dShape to gShape"
+		self graphicModelMutex critical:[ self graphicModel created: aDShape ].
+		self isDatasChanged: true.
+	]
 ]
 
 { #category : #'API -- DShapes' }
 AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 
-	aDShapeList ifNil: [ ^ self ].
-	aDShapeList do: [ :e | self addDShape: e ]
+	aDShapeList ifNil:[ ^ self ].
+
+	"convert dShape to gShape"
+	self enqueueTaskAndRequestRepaint: [
+		self graphicModelMutex critical:[ aDShapeList do:[ :e | self graphicModel created: e ] ].
+		self isDatasChanged: true.
+	].
 ]
 
 { #category : #'drawing - bloc' }
@@ -60,6 +68,18 @@ AbstractGeoViewGraphicModelLayer >> graphicModel: anObject [
 	graphicModel := anObject
 ]
 
+{ #category : #accessing }
+AbstractGeoViewGraphicModelLayer >> graphicModelMutex [
+
+	^ graphicModelMutex ifNil: [ graphicModelMutex := Mutex new ]
+]
+
+{ #category : #accessing }
+AbstractGeoViewGraphicModelLayer >> graphicModelMutex: anObject [
+
+	graphicModelMutex := anObject
+]
+
 { #category : #'API -- projection' }
 AbstractGeoViewGraphicModelLayer >> graphicProjection [
 
@@ -69,7 +89,8 @@ AbstractGeoViewGraphicModelLayer >> graphicProjection [
 { #category : #'API -- projection' }
 AbstractGeoViewGraphicModelLayer >> graphicProjection: aGraphicProjection [
 
-	self graphicModel projection: aGraphicProjection
+	self graphicModelMutex critical: [
+		self graphicModel projection: aGraphicProjection ]
 ]
 
 { #category : #'API -- drawing' }
@@ -95,6 +116,8 @@ AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock: aBlockClosure [
 { #category : #'API -- DShapes' }
 AbstractGeoViewGraphicModelLayer >> haveDShapeKey: aKey [
 	"check in the graphic model because if not present here, the object is not managed"
+
+	"be carrefull this model can be asynchronous due to an update in bloc task"
 
 	aKey ifNil: [ ^ self ].
 	^ self graphicModel haveDataIndex: aKey
@@ -153,8 +176,9 @@ AbstractGeoViewGraphicModelLayer >> isDatasChanged: aBoolean [
 { #category : #'API -- picking' }
 AbstractGeoViewGraphicModelLayer >> populatePickingResult: aPickingResult [
 
-	self graphicModel datas keysAndValuesDo: [ :index :gShape |
-		self populatePickingResult: aPickingResult at: index with: gShape ]
+	self graphicModelMutex critical: [
+		self graphicModel datas keysAndValuesDo: [ :index :gShape |
+			self populatePickingResult: aPickingResult at: index with: gShape ] ]
 ]
 
 { #category : #private }
@@ -184,31 +208,39 @@ AbstractGeoViewGraphicModelLayer >> removeDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
-	"remove gShape"
-	self graphicModel deleted: aDShape.
-	self isDatasChanged: true
+	self enqueueTaskAndRequestRepaint: [ "remove gShape"
+		self graphicModelMutex critical:[ self graphicModel deleted: aDShape ].
+		self isDatasChanged: true ]
 ]
 
 { #category : #'API -- DShapes' }
 AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 
 	aDShapeList ifNil: [ ^ self ].
-	aDShapeList do: [ :e | self removeDShape: e ]
+
+	self enqueueTaskAndRequestRepaint: [
+		self graphicModelMutex critical:[ aDShapeList do: [ :e | self graphicModel deleted: e ] ].
+		self isDatasChanged: true ]
 ]
 
 { #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> sortDatas [
-
 	"force sorted to remove and add datas"
+
+	| datas |
 	sortedDatas removeAll.
-	sortedDatas addAll: self graphicModel getDatas.
-	self isDatasChanged: false.
+	self graphicModelMutex critical: [
+		datas := self graphicModel getDatas.
+		sortedDatas addAll: datas ].
+
+	self isDatasChanged: false
 ]
 
 { #category : #'API -- symbology' }
 AbstractGeoViewGraphicModelLayer >> symbologyProvider: aSymbologyProvider [
-	
-	self graphicModel symbologyProvider: aSymbologyProvider
+
+	self graphicModelMutex critical: [
+		self graphicModel symbologyProvider: aSymbologyProvider ]
 ]
 
 { #category : #'API -- DShapes' }
@@ -216,22 +248,27 @@ AbstractGeoViewGraphicModelLayer >> updateDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
-	"update gShape with dShape"
-	self graphicModel updated: aDShape.
-	self isDatasChanged: true
+	self enqueueTaskAndRequestRepaint: [ "update gShape with dShape"
+		self graphicModelMutex critical: [ self graphicModel updated: aDShape ].
+		self isDatasChanged: true ]
 ]
 
 { #category : #'API -- DShapes' }
 AbstractGeoViewGraphicModelLayer >> updateDShapes: aDShapeList [
 
 	aDShapeList ifNil: [ ^ self ].
-	aDShapeList do: [ :e | self updateDShape: e ]
+
+	self enqueueTaskAndRequestRepaint: [
+		self graphicModelMutex critical: [ aDShapeList do: [ :e | self graphicModel updated: e ] ].
+		self isDatasChanged: true ]
 ]
 
 { #category : #private }
 AbstractGeoViewGraphicModelLayer >> updateGraphicModelWith: aDShape [
 	"Update the graphic model with a DShape"
-	
+
+	"Call only on the mutex critical block"
+
 	^ self graphicModel updated: aDShape
 ]
 
@@ -244,5 +281,6 @@ AbstractGeoViewGraphicModelLayer >> viewInfos [
 { #category : #'API -- graphic properties' }
 AbstractGeoViewGraphicModelLayer >> viewInfos: aViewInfos [
 
-	self graphicModel viewInfos: aViewInfos
+	self graphicModelMutex critical: [
+		self graphicModel viewInfos: aViewInfos ]
 ]
