@@ -4,7 +4,7 @@ A DCompositeShapeGeoViewAeProcessDataTest is a test class for testing the behavi
 Class {
 	#name : #DCompositeShapeGeoViewProcessDataTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - ProcessData'
+	#category : #'GeoView-Tests-Cases - ProcessDatas'
 }
 
 { #category : #tests }

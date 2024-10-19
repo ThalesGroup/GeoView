@@ -4,7 +4,7 @@ A GeoShapeTest is a test class for testing the behavior of GeoShape
 Class {
 	#name : #GeoShapeTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - GeoObject'
+	#category : #'GeoView-Tests-Cases - GeoObjects'
 }
 
 { #category : #'tests - instance' }

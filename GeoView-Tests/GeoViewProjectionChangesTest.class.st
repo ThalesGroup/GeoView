@@ -4,7 +4,7 @@ A GeoViewProjectionChangesTest is a test class for testing the behavior of GeoVi
 Class {
 	#name : #GeoViewProjectionChangesTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases'
+	#category : #'GeoView-Tests-Cases - Core'
 }
 
 { #category : #tests }

@@ -4,7 +4,7 @@ A GeoEllipseTest is a test class for testing the behavior of GeoEllipse
 Class {
 	#name : #GeoEllipseTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - GeoObject'
+	#category : #'GeoView-Tests-Cases - GeoObjects'
 }
 
 { #category : #'tests - instance' }

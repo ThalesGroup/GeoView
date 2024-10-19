@@ -1,11 +1,11 @@
 Class {
-	#name : #GeoProjectionModelTest,
+	#name : #GeoViewModelTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - Model'
+	#category : #'GeoView-Tests-Cases - Core'
 }
 
 { #category : #tests }
-GeoProjectionModelTest >> testInitialize [
+GeoViewModelTest >> testInitialize [
 	| model |
 	model := GeoViewModel new.
 	self assert: model projection isNil.

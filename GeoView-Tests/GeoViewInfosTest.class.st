@@ -4,7 +4,7 @@ A GeoViewInfosTest is a test class for testing the behavior of GeoViewInfos
 Class {
 	#name : #GeoViewInfosTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases'
+	#category : #'GeoView-Tests-Cases - Core'
 }
 
 { #category : #tests }

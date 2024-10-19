@@ -4,7 +4,7 @@ A GeoPolylineTest is a test class for testing the behavior of GeoPolyline
 Class {
 	#name : #GeoPolylineTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - GeoObject'
+	#category : #'GeoView-Tests-Cases - GeoObjects'
 }
 
 { #category : #'tests - instance' }

@@ -4,7 +4,7 @@ An UTMProjectionTest is a test class for testing the behavior of UTMProjection
 Class {
 	#name : #GeoViewUTMProjectionTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - MapProjection'
+	#category : #'GeoView-Tests-Cases - Projections'
 }
 
 { #category : #'tests-accessing' }

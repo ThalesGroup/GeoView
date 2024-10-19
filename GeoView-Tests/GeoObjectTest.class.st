@@ -4,7 +4,7 @@ A GeoObjectTest is a test class for testing the behavior of GeoObject
 Class {
 	#name : #GeoObjectTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - GeoObject'
+	#category : #'GeoView-Tests-Cases - GeoObjects'
 }
 
 { #category : #'tests - instance' }

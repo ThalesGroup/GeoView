@@ -4,7 +4,7 @@ A GeoPolygonTest is a test class for testing the behavior of GeoPolygon
 Class {
 	#name : #GeoPolygonTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - GeoObject'
+	#category : #'GeoView-Tests-Cases - GeoObjects'
 }
 
 { #category : #'tests - instance' }

@@ -4,7 +4,7 @@ A MercatorProjectionTest is a test class for testing the behavior of MercatorPro
 Class {
 	#name : #GeoViewMercatorProjectionTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - MapProjection'
+	#category : #'GeoView-Tests-Cases - Projections'
 }
 
 { #category : #'tests-accessing' }

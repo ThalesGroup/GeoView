@@ -2,28 +2,28 @@
 A BlAbstractGeoViewElementTest is a test class for testing the behavior of BlAbstractGeoViewElement
 "
 Class {
-	#name : #BlAbstractGeoViewElementTest,
+	#name : #GeoViewAbstractElementTest,
 	#superclass : #TestCase,
 	#instVars : [
 		'geoView'
 	],
-	#category : #'GeoView-Tests-Cases'
+	#category : #'GeoView-Tests-Cases - Core'
 }
 
 { #category : #private }
-BlAbstractGeoViewElementTest >> createGeoViewElement [
+GeoViewAbstractElementTest >> createGeoViewElement [
 
 	geoView := GeoViewAbstractElement new.
 ]
 
 { #category : #accessing }
-BlAbstractGeoViewElementTest >> geoViewSize [
+GeoViewAbstractElementTest >> geoViewSize [
 
 	^ 100@100
 ]
 
 { #category : #running }
-BlAbstractGeoViewElementTest >> setUp [
+GeoViewAbstractElementTest >> setUp [
 
 	| container aSpace |
 	super setUp.
@@ -41,7 +41,7 @@ BlAbstractGeoViewElementTest >> setUp [
 ]
 
 { #category : #running }
-BlAbstractGeoViewElementTest >> tearDown [
+GeoViewAbstractElementTest >> tearDown [
 
 	geoView := nil.
 	super tearDown.
@@ -49,7 +49,7 @@ BlAbstractGeoViewElementTest >> tearDown [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint [
+GeoViewAbstractElementTest >> testAbsoluteCoordinatesFromGlobalPoint [
 
 	| abs center |
 	center := geoView size / 2.
@@ -64,7 +64,7 @@ BlAbstractGeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
+GeoViewAbstractElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
 
 	| abs |
 	"Center should be zero"
@@ -84,7 +84,7 @@ BlAbstractGeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testAddGeoViewGeoObjectsLayer [
+GeoViewAbstractElementTest >> testAddGeoViewGeoObjectsLayer [
 
 	| layer |
 	layer := GeoViewDomainObjectsLayer new name: #test.
@@ -102,7 +102,7 @@ BlAbstractGeoViewElementTest >> testAddGeoViewGeoObjectsLayer [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testAddLayer [
+GeoViewAbstractElementTest >> testAddLayer [
 
 	| layer |
 	layer := GeoViewTestLayer new name: #test.
@@ -112,7 +112,7 @@ BlAbstractGeoViewElementTest >> testAddLayer [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testDisplayToGraphicProjection [
+GeoViewAbstractElementTest >> testDisplayToGraphicProjection [
 
 	| projection |
 	projection := GeoView2DProjection new.
@@ -123,7 +123,7 @@ BlAbstractGeoViewElementTest >> testDisplayToGraphicProjection [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testGeoCenter [
+GeoViewAbstractElementTest >> testGeoCenter [
 
 	geoView geoCenter: AbsoluteCoordinates frBrest.
 
@@ -132,7 +132,7 @@ BlAbstractGeoViewElementTest >> testGeoCenter [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
+GeoViewAbstractElementTest >> testGeoViewLayerProcessDataChanged [
 
 	| tag layer |
 	"initialize geoview and event handler"
@@ -152,19 +152,19 @@ BlAbstractGeoViewElementTest >> testGeoViewLayerProcessDataChanged [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testGetLayer [
+GeoViewAbstractElementTest >> testGetLayer [
 
 	self assert: (geoView getLayer: #test) isNil.
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testGetLayers [
+GeoViewAbstractElementTest >> testGetLayers [
 
 	self assert: geoView getLayers isEmpty.
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testInitialize [
+GeoViewAbstractElementTest >> testInitialize [
 
 	self assert: geoView size equals: 100@100.
 	self assert: geoView mapProjection class equals: GeoViewMercatorProjection.
@@ -175,19 +175,19 @@ BlAbstractGeoViewElementTest >> testInitialize [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testInteractionsStrategy [
+GeoViewAbstractElementTest >> testInteractionsStrategy [
 
 	self assert: geoView interactionsStrategy class equals: GeoViewDefaultInteractionsStrategy
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testNewInteractionsStrategy [
+GeoViewAbstractElementTest >> testNewInteractionsStrategy [
 
 	self assert: geoView newInteractionsStrategy class equals: GeoViewDefaultInteractionsStrategy.
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testObjectIndexAccessor [
+GeoViewAbstractElementTest >> testObjectIndexAccessor [
 
 	self assert: geoView objectIndexAccessor equals: #key.
 	
@@ -196,7 +196,7 @@ BlAbstractGeoViewElementTest >> testObjectIndexAccessor [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testPickAt [
+GeoViewAbstractElementTest >> testPickAt [
 
 	| result |
 	result := geoView pickAt: 0@0.
@@ -212,7 +212,7 @@ BlAbstractGeoViewElementTest >> testPickAt [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testPickAtGeoOrigin [
+GeoViewAbstractElementTest >> testPickAtGeoOrigin [
 
 	| result |
 	result := geoView pickAt: (geoView globalPointFromAbsoluteCoordinates: AbsoluteCoordinates zero).	
@@ -229,7 +229,7 @@ BlAbstractGeoViewElementTest >> testPickAtGeoOrigin [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testPickAtNil [
+GeoViewAbstractElementTest >> testPickAtNil [
 
 	| result |
 	result := geoView pickAt: nil.
@@ -245,7 +245,7 @@ BlAbstractGeoViewElementTest >> testPickAtNil [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testPickAtRadius [
+GeoViewAbstractElementTest >> testPickAtRadius [
 
 	| result |
 	result := geoView pickAt: 0@0 radius: 10.
@@ -255,14 +255,14 @@ BlAbstractGeoViewElementTest >> testPickAtRadius [
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testRemoveInteractionsStrategy [
+GeoViewAbstractElementTest >> testRemoveInteractionsStrategy [
 
 	geoView removeInteractionsStrategy.
 	self assert: geoView interactionsStrategy isNil
 ]
 
 { #category : #tests }
-BlAbstractGeoViewElementTest >> testSetInteractionsStrategy [
+GeoViewAbstractElementTest >> testSetInteractionsStrategy [
 
 	geoView setInteractionsStrategy: nil.
 	self assert: geoView interactionsStrategy isNil
