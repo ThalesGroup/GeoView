@@ -6,9 +6,9 @@ Class {
 	#instVars : [
 		'sortedDatas',
 		'graphicModel',
-		'graphicModelMutex',
 		'graphicalOrderSortBlock',
-		'isDatasChanged'
+		'isDatasChanged',
+		'userDataChangesMutex'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -24,34 +24,30 @@ AbstractGeoViewGraphicModelLayer >> addDShape: aDShape [
 
 	aDShape ifNil:[ ^ self ].
 
-	self enqueueTaskAndRequestRepaint: [
-		"convert dShape to gShape"
-		self graphicModelMutex critical:[ self graphicModel created: aDShape ].
-		self isDatasChanged: true.
-	]
+	"convert dShape to gShape"
+	self graphicModel created: aDShape.
+	self isDatasChanged: true.
+	self sendRepaintRequest
 ]
 
 { #category : #'API -- DShapes' }
 AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 
-	aDShapeList ifNil:[ ^ self ].
+	aDShapeList ifNil: [ ^ self ].
 
 	"convert dShape to gShape"
-	self enqueueTaskAndRequestRepaint: [
-		self graphicModelMutex critical:[ aDShapeList do:[ :e | self graphicModel created: e ] ].
-		self isDatasChanged: true.
-	].
+	aDShapeList do: [ :e | self graphicModel created: e ].
+	self isDatasChanged: true.
+	self sendRepaintRequest
 ]
 
 { #category : #'drawing - bloc' }
 AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 
 	self isVisible ifFalse: [ ^ self ].
-	self isDatasChanged ifTrue:[
-		"flag labordep: need to this on a dedicated phase instead of in the render"
-		self sortDatas.	
-	].
-	
+
+	self isDatasChanged ifTrue: [ self sortDatas ].
+
 	sortedDatas ifNil: [ ^ self ].
 	sortedDatas do: [ :e | e aeDrawOn: aeCanvas ]
 ]
@@ -68,18 +64,6 @@ AbstractGeoViewGraphicModelLayer >> graphicModel: anObject [
 	graphicModel := anObject
 ]
 
-{ #category : #accessing }
-AbstractGeoViewGraphicModelLayer >> graphicModelMutex [
-
-	^ graphicModelMutex ifNil: [ graphicModelMutex := Mutex new ]
-]
-
-{ #category : #accessing }
-AbstractGeoViewGraphicModelLayer >> graphicModelMutex: anObject [
-
-	graphicModelMutex := anObject
-]
-
 { #category : #'API -- projection' }
 AbstractGeoViewGraphicModelLayer >> graphicProjection [
 
@@ -89,8 +73,7 @@ AbstractGeoViewGraphicModelLayer >> graphicProjection [
 { #category : #'API -- projection' }
 AbstractGeoViewGraphicModelLayer >> graphicProjection: aGraphicProjection [
 
-	self graphicModelMutex critical: [
-		self graphicModel projection: aGraphicProjection ]
+	self graphicModel projection: aGraphicProjection
 ]
 
 { #category : #'API -- drawing' }
@@ -176,9 +159,13 @@ AbstractGeoViewGraphicModelLayer >> isDatasChanged: aBoolean [
 { #category : #'API -- picking' }
 AbstractGeoViewGraphicModelLayer >> populatePickingResult: aPickingResult [
 
-	self graphicModelMutex critical: [
-		self graphicModel datas keysAndValuesDo: [ :index :gShape |
-			self populatePickingResult: aPickingResult at: index with: gShape ] ]
+	| datas |
+	datas := self graphicModel getDatas.
+	datas do: [ :gShape |
+		self
+			populatePickingResult: aPickingResult
+			at: gShape id
+			with: gShape ]
 ]
 
 { #category : #private }
@@ -208,9 +195,10 @@ AbstractGeoViewGraphicModelLayer >> removeDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
-	self enqueueTaskAndRequestRepaint: [ "remove gShape"
-		self graphicModelMutex critical:[ self graphicModel deleted: aDShape ].
-		self isDatasChanged: true ]
+	"remove gShape"
+	self graphicModel deleted: aDShape.
+	self isDatasChanged: true.
+	self sendRepaintRequest
 ]
 
 { #category : #'API -- DShapes' }
@@ -218,9 +206,9 @@ AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 
 	aDShapeList ifNil: [ ^ self ].
 
-	self enqueueTaskAndRequestRepaint: [
-		self graphicModelMutex critical:[ aDShapeList do: [ :e | self graphicModel deleted: e ] ].
-		self isDatasChanged: true ]
+	aDShapeList do: [ :e | self graphicModel deleted: e ].
+	self isDatasChanged: true.
+	self sendRepaintRequest
 ]
 
 { #category : #'private - sort' }
@@ -228,10 +216,14 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 	"force sorted to remove and add datas"
 
 	| datas |
+	self flag: 'execute this method into a dedicated BlocPhase'.
+
+	self userDataChangesMutex critical: [
+		datas := self graphicModel getDatas ].
+
+	sortedDatas ifNil: [ ^ self ].
 	sortedDatas removeAll.
-	self graphicModelMutex critical: [
-		datas := self graphicModel getDatas.
-		sortedDatas addAll: datas ].
+	sortedDatas addAll: datas.
 
 	self isDatasChanged: false
 ]
@@ -239,8 +231,7 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 { #category : #'API -- symbology' }
 AbstractGeoViewGraphicModelLayer >> symbologyProvider: aSymbologyProvider [
 
-	self graphicModelMutex critical: [
-		self graphicModel symbologyProvider: aSymbologyProvider ]
+	self graphicModel symbologyProvider: aSymbologyProvider
 ]
 
 { #category : #'API -- DShapes' }
@@ -248,9 +239,9 @@ AbstractGeoViewGraphicModelLayer >> updateDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
-	self enqueueTaskAndRequestRepaint: [ "update gShape with dShape"
-		self graphicModelMutex critical: [ self graphicModel updated: aDShape ].
-		self isDatasChanged: true ]
+	self graphicModel updated: aDShape.
+	self isDatasChanged: true.
+	self sendRepaintRequest
 ]
 
 { #category : #'API -- DShapes' }
@@ -258,9 +249,9 @@ AbstractGeoViewGraphicModelLayer >> updateDShapes: aDShapeList [
 
 	aDShapeList ifNil: [ ^ self ].
 
-	self enqueueTaskAndRequestRepaint: [
-		self graphicModelMutex critical: [ aDShapeList do: [ :e | self graphicModel updated: e ] ].
-		self isDatasChanged: true ]
+	aDShapeList do: [ :e | self graphicModel updated: e ].
+	self isDatasChanged: true.
+	self sendRepaintRequest
 ]
 
 { #category : #private }
@@ -272,6 +263,13 @@ AbstractGeoViewGraphicModelLayer >> updateGraphicModelWith: aDShape [
 	^ self graphicModel updated: aDShape
 ]
 
+{ #category : #accessing }
+AbstractGeoViewGraphicModelLayer >> userDataChangesMutex [
+
+	^ userDataChangesMutex ifNil: [
+		  userDataChangesMutex := Semaphore forMutualExclusion ]
+]
+
 { #category : #'API -- graphic properties' }
 AbstractGeoViewGraphicModelLayer >> viewInfos [
 
@@ -281,6 +279,5 @@ AbstractGeoViewGraphicModelLayer >> viewInfos [
 { #category : #'API -- graphic properties' }
 AbstractGeoViewGraphicModelLayer >> viewInfos: aViewInfos [
 
-	self graphicModelMutex critical: [
-		self graphicModel viewInfos: aViewInfos ]
+	self graphicModel viewInfos: aViewInfos
 ]

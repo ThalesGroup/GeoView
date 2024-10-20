@@ -123,7 +123,5 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 { #category : #private }
 GeoViewDShapesLayer >> updateModel: aContext [
 
-	self graphicModelMutex critical: [
-		self dShapeList valuesDo: [ :dShape |
-			self updateGraphicModelWith: dShape ] ]
+	self updateDShapes: self dShapeList copy
 ]

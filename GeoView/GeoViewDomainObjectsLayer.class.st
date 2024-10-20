@@ -19,7 +19,10 @@ Class {
 { #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> addObject: anObject [
 
-	self addDShape: (self displayModel created: anObject)
+	| shapes |
+	self userDataChangesMutex critical: [
+		shapes := self displayModel created: anObject .
+	self addDShape: shapes ]
 ]
 
 { #category : #'API -- objects management' }
@@ -29,10 +32,11 @@ GeoViewDomainObjectsLayer >> addObjects: anObjectList [
 	anObjectList ifNil: [ ^ self ].
 
 	dShapeList := OrderedCollection new.
-	anObjectList do: [ :e |
-		(self displayModel created: e) ifNotNil: [ :f | dShapeList add: f ] ].
+	self userDataChangesMutex critical: [
+		anObjectList do: [ :e |
+			(self displayModel created: e) ifNotNil: [ :f | dShapeList add: f ] ] .
 
-	self addDShapes: dShapeList
+	self addDShapes: dShapeList ]
 ]
 
 { #category : #accessing }
@@ -74,7 +78,10 @@ GeoViewDomainObjectsLayer >> haveDomainObjects [
 { #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> haveObjectIndex: anIndex [
 
-	^ self displayModel haveDataIndex: anIndex
+	| index |
+	self userDataChangesMutex critical: [
+		index := self displayModel haveDataIndex: anIndex ].
+	^ index
 ]
 
 { #category : #initialization }
@@ -106,12 +113,13 @@ GeoViewDomainObjectsLayer >> mapProjection: aMapProjection [
 GeoViewDomainObjectsLayer >> populatePickingResult: aPickingResult at: index with: aGShape [
 	"Way to detect if the gShape is picked"
 
-	| pickingElement |
+	| pickingElement data |
 	pickingElement := super populatePickingResult: aPickingResult at: index with: aGShape.
 	pickingElement ifNil:[ ^ nil ].
 	
 	"add dShape"
-	pickingElement dShape: (self displayModel getData: index). 
+	self userDataChangesMutex critical: [ data := self displayModel getData: index ].
+	pickingElement dShape: data. 
 	
  	^ pickingElement 
 ]
@@ -129,7 +137,11 @@ GeoViewDomainObjectsLayer >> processDatasChanged [
 { #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> removeObject: anObject [
 
-	self removeDShape: (self displayModel deleted: anObject)
+	| shape |
+	self userDataChangesMutex critical: [
+		shape := self displayModel deleted: anObject .
+
+	self removeDShape: shape ]
 ]
 
 { #category : #'API -- objects management' }
@@ -139,10 +151,11 @@ GeoViewDomainObjectsLayer >> removeObjects: anObjectList [
 	anObjectList ifNil: [ ^ self ].
 
 	dShapeList := OrderedCollection new.
-	anObjectList do: [ :e |
-		(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ] ].
+	self userDataChangesMutex critical: [
+		anObjectList do: [ :e |
+			(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ] ] .
 
-	self removeDShapes: dShapeList
+	self removeDShapes: dShapeList ]
 ]
 
 { #category : #'API -- process datas' }
@@ -171,15 +184,21 @@ GeoViewDomainObjectsLayer >> setProcessData: aProcessData forClass: aDomainObjec
 { #category : #private }
 GeoViewDomainObjectsLayer >> updateModel: aContext [
 
-	| model |
-	model := self displayModel.
-	model datas valuesDo: [ :dShape | self updateGraphicModelWith: dShape ]
+	| shapes |
+	self userDataChangesMutex critical: [
+		shapes := self displayModel getDatas.
+
+	self updateDShapes: shapes ]
 ]
 
 { #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> updateObject: anObject [
 
-	self updateDShape: (self displayModel updated: anObject)
+	| shape |
+	self userDataChangesMutex critical: [
+		shape := self displayModel updated: anObject.
+
+	self updateDShape: shape ]
 ]
 
 { #category : #'API -- objects management' }
@@ -187,23 +206,25 @@ GeoViewDomainObjectsLayer >> updateObjects: anObjectList [
 
 	| dShapeList |
 	dShapeList := OrderedCollection new.
-	anObjectList do: [ :e |
-		(self displayModel updated: e) ifNotNil: [ :f | dShapeList add: f ] ].
+	self userDataChangesMutex critical: [
+		anObjectList do: [ :e |
+			(self displayModel updated: e) ifNotNil: [ :f | dShapeList add: f ] ] .
 
-	self updateDShapes: dShapeList
+	self updateDShapes: dShapeList ]
 ]
 
 { #category : #'private - state' }
 GeoViewDomainObjectsLayer >> updateState: aStateSymbol withIndexes: aKeyList [
 
-	| dModel dObjectList |
-	dModel := self displayModel.
-
+	| shapes |
 	"Update the state"
-	dObjectList := dModel updateState: aStateSymbol withIndexes: aKeyList.
+	self userDataChangesMutex critical: [
+		shapes := self displayModel
+			          updateState: aStateSymbol
+			          withIndexes: aKeyList .
 
 	"Update the graphic model to considere the updated state"
-	self updateDShapes: dObjectList
+	self updateDShapes: shapes ]
 ]
 
 { #category : #'API -- graphic properties' }

@@ -95,7 +95,6 @@ GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 GeoViewAbstractElement >> configureLayer: aLayer [
 	
 	aLayer viewInfos: self viewInfos.
-	aLayer taskHandler: self taskHandler.
 	
 	"Setup the map projection (from a cartographic point of view) of the layer"
 	aLayer mapProjection: self mapProjection.
@@ -154,13 +153,6 @@ GeoViewAbstractElement >> doPicking: aPickingResult [
 	"Collect all picked elements"
 
 	self getLayers do: [ :l | l isVisible ifTrue: [ l populatePickingResult: aPickingResult ] ]
-]
-
-{ #category : #private }
-GeoViewAbstractElement >> enqueueTaskAndRequestRepaint: aBlockClosure [
-
-	self taskHandler ifNil:[ ^ self ].
-	self taskHandler enqueueTaskAndRequestRepaint: aBlockClosure
 ]
 
 { #category : #private }
@@ -242,12 +234,11 @@ GeoViewAbstractElement >> haveObjectIndex: anIndex [
 GeoViewAbstractElement >> initialize [
 
 	super initialize.
-	
+
 	self mapProjection: GeoViewMercatorProjection new.
 	self displayToGraphicProjection: GeoView2DProjection new.
 	self background: Color black.
-	self initializeEventHandlers.
-	self initializeTaskHandler.
+	self initializeEventHandlers
 ]
 
 { #category : #initialization }
@@ -260,13 +251,6 @@ GeoViewAbstractElement >> initializeEventHandlers [
 	self addEventHandler: (BlEventHandler
 			 on: BlElementExtentChangedEvent
 			 do: [ :e | self processExtentChangedEvent: e ])
-]
-
-{ #category : #initialization }
-GeoViewAbstractElement >> initializeTaskHandler [
-
-	taskHandler := GeoViewTaskHandler new.
-	taskHandler handler: self.
 ]
 
 { #category : #initialization }
@@ -536,13 +520,7 @@ GeoViewAbstractElement >> scaleUp [
 { #category : #'API -- selection' }
 GeoViewAbstractElement >> selectedObjectIndexes: anIndexList [
 
-	anIndexList ifNil: [ ^ self ].
-	self layers ifEmpty: [ ^ self ].
-
-	self enqueueTaskAndRequestRepaint: [
-		self layers do: [ :l |
-			l haveDomainObjects ifTrue: [
-				l updateState: #selected withIndexes: anIndexList ] ] ]
+	self updateState: #selected withIndexes: anIndexList
 ]
 
 { #category : #'strategy management' }
@@ -555,12 +533,6 @@ GeoViewAbstractElement >> setInteractionsStrategy: aBlEventListener [
 	self addEventHandler: aBlEventListener.
 ]
 
-{ #category : #accessing }
-GeoViewAbstractElement >> taskHandler [
-
-	^ taskHandler
-]
-
 { #category : #private }
 GeoViewAbstractElement >> unconfigureLayer: aLayer [
 
@@ -568,7 +540,6 @@ GeoViewAbstractElement >> unconfigureLayer: aLayer [
 	aLayer mapProjection: nil.
 	aLayer graphicProjection: nil.
 	aLayer announcer unsubscribe: self.
-	aLayer taskHandler: nil.
 
 	aLayer haveDomainObjects ifFalse: [ ^ self ].
 	aLayer displayModel indexAccessor: nil
@@ -593,9 +564,7 @@ GeoViewAbstractElement >> updateModel: aContext [
 
 	self layers ifEmpty: [ ^ self ].
 
-	self enqueueTaskAndRequestRepaint: [
-		self layers do: [ :l | l updateModel: aContext ] ].
-	
+	self layers do: [ :l | l updateModel: aContext ]
 ]
 
 { #category : #'API -- objects management' }
@@ -620,10 +589,13 @@ GeoViewAbstractElement >> updateObjects: anUserObjectList [
 { #category : #private }
 GeoViewAbstractElement >> updateState: aStateSymbol withIndexes: aKeyList [
 
-	self enqueueTaskAndRequestRepaint: [
-		self layers do: [ :l |
-			l haveDomainObjects ifTrue: [
-				l updateState: aStateSymbol withIndexes: aKeyList ] ] ]
+	aKeyList ifNil: [ ^ self ].
+	aStateSymbol ifNil: [ ^ self ].
+	self layers ifEmpty: [ ^ self ].
+
+	self layers do: [ :l |
+		l haveDomainObjects ifTrue: [
+			l updateState: aStateSymbol withIndexes: aKeyList ] ]
 ]
 
 { #category : #private }

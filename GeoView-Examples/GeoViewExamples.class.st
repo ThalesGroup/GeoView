@@ -173,7 +173,7 @@ GeoViewExamples class >> exampleWithGeoObjectsAlt [
 ]
 
 { #category : #examples }
-GeoViewExamples class >> exampleWithGeoObjectsCUD [
+GeoViewExamples class >> exampleWithGeoObjectsStimulation [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) with creation, update and deletion"
 
 	| element space task list index |
@@ -181,15 +181,16 @@ GeoViewExamples class >> exampleWithGeoObjectsCUD [
 	space := self openViewInWindow: element.
 
 	"initial object list"
-	index := 1000.
+	index := 5000.
 	list := self createRandomPositionGeoCircles: index color: Color random radius: 100000.
 	element addObjects: list.
 
 	"Objet update thread"
-	task := self createAndStartTask: [ 
-		index := self stimulateGeoCirclesIn: list geoView: element fromIndex: (index + 1). 
+	task := self createAndStartTask: [ | newIndex |
+		newIndex := self stimulateGeoCirclesIn: list geoView: element fromIndex: index.
+		index := newIndex. 
 	].
-	task stepDelay: 100 milliSecond.
+	task stepDelay: 30 milliSecond.
 
 	"Stop thread when window is closed"
 	space addEventHandler: (BlEventHandler
@@ -242,7 +243,7 @@ GeoViewExamples class >> openViewInWindow: aGeoViewElement [
 ]
 
 { #category : #private }
-GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex: index [
+GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex: anIndex [
 	"at each step create / update and delete some GeoObjects"
 
 	| random color radiusInM createList updateList removeList newIndex maxRadiusInM maxNbOfCircles unchangeList |
@@ -255,19 +256,19 @@ GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView fromInde
 	maxRadiusInM := 300000.
 	maxNbOfCircles := 10000.
 	radiusInM := random next * maxRadiusInM.
-	newIndex := index.
+	newIndex := anIndex.
 
 	aList do: [ :circle |
 		| next |
 		"first randomize update / deletion"
 		next := random next.
-		next < 0.1
+		next <= 0.1
 			ifTrue: [ "update the object"
 				circle fillStyle: color asSmockFillStyle.
 				circle radiusInMeters: radiusInM.
 				updateList add: circle ]
 			ifFalse: [
-				next > 0.9
+				next >= 0.9
 					ifTrue: [ "remove the object" removeList add: circle ]
 					ifFalse: [ "do nothing ;-)" unchangeList add: circle ] ] ].
 
@@ -284,12 +285,12 @@ GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView fromInde
 	].
 
 	"update geoview"
-	aGeoView removeObjects: removeList.
 	aGeoView updateObjects: updateList.
+	aGeoView removeObjects: removeList.
 	aGeoView addObjects: createList.
 
 	aList removeAll.
-	aList	addAll: createList; addAll: updateList; addAll: unchangeList.
+	aList addAll: unchangeList;	addAll: updateList; addAll: createList.
 		
 	^ newIndex
 ]
