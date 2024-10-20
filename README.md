@@ -29,3 +29,7 @@ Metacello new
 - [Molecule](https://github.com/OpenSmock/Molecule)
 - [OpenSmock](https://github.com/OpenSmock/OpenSmock)
 - [GeoTools](https://github.com/OpenSmock/GeoTools)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
