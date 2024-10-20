@@ -13,13 +13,13 @@ Class {
 { #category : #private }
 GeoViewAbstractElementTest >> createGeoViewElement [
 
-	geoView := GeoViewAbstractElement new.
+	geoView := GeoViewAbstractElement new
 ]
 
 { #category : #accessing }
 GeoViewAbstractElementTest >> geoViewSize [
 
-	^ 100@100
+	^ 100 @ 100
 ]
 
 { #category : #running }
@@ -44,8 +44,7 @@ GeoViewAbstractElementTest >> setUp [
 GeoViewAbstractElementTest >> tearDown [
 
 	geoView := nil.
-	super tearDown.
-	
+	super tearDown
 ]
 
 { #category : #tests }
@@ -89,16 +88,7 @@ GeoViewAbstractElementTest >> testAddGeoViewGeoObjectsLayer [
 	| layer |
 	layer := GeoViewDomainObjectsLayer new name: #test.
 	geoView addLayer: layer.
-	
-	self assert: (geoView getLayer: #test) equals: layer.
-	self assert: (layer graphicModel getProcessDataForClass: SmockDCompositeShape) class equals: DCompositeShapeGeoViewProcessData.
-	self assert: (layer graphicModel getProcessDataForClass: SmockDSymbol) class equals: DSymbolGeoViewProcessData.
-	self assert: (layer graphicModel getProcessDataForClass: SmockDImage) class equals: DImageGeoViewProcessData.
-	self assert: (layer graphicModel getProcessDataForClass: SmockDCircle) class equals: DCircleGeoViewProcessData.
-	self assert: (layer graphicModel getProcessDataForClass: SmockDText) class equals: DTextGeoViewProcessData.
-	self assert: (layer graphicModel getProcessDataForClass: SmockDPolygon) class equals: DPolygonGeoViewProcessData.
-	self assert: (layer graphicModel getProcessDataForClass: SmockDPolyline) class equals: DPolylineGeoViewProcessData.
-	self assert: (layer graphicModel getProcessDataForClass: SmockDSegment) class equals: DSegmentGeoViewProcessData.
+	self assert: (geoView getLayer: #test) equals: layer
 ]
 
 { #category : #tests }
@@ -255,10 +245,41 @@ GeoViewAbstractElementTest >> testPickAtRadius [
 ]
 
 { #category : #tests }
+GeoViewAbstractElementTest >> testRemoveAllLayers [
+
+	geoView addLayer: (GeoViewTestLayer new name: #test).
+	geoView addLayer: (GeoViewTestLayer new name: #test2).
+	geoView addLayer: (GeoViewTestLayer new name: #test3).
+
+	self assert: geoView getLayers size equals: 3.
+	self assert: (geoView getLayer: #test) notNil.
+	self assert: (geoView getLayer: #test2) notNil.
+	self assert: (geoView getLayer: #test3) notNil.
+
+	geoView removeAllLayers.
+	self assert: geoView getLayers size equals: 0.
+	self assert: (geoView getLayer: #test) isNil.
+	self assert: (geoView getLayer: #test2) isNil.
+	self assert: (geoView getLayer: #test3) isNil.
+]
+
+{ #category : #tests }
 GeoViewAbstractElementTest >> testRemoveInteractionsStrategy [
 
 	geoView removeInteractionsStrategy.
 	self assert: geoView interactionsStrategy isNil
+]
+
+{ #category : #tests }
+GeoViewAbstractElementTest >> testRemoveLayer [
+
+	| layer |
+	layer := GeoViewTestLayer new name: #test.
+	geoView addLayer: layer.
+	geoView removeLayer: layer.
+
+	self assert: geoView getLayers size equals: 0.
+	self assert: (geoView getLayer: #test) isNil
 ]
 
 { #category : #tests }

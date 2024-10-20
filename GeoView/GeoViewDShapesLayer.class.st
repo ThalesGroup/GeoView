@@ -6,7 +6,7 @@ Class {
 	#name : #GeoViewDShapesLayer,
 	#superclass : #AbstractGeoViewGraphicModelLayer,
 	#instVars : [
-		'dShapeList'
+		'userModel'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -14,52 +14,48 @@ Class {
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> addDShape: aDShape [
 
-	aDShape ifNil:[ ^ self ].
-	
-	(self haveDShapeKey: aDShape key) ifTrue: [ ^ self ].
-	self dShapeList at: aDShape key put: aDShape.
-	super addDShape: aDShape
+	aDShape ifNil: [ ^ self ].
+
+	self userDataChangesMutex critical: [
+		(self haveDShapeKey: aDShape key) ifFalse: [
+			self userModel at: aDShape key put: aDShape.
+			super addDShape: aDShape ] ]
 ]
 
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> addDShapes: aDShapeList [
 
 	| toAdd |
-	aDShapeList ifNil:[ ^ self ].
-	toAdd := OrderedCollection new.
-	aDShapeList do:[ :e |  
-		(self haveDShapeKey: e key) ifFalse:[
-			self dShapeList at: e key put: e.
-			toAdd add: e.
-		].
-	].
-	super addDShapes: toAdd
-]
+	aDShapeList ifNil: [ ^ self ].
 
-{ #category : #accessing }
-GeoViewDShapesLayer >> dShapeList [
-
-	^ dShapeList
+	self userDataChangesMutex critical: [
+		toAdd := OrderedCollection new.
+		aDShapeList do: [ :e |
+			(self haveDShapeKey: e key) ifFalse: [
+				self userModel at: e key put: e.
+				toAdd add: e ] ].
+		super addDShapes: toAdd ]
 ]
 
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> haveDShapeKey: aKey [
+	"Warning : call this message only on a user changes critical block"
 
 	aKey ifNil: [ ^ self ].
-	^ self dShapeList includesKey: aKey
+	^ self userModel includesKey: aKey
 ]
 
 { #category : #initialization }
 GeoViewDShapesLayer >> initialize [
 
 	super initialize.
-	self initializeDShapeList.
+	self initializeUserModel.
 ]
 
 { #category : #initialization }
-GeoViewDShapesLayer >> initializeDShapeList [
+GeoViewDShapesLayer >> initializeUserModel [
 
-	dShapeList := Dictionary new
+	userModel := Dictionary new
 ]
 
 { #category : #'API -- projection' }
@@ -77,51 +73,62 @@ GeoViewDShapesLayer >> mapProjection: aMapProjection [
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> removeDShape: aDShape [
 
-	(self haveDShapeKey: aDShape key) ifFalse: [ ^ self ].
-	self dShapeList removeKey: aDShape key.
-	super removeDShape: aDShape
+	self userDataChangesMutex critical: [
+		(self haveDShapeKey: aDShape key) ifTrue: [
+			self userModel removeKey: aDShape key.
+			super removeDShape: aDShape ] ]
 ]
 
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> removeDShapes: aDShapeList [
 
 	| toRemove |
-	aDShapeList ifNil:[ ^ self ].
-	toRemove := OrderedCollection new.
-	aDShapeList do:[ :e |  
-		(self haveDShapeKey: e key) ifFalse:[
-			self dShapeList at: e key put: e.
-			toRemove add: e.
-		].
-	].
-	super removeDShapes: toRemove
+	aDShapeList ifNil: [ ^ self ].
+
+	self userDataChangesMutex critical: [
+		toRemove := OrderedCollection new.
+		aDShapeList do: [ :e |
+			(self haveDShapeKey: e key) ifFalse: [
+				self userModel at: e key put: e.
+				toRemove add: e ] ].
+		super removeDShapes: toRemove ]
 ]
 
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> updateDShape: aDShape [
 
-	(self haveDShapeKey: aDShape key) ifFalse: [ ^ self ].
-	self dShapeList at: aDShape key put: aDShape.
-	super updateDShape: aDShape
+	self userDataChangesMutex critical: [
+		(self haveDShapeKey: aDShape key) ifTrue: [
+			self userModel at: aDShape key put: aDShape.
+			super updateDShape: aDShape ] ]
 ]
 
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 
 	| toUpdate |
-	aDShapeList ifNil:[ ^ self ].
-	toUpdate := OrderedCollection new.
-	aDShapeList do:[ :e |  
-		(self haveDShapeKey: e key) ifFalse:[
-			self dShapeList at: e key put: e.
-			toUpdate add: e.
-		].
-	].
-	super updateDShapes: toUpdate
+	aDShapeList ifNil: [ ^ self ].
+
+	self userDataChangesMutex critical: [
+		toUpdate := OrderedCollection new.
+		aDShapeList do: [ :e |
+			(self haveDShapeKey: e key) ifFalse: [
+				self userModel at: e key put: e.
+				toUpdate add: e ] ].
+		super updateDShapes: toUpdate ]
 ]
 
 { #category : #private }
 GeoViewDShapesLayer >> updateModel: aContext [
 
-	self updateDShapes: self dShapeList copy
+	| dShapes |
+	self userDataChangesMutex critical: [
+		dShapes := self userModel copy.
+		super updateDShapes: dShapes ]
+]
+
+{ #category : #accessing }
+GeoViewDShapesLayer >> userModel [
+
+	^ userModel
 ]

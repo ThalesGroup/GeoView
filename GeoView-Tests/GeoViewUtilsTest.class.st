@@ -22,3 +22,21 @@ GeoViewUtilsTest >> testCreateGeoObjectsLayer [
 	self assert: (layer getProcessDataForClass: GeoArcBand) class equals: GeoArcBandProcessData.
 	self assert: (layer getProcessDataForClass: GeoText) class equals: GeoTextProcessData.
 ]
+
+{ #category : #tests }
+GeoViewUtilsTest >> testCreateGeoView [
+
+	| view |
+	view := GeoViewUtils createGeoView.
+	self assert: (view isKindOf: GeoViewAeElement).
+]
+
+{ #category : #tests }
+GeoViewUtilsTest >> testCreateGeoViewForGeoObjects [
+
+	| view |
+	view := GeoViewUtils createGeoViewForGeoObjects.
+	self assert: (view isKindOf: GeoViewAeElement).
+	self assert: ((view getLayer: #GeoObjectsLayer) isKindOf: GeoViewDomainObjectsLayer).
+	self assert: view getLayers size equals: 1
+]

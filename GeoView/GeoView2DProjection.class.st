@@ -53,13 +53,15 @@ GeoView2DProjection >> haveResolution: aViewSize [
 	| viewHeight mapHeight |
 	viewHeight := aViewSize y.
 	mapHeight := 2 * self altitudeInMeters.
+	mapHeight = 0 ifTrue:[ mapHeight := 1 ].
+	
 	^ self metersByPixel = (viewHeight / mapHeight)
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 GeoView2DProjection >> initialize [ 
 
-	super initialize.
+	super initialize
 ]
 
 { #category : #accessing }
@@ -71,7 +73,7 @@ GeoView2DProjection >> key [
 { #category : #accessing }
 GeoView2DProjection >> metersByPixel [
 
-	^ metersByPixel
+	^ metersByPixel ifNil: [ metersByPixel := 0 @ 0 ]
 ]
 
 { #category : #accessing }
@@ -129,11 +131,13 @@ GeoView2DProjection >> projPixelToCart: aPoint [
 ]
 
 { #category : #accessing }
-GeoView2DProjection >> updateResolution: aViewSize [
+GeoView2DProjection >> updateResolution: aPoint [
 	| viewHeight mapHeight |
 	
-	self assert: [aViewSize isNotNil] description: ['[View2DProjection] View size cannot be nil.'].
-	viewHeight := aViewSize y.
+	self assert: [aPoint isNotNil] description: ['[View2DProjection] View size cannot be nil.'].
+	viewHeight := aPoint y.
 	mapHeight := 2 * self altitudeInMeters.
+	mapHeight = 0 ifTrue:[ mapHeight := 1 ].
+	
 	self metersByPixel: viewHeight / mapHeight. 
 ]

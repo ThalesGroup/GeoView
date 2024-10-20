@@ -125,6 +125,9 @@ AbstractGeoViewGraphicModelLayer >> initializeGraphicModel [
 
 	self graphicModel: GeoViewModel new.
 	
+	"Initialize a default graphic projection to work locally, will be change when the layer will be added in a geoview"
+	self graphicModel projection: GeoView2DProjection new.
+	
 	"Setup all DShape process datas"
 	self graphicModel setProcessData: DCompositeShapeGeoViewProcessData new forClass: SmockDCompositeShape.
 	self graphicModel setProcessData: DSymbolGeoViewProcessData new forClass: SmockDSymbol.

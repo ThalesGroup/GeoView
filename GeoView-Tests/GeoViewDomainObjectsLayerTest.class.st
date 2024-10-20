@@ -14,3 +14,11 @@ GeoViewDomainObjectsLayerTest >> testHaveDomainObjects [
 	layer := GeoViewDomainObjectsLayer new.
 	self assert: layer haveDomainObjects
 ]
+
+{ #category : #tests }
+GeoViewDomainObjectsLayerTest >> testViewInfos [
+
+	| layer |
+	layer := GeoViewDomainObjectsLayer new.
+	self assert: layer viewInfos isNil.
+]
