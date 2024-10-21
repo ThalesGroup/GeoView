@@ -41,12 +41,16 @@ AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 	self sendRepaintRequest
 ]
 
-{ #category : #'drawing - bloc' }
+{ #category : #drawing }
 AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 
 	self isVisible ifFalse: [ ^ self ].
-
 	self isDatasChanged ifTrue: [ self sortDatas ].
+	self datasAeDrawOn: aeCanvas
+]
+
+{ #category : #'drawing - bloc' }
+AbstractGeoViewGraphicModelLayer >> datasAeDrawOn: aeCanvas [
 
 	sortedDatas ifNil: [ ^ self ].
 	sortedDatas do: [ :e | e aeDrawOn: aeCanvas ]

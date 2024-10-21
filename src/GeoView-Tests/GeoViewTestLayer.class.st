@@ -9,6 +9,12 @@ Class {
 	#category : #'GeoView-Tests-Utils'
 }
 
+{ #category : #drawing }
+GeoViewTestLayer >> aeDrawOn: aeCanvas [
+
+	"do nothing"
+]
+
 { #category : #'API -- projection' }
 GeoViewTestLayer >> graphicProjection [
 

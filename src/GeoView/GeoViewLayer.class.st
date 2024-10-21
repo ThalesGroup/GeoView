@@ -10,6 +10,12 @@ Class {
 	#category : #'GeoView-Layers'
 }
 
+{ #category : #testing }
+GeoViewLayer class >> isAbstract [ 
+
+	^ self == GeoViewLayer 
+]
+
 { #category : #'API -- projection' }
 GeoViewLayer >> graphicProjection [
 

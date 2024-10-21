@@ -15,6 +15,12 @@ AbstractGeoViewLayer class >> isAbstract [
 	^ self == AbstractGeoViewLayer 
 ]
 
+{ #category : #drawing }
+AbstractGeoViewLayer >> aeDrawOn: aeCanvas [
+
+	self subclassResponsibility 
+]
+
 { #category : #accessing }
 AbstractGeoViewLayer >> announcer [
 
