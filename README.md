@@ -22,7 +22,7 @@ To install GeoView on your Pharo image you can just execute the following script
 ```smalltalk
 Metacello new
    baseline: 'GeoView';
-   repository: 'github://OpenSmock/GeoView:main';
+   repository: 'github://OpenSmock/GeoView:main/src';
    load.
 ```
 

@@ -38,7 +38,7 @@ BaselineOfGeoView >> coreDependencies: spec [
 	"OpenSmock Full"
 	spec 
 		baseline: 'OpenSmock' 
-		with: [	spec repository: 'github://OpenSmock/OpenSmock' ]
+		with: [	spec repository: 'github://OpenSmock/OpenSmock:main' ]
 ]
 
 { #category : #packages }
