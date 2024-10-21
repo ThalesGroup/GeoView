@@ -4,6 +4,8 @@
 
 # GeoView
 
+![image](https://github.com/user-attachments/assets/81bdfd1b-23ce-46d4-bbf1-670f5142cfc8)
+
 Views to display and interact with geographical objects and cartographic layers for UI.
 
 GeoView is build to be implemented and available in different display backends, for examples in Bloc, Alexandrie, Woden, Web-based UI, etc.
@@ -29,3 +31,7 @@ Metacello new
 - [Molecule](https://github.com/OpenSmock/Molecule)
 - [OpenSmock](https://github.com/OpenSmock/OpenSmock)
 - [GeoTools](https://github.com/OpenSmock/GeoTools)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
