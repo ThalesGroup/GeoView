@@ -40,6 +40,11 @@ GeoViewTestLayer >> mapProjection: aMapProjection [
 ]
 
 { #category : #'API -- symbology' }
+GeoViewTestLayer >> symbologyProvider [
+	"do nothing"
+]
+
+{ #category : #'API -- symbology' }
 GeoViewTestLayer >> symbologyProvider: aSymbologyProvider [
 	"do nothing"
 ]

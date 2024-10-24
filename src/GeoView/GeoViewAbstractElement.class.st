@@ -15,8 +15,7 @@ Class {
 		'displayToGraphicProjection',
 		'mapProjection',
 		'viewInfos',
-		'interactionsStrategy',
-		'taskHandler'
+		'interactionsStrategy'
 	],
 	#category : #'GeoView-Core'
 }
