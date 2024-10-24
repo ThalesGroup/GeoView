@@ -47,6 +47,12 @@ GeoViewLayer >> populatePickingResult: aPickingResult [
 ]
 
 { #category : #'API -- symbology' }
+GeoViewLayer >> symbologyProvider [
+
+	^ symbologyProvider
+]
+
+{ #category : #'API -- symbology' }
 GeoViewLayer >> symbologyProvider: aSymbologyProvider [
 
 	symbologyProvider := aSymbologyProvider 

@@ -236,6 +236,12 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 ]
 
 { #category : #'API -- symbology' }
+AbstractGeoViewGraphicModelLayer >> symbologyProvider [
+
+	^ self graphicModel symbologyProvider
+]
+
+{ #category : #'API -- symbology' }
 AbstractGeoViewGraphicModelLayer >> symbologyProvider: aSymbologyProvider [
 
 	self graphicModel symbologyProvider: aSymbologyProvider

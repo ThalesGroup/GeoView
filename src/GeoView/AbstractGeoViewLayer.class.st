@@ -118,6 +118,12 @@ AbstractGeoViewLayer >> sendRepaintRequest [
 ]
 
 { #category : #'API -- symbology' }
+AbstractGeoViewLayer >> symbologyProvider [
+
+	self explicitRequirement
+]
+
+{ #category : #'API -- symbology' }
 AbstractGeoViewLayer >> symbologyProvider: aSymbologyProvider [
 
 	self explicitRequirement
