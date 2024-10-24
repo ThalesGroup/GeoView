@@ -49,7 +49,7 @@ AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 	self datasAeDrawOn: aeCanvas
 ]
 
-{ #category : #'drawing - bloc' }
+{ #category : #drawing }
 AbstractGeoViewGraphicModelLayer >> datasAeDrawOn: aeCanvas [
 
 	sortedDatas ifNil: [ ^ self ].

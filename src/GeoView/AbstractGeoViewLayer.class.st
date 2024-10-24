@@ -15,6 +15,13 @@ AbstractGeoViewLayer class >> isAbstract [
 	^ self == AbstractGeoViewLayer 
 ]
 
+{ #category : #private }
+AbstractGeoViewLayer >> addedToSceneGraph [
+	"call when the geoview is added to a scene graph"
+
+	
+]
+
 { #category : #drawing }
 AbstractGeoViewLayer >> aeDrawOn: aeCanvas [
 
@@ -91,6 +98,13 @@ AbstractGeoViewLayer >> name: anObject [
 AbstractGeoViewLayer >> populatePickingResult: aPickingResult [ 
 
 	self explicitRequirement 
+]
+
+{ #category : #private }
+AbstractGeoViewLayer >> removedFromSceneGraph [
+	"call when the geoview is removed from a scene graph"
+
+	
 ]
 
 { #category : #private }

@@ -56,6 +56,7 @@ GeoViewAbstractElement >> addLayer: aLayer [
 	(self layers includes: aLayer) ifTrue: [ ^ self ].
 	self configureLayer: aLayer.
 	self layers add: aLayer.
+	self isAttachedToSceneGraph ifTrue:[ aLayer addedToSceneGraph ].
 
 	"Send layer added event"
 	event := GeoViewLayerAddedEvent new.
@@ -370,6 +371,24 @@ GeoViewAbstractElement >> objectIndexAccessor: aSymbol [
 	objectIndexAccessor := aSymbol
 ]
 
+{ #category : #'hooks - children' }
+GeoViewAbstractElement >> onAddedToSceneGraph [
+
+	super onAddedToSceneGraph.
+
+	"send message to all layers"
+	self layers do: [ :e | e addedToSceneGraph ]
+]
+
+{ #category : #'hooks - children' }
+GeoViewAbstractElement >> onRemovedFromSceneGraph [
+
+	super onRemovedFromSceneGraph.
+	
+	"send message to all layers"
+	self layers do: [ :e | e removedFromSceneGraph ]
+]
+
 { #category : #'API -- picking' }
 GeoViewAbstractElement >> pickAt: aGlobalPoint [
 	"Return all objects under a global point"
@@ -436,6 +455,7 @@ GeoViewAbstractElement >> removeLayer: aLayer [
 	(self layers includes: aLayer) ifFalse: [ ^ self ].
 	self unconfigureLayer: aLayer.
 	self layers remove: aLayer.
+	self isAttachedToSceneGraph ifTrue:[ aLayer removedFromSceneGraph ].
 	
 	"Send layer added event"
 	event := GeoViewLayerRemovedEvent new.
