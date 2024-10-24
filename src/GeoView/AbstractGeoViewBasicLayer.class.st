@@ -1,5 +1,5 @@
 Class {
-	#name : #GeoViewLayer,
+	#name : #AbstractGeoViewBasicLayer,
 	#superclass : #AbstractGeoViewLayer,
 	#instVars : [
 		'symbologyProvider',
@@ -11,67 +11,67 @@ Class {
 }
 
 { #category : #testing }
-GeoViewLayer class >> isAbstract [ 
+AbstractGeoViewBasicLayer class >> isAbstract [ 
 
-	^ self == GeoViewLayer 
+	^ self == AbstractGeoViewBasicLayer 
 ]
 
 { #category : #'API -- projection' }
-GeoViewLayer >> graphicProjection [
+AbstractGeoViewBasicLayer >> graphicProjection [
 
 	^ graphicProjection
 ]
 
 { #category : #'API -- projection' }
-GeoViewLayer >> graphicProjection: aGraphicProjection [
+AbstractGeoViewBasicLayer >> graphicProjection: aGraphicProjection [
 
 	graphicProjection := aGraphicProjection 
 ]
 
 { #category : #'API -- projection' }
-GeoViewLayer >> mapProjection [
+AbstractGeoViewBasicLayer >> mapProjection [
 
 	^ mapProjection
 ]
 
 { #category : #'API -- projection' }
-GeoViewLayer >> mapProjection: aMapProjection [
+AbstractGeoViewBasicLayer >> mapProjection: aMapProjection [
 
 	mapProjection := aMapProjection 
 ]
 
 { #category : #'API -- picking' }
-GeoViewLayer >> populatePickingResult: aPickingResult [ 
+AbstractGeoViewBasicLayer >> populatePickingResult: aPickingResult [ 
 
 	"do nothing"
 ]
 
 { #category : #'API -- symbology' }
-GeoViewLayer >> symbologyProvider [
+AbstractGeoViewBasicLayer >> symbologyProvider [
 
 	^ symbologyProvider
 ]
 
 { #category : #'API -- symbology' }
-GeoViewLayer >> symbologyProvider: aSymbologyProvider [
+AbstractGeoViewBasicLayer >> symbologyProvider: aSymbologyProvider [
 
 	symbologyProvider := aSymbologyProvider 
 ]
 
 { #category : #private }
-GeoViewLayer >> updateModel: aContext [
+AbstractGeoViewBasicLayer >> updateModel: aContext [
 
 	"do nothing"
 ]
 
 { #category : #'API -- graphic properties' }
-GeoViewLayer >> viewInfos [
+AbstractGeoViewBasicLayer >> viewInfos [
 
 	^ viewInfos
 ]
 
 { #category : #'API -- graphic properties' }
-GeoViewLayer >> viewInfos: aViewInfos [
+AbstractGeoViewBasicLayer >> viewInfos: aViewInfos [
 
 	viewInfos := aViewInfos
 ]

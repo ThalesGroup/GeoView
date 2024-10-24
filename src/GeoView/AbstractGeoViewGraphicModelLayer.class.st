@@ -93,18 +93,17 @@ AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock [
 { #category : #'API -- drawing' }
 AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock: aBlockClosure [
 	"Setup a sort block to change the order of graphic element stack"
-	
+
 	graphicalOrderSortBlock := aBlockClosure.
-	sortedDatas ifNotNil:[ :e | 
-		e sortBlock: self graphicalOrderSortBlock. 
-	]
+	sortedDatas ifNotNil: [ :e |
+		e sortBlock: self graphicalOrderSortBlock.
+		self isDatasChanged: true.
+		self sendRepaintRequest ]
 ]
 
 { #category : #'API -- DShapes' }
 AbstractGeoViewGraphicModelLayer >> haveDShapeKey: aKey [
 	"check in the graphic model because if not present here, the object is not managed"
-
-	"be carrefull this model can be asynchronous due to an update in bloc task"
 
 	aKey ifNil: [ ^ self ].
 	^ self graphicModel haveDataIndex: aKey
@@ -121,7 +120,7 @@ AbstractGeoViewGraphicModelLayer >> initialize [
 
 	super initialize.
 	self initializeGraphicModel.
-	self initializeSortedDatas.
+	self initializeSortedDatas
 ]
 
 { #category : #initialization }
@@ -265,15 +264,6 @@ AbstractGeoViewGraphicModelLayer >> updateDShapes: aDShapeList [
 	aDShapeList do: [ :e | self graphicModel updated: e ].
 	self isDatasChanged: true.
 	self sendRepaintRequest
-]
-
-{ #category : #private }
-AbstractGeoViewGraphicModelLayer >> updateGraphicModelWith: aDShape [
-	"Update the graphic model with a DShape"
-
-	"Call only on the mutex critical block"
-
-	^ self graphicModel updated: aDShape
 ]
 
 { #category : #accessing }

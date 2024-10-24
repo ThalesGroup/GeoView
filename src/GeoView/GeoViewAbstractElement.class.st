@@ -223,8 +223,7 @@ GeoViewAbstractElement >> globalPointFromLocalPoint: aLocalPoint [
 
 { #category : #'API -- objects management' }
 GeoViewAbstractElement >> haveObjectIndex: anIndex [
-	"Pay attention before using it because graphical model is out of sync real user model due to usage of BlTask (asynchronous)"
-
+	
 	anIndex ifNil:[ ^ nil ].
 
 	^ self layers anySatisfy: [ :e | e haveDomainObjects ifTrue:[ e haveObjectIndex: anIndex ] ]
@@ -466,7 +465,6 @@ GeoViewAbstractElement >> removeLayer: aLayer [
 GeoViewAbstractElement >> removeObject: anUserObject [
 
 	anUserObject ifNil: [ ^ self ].
-
 
 	self layers do: [ :e |
 		e haveDomainObjects ifTrue: [ e removeObject: anUserObject ] ]
