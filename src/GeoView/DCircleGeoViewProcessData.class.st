@@ -10,7 +10,7 @@ DCircleGeoViewProcessData >> createGShape2D [
 	^ SmockGCircle2D new
 ]
 
-{ #category : #private }
+{ #category : #processing }
 DCircleGeoViewProcessData >> processUpdatedData: aKey incoming: aDCircle with: aGCircle2D context: aContext [
 
 	| radius |

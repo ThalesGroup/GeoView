@@ -4,6 +4,12 @@ Class {
 	#category : #'GeoView-ProcessDatas'
 }
 
+{ #category : #accessing }
+GeoObjectProcessData class >> isAbstract [ 
+
+	^ self == GeoObjectProcessData 
+]
+
 { #category : #private }
 GeoObjectProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape context: aContext [
 

@@ -20,5 +20,7 @@ DTextGeoViewProcessData >> processUpdatedData: aKey incoming: aDText with: aGTex
 	aGText2D xAlign: aDText xAlign.
 	aGText2D yAlign: aDText yAlign.
 		
+	aDText isDrawModeUser ifTrue:[ "no yet supported" ].
+		
 	^ aGText2D 
 ]

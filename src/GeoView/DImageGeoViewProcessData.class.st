@@ -17,15 +17,13 @@ DImageGeoViewProcessData >> processUpdatedData: aKey incoming: aDImage with: aGB
 
 	"image content"
 	aGBitmap2D form: aDImage image.
-
-	"fill style property"
 	aGBitmap2D fillStyle: aDImage fillStyle.
 
 	"transformations from expected trigonometric degrees to trigonometric degrees"
 	aGBitmap2D rotation: (aDImage orientation % 360).	
-		
-	"scale"
 	aGBitmap2D scale: aDImage scale.
+
+	aDImage isDrawModeUser ifTrue:[ "no yet supported" ].
 
 	^ aGBitmap2D 
 ]

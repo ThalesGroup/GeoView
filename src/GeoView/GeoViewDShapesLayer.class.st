@@ -112,7 +112,7 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 	self userDataChangesMutex critical: [
 		toUpdate := OrderedCollection new.
 		aDShapeList do: [ :e |
-			(self haveDShapeKey: e key) ifFalse: [
+			(self haveDShapeKey: e key) ifTrue: [
 				self userModel at: e key put: e.
 				toUpdate add: e ] ].
 		super updateDShapes: toUpdate ]
@@ -123,7 +123,8 @@ GeoViewDShapesLayer >> updateModel: aContext [
 
 	| dShapes |
 	self userDataChangesMutex critical: [
-		dShapes := self userModel copy.
+		dShapes := self userModel select: [ :e | e hasUserComputing ].
+
 		super updateDShapes: dShapes ]
 ]
 

@@ -13,7 +13,7 @@ DPolygonGeoViewProcessData >> createGShape2D [
 	^ SmockGPolygon2D new
 ]
 
-{ #category : #private }
+{ #category : #processing }
 DPolygonGeoViewProcessData >> processUpdatedData: aKey incoming: aDPolygon with: aGPolygon2D context: aContext [
 
 	| points |

@@ -63,6 +63,38 @@ GeoViewAbstractElement >> addLayer: aLayer [
 	self dispatchEvent: event
 ]
 
+{ #category : #'API -- layers management' }
+GeoViewAbstractElement >> addLayerAtFirst: aLayer [
+
+	| event |
+	self flag:'labordep: need to be factorized'.
+	(self layers includes: aLayer) ifTrue: [ ^ self ].
+	self configureLayer: aLayer.
+	self layers addFirst: aLayer.
+	self isAttachedToSceneGraph ifTrue:[ aLayer addedToSceneGraph ].
+
+	"Send layer added event"
+	event := GeoViewLayerAddedEvent new.
+	event layerName: aLayer name.
+	self dispatchEvent: event
+]
+
+{ #category : #'API -- layers management' }
+GeoViewAbstractElement >> addLayerAtLast: aLayer [
+
+	| event |
+	self flag:'labordep: need to be factorized'.
+	(self layers includes: aLayer) ifTrue: [ ^ self ].
+	self configureLayer: aLayer.
+	self layers addLast: aLayer.
+	self isAttachedToSceneGraph ifTrue:[ aLayer addedToSceneGraph ].
+
+	"Send layer added event"
+	event := GeoViewLayerAddedEvent new.
+	event layerName: aLayer name.
+	self dispatchEvent: event
+]
+
 { #category : #'API -- objects management' }
 GeoViewAbstractElement >> addObject: anUserObject [
 
@@ -568,12 +600,16 @@ GeoViewAbstractElement >> updateDisplayToGraphicProjection [
 	| extent offset |
 	extent := self viewInfos extent.
 	offset := extent / 2.
-	
-	(self displayToGraphicProjection offsetInPixels ~= offset or:[(self displayToGraphicProjection haveResolution: extent) not]) ifTrue:[
-		self displayToGraphicProjection offsetInPixels: offset.
-		self displayToGraphicProjection updateResolution: extent.
-		self updateModel: ((GeoViewProjectionChanges new) isExtentChanged: true; isResolutionChanged: true).
-	].
+
+	(self displayToGraphicProjection offsetInPixels ~= offset or: [
+		 (self displayToGraphicProjection haveResolution: extent) not ])
+		ifFalse: [ ^ self ].
+		
+	self displayToGraphicProjection offsetInPixels: offset.
+	self displayToGraphicProjection updateResolution: extent.
+	self updateModel: (GeoViewProjectionChanges new
+			 isExtentChanged: true;
+			 isResolutionChanged: true)
 ]
 
 { #category : #private }

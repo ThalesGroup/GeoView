@@ -184,11 +184,12 @@ GeoViewDomainObjectsLayer >> setProcessData: aProcessData forClass: aDomainObjec
 { #category : #private }
 GeoViewDomainObjectsLayer >> updateModel: aContext [
 
-	| shapes |
+	| dShapes |
 	self userDataChangesMutex critical: [
-		shapes := self displayModel getDatas.
+		dShapes := self displayModel getDatas select: [ :e |
+			           e hasUserComputing ].
 
-	self updateDShapes: shapes ]
+		self updateDShapes: dShapes ]
 ]
 
 { #category : #'API -- objects management' }
