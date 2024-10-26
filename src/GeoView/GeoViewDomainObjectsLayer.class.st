@@ -187,9 +187,7 @@ GeoViewDomainObjectsLayer >> updateModel: aContext [
 	| dShapes |
 	self userDataChangesMutex critical: [
 		dShapes := self displayModel getDatas select: [ :e |
-			          e isComposite
-				          ifTrue: [ e isDrawModeUser or:[ e hasDrawModeUserChildren ] ]
-				          ifFalse: [ e isDrawModeUser ] ].
+			           e hasUserComputing ].
 
 		self updateDShapes: dShapes ]
 ]

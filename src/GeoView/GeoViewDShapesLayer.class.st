@@ -123,10 +123,7 @@ GeoViewDShapesLayer >> updateModel: aContext [
 
 	| dShapes |
 	self userDataChangesMutex critical: [
-		dShapes := self userModel select: [ :e |
-			          e isComposite
-				          ifTrue: [ e isDrawModeUser or:[ e hasDrawModeUserChildren ] ]
-				          ifFalse: [ e isDrawModeUser ] ].
+		dShapes := self userModel select: [ :e | e hasUserComputing ].
 
 		super updateDShapes: dShapes ]
 ]
