@@ -18,6 +18,7 @@ GeoViewUtils class >> createGeoObjectsLayer: aName [
 	layer setProcessData: GeoRectangleProcessData new forClass: GeoRectangle.
 	layer setProcessData: GeoArcBandProcessData new forClass: GeoArcBand.
 	layer setProcessData: GeoTextProcessData new forClass: GeoText.
+	layer setProcessData: GeoPositionProcessData new forClass: GeoPosition.
 
 	^ layer
 ]

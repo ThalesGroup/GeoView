@@ -21,6 +21,7 @@ GeoViewUtilsTest >> testCreateGeoObjectsLayer [
 	self assert: (layer getProcessDataForClass: GeoRectangle) class equals: GeoRectangleProcessData.
 	self assert: (layer getProcessDataForClass: GeoArcBand) class equals: GeoArcBandProcessData.
 	self assert: (layer getProcessDataForClass: GeoText) class equals: GeoTextProcessData.
+	self assert: (layer getProcessDataForClass: GeoPosition) class equals: GeoPositionProcessData.
 ]
 
 { #category : #tests }

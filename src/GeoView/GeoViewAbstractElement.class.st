@@ -63,6 +63,38 @@ GeoViewAbstractElement >> addLayer: aLayer [
 	self dispatchEvent: event
 ]
 
+{ #category : #'API -- layers management' }
+GeoViewAbstractElement >> addLayerAtFirst: aLayer [
+
+	| event |
+	self flag:'labordep: need to be factorized'.
+	(self layers includes: aLayer) ifTrue: [ ^ self ].
+	self configureLayer: aLayer.
+	self layers addFirst: aLayer.
+	self isAttachedToSceneGraph ifTrue:[ aLayer addedToSceneGraph ].
+
+	"Send layer added event"
+	event := GeoViewLayerAddedEvent new.
+	event layerName: aLayer name.
+	self dispatchEvent: event
+]
+
+{ #category : #'API -- layers management' }
+GeoViewAbstractElement >> addLayerAtLast: aLayer [
+
+	| event |
+	self flag:'labordep: need to be factorized'.
+	(self layers includes: aLayer) ifTrue: [ ^ self ].
+	self configureLayer: aLayer.
+	self layers addLast: aLayer.
+	self isAttachedToSceneGraph ifTrue:[ aLayer addedToSceneGraph ].
+
+	"Send layer added event"
+	event := GeoViewLayerAddedEvent new.
+	event layerName: aLayer name.
+	self dispatchEvent: event
+]
+
 { #category : #'API -- objects management' }
 GeoViewAbstractElement >> addObject: anUserObject [
 

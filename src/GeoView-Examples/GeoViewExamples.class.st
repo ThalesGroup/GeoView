@@ -228,6 +228,48 @@ GeoViewExamples class >> exampleWithGeoObjectsUpdated [
 	^ space
 ]
 
+{ #category : #examples }
+GeoViewExamples class >> exampleWithGeoPositions [
+	
+	| geoView city |
+	geoView := GeoViewUtils createGeoViewForGeoObjects.
+	geoView id: #geoView.
+	
+	city := GeoPosition new key: 1.
+	city text: 'Brest'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frBrest).
+	geoView addObject: city.
+	
+	city := GeoPosition new key: 2.
+	city text: 'Nevers'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frNevers).
+	geoView addObject: city.
+
+	city := GeoPosition new key: 3.
+	city text: 'Bordeaux'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frBordeaux).
+	geoView addObject: city.
+	
+	city := GeoPosition new key: 4.
+	city text: 'Marseille'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frMarseille).
+	geoView addObject: city.
+	
+	city := GeoPosition new key: 5.
+	city text: 'Lyon'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frLyon).
+	geoView addObject: city.
+	
+	city := GeoPosition new key: 6.
+	city text: 'Saint Renan'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frStRenan).
+	geoView addObject: city.
+	
+	city := GeoPosition new key: 7.
+	city text: 'Paris'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frParis).
+	geoView addObject: city.
+	
+	city := GeoPosition new key: 8.
+	city text: 'Elancourt'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frElancourt).
+	geoView addObject: city.
+	
+	^ self openViewInWindow: geoView
+]
+
 { #category : #private }
 GeoViewExamples class >> openViewInWindow: aGeoViewElement [
 	"open the view in a window"
