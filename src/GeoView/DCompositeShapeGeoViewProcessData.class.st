@@ -101,7 +101,7 @@ DCompositeShapeGeoViewProcessData >> processUpdatedData: aKey incoming: aDCompos
 	].
 	
 	self flag:'labordep : déplacer ce code dans un pipeline de mise à jour graphique au changement de projection et pas sur maj des objets'.
-	aDComposite hasUserDrawModeChildren ifTrue:[
+	aDComposite hasDrawModeUserChildren ifTrue:[
 		aDComposite dShapeList do:[ :dShape | | processData blChild |
 			"cannot manage no keyed dShape"
 			dShape key ifNotNil:[ 
