@@ -23,11 +23,12 @@ DSymbolGeoViewProcessData >> processUpdatedData: aKey incoming: aDSymbol with: a
 		].
 	]].
 
-	"fill style property"
 	aGBitmap2D fillStyle: aDSymbol fillStyle.
 
 	"transformations from expected trigonometric degrees to trigonometric degrees"
 	aGBitmap2D rotation: (aDSymbol orientation % 360).	
+		
+	aDSymbol isDrawModeUser ifTrue:[ "no yet supported" ].
 
 	^ aGBitmap2D 
 ]

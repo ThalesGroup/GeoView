@@ -83,7 +83,6 @@ DCompositeShapeGeoViewProcessData >> processUpdatedData: aKey incoming: aDCompos
 				].
 			].
 		].
-		aDComposite clearToUpdateDShapeList.
 	
 		"check for remove children"
 		aDComposite toDeleteDShapeList do:[ :dShape | | gChild |
@@ -96,8 +95,9 @@ DCompositeShapeGeoViewProcessData >> processUpdatedData: aKey incoming: aDCompos
 				].
 			].
 		].
-		aDComposite clearToDeleteDShapeList.
-
+	
+		aDComposite clearChangedDShapeLists.
+		aDComposite updateModelWithChildren.
 	].
 	
 	self flag:'labordep : déplacer ce code dans un pipeline de mise à jour graphique au changement de projection et pas sur maj des objets'.
