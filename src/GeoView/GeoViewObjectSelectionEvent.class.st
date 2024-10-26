@@ -7,13 +7,13 @@ Class {
 	#category : #'GeoView-Events'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 GeoViewObjectSelectionEvent >> objectIndexesList [
 
 	^ objectIndexesList ifNil: [ objectIndexesList := OrderedCollection new ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 GeoViewObjectSelectionEvent >> objectIndexesList: aList [
 
 	objectIndexesList := aList
