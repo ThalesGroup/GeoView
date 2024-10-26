@@ -568,12 +568,16 @@ GeoViewAbstractElement >> updateDisplayToGraphicProjection [
 	| extent offset |
 	extent := self viewInfos extent.
 	offset := extent / 2.
-	
-	(self displayToGraphicProjection offsetInPixels ~= offset or:[(self displayToGraphicProjection haveResolution: extent) not]) ifTrue:[
-		self displayToGraphicProjection offsetInPixels: offset.
-		self displayToGraphicProjection updateResolution: extent.
-		self updateModel: ((GeoViewProjectionChanges new) isExtentChanged: true; isResolutionChanged: true).
-	].
+
+	(self displayToGraphicProjection offsetInPixels ~= offset or: [
+		 (self displayToGraphicProjection haveResolution: extent) not ])
+		ifFalse: [ ^ self ].
+		
+	self displayToGraphicProjection offsetInPixels: offset.
+	self displayToGraphicProjection updateResolution: extent.
+	self updateModel: (GeoViewProjectionChanges new
+			 isExtentChanged: true;
+			 isResolutionChanged: true)
 ]
 
 { #category : #private }

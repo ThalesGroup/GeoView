@@ -1,6 +1,8 @@
 Class {
 	#name : #DShapeGeoViewProcessData,
 	#superclass : #SmockProcessData,
+	#traits : 'TSmockDShapeProcessData',
+	#classTraits : 'TSmockDShapeProcessData classTrait',
 	#category : #'GeoView-ProcessDatas'
 }
 
@@ -10,7 +12,7 @@ DShapeGeoViewProcessData class >> isAbstract [
 	^ self = DShapeGeoViewProcessData
 ]
 
-{ #category : #processing }
+{ #category : #computing }
 DShapeGeoViewProcessData >> computePositionFor: aDShape context: aContext [
 
 	| offset |
@@ -30,7 +32,8 @@ DShapeGeoViewProcessData >> computePositionFor: aDShape context: aContext [
 DShapeGeoViewProcessData >> processCreatedData: aKey incoming: aDShape with: aGShape2D context: aContext [
 
 	(aDShape isNil or: [ aGShape2D isNil ]) ifTrue: [ ^ nil ].
-	aGShape2D id: aKey.
+	self processCreatedDShape: aKey incoming: aDShape with: aGShape2D context: aContext.
+	
 	^ aGShape2D
 ]
 
@@ -42,11 +45,9 @@ DShapeGeoViewProcessData >> processDeletedData: aKey incoming: aDShape with: aGS
 
 { #category : #processing }
 DShapeGeoViewProcessData >> processRecycledData: aKey incoming: aDShape with: aGShape2D context: aContext [
-
 	"clean the GShape"
-	aGShape2D id: nil.
-	aGShape2D removeProperties.
-	aGShape2D isComposite ifTrue:[ aGShape2D removeChildren ].
+
+	self processRecycledDShape: aKey incoming: aDShape with: aGShape2D context: aContext.
 
 	^ aGShape2D
 ]
@@ -62,9 +63,9 @@ DShapeGeoViewProcessData >> processUpdatedData: aKey incoming: aDShape with: aGS
 
 	| position |
 	(aDShape isNil or: [ aGShape2D isNil ]) ifTrue: [ ^ nil ].
-	aGShape2D isVisible: aDShape isVisible.
-	aGShape2D properties: (aDShape properties copy).
-	aGShape2D isTranslatedByParent: aDShape isTranslatedByParent.
+	self processUpdatedDShape: aKey incoming: aDShape with: aGShape2D context: aContext.
+	
+	"Update geo position"
 	position := self computePositionFor: aDShape context: aContext.	
 	aGShape2D position: (position ifNil:[ 0@0 ]).
 	
