@@ -673,4 +673,5 @@ GeoViewAbstractElement >> viewInfos: aViewInfos [
 	viewInfos := aViewInfos.
 	self updateViewInfos.
 	self getLayers do: [ :l | l viewInfos: viewInfos ].
+	self updateModel: (GeoViewProjectionChanges new).
 ]
