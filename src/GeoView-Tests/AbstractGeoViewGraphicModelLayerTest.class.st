@@ -30,6 +30,7 @@ AbstractGeoViewGraphicModelLayerTest >> testInitializeGraphicModel [
 	self assert: (layer graphicModel getProcessDataForClass: SmockDPolygon) class equals: DPolygonGeoViewProcessData.
 	self assert: (layer graphicModel getProcessDataForClass: SmockDPolyline) class equals: DPolylineGeoViewProcessData.
 	self assert: (layer graphicModel getProcessDataForClass: SmockDSegment) class equals: DSegmentGeoViewProcessData.
+	self assert: (layer graphicModel getProcessDataForClass: SmockDSector) class equals: DSectorGeoViewProcessData.
 	
 	"Test model initialization"
 	self assert: (layer graphicModel projection isKindOf: GeoView2DProjection).
