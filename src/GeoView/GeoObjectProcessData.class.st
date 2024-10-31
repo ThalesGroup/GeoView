@@ -54,7 +54,11 @@ GeoObjectProcessData >> processRecycledData: aKey incoming: aGeoObject with: aDS
 	
 	aDShape key: nil.
 	aDShape removeProperties.
-	aDShape isComposite ifTrue:[ aDShape removeChildren ].
+	aDShape isComposite ifTrue:[ 
+		aDShape dShapeList removeAll.
+		aDShape toUpdateDShapeList removeAll.
+		aDShape toDeleteDShapeList removeAll.
+	].
 
 	^ aDShape
 ]
