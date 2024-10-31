@@ -271,7 +271,7 @@ AbstractGeoViewGraphicModelLayer >> updateDShapes: aDShapeList [
 AbstractGeoViewGraphicModelLayer >> userDataChangesMutex [
 
 	^ userDataChangesMutex ifNil: [
-		  userDataChangesMutex := Semaphore forMutualExclusion ]
+		  userDataChangesMutex := Monitor new ]
 ]
 
 { #category : #'API -- graphic properties' }

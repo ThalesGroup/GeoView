@@ -70,6 +70,21 @@ GeoViewDShapesLayer >> mapProjection: aMapProjection [
 	"do nothing"
 ]
 
+{ #category : #private }
+GeoViewDShapesLayer >> populatePickingResult: aPickingResult at: index with: aGShape [
+	"Way to detect if the gShape is picked"
+
+	| pickingElement data |
+	pickingElement := super populatePickingResult: aPickingResult at: index with: aGShape.
+	pickingElement ifNil:[ ^ nil ].
+	
+	"add dShape"
+	self userDataChangesMutex critical: [ data := self userModel at: index ifAbsent:[ nil ] ].
+	pickingElement dShape: data. 
+	
+ 	^ pickingElement 
+]
+
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> removeDShape: aDShape [
 
