@@ -73,6 +73,42 @@ GeoViewExamples class >> createTask: aBlockClosure [
 ]
 
 { #category : #examples }
+GeoViewExamples class >> exampleGeoViewWithCartoLayer [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewCartoLayer new.
+	layer name: 'SampleCartoLayer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #examples }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayer [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewCartoTilesLayer new.
+	layer name: 'SampleCartoLayer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #examples }
 GeoViewExamples class >> exampleWithDShapesLayer [
 	
 	| element layer circle1 circle2 segment1 segment2 |
@@ -268,6 +304,49 @@ GeoViewExamples class >> exampleWithGeoPositions [
 	geoView addObject: city.
 	
 	^ self openViewInWindow: geoView
+]
+
+{ #category : #examples }
+GeoViewExamples class >> exampleWithRoassalCarto [
+
+	| b canvas high |
+	b := RSOSMBuilder new.
+	b build.
+	canvas := b canvas.
+	
+	high := RSHighlightable blue.
+	{
+		'Buenos Aires'.
+		(-34.6037 @ -58.3816).
+		'Cairo'.
+		(30.0444 @ 31.2357).
+		'Cochabamba'.
+		(-17.4139 @ -66.1653).
+		'London'.
+		(51.50722 @ -0.12750).
+		'New York'.
+		(40.7127 @ -74.0059).
+		'Paris'.
+		(48.8567 @ 2.3508).
+		'Tokyo'.
+		(35.6894 @ 139.6917) } pairsDo: [ :cityName :locationLatLong |
+		| label |
+		label := RSLabel text: cityName.
+		label model: locationLatLong.
+		label @ high.
+		label isFixed: true.
+		canvas addShape: label ].
+	canvas fixedShapes
+		when: RSMouseClick
+		do: [ :evt | b latLong: evt shape model ]
+		for: self.
+	RSHorizontalLineLayout new
+		gapSize: 10;
+		on: canvas fixedShapes.
+		
+	canvas open.
+	canvas morph renderer: GeoViewCartoRenderer new.
+	
 ]
 
 { #category : #private }
