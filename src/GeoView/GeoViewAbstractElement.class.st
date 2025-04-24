@@ -564,7 +564,7 @@ GeoViewAbstractElement >> scaleInMeters: aNumber on: aGeoPoint [
 	
 	self displayToGraphicProjection altitudeInMeters: self scaleInMeters.
 	self displayToGraphicProjection updateResolution: self extent.
-	self updateModel: ((GeoViewProjectionChanges new) isScaleChanged: true; isResolutionChanged: true; scaleCenterPoint: aGeoPoint).
+	self updateModel: ((GeoViewProjectionChanges new) isScaleChanged: true; isResolutionChanged: true; scaleCenterPoint: aGeoPoint copy;yourself).
 	
 	"Send scale event"
 	geoViewEvent := GeoViewScaleChangedEvent new.

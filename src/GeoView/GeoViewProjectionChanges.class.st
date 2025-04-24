@@ -81,6 +81,5 @@ GeoViewProjectionChanges >> scaleCenterPoint [
 { #category : #accessing }
 GeoViewProjectionChanges >> scaleCenterPoint: anObject [
 
-anObject ifNil:[ Transcript show: 'scaleCenterPoint set a nil';cr.].
 	scaleCenterPoint := anObject
 ]

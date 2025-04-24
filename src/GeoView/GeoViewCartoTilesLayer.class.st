@@ -21,7 +21,10 @@ Class {
 		'isScalingMap',
 		'scalingProc',
 		'prevAltitude',
-		'scalingRatio'
+		'scalingRatio',
+		'allowSmallMovingWithoutRedraw',
+		'mapTilesDirectory',
+		'allowSlideMoving'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -84,6 +87,32 @@ GeoViewCartoTilesLayer >> aeDrawOn: aeCanvas [
 ]
 
 { #category : #accessing }
+GeoViewCartoTilesLayer >> allowSlideMoving [
+
+	allowSlideMoving ifNil:[ allowSlideMoving := true].
+	^allowSlideMoving
+]
+
+{ #category : #accessing }
+GeoViewCartoTilesLayer >> allowSlideMoving: aBoolean [
+ 
+	allowSlideMoving := aBoolean
+]
+
+{ #category : #accessing }
+GeoViewCartoTilesLayer >> allowSmallMovingWithoutRedraw [
+
+	allowSmallMovingWithoutRedraw ifNil:[ allowSmallMovingWithoutRedraw := true].
+	^allowSmallMovingWithoutRedraw
+]
+
+{ #category : #accessing }
+GeoViewCartoTilesLayer >> allowSmallMovingWithoutRedraw: aBoolean [
+ 
+	allowSmallMovingWithoutRedraw := aBoolean
+]
+
+{ #category : #accessing }
 GeoViewCartoTilesLayer >> buildBufferWorker [
 
 	^ buildBufferWorker
@@ -98,46 +127,15 @@ GeoViewCartoTilesLayer >> buildBufferWorker: anObject [
 { #category : #tiles }
 GeoViewCartoTilesLayer >> buildFilenameForXY: aTileXY zoom: aLevel [
 
-	| filename  prefixType |
-	prefixType := self class prefixType.
+	| filename |
 
-	filename := (FileLocator imageDirectory / self class tilesMapDir) asFileReference.
+	filename := self mapTilesDirectory asFileReference.
 	filename exists ifFalse:[^nil].
 
-	filename := filename / prefixType.
 	filename := filename / aLevel asString.
 	filename := filename / aTileXY x asString.
 	filename := filename / (aTileXY y asString , '.png').
 	^filename
-]
-
-{ #category : #'loading and updating' }
-GeoViewCartoTilesLayer >> buildVMapLayer [
-
-	| go scale bufferOffset context|
-	
-	self surfaceCarto ifNil:[^self].
-	
-	go := self surfaceCarto offcenter copy.
-	go = (0 @ 0) ifTrue:[^self].
-	
-	self setScaleFormCartoBuffer: 1.
-	self isBufferReady ifFalse:[
-		self stopBufferWorker.
-		bufferOffset := 0 @ 0.
-		self renderGeoSurface: self surfaceCarto surface on: self surfaceCartoBuffer surface offset: 0@0
-	] ifTrue:[
-		bufferOffset := 256@256.
-	].
-	self surfaceCarto offcenter: 0 @ 0.
-	context := self surfaceCarto surface newContext.
-	context sourceColor: self class colorWithoutTile;paint.
-	scale := self surfaceCarto scale.
-	self setScaleFormCarto: 1.
-	self setScaleFormCartoBuffer: scale x.
-	bufferOffset := (bufferOffset * (self surfaceCartoBuffer scale)) floor.
-					
-	self renderGeoSurface: self surfaceCartoBuffer surface on: self surfaceCarto surface offset: (go + bufferOffset) floor scale: self surfaceCartoBuffer scale
 ]
 
 { #category : #'loading and updating' }
@@ -147,6 +145,7 @@ GeoViewCartoTilesLayer >> buildVMapLayerTiles: aVMapTilesXY buffer: aLargerVMapT
 	
 	findAtLeastOneTile := false.
 	self surfaceCarto ifNil:[^findAtLeastOneTile].
+	self surfaceCarto offcenter: self cartoOffcenter.
 	self surfaceCarto position: self graphicProjection cartesianCenter.
 	
 	self buildBufferWorker ifNotNil:[
@@ -154,10 +153,10 @@ GeoViewCartoTilesLayer >> buildVMapLayerTiles: aVMapTilesXY buffer: aLargerVMapT
 		self isBufferReady: false.
 	].
 
-	findAtLeastOneTile := self loadAndRenderTiles: aVMapTilesXY on: self surfaceCarto offset: 0@0 level: aLevel.
+	findAtLeastOneTile := self loadAndRenderTiles: aVMapTilesXY on: self surfaceCarto offset: self cartoOffcenter negated level: aLevel.
 	
 	"VMAP Tiles computing completed"
-	self updateMapWith: self surfaceCarto.
+ 	self updateMapWith: self surfaceCarto.
 	
 	vMapServerTiles := self dictTilesByLevel at: aLevel ifAbsent:[nil].
 	vMapServerTiles ifNotNil:[
@@ -183,6 +182,13 @@ GeoViewCartoTilesLayer >> cartoBackground [
 GeoViewCartoTilesLayer >> cartoBackground: anObject [
 
 	^ cartoBackground := anObject
+]
+
+{ #category : #accessing }
+GeoViewCartoTilesLayer >> cartoOffcenter [
+
+	"^0@0"
+	^(-512)@(-512)
 ]
 
 { #category : #computing }
@@ -228,13 +234,22 @@ GeoViewCartoTilesLayer >> dictTilesByLevel: aDictionary [
 GeoViewCartoTilesLayer >> doBuildBufferThread: aLargerVMapTilesXY level: aLevel [
 
 	self isBufferReady: false.
-	self renderGeoSurface: self surfaceCarto surface on: self surfaceCartoBuffer surface offset: 0 @ 0.
-	"self surfaceCartoBuffer surface writePngTo: ('./testBuffer.png' asFileReference)."
-	self loadAndRenderTiles: aLargerVMapTilesXY on: self surfaceCartoBuffer offset: (((256@256) * self surfaceCartoBuffer scale) floor) level: aLevel.
-	"self surfaceCarto surface: self surfaceCartoBuffer surface."
+	"self renderGeoSurface: self surfaceCarto surface on: self surfaceCartoBuffer surface offset: 0@0 scale: self surfaceCarto scale."
+	"self surfaceCarto surface writePngTo: ('./testSurface.png' asFileReference)."
+	"	self surfaceCartoBuffer surface writePngTo: ('./testBuffer.png' asFileReference)."
+	self loadAndRenderTiles: aLargerVMapTilesXY on: self surfaceCartoBuffer offset: 512@512 "((-256)@(-256))""(((256@256) * self surfaceCartoBuffer scale) floor)" level: aLevel.
+		self mapMutex critical: [
+	self surfaceCarto surface: self surfaceCartoBuffer surface.
+	"self surfaceCarto offcenter: self surfaceCartoBuffer offcenter.
+	self surfaceCarto position: self surfaceCartoBuffer position."
+	self sendRepaintRequest]. 
+	
+	"self renderGeoSurface: self surfaceCartoBuffer surface on: self surfaceCarto surface offset: 0@0 scale: self surfaceCartoBuffer scale.
+	self updateMapWith: self surfaceCarto. "
 	"Transcript show: 'buffer ready';cr."
 	"self sendRepaintRequest."
 	"self surfaceCartoBuffer surface writePngTo: ('./testBuffer2.png' asFileReference)."
+	"self surfaceCartoBuffer surface writePngToPathString: 'testSurfaceCartoBuffer.png'."
 	self isBufferReady: true.
 ]
 
@@ -243,36 +258,28 @@ GeoViewCartoTilesLayer >> doLoadingTilesThread [
 
 	| centerPixel level tilesXY tilesXYBuffer findAtLeastOneTile realLevel|
 
-	
 	self previousCenter: currentGraphicProjection cartesianCenter.
 	self previousScale: currentGraphicProjection altitudeInMeters.
-	self surfaceCarto offcenter: 0@0.
-	
-	"self isComputingTiles ifFalse:[^self]."
-
+	self surfaceCarto offcenter: self cartoOffcenter.
 	
 	self isComputingTiles: true.
 
 	centerPixel := self getCenterInGeoPoint.
 	level := (self getTilesLevelForCurrentResolution) key.
-	"level > 0 ifTrue:[ level := level -1]."
 	
 	tilesXY := self getTilesXYFor: centerPixel level: level.
 	tilesXYBuffer := self getTilesXYForBuffer: centerPixel level: level.
-	
-	self buildVMapLayer.
+	tilesXYBuffer addAllFirst: tilesXY.
+
 	
 	findAtLeastOneTile := self buildVMapLayerTiles:  tilesXY buffer: tilesXYBuffer level: level.
 	
 	realLevel := level copy.
 	[findAtLeastOneTile or:[(realLevel - level) > 3]] whileFalse:[
-
-		"level := level -1."
+		level := level -1.
 		
 		tilesXY := self getTilesXYFor: centerPixel level: level.
 		tilesXYBuffer := self getTilesXYForBuffer: centerPixel level: level.
-		
-		self buildVMapLayer.
 		
 		findAtLeastOneTile := self buildVMapLayerTiles:  tilesXY buffer: tilesXYBuffer level: level.
 	].
@@ -592,9 +599,9 @@ GeoViewCartoTilesLayer >> getTilesXYFor: aCenter level: aLevel [
 		]
 	].
 
-maxTiles := 2 raisedTo: aLevel.
+	maxTiles := 2 raisedTo: aLevel.
 
-vMapTilesXY := vMapTilesXY select:[:t | (t x >= 0 and:[t y >= 0]) and:[ t x < maxTiles and:[ t y < maxTiles]]].
+	vMapTilesXY := vMapTilesXY select:[:t | (t x >= 0 and:[t y >= 0]) and:[ t x < maxTiles and:[ t y < maxTiles]]].
 
 	^vMapTilesXY
 ]
@@ -635,7 +642,7 @@ GeoViewCartoTilesLayer >> getTilesXYForBuffer: aCenter level: aLevel [
 
 	maxTiles := 2 raisedTo: aLevel.
 
-vMapTilesXYBuffer := vMapTilesXYBuffer select:[:t | (t x >= 0 and:[t y >= 0]) and:[ t x < maxTiles and:[ t y < maxTiles]]].
+	vMapTilesXYBuffer := vMapTilesXYBuffer select:[:t | (t x >= 0 and:[t y >= 0]) and:[ t x < maxTiles and:[ t y < maxTiles]]].
 
 	^vMapTilesXYBuffer
 ]
@@ -646,8 +653,8 @@ GeoViewCartoTilesLayer >> initAndStartCartoBuilding [
 	self stopWorkers.
 
 	self mapMutex critical:[
-		self initSurfaceCarto: currentGraphicProjection extentInPixels extent.
-		self initSurfaceCartoBuffer: currentGraphicProjection extentInPixels extent + 512 @ 512.
+		self initSurfaceCarto: currentGraphicProjection extentInPixels extent + (1024 @ 1024).
+		self initSurfaceCartoBuffer: currentGraphicProjection extentInPixels extent + (1024 @ 1024).
 	].
 
 	self updateMapWith: self surfaceCarto.
@@ -677,6 +684,7 @@ GeoViewCartoTilesLayer >> initSurfaceCarto: anExtent [
 
 	geoSurface := GeoSurface new.
 	geoSurface surface: (AeCairoImageSurface extent: anExtent).
+	geoSurface offcenter: self cartoOffcenter.
 	self surfaceCarto: geoSurface
 ]
 
@@ -690,7 +698,7 @@ GeoViewCartoTilesLayer >> initSurfaceCartoBuffer: anExtent [
 
 	geoSurface := GeoSurface new.
 	geoSurface surface: (AeCairoImageSurface extent: anExtent).
-	geoSurface offcenter: 256 @ 256.
+	geoSurface offcenter: (-512)@(-512).
 	geoSurface isBuffer: true.
 	self surfaceCartoBuffer: geoSurface
 ]
@@ -747,6 +755,15 @@ GeoViewCartoTilesLayer >> isScalingMap: aBoolean [
 	isScalingMap := aBoolean 
 ]
 
+{ #category : #private }
+GeoViewCartoTilesLayer >> launchRequestUpdateTilesWorker [
+
+	self requestUpdateTilesWorker ifNotNil:[ self requestUpdateTilesWorker terminate. self requestUpdateTilesWorker: nil].
+	self requestUpdateTilesWorker: ([500 milliSeconds wait. self initAndStartCartoBuilding ]  forkAt: Processor systemBackgroundPriority
+			 named: 'Update tiles after delay')
+
+]
+
 { #category : #'loading and updating' }
 GeoViewCartoTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: anOffset level: aLevel [
 
@@ -758,13 +775,14 @@ GeoViewCartoTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: 
 		context := aSurface surface newContext.
 		context sourceColor: self class colorWithoutTile;paint
 	].
+
 	vMapServerTiles := self dictTilesByLevel at: aLevel ifAbsent:[nil].
 	vMapServerTiles ifNil: [vMapServerTiles := Dictionary new: 10000].
 	tilesXY := aListTilesXY copy.
 	nbTiles := tilesXY size.
 
 	self flag: 'TODO: Enlever ce delai (qui permet affichage des premieres tuiles)'.
-	25 milliSeconds wait.
+	50 milliSeconds wait.
 
 	[index <= nbTiles and: [ self isComputingTiles]]
 		whileTrue: 
@@ -778,9 +796,10 @@ GeoViewCartoTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: 
 												getGeoImageAtTileXY: tKey
 												level: aLevel.
 									geoTile].
-					findAtLeastOneTile := findAtLeastOneTile or:[ t isNoPicture not].
+
 					self computeGraphicBoundsForTile: t level: aLevel.
 					self offcenterGeoPngTile: t offset: anOffset level: aLevel.
+										findAtLeastOneTile := findAtLeastOneTile or:[ t isNoPicture not and:[ t graphicBounds origin < currentGraphicProjection extentInPixels extent]].
 				
 					self renderTileImage: t on: aSurface surface.
 					aSurface isBuffer ifFalse:[ self updateMapWith: aSurface].
@@ -821,12 +840,27 @@ GeoViewCartoTilesLayer >> mapSize: aLevel [
 	^(256 bitShift: aLevel) asInteger
 ]
 
+{ #category : #accessing }
+GeoViewCartoTilesLayer >> mapTilesDirectory [
+
+	mapTilesDirectory ifNil:[ mapTilesDirectory := (FileLocator imageDirectory / self class tilesMapDir / self class prefixType )].
+	^mapTilesDirectory
+]
+
+{ #category : #accessing }
+GeoViewCartoTilesLayer >> mapTilesDirectory: aPath [
+
+	mapTilesDirectory := aPath 
+]
+
 { #category : #private }
 GeoViewCartoTilesLayer >> moveCartoBackground [
 
 	| previousPixel proc|
+
 	self movingProc ifNotNil:[ self movingProc isTerminated ifFalse:[ self movingProc terminate] ].
 	self movingOffset: 0@0.
+
 	proc := [
 		self previousCenter ifNil:[self previousCenter: currentGraphicProjection cartesianCenter copy]. 
 		[self isMovingMap or:[self movingOffset r > 1 ]] whileTrue: [
@@ -839,12 +873,12 @@ GeoViewCartoTilesLayer >> moveCartoBackground [
 				self cartoBackground offcenter: self cartoBackground offcenter + self movingOffset.
 				self sendRepaintRequest 
 			].
-			self movingOffset: self movingOffset * 0.8.
+			self allowSlideMoving ifTrue:[ self movingOffset: self movingOffset * 0.8 ] ifFalse:[ self movingOffset: 0@0].
 		
 			50 milliSeconds wait.
 			self isMovingMap: false.
 		].
-		self movingProc: nil
+		self movingProc: nil.
 	].
 
 	self movingProc: (proc forkAt: Processor userSchedulingPriority).
@@ -904,22 +938,23 @@ GeoViewCartoTilesLayer >> needToRecomputeCarto: aContext [
 
 	| previousPixel  currentPixel centerOffsetPixel |
 	previousPixel := 0@0.
-	self isScalingMap ifTrue:[^false].
+	(self isScalingMap and:[aContext scaleCenterPoint notNil ]) ifTrue:[^false].
+	(self scalingProc notNil and: [self scalingProc isActive ])ifTrue:[^false].
 	currentGraphicProjection ifNil:[ ^ true ].
 	self previousCenter ifNil:[^true].
 	
-	previousPixel := currentGraphicProjection projCartToPixel: self previousCenter.
-	
+	previousPixel := currentGraphicProjection projCartToPixel: self surfaceCarto position.
 	currentPixel := currentGraphicProjection projCartToPixel: (currentGraphicProjection cartesianCenter).
 	currentPixel ifNil:[ currentPixel := 0@0 ].
 	centerOffsetPixel := (previousPixel - currentPixel) abs.
-	
+
 	"Ignore others processing when only center changed"
 	aContext isMapProjectionChange ifFalse:[
 		aContext isExtentChanged ifFalse:[
 				aContext isResolutionChanged ifFalse:[
 						aContext isScaleChanged ifFalse:[ 
 							(aContext isCenterChanged and:[ centerOffsetPixel r <= 256 ]) ifTrue:[
+								self allowSmallMovingWithoutRedraw ifFalse:[^true].
 								^ false
 							] 
 						].
@@ -934,7 +969,7 @@ GeoViewCartoTilesLayer >> needToRecomputeCarto: aContext [
 GeoViewCartoTilesLayer >> needToScaleCarto: aContext [
 
 	(aContext isScaleChanged or:[aContext isResolutionChanged]) ifTrue:[
-		self isScalingMap: aContext scaleCenterPoint notNil 
+		self isScalingMap: true
 	]
 ]
 
@@ -952,7 +987,7 @@ GeoViewCartoTilesLayer >> offcenterGeoPngTile: aTile offset: anOffset level: aLe
 	center := (origin + corner) /2.
 	 
 	modelCenter := self getCenterInPixel.
-	aTile offcenter: ((center - modelCenter + anOffset) floor).
+	aTile offcenter: ((center - modelCenter + anOffset) floor)
 ]
 
 { #category : #accessing }
@@ -1023,7 +1058,7 @@ GeoViewCartoTilesLayer >> renderGeoSurface: aSourceGeoSurface on: aTargetGeoSurf
 	offset := anOffset ifNil:[0@0] ifNotNil:[anOffset].
 
 	centerPoint := self graphicProjection projCartToPixel: self graphicProjection cartesianCenter.
-	centerPoint := centerPoint + offset.
+	centerPoint := "centerPoint +"(128@128)+ offset + (256@256).
 	
 	self renderSurface: aSourceGeoSurface on: aTargetGeoSurface scale: aScale centeredAt: centerPoint
 
@@ -1045,7 +1080,7 @@ GeoViewCartoTilesLayer >> renderSurface: aSurface on: aTargetSurface scale: aXYS
 	targetContext sourceSurface: aSurface x: 0 y: 0.
 	targetContext paint.
 	
-	targetContext sourceColor: Color green;
+	"targetContext sourceColor: Color green;
 		rectangle: (0@0 extent: 256 asPoint);
 		stroke.
 		
@@ -1054,7 +1089,7 @@ GeoViewCartoTilesLayer >> renderSurface: aSurface on: aTargetSurface scale: aXYS
 		translateBy: 128@128;
 		showText: '';
 		stroke.
-
+_"
 	
 ]
 
@@ -1135,11 +1170,13 @@ GeoViewCartoTilesLayer >> scaleCartoBackground: aContext [
 	
 	step := 0.1.
 	self isScalingMap ifFalse:[^self].
+	self launchRequestUpdateTilesWorker.
+	aContext scaleCenterPoint ifNil:[^self]. 
 	scaleCenterAbs := aContext scaleCenterPoint copy.
 	scaleCenterAbs ifNil:[^self].
 	self scalingProc ifNotNil:[ self scalingProc isTerminated ifFalse:[ self scalingProc terminate]. self scalingProc: nil].
 	self scalingRatio ifNil:[ self scalingRatio: 0 ].
-	self cartoBackground  ifNotNil:[ self cartoBackground offcenter: 0@0].
+	self cartoBackground  ifNotNil:[ self cartoBackground offcenter: self cartoOffcenter ].
 
 	proc := [
 		self previousScale ifNil:[self previousScale: currentGraphicProjection altitudeInMeters copy]. 
@@ -1154,7 +1191,7 @@ GeoViewCartoTilesLayer >> scaleCartoBackground: aContext [
 				] ifFalse:[
 					ratio >= 0.5 ifTrue:[self scalingRatio: (1/ratio) - 1].
 				].
-			].
+			] "ifFalse: [ self launchRequestUpdateTilesWorker]".
 			
 			
 			
@@ -1168,7 +1205,7 @@ GeoViewCartoTilesLayer >> scaleCartoBackground: aContext [
 				prevPositionPixel := (self projCartToPixel: scaleCenter metersByPixel: self graphicProjection metersByPixel) copy.
 				positionPixel := ((self projCartToPixel: scaleCenter metersByPixel: self graphicProjection metersByPixel ) * scale )copy.
 
-				offsetCenter :=  (positionPixel - prevPositionPixel) / scale.
+				offsetCenter :=  (self cartoOffcenter + (positionPixel - prevPositionPixel)) / scale.
 			self mapMutex critical: [
 				self cartoBackground scale: (scale@scale).
 				self cartoBackground offcenter: offsetCenter.
@@ -1179,12 +1216,11 @@ GeoViewCartoTilesLayer >> scaleCartoBackground: aContext [
 			] ifFalse:[
 				self scalingRatio: ((self scalingRatio + step) min: 0).
 			].
-		
-			50 milliSeconds wait.
+	
+			25 milliSeconds wait.
 			self isScalingMap: false.
 		].
 		self scalingProc:nil.
-
 	].
 
 	self scalingProc: (proc forkAt: Processor userSchedulingPriority).
@@ -1232,6 +1268,24 @@ GeoViewCartoTilesLayer >> scalingRatio: aRatio [
 	scalingRatio := aRatio
 
 	
+]
+
+{ #category : #parameters }
+GeoViewCartoTilesLayer >> setAllowSlideMoving: aBoolean [
+ 
+	self allowSlideMoving: aBoolean
+]
+
+{ #category : #parameters }
+GeoViewCartoTilesLayer >> setAllowSmallMovingWithoutRedraw: aBoolean [
+ 
+	self allowSmallMovingWithoutRedraw: aBoolean
+]
+
+{ #category : #parameters }
+GeoViewCartoTilesLayer >> setMapTilesDirectory: aPath [
+
+	self mapTilesDirectory: aPath
 ]
 
 { #category : #scale }
@@ -1323,14 +1377,9 @@ GeoViewCartoTilesLayer >> updateMapWith: aGeoImage [
 
 	aGeoImage ifNil: [ ^ self ].
 
-
-
 	self mapMutex critical: [
-		"(self movingProc isNil or:[self movingProc isTerminated]) ifFalse:[ ^self].
-(self scalingProc isNil or:[self scalingProc isTerminated]) ifFalse:['scaling en cours - pas de dessin' traceCr. ^self]."
-		
 		self cartoBackground: aGeoImage.
-		self cartoBackground offcenter: 0 @ 0.
+		self cartoBackground offcenter: self cartoOffcenter.
 		self cartoBackground scale: 1 @ 1.
 		self cartoBackground position: currentGraphicProjection cartesianCenter.
 		self sendRepaintRequest 
@@ -1352,11 +1401,9 @@ GeoViewCartoTilesLayer >> updateModel: aContext [
 	needToReComputeCarto := self needToRecomputeCarto: aContext.
 	self moveCartoBackground.
 	self scaleCartoBackground: aContext.
-	needToReComputeCarto ifTrue: [ 
-		self initAndStartCartoBuilding 
-	] ifFalse: [ 
-		self requestUpdateTilesWorker ifNotNil:[ self requestUpdateTilesWorker terminate. self requestUpdateTilesWorker: nil].
-	 	self requestUpdateTilesWorker: ([500 milliSeconds wait. self initAndStartCartoBuilding ]  forkAt: Processor systemBackgroundPriority
-			 named: 'Update tiles after delay')
-	]
+	needToReComputeCarto ifFalse: [ ^self].
+	self isMovingMap ifFalse:[
+		self initAndStartCartoBuilding
+	] ifTrue: [ self launchRequestUpdateTilesWorker ]
+	
 ]
