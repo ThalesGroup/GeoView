@@ -98,13 +98,12 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 	
 	element maxScaleInMeters: element maxScaleInMeters * 8.
-	element scaleInMeters: 200000.
-	element geoCenter: AbsoluteCoordinates frBrest.
+	element scaleInMeters: 150000.
 	
 	"add carto layer"
 	layer := GeoViewCartoTilesLayer new.
 	layer name: 'SampleCartoLayer'.
-	layer setAllowSmallMovingWithoutRedraw: false.
+	layer setAllowSmallMovingWithoutRedraw: true.
 	layer setAllowSlideMoving: false.
 	element addLayerAtFirst: layer.
 	
@@ -113,9 +112,9 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 
 	space := self openViewInWindow: element.
 	space setExtent: 1200@800.
-	
-	newCenter := element geoCenter copy.
-	[ (1 to: 10) do:[:i | 5 seconds wait.
+	1 seconds wait.
+	newCenter := AbsoluteCoordinates frBrest copy.
+	[ (1 to: 30) do:[:i | 1 seconds wait.
 		newCenter := AbsoluteCoordinates latitudeInDegrees: (newCenter latitudeInDegrees + 0.05)  longitudeInDegrees: (newCenter longitudeInDegrees + 0.05).
 		element geoCenter: newCenter.
 		circle absoluteCoordinates:newCenter.

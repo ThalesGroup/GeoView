@@ -258,6 +258,7 @@ GeoViewCartoTilesLayer >> doLoadingTilesThread [
 
 	| centerPixel level tilesXY tilesXYBuffer findAtLeastOneTile realLevel|
 
+	self scalingProc ifNotNil:[ self scalingProc isActive ifTrue:[^self]].
 	self previousCenter: currentGraphicProjection cartesianCenter.
 	self previousScale: currentGraphicProjection altitudeInMeters.
 	self surfaceCarto offcenter: self cartoOffcenter.
@@ -651,6 +652,8 @@ GeoViewCartoTilesLayer >> getTilesXYForBuffer: aCenter level: aLevel [
 GeoViewCartoTilesLayer >> initAndStartCartoBuilding [
 
 	self stopWorkers.
+	
+		self scalingProc ifNotNil:[ self scalingProc isActive ifTrue:[^self]].
 
 	self mapMutex critical:[
 		self initSurfaceCarto: currentGraphicProjection extentInPixels extent + (1024 @ 1024).
@@ -786,7 +789,7 @@ GeoViewCartoTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: 
 
 	[index <= nbTiles and: [ self isComputingTiles]]
 		whileTrue: 
-			[| tKey |
+			[| tKey isValidTile |
 			tKey := tilesXY at: index.
 			index := index + 1.
 						
@@ -799,7 +802,8 @@ GeoViewCartoTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: 
 
 					self computeGraphicBoundsForTile: t level: aLevel.
 					self offcenterGeoPngTile: t offset: anOffset level: aLevel.
-										findAtLeastOneTile := findAtLeastOneTile or:[ t isNoPicture not and:[ t graphicBounds origin < currentGraphicProjection extentInPixels extent]].
+					isValidTile := t isNoPicture not and:[ (t graphicBounds origin <= currentGraphicProjection extentInPixels extent) and:[t graphicBounds origin >= currentGraphicProjection extentInPixels origin]].
+					findAtLeastOneTile := findAtLeastOneTile or:[ isValidTile ].
 				
 					self renderTileImage: t on: aSurface surface.
 					aSurface isBuffer ifFalse:[ self updateMapWith: aSurface].
@@ -969,7 +973,8 @@ GeoViewCartoTilesLayer >> needToRecomputeCarto: aContext [
 GeoViewCartoTilesLayer >> needToScaleCarto: aContext [
 
 	(aContext isScaleChanged or:[aContext isResolutionChanged]) ifTrue:[
-		self isScalingMap: true
+		self isScalingMap: aContext scaleCenterPoint notNil.
+		aContext scaleCenterPoint ifNil:[ self launchRequestUpdateTilesWorker].
 	]
 ]
 
@@ -1169,8 +1174,9 @@ GeoViewCartoTilesLayer >> scaleCartoBackground: aContext [
 	|  proc ratio step scaleCenter scaleCenterAbs  offsetCenter positionPixel prevPositionPixel |
 	
 	step := 0.1.
+
 	self isScalingMap ifFalse:[^self].
-	self launchRequestUpdateTilesWorker.
+		
 	aContext scaleCenterPoint ifNil:[^self]. 
 	scaleCenterAbs := aContext scaleCenterPoint copy.
 	scaleCenterAbs ifNil:[^self].
@@ -1191,7 +1197,7 @@ GeoViewCartoTilesLayer >> scaleCartoBackground: aContext [
 				] ifFalse:[
 					ratio >= 0.5 ifTrue:[self scalingRatio: (1/ratio) - 1].
 				].
-			] "ifFalse: [ self launchRequestUpdateTilesWorker]".
+			] ifFalse: [ self launchRequestUpdateTilesWorker].
 			
 			
 			
@@ -1217,13 +1223,13 @@ GeoViewCartoTilesLayer >> scaleCartoBackground: aContext [
 				self scalingRatio: ((self scalingRatio + step) min: 0).
 			].
 	
-			25 milliSeconds wait.
+			50 milliSeconds wait.
 			self isScalingMap: false.
 		].
 		self scalingProc:nil.
 	].
 
-	self scalingProc: (proc forkAt: Processor userSchedulingPriority).
+	self scalingProc: (proc forkAt: 50"Processor userSchedulingPriority").
 
 	
 
@@ -1376,6 +1382,8 @@ GeoViewCartoTilesLayer >> tileNumberForLat: aLat long: aLong zoom: aZoomLevel [
 GeoViewCartoTilesLayer >> updateMapWith: aGeoImage [
 
 	aGeoImage ifNil: [ ^ self ].
+
+	self scalingProc ifNotNil:[ self scalingProc isActive ifTrue:[^self]].
 
 	self mapMutex critical: [
 		self cartoBackground: aGeoImage.
