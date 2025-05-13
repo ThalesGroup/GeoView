@@ -1,3 +1,6 @@
+"
+GeoImage contains element to display a map tile 
+"
 Class {
 	#name : #GeoImage,
 	#superclass : #Object,

@@ -1,3 +1,6 @@
+"
+GeoSurface contains elements to display a map screen
+"
 Class {
 	#name : #GeoSurface,
 	#superclass : #Object,

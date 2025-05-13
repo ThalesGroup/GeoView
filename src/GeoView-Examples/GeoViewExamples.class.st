@@ -82,7 +82,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayer [
 	element maxScaleInMeters: element maxScaleInMeters * 8.
 	
 	"add carto layer"
-	layer := GeoViewCartoTilesLayer new.
+	layer := GeoViewMapTilesLayer new.
 	layer name: 'SampleCartoLayer'.
 	element addLayer: layer.
 
@@ -101,10 +101,9 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	element scaleInMeters: 150000.
 	
 	"add carto layer"
-	layer := GeoViewCartoTilesLayer new.
+	layer := GeoViewMapTilesLayer new.
 	layer name: 'SampleCartoLayer'.
-	layer setAllowSmallMovingWithoutRedraw: true.
-	layer setAllowSlideMoving: false.
+	layer allowSlideMoving: false.
 	element addLayerAtFirst: layer.
 	
 	circle := GeoCircle new key: 1; radiusInMeters: 2000; fillStyle: (Color red asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates frBrest.
