@@ -74,7 +74,7 @@ GeoViewExamples class >> createTask: aBlockClosure [
 
 { #category : #examples }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayer [
-	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	"This example show a map layer (assuming there are tiles on default tiles directory (/map/r)"
 	
 	| element layer |
 	element := GeoViewAeElement new.
@@ -92,7 +92,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayer [
 
 { #category : #examples }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
-	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	"This example show a map layer (assuming an internet connection to default url open street map"
 	
 	| element layer |
 	element := GeoViewAeElement new.
@@ -111,7 +111,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
 
 { #category : #examples }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
-	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	"This example show a map layer with update of map center every seconds (during 30s)"
 	
 	| element layer newCenter space circle|
 	element := GeoViewUtils createGeoViewForGeoObjects.
