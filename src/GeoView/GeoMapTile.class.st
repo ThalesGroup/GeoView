@@ -2,7 +2,7 @@
 GeoImage contains element to display a map tile 
 "
 Class {
-	#name : #GeoImage,
+	#name : #GeoMapTile,
 	#superclass : #Object,
 	#instVars : [
 		'form',
@@ -20,124 +20,124 @@ Class {
 }
 
 { #category : #accessing }
-GeoImage >> form [
+GeoMapTile >> form [
 
 	^ form
 ]
 
 { #category : #accessing }
-GeoImage >> form: anObject [
+GeoMapTile >> form: anObject [
 
 	form := anObject
 ]
 
 { #category : #accessing }
-GeoImage >> geoBounds [
+GeoMapTile >> geoBounds [
 
 	^ geoBounds
 ]
 
 { #category : #accessing }
-GeoImage >> geoBounds: aGeoBounds [
+GeoMapTile >> geoBounds: aGeoBounds [
 
 	geoBounds := aGeoBounds
 ]
 
 { #category : #accessing }
-GeoImage >> graphicBounds [
+GeoMapTile >> graphicBounds [
 
 	^ graphicBounds
 ]
 
 { #category : #accessing }
-GeoImage >> graphicBounds: anObject [
+GeoMapTile >> graphicBounds: anObject [
 
 	graphicBounds := anObject
 ]
 
 { #category : #accessing }
-GeoImage >> isNoPicture [
+GeoMapTile >> isNoPicture [
 
 	isNoPicture ifNil:[ isNoPicture := false].
 	^ isNoPicture
 ]
 
 { #category : #accessing }
-GeoImage >> isNoPicture: anObject [
+GeoMapTile >> isNoPicture: anObject [
 
 	isNoPicture := anObject
 ]
 
 { #category : #accessing }
-GeoImage >> level [
+GeoMapTile >> level [
 
 	^level
 ]
 
 { #category : #accessing }
-GeoImage >> level: aLevel [
+GeoMapTile >> level: aLevel [
 
 	level := aLevel
 ]
 
 { #category : #accessing }
-GeoImage >> offcenter [
+GeoMapTile >> offcenter [
 
 	offcenter ifNil:[ offcenter := 0@0].
 	^ offcenter
 ]
 
 { #category : #accessing }
-GeoImage >> offcenter: anObject [
+GeoMapTile >> offcenter: anObject [
 
 	offcenter := anObject
 ]
 
 { #category : #accessing }
-GeoImage >> pngReference [
+GeoMapTile >> pngReference [
 
 	^ pngReference
 ]
 
 { #category : #accessing }
-GeoImage >> pngReference: aFileReference [
+GeoMapTile >> pngReference: aFileReference [
 
 	pngReference := aFileReference
 ]
 
 { #category : #accessing }
-GeoImage >> position [
+GeoMapTile >> position [
 
 	^ position
 ]
 
 { #category : #accessing }
-GeoImage >> position: anObject [
+GeoMapTile >> position: anObject [
 
 	position := anObject
 ]
 
 { #category : #accessing }
-GeoImage >> scale [
+GeoMapTile >> scale [
 
 	scale ifNil:[ scale := 1@1].
 	^ scale
 ]
 
 { #category : #accessing }
-GeoImage >> scale: anObject [
+GeoMapTile >> scale: anObject [
 
 	scale := anObject
 ]
 
 { #category : #accessing }
-GeoImage >> tileXY [
+GeoMapTile >> tileXY [
 
 	^ tileXY
 ]
 
 { #category : #accessing }
-GeoImage >> tileXY: anObject [
+GeoMapTile >> tileXY: anObject [
 
 	tileXY := anObject
 ]

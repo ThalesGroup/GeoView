@@ -2,7 +2,7 @@
 GeoSurface contains elements to display a map screen
 "
 Class {
-	#name : #GeoSurface,
+	#name : #GeoMapSurface,
 	#superclass : #Object,
 	#instVars : [
 		'surface',
@@ -15,64 +15,64 @@ Class {
 }
 
 { #category : #accessing }
-GeoSurface >> isBuffer [
+GeoMapSurface >> isBuffer [
 
 	isBuffer ifNil:[ isBuffer := false].
 	^ isBuffer
 ]
 
 { #category : #accessing }
-GeoSurface >> isBuffer: anObject [
+GeoMapSurface >> isBuffer: anObject [
 
 	isBuffer := anObject
 ]
 
 { #category : #accessing }
-GeoSurface >> offcenter [
+GeoMapSurface >> offcenter [
 
 	offcenter ifNil:[ offcenter := 0@0].
 	^ offcenter
 ]
 
 { #category : #accessing }
-GeoSurface >> offcenter: anObject [
+GeoMapSurface >> offcenter: anObject [
 
 	offcenter := anObject
 ]
 
 { #category : #accessing }
-GeoSurface >> position [
+GeoMapSurface >> position [
 
 	^ position
 ]
 
 { #category : #accessing }
-GeoSurface >> position: anObject [
+GeoMapSurface >> position: anObject [
 
 	position := anObject
 ]
 
 { #category : #accessing }
-GeoSurface >> scale [
+GeoMapSurface >> scale [
 
 	scale ifNil:[ scale := 1@1].
 	^ scale
 ]
 
 { #category : #accessing }
-GeoSurface >> scale: anObject [
+GeoMapSurface >> scale: anObject [
 
 	scale := anObject
 ]
 
 { #category : #accessing }
-GeoSurface >> surface [
+GeoMapSurface >> surface [
 
 	^ surface
 ]
 
 { #category : #accessing }
-GeoSurface >> surface: anObject [
+GeoMapSurface >> surface: anObject [
 
 	surface := anObject
 ]

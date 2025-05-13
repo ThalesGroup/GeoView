@@ -91,6 +91,25 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayer [
 ]
 
 { #category : #examples }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new.
+	layer name: 'SampleCartoLayer'.
+	layer useLocalTilesDirectory: false.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #examples }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
 	
@@ -104,14 +123,15 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	layer := GeoViewMapTilesLayer new.
 	layer name: 'SampleCartoLayer'.
 	layer allowSlideMoving: false.
+	layer useLocalTilesDirectory: false.
 	element addLayerAtFirst: layer.
 	
 	circle := GeoCircle new key: 1; radiusInMeters: 2000; fillStyle: (Color red asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates frBrest.
 	element addObject: circle.
 
 	space := self openViewInWindow: element.
-	space setExtent: 1200@800.
-	1 seconds wait.
+
+	4 seconds wait.
 	newCenter := AbsoluteCoordinates frBrest copy.
 	[ (1 to: 30) do:[:i | 1 seconds wait.
 		newCenter := AbsoluteCoordinates latitudeInDegrees: (newCenter latitudeInDegrees + 0.05)  longitudeInDegrees: (newCenter longitudeInDegrees + 0.05).
