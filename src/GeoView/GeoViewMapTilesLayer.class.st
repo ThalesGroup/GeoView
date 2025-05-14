@@ -94,12 +94,6 @@ GeoViewMapTilesLayer >> allowSlideMoving: aBoolean [
 	allowSlideMoving := aBoolean
 ]
 
-{ #category : #accessing }
-GeoViewMapTilesLayer >> buildBufferWorker: anObject [
-
-	buildBufferWorker := anObject
-]
-
 { #category : #tiles }
 GeoViewMapTilesLayer >> buildFilenameForXY: aTileXY zoom: aLevel [
 
@@ -563,14 +557,9 @@ GeoViewMapTilesLayer >> initAndStartMapBuilding [
 
 	self stopTilesWorker.
 	
-	"self scalingProc ifNotNil:[ self scalingProc isActive ifTrue:[^self]]."
-
 	self mapMutex critical:[
 		self initSurfaceMap: currentGraphicProjection extentInPixels extent + (1024 @ 1024).
-		"self initSurfaceMapBuffer: currentGraphicProjection extentInPixels extent + (1024 @ 1024)."
 	].
-
-	"self updateMapWith: self surfaceMap."
 
 	self loadingTilesWorker: ([ self doLoadingTilesThread ]
 			 forkAt: Processor systemBackgroundPriority
@@ -581,8 +570,6 @@ GeoViewMapTilesLayer >> initAndStartMapBuilding [
 GeoViewMapTilesLayer >> initSurfaceMap: anExtent [
 
 	| geoSurface |
-"	(self surfaceMap notNil and: [
-		 self surfaceMap surface extent = anExtent ]) ifTrue: [ ^ self ]."
 
 	geoSurface := GeoMapSurface new.
 	geoSurface surface: (AeCairoImageSurface extent: anExtent).
@@ -638,7 +625,7 @@ GeoViewMapTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: an
 	tilesXY := aListTilesXY copy.
 	nbTiles := tilesXY size.
 
-	[index <= nbTiles "and: [ self isComputingTiles]"]
+	[index <= nbTiles]
 		whileTrue: 
 			[| tKey isValidTile |
 			tKey := tilesXY at: index.
@@ -648,11 +635,10 @@ GeoViewMapTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: an
 
 				self computeGraphicBoundsForTile: t level: aLevel.
 				self offcenterGeoPngTile: t offset: anOffset level: aLevel.
-				isValidTile := t isNoPicture not "and:[ (t graphicBounds origin <= currentGraphicProjection extentInPixels extent) and:[t graphicBounds origin >= currentGraphicProjection extentInPixels origin]]".
+				isValidTile := t isNoPicture not.
 				findAtLeastOneTile := findAtLeastOneTile or:[ isValidTile ].
 				
 				self renderTileImage: t on: aSurface surface.
-					"aSurface isBuffer ifFalse:[ self updateMapWith: aSurface]."
 			] on:[ Exception ] do:[:ex |
 					Transcript show: 'Error on VMapTiles computing :';show: ex printString;cr.
 					(Delay forMilliseconds: 1000) wait.
@@ -969,17 +955,6 @@ GeoViewMapTilesLayer >> requestUpdateTilesWorker [
 GeoViewMapTilesLayer >> requestUpdateTilesWorker: anObject [
 
 	requestUpdateTilesWorker := anObject
-]
-
-{ #category : #private }
-GeoViewMapTilesLayer >> resetMapSurface: aSurface [
-
-	| context |
-	aSurface isBuffer ifFalse:[
-		context := aSurface surface newContext.
-		context sourceColor: self class colorWithoutTile;paint
-	].
-
 ]
 
 { #category : #private }
