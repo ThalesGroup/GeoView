@@ -151,11 +151,12 @@ GeoViewMapTilesLayer >> clip: num min: min max: max [
 { #category : #'loading and updating' }
 GeoViewMapTilesLayer >> computeGraphicBoundsForTile: aGeoFormTile level: aLevel [
 
-	| centerPixel vMapTileCenter diffXY diffPixel origin corner graphicBounds |
+	| centerPixel vMapTileCenter diffXY diffPixel origin corner graphicBounds centerGeoPoint|
 	
 	aGeoFormTile isNoPicture ifTrue:[
-		centerPixel := self graphicProjection projCartToPixel: self graphicProjection cartesianCenter.
-		vMapTileCenter := self getTileXYFromGeoPoint: centerPixel level: aLevel.
+		centerPixel := self getCenterInPixel.
+		centerGeoPoint := self getCenterInGeoPoint.
+		vMapTileCenter := self getTileXYFromGeoPoint: centerGeoPoint level: aLevel.
 		diffXY := aGeoFormTile tileXY - vMapTileCenter.
 		diffPixel := diffXY * (256@256).
 		origin := (centerPixel) + diffPixel.
@@ -351,6 +352,7 @@ GeoViewMapTilesLayer >> getPixelXYFromGeoPoint: aGeoPoint level: aLevel [
 	lat := aGeoPoint y.
 	lon := aGeoPoint x.
 	pt := 0 @ 0.
+	((self sinLatitude: lat) = 1) ifTrue:[^pt].
 	pt setX: ((lon + 180) / 360) setY: (0.5 - (((1 + (self sinLatitude: lat)) / (1 - (self sinLatitude: lat))) ln / (4 * Float pi))).
 	pt setX: ((self
 				clip: pt x * (self mapSize: aLevel)
@@ -411,15 +413,13 @@ GeoViewMapTilesLayer >> getTileXYFromPixelXY: aPixelPt [
 { #category : #level }
 GeoViewMapTilesLayer >> getTilesLevelForCurrentResolution [
 
-	| tile points pt2 pt3 h current  center tileHeight centerPixels|
+	| tile points pt2 pt3 h current tileHeight centerGeoPoint|
 	
 	tileHeight := 128.
-	center := self graphicProjection cartesianCenter.
-	centerPixels := self graphicProjection projCartToPixel: center.
-	
+	centerGeoPoint := self getCenterInGeoPoint.
 	(18 to: 1 by: -1) detect: 
 			[:i |
-			tile := self getTileXYFromGeoPoint: centerPixels level: i.
+			tile := self getTileXYFromGeoPoint: centerGeoPoint level: i.
 			points := self getGeoRectanglePointsFromTileXY: tile level: i.
 			points := points collect: [:pt | self getGraphicPositionFromGeoPosition: pt].
 			pt2 := points at: 2.
