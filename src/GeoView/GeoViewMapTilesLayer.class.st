@@ -116,7 +116,7 @@ GeoViewMapTilesLayer >> buildVMapLayerTiles: aVMapTilesXY buffer: aLargerVMapTil
 	findAtLeastOneTile := false.
 	self surfaceMap ifNil:[^findAtLeastOneTile].
 	self surfaceMap offcenter: self mapOffcenter.
-	self surfaceMap position: self graphicProjection cartesianCenter.
+	self surfaceMap position: currentGraphicProjection cartesianCenter.
 
 	context := self surfaceMap surface newContext.
 	context sourceColor: self class colorWithoutTile;paint.
@@ -225,7 +225,7 @@ GeoViewMapTilesLayer >> downloadImageFromTileXY: aPt level: aLevel [
 GeoViewMapTilesLayer >> getCenterInGeoPoint [
 
 	| center centerGeoPoint |
-	center := self graphicProjection cartesianCenter.
+	center := currentGraphicProjection cartesianCenter.
 	centerGeoPoint := self mapProjection projCartToLatLon: center.
 	
 	^centerGeoPoint longitudeInDegrees@centerGeoPoint latitudeInDegrees
@@ -238,8 +238,8 @@ GeoViewMapTilesLayer >> getCenterInGeoPoint [
 GeoViewMapTilesLayer >> getCenterInPixel [
 
 	| center centerPixel |
-	center := self graphicProjection cartesianCenter.
-	centerPixel := self graphicProjection projCartToPixel: center.
+	center := currentGraphicProjection cartesianCenter.
+	centerPixel := currentGraphicProjection projCartToPixel: center.
 	
 	^centerPixel
 	
@@ -324,7 +324,7 @@ GeoViewMapTilesLayer >> getGraphicPositionFromGeoPosition: aGeoPoint [
 	absCoord := AbsoluteCoordinates latitudeInDegrees: aGeoPoint y longitudeInDegrees: aGeoPoint x. 
 	cartCoord := self mapProjection projLatLonToCart: absCoord.
 	
-	pos := self graphicProjection projCartToPixel: cartCoord.
+	pos := currentGraphicProjection projCartToPixel: cartCoord.
 	
 	pos := pos + self viewInfos origin.
 	
@@ -442,7 +442,7 @@ GeoViewMapTilesLayer >> getTilesXYFor: aCenter level: aLevel [
 	vMapTileCenter := self getTileXYFromGeoPoint: aCenter level: aLevel.
 
 	"Compute nb of tiles (rows and columns) + 2@2 => add 2 tiles on each side"
-	tileQt := ((self graphicProjection extentInPixels extent / 256) + (2@2)) rounded.
+	tileQt := ((currentGraphicProjection extentInPixels extent / 256) + (2@2)) rounded.
 
 	"compute size of the square containing these tiles, and define order to start on center and go to the side on a spiral"
 	squareSize := (tileQt x) max: (tileQt y).
@@ -519,7 +519,7 @@ GeoViewMapTilesLayer >> getTilesXYForBuffer: aCenter level: aLevel [
 	vMapTilesXYBuffer := OrderedCollection new.
 	vMapTileCenter := self getTileXYFromGeoPoint: aCenter level: aLevel.
 
-	tileQt := (((self graphicProjection extentInPixels extent / 256) / 2) + (2@2)) rounded.
+	tileQt := (((currentGraphicProjection extentInPixels extent / 256) / 2) + (2@2)) rounded.
 
 	x := tileQt x + 1.
 	y := tileQt y + 1.
@@ -712,7 +712,7 @@ GeoViewMapTilesLayer >> moveMapBackground [
 
 	| previousPixel proc|
 
-	self movingProc ifNotNil:[ self movingProc isTerminated ifFalse:[ self movingProc terminate] ].
+	self movingProc ifNotNil:[ self movingProc isTerminated ifFalse:[ self movingProc terminate ] ].
 	self movingOffset: 0@0.
 	self mapBackground ifNil:[ ^self].
 
@@ -809,7 +809,7 @@ GeoViewMapTilesLayer >> needToRecomputeMap: aContext [
 		aContext isExtentChanged ifFalse:[
 				aContext isResolutionChanged ifFalse:[
 						aContext isScaleChanged ifFalse:[ 
-							(aContext isCenterChanged and:[ centerOffsetPixel r <= 256 ]) ifTrue:[
+							(aContext isCenterChanged and:[ centerOffsetPixel r <= 128 ]) ifTrue:[
 								^ false
 							] 
 						].
@@ -883,10 +883,10 @@ GeoViewMapTilesLayer >> projCartToPixel: aCartesianCoordinates metersByPixel: aM
 
 	| point pixel geoCenter |
 	point := aCartesianCoordinates asPoint.
-	geoCenter := self graphicProjection cartesianCenter asPoint.
+	geoCenter := currentGraphicProjection cartesianCenter asPoint.
 	pixel := ((point x @ point y negated) - (geoCenter x @ geoCenter y negated))
 		* aMetersByPixel
-		+ self graphicProjection offsetInPixels.
+		+ currentGraphicProjection offsetInPixels.
 
 	^ pixel
 ]
@@ -932,8 +932,8 @@ GeoViewMapTilesLayer >> renderTileImage: aGeoImageTile on: aSurface [
 	"Slightly increase size of tiles to avoid space between tiles"
 	scale := scale + ((0.005 * scale) max: 0.01).
 	
-	center := self graphicProjection cartesianCenter.
-	centerPixel := self graphicProjection projCartToPixel: center.
+	center := currentGraphicProjection cartesianCenter.
+	centerPixel := currentGraphicProjection projCartToPixel: center.
 	
 	aGeoImageTile offcenter ifNotNil:[ centerPixel := centerPixel + aGeoImageTile offcenter].
 	
@@ -958,6 +958,14 @@ GeoViewMapTilesLayer >> requestUpdateTilesWorker: anObject [
 ]
 
 { #category : #private }
+GeoViewMapTilesLayer >> resetMapSurface [
+
+	| context |
+	context := self surfaceMap surface newContext.
+	context sourceColor: self class colorWithoutTile;paint.
+]
+
+{ #category : #private }
 GeoViewMapTilesLayer >> scaleMapBackground: aContext [
 
 	|  proc ratio step scaleCenter scaleCenterAbs  offsetCenter positionPixel prevPositionPixel |
@@ -971,7 +979,11 @@ GeoViewMapTilesLayer >> scaleMapBackground: aContext [
 	scaleCenterAbs ifNil:[^self].
 	self scalingProc ifNotNil:[ self scalingProc isTerminated ifFalse:[ self scalingProc terminate]. self scalingProc: nil].
 	self scalingRatio ifNil:[ self scalingRatio: 0 ].
-	self mapBackground  ifNotNil:[ self mapBackground offcenter: self mapOffcenter ].
+	self mapBackground  ifNotNil:[ 
+		self mapMutex critical:[
+			self mapBackground offcenter: self mapOffcenter
+		]
+	].
 
 	proc := [
 		self previousScale ifNil:[self previousScale: currentGraphicProjection altitudeInMeters copy]. 
@@ -997,8 +1009,8 @@ GeoViewMapTilesLayer >> scaleMapBackground: aContext [
 				].
 				
 				scaleCenter := self mapProjection projLatLonToCart: scaleCenterAbs .
-				prevPositionPixel := (self projCartToPixel: scaleCenter metersByPixel: self graphicProjection metersByPixel) copy.
-				positionPixel := ((self projCartToPixel: scaleCenter metersByPixel: self graphicProjection metersByPixel ) * scale )copy.
+				prevPositionPixel := (self projCartToPixel: scaleCenter metersByPixel: currentGraphicProjection metersByPixel) copy.
+				positionPixel := ((self projCartToPixel: scaleCenter metersByPixel: currentGraphicProjection metersByPixel ) * scale )copy.
 
 				offsetCenter :=  (self mapOffcenter + (positionPixel - prevPositionPixel)) / scale.
 				
@@ -1064,7 +1076,7 @@ GeoViewMapTilesLayer >> sinLatitude: aLatitude [
 GeoViewMapTilesLayer >> stopTilesWorker [
 
 	self loadingTilesWorker ifNotNil:[
-		self loadingTilesWorker isTerminated ifFalse:[ self loadingTilesWorker terminate]
+		self loadingTilesWorker isTerminated ifFalse:[ self loadingTilesWorker terminate. self resetMapSurface]
 	].
 
 	self loadingTilesWorker: nil.
@@ -1117,7 +1129,7 @@ GeoViewMapTilesLayer >> updateModel: aContext [
 	super updateModel: aContext.
 	self graphicProjection ifNil: [ ^ self ].
 	currentGraphicProjection := self graphicProjection copy.
-
+aContext isCenterChanged ifTrue:[ self stopTilesWorker ].
 	self requestUpdateTilesWorker ifNotNil:[ self requestUpdateTilesWorker terminate. self requestUpdateTilesWorker: nil].
 
 	self needToMoveMap: aContext.
