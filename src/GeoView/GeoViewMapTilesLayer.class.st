@@ -188,7 +188,7 @@ GeoViewMapTilesLayer >> doLoadingTilesThread [
 	| centerGeoPoint level tilesXY tilesXYBuffer findAtLeastOneTile realLevel|
 
 	self previousCenter: currentGraphicProjection cartesianCenter.
-	self previousScale: currentGraphicProjection altitudeInMeters.
+	self previousScale: currentGraphicProjection altitudeInMeters copy.
 	self surfaceMap offcenter: self mapOffcenter.
 	self surfaceMap scale: 1@1.
 
@@ -968,10 +968,10 @@ GeoViewMapTilesLayer >> resetMapSurface [
 { #category : #private }
 GeoViewMapTilesLayer >> scaleMapBackground: aContext [
 
-	|  proc ratio step scaleCenter scaleCenterAbs  offsetCenter positionPixel prevPositionPixel |
+	|  proc ratio step scaleCenter scaleCenterAbs  offsetCenter positionPixel prevPositionPixel index |
 	
 	step := 0.1.
-
+	index := 1.
 	self isScalingMap ifFalse:[^self].
 		
 	aContext scaleCenterPoint ifNil:[^self]. 
@@ -987,49 +987,43 @@ GeoViewMapTilesLayer >> scaleMapBackground: aContext [
 
 	proc := [
 		self previousScale ifNil:[self previousScale: currentGraphicProjection altitudeInMeters copy]. 
-		[self mapBackground notNil and:[self isScalingMap or:[self scalingRatio abs >= (step/2) ]]] whileTrue: [ 
+		[self mapBackground notNil and:[self isScalingMap or:[index < 10 ]]] whileTrue: [ 
 			| scale | 
 			
 			self isScalingMap ifTrue:[ 
 				ratio := currentGraphicProjection altitudeInMeters / self previousScale.
-	
-				ratio > 1 ifTrue:[
-					ratio <= 2 ifTrue:[ self scalingRatio: 1 - ratio ].
-				] ifFalse:[
-					ratio >= 0.5 ifTrue:[self scalingRatio: (1/ratio) - 1].
+				index := 1.
+			
+				self scalingRatio: (ratio - self mapBackground scale x ) * step.
+				ratio = 1 ifTrue:[
+					self scalingRatio: 0.
+					index := 10.
 				].
-			] ifFalse: [ self launchRequestUpdateTilesWorker].
-			
-			
-			
-				scale := self scalingRatio > 0 ifTrue:[
-					1 /  (2 - self scalingRatio)
-				] ifFalse:[
-					self scalingRatio + 2
-				].
-				
-				scaleCenter := self mapProjection projLatLonToCart: scaleCenterAbs .
-				prevPositionPixel := (self projCartToPixel: scaleCenter metersByPixel: currentGraphicProjection metersByPixel) copy.
-				positionPixel := ((self projCartToPixel: scaleCenter metersByPixel: currentGraphicProjection metersByPixel ) * scale )copy.
+			] ifFalse: [ 
+				index := index +1.
+				self launchRequestUpdateTilesWorker
+			].
 
-				offsetCenter :=  (self mapOffcenter + (positionPixel - prevPositionPixel)) / scale.
+			scale := self mapBackground scale x + self scalingRatio.
 				
-				self previousCenter: currentGraphicProjection cartesianCenter copy.
+			scaleCenter := self mapProjection projLatLonToCart: scaleCenterAbs .
+			prevPositionPixel := (self projCartToPixel: scaleCenter metersByPixel: currentGraphicProjection metersByPixel) copy.
+			positionPixel := ((self projCartToPixel: scaleCenter metersByPixel: currentGraphicProjection metersByPixel ) * scale )copy.
+
+			offsetCenter :=  (self mapOffcenter + (positionPixel - prevPositionPixel)) / scale.
+				
+			self previousCenter: currentGraphicProjection cartesianCenter copy.
 			self mapMutex critical: [
 				self mapBackground scale: (scale@scale).
 				self mapBackground offcenter: offsetCenter.
 				self sendRepaintRequest 
-			].
-			self scalingRatio > 0 ifTrue:[
-				self scalingRatio: ((self scalingRatio - step) max: 0).
-			] ifFalse:[
-				self scalingRatio: ((self scalingRatio + step) min: 0).
 			].
 	
 			50 milliSeconds wait.
 			self isScalingMap: false.
 		].
 		self scalingProc:nil.
+		index := 1.
 	].
 
 	self scalingProc: (proc forkAt: Processor userSchedulingPriority).
