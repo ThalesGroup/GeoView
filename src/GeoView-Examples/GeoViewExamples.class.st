@@ -123,7 +123,6 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	layer := GeoViewMapTilesLayer new.
 	layer name: 'SampleCartoLayer'.
 	layer allowSlideMoving: false.
-	layer useLocalTilesDirectory: false.
 	element addLayerAtFirst: layer.
 	
 	circle := GeoCircle new key: 1; radiusInMeters: 2000; fillStyle: (Color red asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates frBrest.
