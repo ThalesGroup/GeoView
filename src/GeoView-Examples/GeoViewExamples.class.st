@@ -73,6 +73,76 @@ GeoViewExamples class >> createTask: aBlockClosure [
 ]
 
 { #category : #examples }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayer [
+	"This example show a map layer (assuming there are tiles on default tiles directory (/map/r)"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new.
+	layer name: 'SampleCartoLayer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #examples }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
+	"This example show a map layer (assuming an internet connection to default url open street map"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new.
+	layer name: 'SampleCartoLayer'.
+	layer useLocalTilesDirectory: false.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #examples }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
+	"This example show a map layer with update of map center every seconds (during 30s)"
+	
+	| element layer newCenter space circle|
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	element scaleInMeters: 150000.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new.
+	layer name: 'SampleCartoLayer'.
+	layer allowSlideMoving: false.
+	element addLayerAtFirst: layer.
+	
+	circle := GeoCircle new key: 1; radiusInMeters: 2000; fillStyle: (Color red asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates frBrest.
+	element addObject: circle.
+
+	space := self openViewInWindow: element.
+
+	4 seconds wait.
+	newCenter := AbsoluteCoordinates frBrest copy.
+	[ (1 to: 30) do:[:i | 1 seconds wait.
+		newCenter := AbsoluteCoordinates latitudeInDegrees: (newCenter latitudeInDegrees + 0.05)  longitudeInDegrees: (newCenter longitudeInDegrees + 0.05).
+		element geoCenter: newCenter.
+		circle absoluteCoordinates:newCenter.
+		element updateObjects: (OrderedCollection with: circle).
+		]
+	] forkAt: Processor userBackgroundPriority 
+	
+]
+
+{ #category : #examples }
 GeoViewExamples class >> exampleWithDShapesLayer [
 	
 	| element layer circle1 circle2 segment1 segment2 |

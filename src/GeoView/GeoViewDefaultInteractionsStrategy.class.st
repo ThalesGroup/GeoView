@@ -160,8 +160,8 @@ GeoViewDefaultInteractionsStrategy >> mouseWheelEvent: anEvent [
 	
 	"Scale"
 	anEvent isScrollDown 
-		ifTrue: [ element scaleDown ] 
-		ifFalse:[ anEvent isScrollUp ifTrue: [ element scaleUp ] ifFalse:[ ^ self ] ].
+		ifTrue: [ element scaleDownOn: geoPoint ] 
+		ifFalse:[ anEvent isScrollUp ifTrue: [ element scaleUpOn: geoPoint ] ifFalse:[ ^ self ] ].
 	
 	self allowMapMoving ifFalse:[ ^ self ].
 	
