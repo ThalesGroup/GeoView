@@ -3,7 +3,6 @@ Class {
 	#superclass : #AbstractGeoViewBasicLayer,
 	#instVars : [
 		'loadingTilesWorker',
-		'buildBufferWorker',
 		'dictTilesByLevel',
 		'previousCenter',
 		'mapMutex',
@@ -15,14 +14,13 @@ Class {
 		'isMovingMap',
 		'isScalingMap',
 		'scalingProc',
-		'prevAltitude',
 		'scalingRatio',
-		'mapTilesDirectory',
 		'allowSlideMoving',
 		'surfaceMap',
 		'mapBackground',
-		'useLocalTilesDirectory',
-		'urlTilesProvider'
+		'tilesProvider',
+		'isDisplayTilesProviderNote',
+		'tilesProviderNoteGText'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -30,19 +28,33 @@ Class {
 { #category : #constants }
 GeoViewMapTilesLayer class >> colorWithoutTile [
 
+	self deprecated:''.
 	^Color black 
 ]
 
-{ #category : #constants }
-GeoViewMapTilesLayer class >> prefixType [
+{ #category : #constructor }
+GeoViewMapTilesLayer class >> newWithGoogle [
 
-	^'r'
+	| layer |
+	layer := self new.
+	layer tilesProvider: GeoViewGoogleTilesProvider new.
+	^ layer
 ]
 
-{ #category : #constants }
-GeoViewMapTilesLayer class >> tilesMapDir [
+{ #category : #constructor }
+GeoViewMapTilesLayer class >> newWithLocalDirectory [
 
-	^'map'
+	| layer |
+	layer := self new.
+	layer tilesProvider: GeoViewLocalDirectoryTilesProvider new.
+	^ layer
+]
+
+{ #category : #constructor }
+GeoViewMapTilesLayer class >> newWithOpenStreetMap [
+	"default tiles provider is OSM"
+
+	^ self new
 ]
 
 { #category : #private }
@@ -57,10 +69,11 @@ GeoViewMapTilesLayer >> addedToSceneGraph [
 { #category : #drawing }
 GeoViewMapTilesLayer >> aeDrawOn: aeCanvas [
 
-	| cairoContext surface extent offcenter scale |
+	| cairoContext surface extent offcenter scale gText |
 	self mapBackground ifNil: [ ^ self ].
 	self mapBackground surface ifNil: [ ^ self ].
 
+	self flag:'TODO pla: map mutex is used in tiles computation and rendering: this is a problem and why osm is not speed - need to refactor before'.
 	self mapMutex critical: [
 		self mapBackground ifNotNil: [ :e |
 			scale := self mapBackground scale.
@@ -77,8 +90,16 @@ GeoViewMapTilesLayer >> aeDrawOn: aeCanvas [
 	cairoContext := aeCanvas privateAeCairoContext.
 	cairoContext sourceSurface: surface x: offcenter x  y: offcenter y.
 	cairoContext rectangle: (0 @ 0 extent: extent).
-
-	cairoContext fill
+	cairoContext fill. 
+	
+	self flag:'pla: need to display this text on top of the view (not only in the layer) because it can be hidden by on top objects'.
+	self isDisplayTilesProviderNote ifFalse:[ ^ self ].
+	gText := self tilesProviderNoteGText2D ifNil:[ ^ self ].
+	gText position: (self viewInfos extent) - (15@15).
+	gText setRight.
+	gText aeDrawOn: aeCanvas.
+	
+	
 ]
 
 { #category : #accessing }
@@ -92,20 +113,6 @@ GeoViewMapTilesLayer >> allowSlideMoving [
 GeoViewMapTilesLayer >> allowSlideMoving: aBoolean [
  
 	allowSlideMoving := aBoolean
-]
-
-{ #category : #tiles }
-GeoViewMapTilesLayer >> buildFilenameForXY: aTileXY zoom: aLevel [
-
-	| filename |
-
-	filename := self mapTilesDirectory asFileReference.
-	filename exists ifFalse:[^nil].
-
-	filename := filename / aLevel asString.
-	filename := filename / aTileXY x asString.
-	filename := filename / (aTileXY y asString , '.png').
-	^filename
 ]
 
 { #category : #'loading and updating' }
@@ -212,15 +219,6 @@ GeoViewMapTilesLayer >> doLoadingTilesThread [
 	
 ]
 
-{ #category : #tiles }
-GeoViewMapTilesLayer >> downloadImageFromTileXY: aPt level: aLevel [
-
-	^ZnEasy getPng: (self urlTilesProvider asZnUrl
-		addPathSegment: aLevel printString;
-		addPathSegment: aPt x printString;
-		addPathSegment: aPt y printString , '.png') 
-]
-
 { #category : #accessing }
 GeoViewMapTilesLayer >> getCenterInGeoPoint [
 
@@ -263,15 +261,20 @@ GeoViewMapTilesLayer >> getGeoImageAtTileXY: axyPoint level: aLevel [
 
 	| geoBounds img isNoPicture geoImage|
 	
-	img := self useLocalTilesDirectory ifTrue:[
+	self tilesProvider ifNil: [ ^ nil ].
+	self flag:'pla: mettre un controle derreur reseau (si offline par exemple)'.
+	img := self tilesProvider tileFor: aLevel x: axyPoint x y: axyPoint y.
+	
+	"img := self useLocalTilesDirectory ifTrue:[
 		self getImageInCacheFromTileXY: axyPoint level: aLevel
 	] ifFalse:[
 		self downloadImageFromTileXY:  axyPoint level: aLevel
-	].
+	]."
 
 	isNoPicture := false.
 	geoBounds := self getGeoBoundsFromTileXY: axyPoint level: aLevel.
 	img ifNil:[ isNoPicture := true].
+	
 	geoImage := GeoMapTile new. 
 	geoImage position: geoBounds center.
 	geoImage isNoPicture: isNoPicture.
@@ -329,20 +332,6 @@ GeoViewMapTilesLayer >> getGraphicPositionFromGeoPosition: aGeoPoint [
 	pos := pos + self viewInfos origin.
 	
 	^pos
-]
-
-{ #category : #tiles }
-GeoViewMapTilesLayer >> getImageInCacheFromTileXY: aPt level: aLevel [
-
-	| tileXY position filename geoBounds|
-	geoBounds := (self getGeoBoundsFromTileXY: aPt level: aLevel).
-	position :=  (geoBounds topLeft + geoBounds bottomRight) / 2.0.
-	tileXY := self tileNumberForLat: position y long: position x  zoom: aLevel.
-	filename := self buildFilenameForXY: tileXY zoom: aLevel.
-	filename ifNil:[^nil].
-	filename parent asFileReference ensureCreateDirectory.
-	filename exists ifTrue: [^filename].
-	^nil
 ]
 
 { #category : #level }
@@ -556,13 +545,13 @@ GeoViewMapTilesLayer >> getTilesXYForBuffer: aCenter level: aLevel [
 GeoViewMapTilesLayer >> initAndStartMapBuilding [
 
 	self stopTilesWorker.
-	
-	self mapMutex critical:[
-		self initSurfaceMap: currentGraphicProjection extentInPixels extent + (1024 @ 1024).
-	].
+
+	self mapMutex critical: [
+		self initSurfaceMap:
+			currentGraphicProjection extentInPixels extent + (1024 @ 1024) ].
 
 	self loadingTilesWorker: ([ self doLoadingTilesThread ]
-			 forkAt: Processor systemBackgroundPriority
+			 forkAt: Processor userBackgroundPriority
 			 named: 'Map tiles loading')
 ]
 
@@ -575,6 +564,39 @@ GeoViewMapTilesLayer >> initSurfaceMap: anExtent [
 	geoSurface surface: (AeCairoImageSurface extent: anExtent).
 	geoSurface offcenter: self mapOffcenter.
 	self surfaceMap: geoSurface
+]
+
+{ #category : #initialization }
+GeoViewMapTilesLayer >> initialize [
+
+	| font |
+	super initialize.
+
+	self tilesProvider: GeoViewOpenStreetMapTilesProvider new.
+
+	"init note text"
+	font := SmockFont named: 'Source code pro'.
+	font
+		fontSize: 18;
+		fontSlant: #italic.
+
+	tilesProviderNoteGText := SmockGText2D new.
+	tilesProviderNoteGText
+		smockFont: font nearestFont;
+		fillStyle: (SmockFillStyle paint: Color black);
+		setBottomRight 
+]
+
+{ #category : #'API -- parameters' }
+GeoViewMapTilesLayer >> isDisplayTilesProviderNote [
+
+	^ isDisplayTilesProviderNote ifNil: [ isDisplayTilesProviderNote := true ]
+]
+
+{ #category : #'API -- parameters' }
+GeoViewMapTilesLayer >> isDisplayTilesProviderNote: anObject [
+
+	isDisplayTilesProviderNote := anObject
 ]
 
 { #category : #accessing }
@@ -692,19 +714,6 @@ GeoViewMapTilesLayer >> mapOffcenter [
 GeoViewMapTilesLayer >> mapSize: aLevel [
 
 	^(256 bitShift: aLevel) asInteger
-]
-
-{ #category : #accessing }
-GeoViewMapTilesLayer >> mapTilesDirectory [
-
-	mapTilesDirectory ifNil:[ mapTilesDirectory := (FileLocator imageDirectory / self class tilesMapDir / self class prefixType )].
-	^mapTilesDirectory
-]
-
-{ #category : #'API -- parameters' }
-GeoViewMapTilesLayer >> mapTilesDirectory: aPath [
-
-	mapTilesDirectory := aPath 
 ]
 
 { #category : #private }
@@ -1102,6 +1111,30 @@ GeoViewMapTilesLayer >> tileNumberForLat: aLat long: aLong zoom: aZoomLevel [
 	^xtile truncated @ ytile truncated
 ]
 
+{ #category : #'API -- tiles' }
+GeoViewMapTilesLayer >> tilesProvider [
+
+	^ tilesProvider
+]
+
+{ #category : #'API -- tiles' }
+GeoViewMapTilesLayer >> tilesProvider: anObject [
+
+	tilesProvider := anObject
+]
+
+{ #category : #private }
+GeoViewMapTilesLayer >> tilesProviderNoteGText2D [
+	"return the default provider note if concerned, in a long time this methods can return a dynamic note depending of the displayed content. the note can change depending level or if a several data provider are mixed in same time"
+
+	self tilesProvider ifNil: [ ^ nil ].
+	self tilesProvider haveCopyrightNote ifTrue: [
+		^ tilesProviderNoteGText text:
+			  self tilesProvider defaultCopyrightNote ].
+
+	^ nil
+]
+
 { #category : #'loading and updating' }
 GeoViewMapTilesLayer >> updateMapBackground [ 
 
@@ -1134,30 +1167,4 @@ aContext isCenterChanged ifTrue:[ self stopTilesWorker ].
 	needToReComputeMap ifFalse: [ ^self].
 	self launchRequestUpdateTilesWorker.
 	
-]
-
-{ #category : #accessing }
-GeoViewMapTilesLayer >> urlTilesProvider [
-
-	urlTilesProvider ifNil:[ urlTilesProvider := 'https://a.tile.openstreetmap.org'].
-	^urlTilesProvider
-]
-
-{ #category : #'API -- parameters' }
-GeoViewMapTilesLayer >> urlTilesProvider: anUrl [
-
-	urlTilesProvider := anUrl
-]
-
-{ #category : #accessing }
-GeoViewMapTilesLayer >> useLocalTilesDirectory [
-
-	useLocalTilesDirectory ifNil:[ useLocalTilesDirectory := true].
-	^useLocalTilesDirectory
-]
-
-{ #category : #'API -- parameters' }
-GeoViewMapTilesLayer >> useLocalTilesDirectory: aBoolean [
-
-	useLocalTilesDirectory := aBoolean 
 ]

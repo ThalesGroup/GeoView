@@ -38,6 +38,16 @@ GeoViewUtils class >> createGeoViewForGeoObjects [
 	^ element
 ]
 
+{ #category : #'geoview creation' }
+GeoViewUtils class >> createGeoViewForGeoObjectsWithOSM [
+
+	| element |
+	element := self createGeoView.
+	element addLayer: (GeoViewMapTilesLayer newWithOpenStreetMap name: #OSMTilesLayer).
+	element addLayer: (self createGeoObjectsLayer: #GeoObjectsLayer).
+	^ element
+]
+
 { #category : #'see class side' }
 GeoViewUtils >> seeClassSide [ 
 ]

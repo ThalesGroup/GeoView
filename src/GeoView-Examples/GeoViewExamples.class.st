@@ -82,8 +82,24 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayer [
 	element maxScaleInMeters: element maxScaleInMeters * 8.
 	
 	"add carto layer"
-	layer := GeoViewMapTilesLayer new.
-	layer name: 'SampleCartoLayer'.
+	layer := GeoViewMapTilesLayer newWithLocalDirectory name: 'Local Directory Tiles Layer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #examples }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogle [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Google Tiles Layer'.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
@@ -100,9 +116,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
 	element maxScaleInMeters: element maxScaleInMeters * 8.
 	
 	"add carto layer"
-	layer := GeoViewMapTilesLayer new.
-	layer name: 'SampleCartoLayer'.
-	layer useLocalTilesDirectory: false.
+	layer := GeoViewMapTilesLayer newWithOpenStreetMap name: 'OpenStreetMap Tiles Layer'.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
@@ -120,7 +134,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	element scaleInMeters: 150000.
 	
 	"add carto layer"
-	layer := GeoViewMapTilesLayer new.
+	layer := GeoViewMapTilesLayer newWithLocalDirectory.
 	layer name: 'SampleCartoLayer'.
 	layer allowSlideMoving: false.
 	element addLayerAtFirst: layer.
@@ -275,7 +289,7 @@ GeoViewExamples class >> exampleWithGeoObjectsUpdated [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
 
 	| element objects space task |
-	element := GeoViewUtils createGeoViewForGeoObjects.
+	element := GeoViewUtils createGeoViewForGeoObjectsWithOSM.
 
 	"create sample datas"
 	objects := self createGeoObjects.
