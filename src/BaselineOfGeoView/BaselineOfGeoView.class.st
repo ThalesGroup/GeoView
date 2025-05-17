@@ -6,16 +6,10 @@ Class {
 
 { #category : #baselines }
 BaselineOfGeoView >> baseline: spec [
-	"Common baseline for all Pharo versions"
 
 	<baseline>
-	spec for: #common do: [ self baselineForCommon: spec ].
-
-	"Need to load Alexandrie and Bloc packages of OpenSmock"
-	spec for: 'Core' do: [ self baselineForCore: spec ].
-
-	"OpenSmock is loading Molecule"
-	spec for: 'Full' do: [ self baselineForFull: spec ]
+	"Common baseline for all Pharo versions"
+	spec for: #common do: [ self baselineForCommon: spec ]
 ]
 
 { #category : #baselines }
@@ -24,15 +18,13 @@ BaselineOfGeoView >> baselineForCommon: spec [
 	
 	spec preLoadDoIt: #'preload:package:'.
 	spec postLoadDoIt: #'postload:package:'.
-	
-	"Packages"
-	self corePackages: spec.
-	self fullPackages: spec.
+		
+	"Dependencies"
+	self coreDependencies: spec.
 
-	"Groups"
-	spec group: 'default' with: #('Core' 'Full'). "complete version"
-	spec group: 'Core' with: self corePackagesNames. "only core"
-	spec group: 'Full' with: self fullPackagesNames. "all"
+	"Packages"
+	self corePackages: spec
+
 ]
 
 { #category : #baselines }
@@ -63,19 +55,16 @@ BaselineOfGeoView >> baselineForFull: spec [
 
 { #category : #dependencies }
 BaselineOfGeoView >> coreDependencies: spec [
-
-	spec
-		baseline: 'Alexandrie'
-		with: [ spec repository: 'github://pharo-graphics/Alexandrie:master/src' ].
-
-	spec
-		baseline: 'Bloc'
-		with: [ spec repository: 'github://pharo-graphics/Bloc:master/src' ].
-
-	"GeoTools is loading OpenSmock core without Molecule"
-	spec
-		baseline: 'GeoTools'
-		with: [ spec repository: 'github://OpenSmock/GeoTools:main' ].
+		
+	"GeoTools"
+	spec 
+		baseline: 'GeoTools' 
+		with: [	spec repository: 'github://OpenSmock/GeoTools:main' ].
+			
+	"OpenSmock Full"
+	spec 
+		baseline: 'OpenSmock' 
+		with: [	spec repository: 'github://OpenSmock/OpenSmock:main' ]
 ]
 
 { #category : #packages }
@@ -83,16 +72,24 @@ BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
 	spec
-		package: 'GeoView' with:[ spec requires: #('Alexandrie' 'Bloc' 'GeoTools' 'OpenSmock') ].
+		package: 'GeoView' with:[ spec requires: #('GeoTools' 'OpenSmock') ].
 		
 	"Examples packages"
 	spec
 		package: 'GeoView-Examples' with:[ spec requires: #('GeoView') ].
+
+	"Molecule integration packages"
+	spec
+		package: 'GeoView-Molecule' with:[ spec requires: #('GeoView') ].
 		
 	"Tests packages"
 	spec
 		package: 'GeoView-Tests' with: [ spec requires: #('GeoView') ].
-
+		
+	"Tests with Molecule packages"
+	spec
+		package: 'GeoView-Molecule-Tests' with: [ spec requires: #('GeoView-Molecule') ].
+	
 ]
 
 { #category : #packages }
