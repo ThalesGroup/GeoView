@@ -49,7 +49,7 @@ BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
 	spec
-		package: 'GeoView' with:[ spec requires: #('GeoTools') ].
+		package: 'GeoView'.
 		
 	"Examples packages"
 	spec
