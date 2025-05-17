@@ -105,13 +105,17 @@ Metacello new
 
 Core : 
 
+- [Alexandrie](https://github.com/pharo-graphics/alexandrie)
+- [Bloc](https://github.com/pharo-graphics/bloc)
 - [OpenSmock(Core)](https://github.com/OpenSmock/OpenSmock)
 - [GeoTools](https://github.com/OpenSmock/GeoTools)
 
 Default/Full adding :
 
-- [OpenSmock](https://github.com/OpenSmock/OpenSmock)
 - [Molecule](https://github.com/OpenSmock/Molecule)
+- [OpenSmock](https://github.com/OpenSmock/OpenSmock)
+
+Note: Bloc and Alexandrie will soon be integrated into Pharo, at which point this dependency will be removed.
 
 ## License
 
