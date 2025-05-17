@@ -17,9 +17,6 @@ BaselineOfGeoView >> baseline: spec [
 { #category : #baselines }
 BaselineOfGeoView >> baselineForCommon: spec [
 	<baseline>
-	
-	spec preLoadDoIt: #'preload:package:'.
-	spec postLoadDoIt: #'postload:package:'.
 		
 	"Dependencies"
 	self commonDependencies: spec.
