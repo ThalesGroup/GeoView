@@ -36,6 +36,14 @@ BaselineOfGeoView >> baselineForCommon: spec [
 { #category : #dependencies }
 BaselineOfGeoView >> coreDependencies: spec [
 
+	spec
+		baseline: 'Alexandrie'
+		with: [ spec repository: 'github://pharo-graphics/Alexandrie:master/src' ].
+
+	spec
+		baseline: 'Bloc'
+		with: [ spec repository: 'github://pharo-graphics/Bloc:master/src' ].
+
 	"GeoTools is loading OpenSmock core without Molecule"
 	spec
 		baseline: 'GeoTools'
@@ -47,7 +55,7 @@ BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
 	spec
-		package: 'GeoView' with:[ spec requires: #('GeoTools') ].
+		package: 'GeoView' with:[ spec requires: #('Alexandrie' 'Bloc' 'GeoTools') ].
 		
 	"Examples packages"
 	spec
