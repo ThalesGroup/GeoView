@@ -47,7 +47,18 @@ BaselineOfGeoView >> coreDependencies: spec [
 	"GeoTools is loading OpenSmock core without Molecule"
 	spec
 		baseline: 'GeoTools'
-		with: [ spec repository: 'github://OpenSmock/GeoTools:main' ]
+		with: [ spec repository: 'github://OpenSmock/GeoTools:main' ].
+		
+	"Need to load Alexandrie and Bloc packages of OpenSmock"
+	spec for: 'Core' do: [ 
+		spec 
+   			project: 'OpenSmock'
+  			with: [
+        		spec
+            		className: 'BaselineOfOpenSmock';
+            		repository: 'github://OpenSmock/OpenSmock:main/src';
+            		loads: #('OpenSmock-Alexandrie' 'OpenSmock-Bloc' 'OpenSmock-Bloc-Alexandrie') ]
+	].
 ]
 
 { #category : #packages }
@@ -82,9 +93,11 @@ BaselineOfGeoView >> corePackagesNames [
 BaselineOfGeoView >> fullDependencies: spec [
 
 	"OpenSmock is loading Molecule"
-	spec
-		baseline: 'OpenSmock'
-		with: [ spec repository: 'github://OpenSmock/OpenSmock:main' ].
+	spec for: 'Full' do: [ 
+		spec
+			baseline: 'OpenSmock'
+			with: [ spec repository: 'github://OpenSmock/OpenSmock:main/src' ]
+	].
 ]
 
 { #category : #packages }
