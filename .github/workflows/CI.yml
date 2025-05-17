@@ -16,10 +16,10 @@ jobs:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
         smalltalk: [ Pharo64-11, Pharo64-12, Pharo64-13 ]
-        ston: [ .smalltalkci.default.ston ]
+        ston: [ .smalltalkci.default.ston, .smalltalkci.core.ston ]
     runs-on: ${{ matrix.os }}
     name: >
-      ${{ matrix.smalltalk }} • ${{ matrix.os }}
+      ${{ matrix.smalltalk }} • ${{ matrix.ston == '.smalltalkci.default.ston' && 'Full' || 'Core' }} • ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
 
