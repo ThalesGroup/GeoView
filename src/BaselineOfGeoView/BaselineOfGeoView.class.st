@@ -9,7 +9,9 @@ BaselineOfGeoView >> baseline: spec [
 
 	<baseline>
 	"Common baseline for all Pharo versions"
-	spec for: #common do: [ self baselineForCommon: spec ]
+	spec for: #common do: [ self baselineForCommon: spec ].
+	
+	spec for: 'Core' do: [ self baselineForCore: spec ].
 ]
 
 { #category : #baselines }
@@ -20,51 +22,46 @@ BaselineOfGeoView >> baselineForCommon: spec [
 	spec postLoadDoIt: #'postload:package:'.
 		
 	"Dependencies"
-	self coreDependencies: spec.
+	self commonDependencies: spec.
 
 	"Packages"
-	self corePackages: spec
-
+	self corePackages: spec.
+	self moleculePackages: spec.
+	
+	"Groups"
+    spec group: 'default' with: (self corePackagesNames , self moleculePackagesNames).
+    spec group: 'Core' with: self corePackagesNames.
 ]
 
 { #category : #baselines }
 BaselineOfGeoView >> baselineForCore: spec [
 	<baseline>
-	
-	self coreDependencies: spec.
-	
-	spec 
-   			project: 'OpenSmock'
-  			with: [
-        		spec
-            		className: 'BaselineOfOpenSmock';
-            		repository: 'github://OpenSmock/OpenSmock:main/src';
-            		loads: #('OpenSmock-Alexandrie' 'OpenSmock-Bloc' 'OpenSmock-Bloc-Alexandrie') ]
-]
 
-{ #category : #baselines }
-BaselineOfGeoView >> baselineForFull: spec [
-	<baseline>
-	
-	self fullDependencies: spec.	
-
-	spec
-			baseline: 'OpenSmock'
-			with: [ spec repository: 'github://OpenSmock/OpenSmock:main/src' ]
+	"Dependencies"
+	self coreDependencies: spec
 ]
 
 { #category : #dependencies }
-BaselineOfGeoView >> coreDependencies: spec [
+BaselineOfGeoView >> commonDependencies: spec [
 		
 	"GeoTools"
 	spec 
 		baseline: 'GeoTools' 
 		with: [	spec repository: 'github://OpenSmock/GeoTools:main' ].
 			
-	"OpenSmock Full"
+	"OpenSmock"
 	spec 
 		baseline: 'OpenSmock' 
 		with: [	spec repository: 'github://OpenSmock/OpenSmock:main' ]
+]
+
+{ #category : #dependencies }
+BaselineOfGeoView >> coreDependencies: spec [
+		
+	"OpenSmock"
+	spec
+		baseline: 'OpenSmock'
+		with: [ spec loads: #('CoreWithBloc'); repository: 'github://OpenSmock/OpenSmock:main/src' ].
 ]
 
 { #category : #packages }
@@ -72,24 +69,15 @@ BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
 	spec
-		package: 'GeoView' with:[ spec requires: #('GeoTools' 'OpenSmock') ].
+		package: 'GeoView' with:[ spec requires: #('OpenSmock' 'GeoTools') ].
 		
 	"Examples packages"
 	spec
 		package: 'GeoView-Examples' with:[ spec requires: #('GeoView') ].
 
-	"Molecule integration packages"
-	spec
-		package: 'GeoView-Molecule' with:[ spec requires: #('GeoView') ].
-		
 	"Tests packages"
 	spec
 		package: 'GeoView-Tests' with: [ spec requires: #('GeoView') ].
-		
-	"Tests with Molecule packages"
-	spec
-		package: 'GeoView-Molecule-Tests' with: [ spec requires: #('GeoView-Molecule') ].
-	
 ]
 
 { #category : #packages }
@@ -103,19 +91,13 @@ BaselineOfGeoView >> corePackagesNames [
 
 ]
 
-{ #category : #dependencies }
-BaselineOfGeoView >> fullDependencies: spec [
-
-	
-]
-
 { #category : #packages }
-BaselineOfGeoView >> fullPackages: spec [
+BaselineOfGeoView >> moleculePackages: spec [
 
 	"Molecule integration packages"
 	spec
-		package: 'GeoView-Molecule' with:[ spec requires: #('GeoView' 'OpenSmock') ].
-
+		package: 'GeoView-Molecule' with:[ spec requires: #('GeoView') ].
+		
 	"Tests with Molecule packages"
 	spec
 		package: 'GeoView-Molecule-Tests' with: [ spec requires: #('GeoView-Molecule') ].
@@ -123,23 +105,11 @@ BaselineOfGeoView >> fullPackages: spec [
 ]
 
 { #category : #packages }
-BaselineOfGeoView >> fullPackagesNames [
+BaselineOfGeoView >> moleculePackagesNames [
 
 	^ #(
 	'GeoView-Molecule'
 	'GeoView-Molecule-Tests'
 	)
 
-]
-
-{ #category : #baselines }
-BaselineOfGeoView >> postload: loader package: packageSpec [
-
-	"do nothing"
-]
-
-{ #category : #baselines }
-BaselineOfGeoView >> preload: loader package: packageSpec [
-
-	"do nothing"
 ]
