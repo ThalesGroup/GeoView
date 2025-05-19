@@ -6,7 +6,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'form',
-		'offcenter',
 		'position',
 		'isNoPicture',
 		'tileXY',
@@ -14,7 +13,8 @@ Class {
 		'graphicBounds',
 		'geoBounds',
 		'pngReference',
-		'level'
+		'level',
+		'offcenterInPixels'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -81,16 +81,16 @@ GeoMapTile >> level: aLevel [
 ]
 
 { #category : #accessing }
-GeoMapTile >> offcenter [
+GeoMapTile >> offcenterInPixels [
 
-	offcenter ifNil:[ offcenter := 0@0].
-	^ offcenter
+	offcenterInPixels ifNil:[ offcenterInPixels := 0@0].
+	^ offcenterInPixels
 ]
 
 { #category : #accessing }
-GeoMapTile >> offcenter: anObject [
+GeoMapTile >> offcenterInPixels: anObject [
 
-	offcenter := anObject
+	offcenterInPixels := anObject
 ]
 
 { #category : #accessing }

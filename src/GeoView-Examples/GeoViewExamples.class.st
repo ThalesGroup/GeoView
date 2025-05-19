@@ -130,6 +130,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 
 	space := self openViewInWindow: element.
 
+	element interactionsStrategy allowMapMoving: false.
 	4 seconds wait.
 	newCenter := AbsoluteCoordinates frBrest copy.
 	[ (1 to: 30) do:[:i | 1 seconds wait.
