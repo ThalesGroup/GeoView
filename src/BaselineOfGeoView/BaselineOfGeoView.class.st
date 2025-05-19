@@ -42,14 +42,19 @@ BaselineOfGeoView >> commonDependencies: spec [
 	
 	"Enrich version of OpenSmock depending the targeted group"
 	spec project: 'OpenSmockCoreWithBloc' copyFrom: 'OpenSmock' with:[ spec loads: #('CoreWithBloc') ].
+	
+	"issue #41: specific packages of Bloc-dev to use commands (temporary, need to remove this line when integrated into a bloc release"
+	spec baseline: 'Bloc' with: [ spec repository: 'github://pharo-graphics/Bloc:dev'];
+	project: 'BlocCommandApplier' copyFrom: 'Bloc' with: [ spec loads: #('Bloc-CommandApplier') ].
 ]
 
 { #category : #packages }
 BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
+	"issue #41: required for using block commands (temporary, need to remove this requires when integrated into a bloc release"
 	spec
-		package: 'GeoView'.
+		package: 'GeoView' with: [ spec requires: #('BlocCommandApplier') ].
 		
 	"Examples packages"
 	spec
