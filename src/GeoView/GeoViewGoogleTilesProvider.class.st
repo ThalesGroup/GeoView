@@ -33,21 +33,39 @@ GeoViewGoogleTilesProvider class >> primaryTileUrl [
 ]
 
 { #category : #'tiles type' }
-GeoViewGoogleTilesProvider >> beAerialType [
+GeoViewGoogleTilesProvider >> beHybridType [
+
+	tilesType := 'y'
+]
+
+{ #category : #'tiles type' }
+GeoViewGoogleTilesProvider >> beRoadmapType [
+
+	tilesType := 'm'
+]
+
+{ #category : #'tiles type' }
+GeoViewGoogleTilesProvider >> beRoadsOnlyType [
+
+	tilesType := 'h'
+]
+
+{ #category : #'tiles type' }
+GeoViewGoogleTilesProvider >> beSatelliteType [
 
 	tilesType := 's'
 ]
 
 { #category : #'tiles type' }
-GeoViewGoogleTilesProvider >> beRoadNoLabelsType [
+GeoViewGoogleTilesProvider >> beTerrainOnlyType [
 
-	tilesType := 'r'
+	tilesType := 't'
 ]
 
 { #category : #'tiles type' }
-GeoViewGoogleTilesProvider >> beRoadType [
+GeoViewGoogleTilesProvider >> beTerrainType [
 
-	tilesType := 'm'
+	tilesType := 'p'
 ]
 
 { #category : #initialization }
@@ -57,7 +75,7 @@ GeoViewGoogleTilesProvider >> initialize [
 	self haveCopyrightNote: true.
 	self defaultCopyrightNote: self class attributionText.
 
-	self beAerialType
+	self beSatelliteType
 ]
 
 { #category : #accessing }
@@ -88,7 +106,7 @@ GeoViewGoogleTilesProvider >> tileFor: aZoomLevel x: anXCoordinate y: anYCoordin
 		       x: anXCoordinate
 		       y: anYCoordinate.
 
-	tilesType = 's'
+	(tilesType = 's' or:[tilesType = 'y' or:[tilesType = 't' or:[tilesType = 'p']]])
 		ifTrue: [ ^ ZnEasy getJpeg: url ]
 		ifFalse: [ ^ ZnEasy getPng: url ]
 ]

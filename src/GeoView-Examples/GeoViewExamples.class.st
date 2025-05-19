@@ -89,8 +89,62 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayer [
 	
 ]
 
-{ #category : #examples }
-GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogle [
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleHybrid [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	layer tilesProvider beHybridType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadmap [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	layer tilesProvider beRoadmapType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadsOnly [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	layer tilesProvider beRoadsOnlyType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleSatellite [
 	"This example show a map layer (assuming an internet connection to default url of google"
 	
 	| element layer |
@@ -106,7 +160,43 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogle [
 	
 ]
 
-{ #category : #examples }
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrain [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	layer tilesProvider beTerrainType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrainOnly [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	layer tilesProvider beTerrainOnlyType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
 	"This example show a map layer (assuming an internet connection to default url open street map"
 	
