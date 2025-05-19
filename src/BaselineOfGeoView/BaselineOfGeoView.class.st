@@ -61,7 +61,7 @@ BaselineOfGeoView >> corePackages: spec [
 	
 	self flag:'labordep: issue 41 - temporary have the bloc-commandapplier package to work with it, waiting for integration in a bloc release'.
 	spec
-		package: 'Bloc-CommandApplier' with:[ spec requires: #('Bloc') ].
+		package: 'Bloc-CommandApplier'.
 ]
 
 { #category : #packages }
