@@ -82,7 +82,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayer [
 	element maxScaleInMeters: element maxScaleInMeters * 8.
 	
 	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithLocalDirectory name: 'Local Directory Tiles Layer'.
+	layer := GeoViewMapTilesLayer newWithLocalDirectory name: 'Tiles Layer'.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
@@ -99,7 +99,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogle [
 	element maxScaleInMeters: element maxScaleInMeters * 8.
 	
 	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithGoogle name: 'Google Tiles Layer'.
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
@@ -116,7 +116,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
 	element maxScaleInMeters: element maxScaleInMeters * 8.
 	
 	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithOpenStreetMap name: 'OpenStreetMap Tiles Layer'.
+	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
