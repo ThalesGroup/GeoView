@@ -7,7 +7,6 @@ Class {
 		'sortedDatas',
 		'graphicModel',
 		'graphicalOrderSortBlock',
-		'isDatasChanged',
 		'userDataChangesMutex'
 	],
 	#category : #'GeoView-Layers'
@@ -26,8 +25,7 @@ AbstractGeoViewGraphicModelLayer >> addDShape: aDShape [
 
 	"convert dShape to gShape"
 	self graphicModel created: aDShape.
-	self isDatasChanged: true.
-	self sendRepaintRequest
+	self needToSortDatas
 ]
 
 { #category : #'API -- DShapes' }
@@ -37,15 +35,17 @@ AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 
 	"convert dShape to gShape"
 	aDShapeList do: [ :e | self graphicModel created: e ].
-	self isDatasChanged: true.
-	self sendRepaintRequest
+	self needToSortDatas
 ]
 
 { #category : #drawing }
 AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 
 	self isVisible ifFalse: [ ^ self ].
-	self isDatasChanged ifTrue: [ self sortDatas ].
+	
+	self flag:'execute this method a bltask into a command executor, because there is a mutex inside'.
+	"self isDatasChanged ifTrue: [ self sortDatas ]."
+	
 	self datasAeDrawOn: aeCanvas
 ]
 
@@ -97,8 +97,7 @@ AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock: aBlockClosure [
 	graphicalOrderSortBlock := aBlockClosure.
 	sortedDatas ifNotNil: [ :e |
 		e sortBlock: self graphicalOrderSortBlock.
-		self isDatasChanged: true.
-		self sendRepaintRequest ]
+		self needToSortDatas ]
 ]
 
 { #category : #'API -- DShapes' }
@@ -120,7 +119,8 @@ AbstractGeoViewGraphicModelLayer >> initialize [
 
 	super initialize.
 	self initializeGraphicModel.
-	self initializeSortedDatas
+	self initializeSortedDatas.
+
 ]
 
 { #category : #initialization }
@@ -152,15 +152,11 @@ AbstractGeoViewGraphicModelLayer >> initializeSortedDatas [
 ]
 
 { #category : #'private - sort' }
-AbstractGeoViewGraphicModelLayer >> isDatasChanged [
-
-	^ isDatasChanged ifNil: [ isDatasChanged := false ]
-]
-
-{ #category : #'private - sort' }
-AbstractGeoViewGraphicModelLayer >> isDatasChanged: aBoolean [
-
-	isDatasChanged := aBoolean
+AbstractGeoViewGraphicModelLayer >> needToSortDatas [
+	"call this method when the data model have changed: create, update of delete something"
+	
+	self addCommand: (GeoViewGraphicModelLayerSortCommand new layer: self).
+	"self isDatasChanged: true"
 ]
 
 { #category : #'API -- picking' }
@@ -204,8 +200,7 @@ AbstractGeoViewGraphicModelLayer >> removeDShape: aDShape [
 
 	"remove gShape"
 	self graphicModel deleted: aDShape.
-	self isDatasChanged: true.
-	self sendRepaintRequest
+	self needToSortDatas
 ]
 
 { #category : #'API -- DShapes' }
@@ -214,17 +209,14 @@ AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 	aDShapeList ifNil: [ ^ self ].
 
 	aDShapeList do: [ :e | self graphicModel deleted: e ].
-	self isDatasChanged: true.
-	self sendRepaintRequest
+	self needToSortDatas
 ]
 
 { #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> sortDatas [
-	"force sorted to remove and add datas"
+	"force sorted to remove and add datas - execute my only with a bloc command applier"
 
 	| datas |
-	self flag: 'execute this method into a dedicated BlocPhase'.
-
 	self userDataChangesMutex critical: [
 		datas := self graphicModel getDatas ].
 
@@ -232,7 +224,7 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 	sortedDatas removeAll.
 	sortedDatas addAll: datas.
 
-	self isDatasChanged: false
+	self sendRepaintRequest
 ]
 
 { #category : #'API -- symbology' }
@@ -253,8 +245,7 @@ AbstractGeoViewGraphicModelLayer >> updateDShape: aDShape [
 	aDShape ifNil: [ ^ self ].
 
 	self graphicModel updated: aDShape.
-	self isDatasChanged: true.
-	self sendRepaintRequest
+	self needToSortDatas
 ]
 
 { #category : #'API -- DShapes' }
@@ -262,8 +253,16 @@ AbstractGeoViewGraphicModelLayer >> updateDShapes: aDShapeList [
 
 	aDShapeList ifNil: [ ^ self ].
 
+	self updateDShapesInternally: aDShapeList.
+	self needToSortDatas
+]
+
+{ #category : #private }
+AbstractGeoViewGraphicModelLayer >> updateDShapesInternally: aDShapeList [
+
+	aDShapeList ifNil: [ ^ self ].
+
 	aDShapeList do: [ :e | self graphicModel updated: e ].
-	self isDatasChanged: true.
 	self sendRepaintRequest
 ]
 

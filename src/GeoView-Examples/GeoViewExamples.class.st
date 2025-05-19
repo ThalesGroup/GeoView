@@ -136,7 +136,7 @@ GeoViewExamples class >> exampleWithGeoObjects [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 	
 	"create sample datas"
-	objects := self createGeoObjects.
+	objects := self createGeoObjects: 10000.
 	element addObjects: objects.
 
 	"Example of event handler behavior on geoView domain event"
@@ -216,9 +216,9 @@ GeoViewExamples class >> exampleWithGeoObjectsUpdated [
 	task := self createAndStartTask: [
 		        | random |
 		        random := Random new.
-		        objects do: [ :o |
-			        o radiusInMeters: random next * 200000.
-			        element updateObject: o ] ].
+		        objects do: [ :o | o radiusInMeters: random next * 200000].
+			        element updateObjects: objects ].
+	task stepDelay: 1 second.
 
 	"Stop thread when window is closed"
 	space addEventHandler: (BlEventHandler

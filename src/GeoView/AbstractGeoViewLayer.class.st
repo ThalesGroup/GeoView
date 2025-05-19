@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'isVisible',
 		'name',
-		'announcer'
+		'announcer',
+		'commandApplicationStrategy'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -13,6 +14,15 @@ Class {
 AbstractGeoViewLayer class >> isAbstract [ 
 
 	^ self == AbstractGeoViewLayer 
+]
+
+{ #category : #private }
+AbstractGeoViewLayer >> addCommand: aCommand [
+
+	self commandApplicationStrategy ifNil:[ ^ self ].
+	
+	self flag:'on peut pas mettre autre chose quun blelement dans from:, cest dommage'.
+	self commandApplicationStrategy addCommand: aCommand from: (self commandApplicationStrategy element)
 ]
 
 { #category : #private }
@@ -32,6 +42,18 @@ AbstractGeoViewLayer >> aeDrawOn: aeCanvas [
 AbstractGeoViewLayer >> announcer [
 
 	^ announcer ifNil:[ announcer := Announcer new ]
+]
+
+{ #category : #accessing }
+AbstractGeoViewLayer >> commandApplicationStrategy [
+
+	^ commandApplicationStrategy
+]
+
+{ #category : #accessing }
+AbstractGeoViewLayer >> commandApplicationStrategy: anObject [
+
+	commandApplicationStrategy := anObject
 ]
 
 { #category : #'API -- projection' }

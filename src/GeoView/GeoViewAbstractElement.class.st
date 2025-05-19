@@ -114,6 +114,12 @@ GeoViewAbstractElement >> addObjects: anUserObjectList [
 		e haveDomainObjects ifTrue: [ e addObjects: anUserObjectList ] ]
 ]
 
+{ #category : #private }
+GeoViewAbstractElement >> applyCommand: aCommand [
+
+	aCommand applyOn: self 
+]
+
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 	"Center the map on a global point"
@@ -127,6 +133,9 @@ GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 GeoViewAbstractElement >> configureLayer: aLayer [
 	
 	aLayer viewInfos: self viewInfos.
+	
+	"Setup command strategy"
+	aLayer commandApplicationStrategy: (GeoViewCommandApplicationStrategy new element: self).
 	
 	"Setup the map projection (from a cartographic point of view) of the layer"
 	aLayer mapProjection: self mapProjection.

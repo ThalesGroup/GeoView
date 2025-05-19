@@ -153,7 +153,7 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 	
 	0.1 seconds wait.
 	
-	"stimuate datas"
+	"stimulate datas"
 	updateTask := (self createTask: [ | newIndex |
 		newIndex := self stimulateGeoCirclesIn: list geoView: geoView fromIndex: index.
 		index := newIndex. 	

@@ -133,6 +133,21 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 		super updateDShapes: toUpdate ]
 ]
 
+{ #category : #'API -- DShapes' }
+GeoViewDShapesLayer >> updateDShapesInternally: aDShapeList [
+
+	| toUpdate |
+	aDShapeList ifNil: [ ^ self ].
+
+	self userDataChangesMutex critical: [
+		toUpdate := OrderedCollection new.
+		aDShapeList do: [ :e |
+			(self haveDShapeKey: e key) ifTrue: [
+				self userModel at: e key put: e.
+				toUpdate add: e ] ].
+		super updateDShapesInternally: toUpdate ]
+]
+
 { #category : #private }
 GeoViewDShapesLayer >> updateModel: aContext [
 
@@ -140,7 +155,7 @@ GeoViewDShapesLayer >> updateModel: aContext [
 	self userDataChangesMutex critical: [
 		dShapes := self userModel select: [ :e | e hasUserComputing ].
 
-		super updateDShapes: dShapes ]
+		super updateDShapesInternally: dShapes ]
 ]
 
 { #category : #accessing }

@@ -14,6 +14,12 @@ BlCommandApplicationStrategy >> addCommand: aCommand from: aCommandApplier [
 ]
 
 { #category : #accessing }
+BlCommandApplicationStrategy >> element [
+
+	^ element
+]
+
+{ #category : #accessing }
 BlCommandApplicationStrategy >> element: anElement [
 
 	element := anElement
