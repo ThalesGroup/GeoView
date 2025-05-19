@@ -49,7 +49,7 @@ BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
 	spec
-		package: 'GeoView'.
+		package: 'GeoView' with:[ spec requires: #('Bloc-CommandApplier') ].
 		
 	"Examples packages"
 	spec
