@@ -58,6 +58,10 @@ BaselineOfGeoView >> corePackages: spec [
 	"Tests packages"
 	spec
 		package: 'GeoView-Tests' with: [ spec requires: #('GeoView') ].
+		
+	"issue 41: temporary have the bloc-commandapplier package to work with it, waiting for integration in a bloc release"
+	spec
+		package: 'Bloc-CommandApplier' with:[ spec requires: #('Bloc') ].
 ]
 
 { #category : #packages }
