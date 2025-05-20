@@ -25,13 +25,6 @@ Class {
 	#category : #'GeoView-Layers'
 }
 
-{ #category : #constants }
-GeoViewMapTilesLayer class >> colorWithoutTile [
-
-	self deprecated:''.
-	^Color black 
-]
-
 { #category : #constructor }
 GeoViewMapTilesLayer class >> newWithGoogle [
 
@@ -125,8 +118,8 @@ GeoViewMapTilesLayer >> buildVMapLayerTiles: aVMapTilesXY buffer: aLargerVMapTil
 	self surfaceMap offcenter: self mapOffcenter.
 	self surfaceMap position: currentGraphicProjection cartesianCenter.
 
-	context := self surfaceMap surface newContext.
-	context sourceColor: self class colorWithoutTile;paint.
+	context := self surfaceMap surface newContext"; paint".
+"	context sourceColor: self class colorWithoutTile; paint."
 
 	findAtLeastOneTile := self loadAndRenderTiles: aVMapTilesXY on: self surfaceMap offset: self mapOffcenter negated level: aLevel.
 	
@@ -371,7 +364,7 @@ GeoViewMapTilesLayer >> getTileSurfaceFromGeoImage: aGeoImageTile [
 	aGeoImageTile pngReference ifNil:[
 		tileSurface := AeCairoImageSurface extent: 256@256.
 		context := tileSurface newContext.
-		context sourceColor: self class colorWithoutTile ;paint
+		"context sourceColor: self class colorWithoutTile ;paint"
 	] ifNotNil:[
 		tileSurface := aGeoImageTile pngReference isForm ifTrue:[ AeCairoImageSurface fromForm: aGeoImageTile pngReference]  ifFalse:[ AeCairoImageSurface newFromPngFileAt: aGeoImageTile pngReference]
 	].
@@ -971,7 +964,7 @@ GeoViewMapTilesLayer >> resetMapSurface [
 
 	| context |
 	context := self surfaceMap surface newContext.
-	context sourceColor: self class colorWithoutTile;paint.
+	"context sourceColor: self class colorWithoutTile;paint."
 ]
 
 { #category : #private }
