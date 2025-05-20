@@ -43,10 +43,6 @@ AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 
 	self isVisible ifFalse: [ ^ self ].
-	
-	self flag:'execute this method a bltask into a command executor, because there is a mutex inside'.
-	"self isDatasChanged ifTrue: [ self sortDatas ]."
-	
 	self datasAeDrawOn: aeCanvas
 ]
 
