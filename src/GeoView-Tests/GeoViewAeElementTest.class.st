@@ -144,14 +144,11 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 	
 	| index list updateTask layer uiTask |
 	
-	0.1 seconds wait.
 	geoView addLayer: (GeoViewUtils createGeoObjectsLayer: #layer).
 	
 	index := 5000.
 	list := self createRandomPositionGeoCircles: index color: Color random radius: 100000.
 	geoView addObjects: list.
-	
-	0.1 seconds wait.
 	
 	"stimulate datas"
 	updateTask := (self createTask: [ | newIndex |

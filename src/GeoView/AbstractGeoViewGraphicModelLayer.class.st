@@ -7,7 +7,8 @@ Class {
 		'sortedDatas',
 		'graphicModel',
 		'graphicalOrderSortBlock',
-		'userDataChangesMutex'
+		'userDataChangesMutex',
+		'isNeedToSortDatas'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -151,12 +152,25 @@ AbstractGeoViewGraphicModelLayer >> initializeSortedDatas [
 	sortedDatas sortBlock: self graphicalOrderSortBlock
 ]
 
+{ #category : #accessing }
+AbstractGeoViewGraphicModelLayer >> isNeedToSortDatas [
+
+	^ isNeedToSortDatas ifNil: [ isNeedToSortDatas := false ]
+]
+
+{ #category : #accessing }
+AbstractGeoViewGraphicModelLayer >> isNeedToSortDatas: aBoolean [
+
+	isNeedToSortDatas := aBoolean
+]
+
 { #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> needToSortDatas [
 	"call this method when the data model have changed: create, update of delete something"
-	
-	self addCommand: (GeoViewGraphicModelLayerSortCommand new layer: self).
-	"self isDatasChanged: true"
+
+	self isNeedToSortDatas ifTrue: [ ^ self ].
+	self isNeedToSortDatas: true.
+	self sendSortRequest
 ]
 
 { #category : #'API -- picking' }
@@ -212,19 +226,31 @@ AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 	self needToSortDatas
 ]
 
+{ #category : #private }
+AbstractGeoViewGraphicModelLayer >> sendSortRequest [
+	"Notify that the layer need to be sorted"
+	
+	| announcement |
+	announcement := GeoViewGraphicModelLayerSortRequest new.
+	announcement layerName: self name; layer: self.
+	self announcer announce: announcement
+]
+
 { #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> sortDatas [
 	"force sorted to remove and add datas - execute my only with a bloc command applier"
 
 	| datas |
+	
 	self userDataChangesMutex critical: [
-		datas := self graphicModel getDatas ].
+		self isNeedToSortDatas: false.
+		datas := self graphicModel getDatas
+	].
 
 	sortedDatas ifNil: [ ^ self ].
-	sortedDatas removeAll.
-	sortedDatas addAll: datas.
 
-	self sendRepaintRequest
+	"sort by reset"
+	sortedDatas removeAll; addAll: datas
 ]
 
 { #category : #'API -- symbology' }

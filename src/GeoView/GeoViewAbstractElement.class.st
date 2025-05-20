@@ -114,12 +114,6 @@ GeoViewAbstractElement >> addObjects: anUserObjectList [
 		e haveDomainObjects ifTrue: [ e addObjects: anUserObjectList ] ]
 ]
 
-{ #category : #private }
-GeoViewAbstractElement >> applyCommand: aCommand [
-
-	aCommand applyOn: self 
-]
-
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 	"Center the map on a global point"
@@ -134,9 +128,6 @@ GeoViewAbstractElement >> configureLayer: aLayer [
 	
 	aLayer viewInfos: self viewInfos.
 	
-	"Setup command strategy"
-	aLayer commandApplicationStrategy: (GeoViewCommandApplicationStrategy new element: self).
-	
 	"Setup the map projection (from a cartographic point of view) of the layer"
 	aLayer mapProjection: self mapProjection.
 	
@@ -144,6 +135,9 @@ GeoViewAbstractElement >> configureLayer: aLayer [
 	aLayer graphicProjection: self displayToGraphicProjection.
 	
 	aLayer announcer when: GeoViewLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
+
+	aLayer haveGraphicModel ifFalse:[ ^ self ].
+	aLayer announcer when: GeoViewGraphicModelLayerSortRequest send: #layerNeedToBeSorted: to: self.
 
 	aLayer haveDomainObjects ifFalse:[ ^ self ].
 	aLayer displayModel indexAccessor: self objectIndexAccessor.
@@ -309,6 +303,21 @@ GeoViewAbstractElement >> interactionsStrategy [
 GeoViewAbstractElement >> layerNeedToBeRepaint: anEvent [
 
 	self requestRepaint 
+]
+
+{ #category : #'private - events' }
+GeoViewAbstractElement >> layerNeedToBeSorted: anEvent [
+	"Create a BlTask to sort the layer"
+
+	| task layer |
+	layer := anEvent layer.
+
+	task := BlTaskAction new.
+	task action: [
+		layer sortDatas.
+		self requestRepaint ].
+
+	self enqueueTask: task
 ]
 
 { #category : #'private - events' }

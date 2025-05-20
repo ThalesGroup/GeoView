@@ -48,20 +48,13 @@ BaselineOfGeoView >> commonDependencies: spec [
 BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
-	spec
-		package: 'GeoView' with:[ spec requires: #('Bloc-CommandApplier') ].
+	spec package: 'GeoView'.
 		
 	"Examples packages"
-	spec
-		package: 'GeoView-Examples' with:[ spec requires: #('GeoView') ].
+	spec package: 'GeoView-Examples' with:[ spec requires: #('GeoView') ].
 
 	"Tests packages"
-	spec
-		package: 'GeoView-Tests' with: [ spec requires: #('GeoView') ].
-	
-	self flag:'labordep: issue 41 - temporary have the bloc-commandapplier package to work with it, waiting for integration in a bloc release'.
-	spec
-		package: 'Bloc-CommandApplier'.
+	spec package: 'GeoView-Tests' with: [ spec requires: #('GeoView') ].
 ]
 
 { #category : #packages }

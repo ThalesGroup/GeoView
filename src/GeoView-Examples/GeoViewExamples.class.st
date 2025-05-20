@@ -136,7 +136,7 @@ GeoViewExamples class >> exampleWithGeoObjects [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 	
 	"create sample datas"
-	objects := self createGeoObjects: 10000.
+	objects := self createGeoObjects: 1000.
 	element addObjects: objects.
 
 	"Example of event handler behavior on geoView domain event"
@@ -286,55 +286,68 @@ GeoViewExamples class >> openViewInWindow: aGeoViewElement [
 
 { #category : #private }
 GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex: anIndex [
-	"at each step create / update and delete some GeoObjects"
+    "At each step, create / update and delete some GeoObjects, 
+    but ensure that the total number of objects never decreases."
 
-	| random color radiusInM createList updateList removeList newIndex maxRadiusInM maxNbOfCircles unchangeList |
-	createList := OrderedCollection new.
-	updateList := OrderedCollection new.
-	unchangeList := OrderedCollection new.
-	removeList := OrderedCollection new.
-	random := Random new.
-	color := Color random.
-	maxRadiusInM := 300000.
-	maxNbOfCircles := 10000.
-	radiusInM := random next * maxRadiusInM.
-	newIndex := anIndex.
+    | random color radiusInM createList updateList removeList newIndex 
+      maxRadiusInM unchangeList nbToCreate |
 
-	aList do: [ :circle |
-		| next |
-		"first randomize update / deletion"
-		next := random next.
-		next <= 0.1
-			ifTrue: [ "update the object"
-				circle fillStyle: color asSmockFillStyle.
-				circle radiusInMeters: radiusInM.
-				updateList add: circle ]
-			ifFalse: [
-				next >= 0.9
-					ifTrue: [ "remove the object" removeList add: circle ]
-					ifFalse: [ "do nothing ;-)" unchangeList add: circle ] ] ].
+    createList := OrderedCollection new.
+    updateList := OrderedCollection new.
+    unchangeList := OrderedCollection new.
+    removeList := OrderedCollection new.
+    random := Random new.
+    color := Color random.
+    maxRadiusInM := 300000.
+    radiusInM := random next * maxRadiusInM.
+    newIndex := anIndex.
 
-	color := Color random.
-	radiusInM := random next * maxRadiusInM.
+    aList do: [ :circle |
+        | next |
+        "First, randomize update / deletion"
+        next := random next.
+        next <= 0.1
+            ifTrue: [ 
+                "Update the object"
+                circle fillStyle: color asSmockFillStyle.
+                circle radiusInMeters: radiusInM.
+                updateList add: circle ]
+            ifFalse: [
+                next >= 0.9
+                    ifTrue: [ 
+                        "Remove the object"
+                        removeList add: circle ]
+                    ifFalse: [ 
+                        "Do nothing"
+                        unchangeList add: circle ] ] ].
 
-	"create objects when removed, to have between one and 1000"
-	(removeList isNotEmpty and: [ aList size < maxNbOfCircles ]) ifTrue:[
-		(self createRandomPositionGeoCircles: ((random next * 100) asInteger) color: color radius: radiusInM) do:[ :e |
-			newIndex := newIndex + 1.
-			e key: newIndex.
-			createList add: e.
-		].
-	].
+    color := Color random.
+    radiusInM := random next * maxRadiusInM.
 
-	"update geoview"
-	aGeoView updateObjects: updateList.
-	aGeoView removeObjects: removeList.
-	aGeoView addObjects: createList.
+    "Create at least as many new objects as were removed, 
+    without exceeding the max number of circles"
+    nbToCreate := removeList size.
+    (nbToCreate > 0) ifTrue: [
+        (self createRandomPositionGeoCircles: nbToCreate color: color radius: radiusInM) do: [ :e |
+            newIndex := newIndex + 1.
+            e key: newIndex.
+            createList add: e.
+        ].
+    ].
 
-	aList removeAll.
-	aList addAll: unchangeList;	addAll: updateList; addAll: createList.
-		
-	^ newIndex
+    "Update the geo view"
+    aGeoView updateObjects: updateList.
+    aGeoView removeObjects: removeList.
+    aGeoView addObjects: createList.
+
+    "Rebuild aList to maintain consistency"
+    aList removeAll.
+    aList addAll: unchangeList;
+          addAll: updateList;
+          addAll: createList.
+
+    ^ newIndex
+
 ]
 
 { #category : #'see class side' }
