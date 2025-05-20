@@ -6,7 +6,8 @@ Class {
 		'isScaleChanged',
 		'isExtentChanged',
 		'isResolutionChanged',
-		'isCenterChanged'
+		'isCenterChanged',
+		'scaleCenterPoint'
 	],
 	#category : #'GeoView-Projections'
 }
@@ -69,4 +70,16 @@ GeoViewProjectionChanges >> isScaleChanged [
 GeoViewProjectionChanges >> isScaleChanged: anObject [
 
 	isScaleChanged := anObject
+]
+
+{ #category : #accessing }
+GeoViewProjectionChanges >> scaleCenterPoint [
+
+	^scaleCenterPoint
+]
+
+{ #category : #accessing }
+GeoViewProjectionChanges >> scaleCenterPoint: anObject [
+
+	scaleCenterPoint := anObject
 ]
