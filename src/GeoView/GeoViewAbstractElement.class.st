@@ -136,6 +136,9 @@ GeoViewAbstractElement >> configureLayer: aLayer [
 	
 	aLayer announcer when: GeoViewLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
 
+	aLayer haveGraphicModel ifFalse:[ ^ self ].
+	aLayer announcer when: GeoViewGraphicModelLayerSortRequest send: #layerNeedToBeSorted: to: self.
+
 	aLayer haveDomainObjects ifFalse:[ ^ self ].
 	aLayer displayModel indexAccessor: self objectIndexAccessor.
 	aLayer announcer when: GeoViewDomainObjectsLayerProcessDataChanged send: #layerProcessDataChanged: to: self
@@ -300,6 +303,21 @@ GeoViewAbstractElement >> interactionsStrategy [
 GeoViewAbstractElement >> layerNeedToBeRepaint: anEvent [
 
 	self requestRepaint 
+]
+
+{ #category : #'private - events' }
+GeoViewAbstractElement >> layerNeedToBeSorted: anEvent [
+	"Create a BlTask to sort the layer"
+
+	| task layer |
+	layer := anEvent layer.
+
+	task := BlTaskAction new.
+	task action: [
+		layer sortDatas.
+		self requestRepaint ].
+
+	self enqueueTask: task
 ]
 
 { #category : #'private - events' }

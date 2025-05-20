@@ -189,7 +189,7 @@ GeoViewDomainObjectsLayer >> updateModel: aContext [
 		dShapes := self displayModel getDatas select: [ :e |
 			           e hasUserComputing ].
 
-		self updateDShapes: dShapes ]
+		self updateDShapesInternally: dShapes ]
 ]
 
 { #category : #'API -- objects management' }

@@ -41,23 +41,20 @@ BaselineOfGeoView >> commonDependencies: spec [
 		baseline: 'OpenSmock' with: [	spec repository: 'github://OpenSmock/OpenSmock:main' ].
 	
 	"Enrich version of OpenSmock depending the targeted group"
-	spec project: 'OpenSmockCoreWithBloc' copyFrom: 'OpenSmock' with:[ spec loads: #('CoreWithBloc') ].
+	spec project: 'OpenSmockCoreWithBloc' copyFrom: 'OpenSmock' with:[ spec loads: #('CoreWithBloc') ]
 ]
 
 { #category : #packages }
 BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
-	spec
-		package: 'GeoView'.
+	spec package: 'GeoView'.
 		
 	"Examples packages"
-	spec
-		package: 'GeoView-Examples' with:[ spec requires: #('GeoView') ].
+	spec package: 'GeoView-Examples' with:[ spec requires: #('GeoView') ].
 
 	"Tests packages"
-	spec
-		package: 'GeoView-Tests' with: [ spec requires: #('GeoView') ].
+	spec package: 'GeoView-Tests' with: [ spec requires: #('GeoView') ].
 ]
 
 { #category : #packages }
