@@ -346,7 +346,54 @@ GeoViewExamples class >> exampleWithGeoObjectsAlt [
 	^ self openViewInWindow: element
 ]
 
-{ #category : #examples }
+{ #category : #'examples - updates' }
+GeoViewExamples class >> exampleWithGeoObjectsParallelsUpdates [
+	"This example show how GeoView can be used by multiples processes which update the model"
+
+	| element space task1 list list1 list2 list3 list4 list5 task2 task3 task4 task5 |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	space := self openViewInWindow: element.
+
+	"initial object list"
+	list := self createRandomPositionGeoCircles: 5000 color: Color random radius: 100000.
+	element addObjects: list.	
+
+	list1 := list copyFrom: 1 to: 1000.
+	list2 := list copyFrom: 1001 to: 2000.
+	list3 := list copyFrom: 2001 to: 3000.
+	list4 := list copyFrom: 3001 to: 4000.
+	list5 := list copyFrom: 4001 to: 5000.
+
+	"Objet update thread"
+	task1 := (self createAndStartTask: [
+		self updateGeoCirclesIn: list1 geoView: element.
+	]) stepDelay: 5 milliSecond.
+
+	task2 := (self createAndStartTask: [
+		self updateGeoCirclesIn: list2 geoView: element.
+	]) stepDelay: 5 milliSecond.
+
+	task3 := (self createAndStartTask: [
+		self updateGeoCirclesIn: list3 geoView: element.
+	]) stepDelay: 5 milliSecond.
+
+	task4 := (self createAndStartTask: [
+		self updateGeoCirclesIn: list4 geoView: element.
+	]) stepDelay: 5 milliSecond.
+
+	task5 := (self createAndStartTask: [
+		self updateGeoCirclesIn: list5 geoView: element.
+	]) stepDelay: 5 milliSecond.
+
+	"Stop thread when window is closed"
+	space addEventHandler: (BlEventHandler
+			 on: BlSpaceCloseRequest
+			 do: [ :event | task1 kill. task2 kill. task3 kill. task4 kill. task5 kill ]).
+
+	^ space
+]
+
+{ #category : #'examples - updates' }
 GeoViewExamples class >> exampleWithGeoObjectsStimulation [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) with creation, update and deletion"
 
@@ -374,7 +421,7 @@ GeoViewExamples class >> exampleWithGeoObjectsStimulation [
 	^ space
 ]
 
-{ #category : #examples }
+{ #category : #'examples - updates' }
 GeoViewExamples class >> exampleWithGeoObjectsUpdated [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
 
@@ -522,6 +569,28 @@ GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView fromInde
 
     ^ newIndex
 
+]
+
+{ #category : #private }
+GeoViewExamples class >> updateGeoCirclesIn: aList geoView: aGeoView [
+	"At each step, update all GeoObjects"
+
+	| random color radiusInM updateList maxRadiusInM |
+	random := Random new.
+	color := Color random.
+	maxRadiusInM := 300000.
+	radiusInM := random next * maxRadiusInM.
+	updateList := OrderedCollection new.
+	color := Color random.
+	radiusInM := random next * maxRadiusInM.
+
+	updateList := aList collect: [ :circle | "Update the object"
+		              circle fillStyle: color asSmockFillStyle.
+		              circle radiusInMeters: radiusInM.
+		              circle ].
+
+	"Update the geo view"
+	aGeoView updateObjects: updateList
 ]
 
 { #category : #'see class side' }
