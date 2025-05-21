@@ -547,7 +547,7 @@ GeoViewMapTilesLayer >> initAndStartMapBuilding [
 			currentGraphicProjection extentInPixels extent + (1024 @ 1024) ].
 
 	self loadingTilesWorker: ([ self doLoadingTilesThread ]
-			 forkAt: Processor userBackgroundPriority
+			 forkAt: Processor userSchedulingPriority 
 			 named: 'Map tiles loading')
 ]
 
