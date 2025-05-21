@@ -404,7 +404,7 @@ GeoViewAbstractElement >> minScaleInMeters: anObject [
 { #category : #'strategy management' }
 GeoViewAbstractElement >> newInteractionsStrategy [
 
-	^ GeoViewDefaultInteractionsStrategy new
+	^ GeoViewInteractionsStrategy new
 ]
 
 { #category : #'API -- objects parameters' }
@@ -544,12 +544,6 @@ GeoViewAbstractElement >> scaleDown [
 ]
 
 { #category : #'API -- scale and center' }
-GeoViewAbstractElement >> scaleDownOn: aGeoPoint [
-
-	self scaleInMeters: self scaleInMeters * self scaleFactor on: aGeoPoint
-]
-
-{ #category : #'API -- scale and center' }
 GeoViewAbstractElement >> scaleFactor [
 
 	^ scaleFactor ifNil: [ scaleFactor := 2 ]
@@ -570,19 +564,13 @@ GeoViewAbstractElement >> scaleInMeters [
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> scaleInMeters: aNumber [
 
-	self scaleInMeters: aNumber on: nil
-]
-
-{ #category : #'API -- scale and center' }
-GeoViewAbstractElement >> scaleInMeters: aNumber on: aGeoPoint [
-
 	| scale geoViewEvent |
 	scale := self evaluateScale: aNumber.
 	scaleInMeters := scale.
 	
 	self displayToGraphicProjection altitudeInMeters: self scaleInMeters.
 	self displayToGraphicProjection updateResolution: self extent.
-	self updateModel: ((GeoViewProjectionChanges new) isScaleChanged: true; isResolutionChanged: true; scaleCenterPoint: aGeoPoint copy;yourself).
+	self updateModel: ((GeoViewProjectionChanges new) isScaleChanged: true; isResolutionChanged: true; yourself).
 	
 	"Send scale event"
 	geoViewEvent := GeoViewScaleChangedEvent new.
@@ -594,12 +582,6 @@ GeoViewAbstractElement >> scaleInMeters: aNumber on: aGeoPoint [
 GeoViewAbstractElement >> scaleUp [
 
 	self scaleInMeters: self scaleInMeters / self scaleFactor
-]
-
-{ #category : #'API -- scale and center' }
-GeoViewAbstractElement >> scaleUpOn: aGeoPoint [
-
-	self scaleInMeters: self scaleInMeters / self scaleFactor on: aGeoPoint
 ]
 
 { #category : #'API -- selection' }

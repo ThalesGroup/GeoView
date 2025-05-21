@@ -8,24 +8,10 @@ Class {
 		'surface',
 		'offcenter',
 		'scale',
-		'position',
-		'isBuffer'
+		'position'
 	],
 	#category : #'GeoView-Layers'
 }
-
-{ #category : #accessing }
-GeoMapSurface >> isBuffer [
-
-	isBuffer ifNil:[ isBuffer := false].
-	^ isBuffer
-]
-
-{ #category : #accessing }
-GeoMapSurface >> isBuffer: anObject [
-
-	isBuffer := anObject
-]
 
 { #category : #accessing }
 GeoMapSurface >> offcenter [
@@ -35,9 +21,9 @@ GeoMapSurface >> offcenter [
 ]
 
 { #category : #accessing }
-GeoMapSurface >> offcenter: anObject [
+GeoMapSurface >> offcenter: anOffsetInPixels [
 
-	offcenter := anObject
+	offcenter := anOffsetInPixels
 ]
 
 { #category : #accessing }
@@ -47,9 +33,9 @@ GeoMapSurface >> position [
 ]
 
 { #category : #accessing }
-GeoMapSurface >> position: anObject [
+GeoMapSurface >> position: aCartesianCoordinates [ 
 
-	position := anObject
+	position := aCartesianCoordinates 
 ]
 
 { #category : #accessing }
@@ -60,9 +46,9 @@ GeoMapSurface >> scale [
 ]
 
 { #category : #accessing }
-GeoMapSurface >> scale: anObject [
+GeoMapSurface >> scale: aScalePoint [
 
-	scale := anObject
+	scale := aScalePoint
 ]
 
 { #category : #accessing }

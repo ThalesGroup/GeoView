@@ -20,7 +20,8 @@ Class {
 		'mapBackground',
 		'tilesProvider',
 		'isDisplayTilesProviderNote',
-		'tilesProviderNoteGText'
+		'tilesProviderNoteGText',
+		'loadingBufferWorker'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -126,18 +127,20 @@ GeoViewMapTilesLayer >> buildVMapLayerTiles: aVMapTilesXY buffer: aLargerVMapTil
 	"VMAP Tiles computing completed"
  	self updateMapBackground.
 	
-	self loadAndRenderTiles: aLargerVMapTilesXY on: self surfaceMap offset: self mapOffcenter negated level: aLevel.
+	self loadingBufferWorker: ([
+		self loadAndRenderTiles: aLargerVMapTilesXY on: self surfaceMap offset: self mapOffcenter negated level: aLevel.
 	
-	 self updateMapBackground.
+		 self updateMapBackground.
 	
-	vMapServerTiles := self dictTilesByLevel at: aLevel ifAbsent:[nil].
-	vMapServerTiles ifNotNil:[
-		vMapServerTiles keys size > 9000 ifTrue:[ 
-			Transcript show: 'Reset dictionary VMapTiles';cr.
-			vMapServerTiles := nil.
-			self dictTilesByLevel at: aLevel put: vMapServerTiles. 
+		vMapServerTiles := self dictTilesByLevel at: aLevel ifAbsent:[nil].
+		vMapServerTiles ifNotNil:[
+			vMapServerTiles keys size > 9000 ifTrue:[ 
+				Transcript show: 'Reset dictionary VMapTiles';cr.
+				vMapServerTiles := nil.
+				self dictTilesByLevel at: aLevel put: vMapServerTiles. 
+			]
 		]
-	].
+	] forkAt: Processor systemBackgroundPriority named: 'Map buffer loading').
 
 	^findAtLeastOneTile
 ]
@@ -654,6 +657,7 @@ GeoViewMapTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: an
 				findAtLeastOneTile := findAtLeastOneTile or:[ isValidTile ].
 				
 				self renderTileImage: t on: aSurface surface.
+				self updateMapBackground
 			] on:[ Exception ] do:[:ex |
 					Transcript show: 'Error on VMapTiles computing :';show: ex printString;cr.
 					(Delay forMilliseconds: 1000) wait.
@@ -664,6 +668,18 @@ GeoViewMapTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: an
 
 	^findAtLeastOneTile
 
+]
+
+{ #category : #accessing }
+GeoViewMapTilesLayer >> loadingBufferWorker [
+
+	^ loadingBufferWorker
+]
+
+{ #category : #accessing }
+GeoViewMapTilesLayer >> loadingBufferWorker: anObject [
+
+	loadingBufferWorker := anObject
 ]
 
 { #category : #accessing }
@@ -795,7 +811,6 @@ GeoViewMapTilesLayer >> needToRecomputeMap: aContext [
 
 	| previousPixel  currentPixel centerOffsetPixel |
 	previousPixel := 0@0.
-	(self isScalingMap and:[aContext scaleCenterPoint notNil ]) ifTrue:[^false].
 	(self scalingProc notNil and: [self scalingProc isActive ])ifTrue:[^false].
 	currentGraphicProjection ifNil:[ ^ true ].
 	self previousCenter ifNil:[^true].
@@ -826,8 +841,8 @@ GeoViewMapTilesLayer >> needToRecomputeMap: aContext [
 GeoViewMapTilesLayer >> needToScaleMap: aContext [
 
 	(aContext isScaleChanged or:[aContext isResolutionChanged]) ifFalse: [^self].
-	self isScalingMap: aContext scaleCenterPoint notNil.
-	aContext scaleCenterPoint ifNil:[ self launchRequestUpdateTilesWorker].
+	self isScalingMap: true.
+	self launchRequestUpdateTilesWorker.
 	
 ]
 
@@ -970,13 +985,12 @@ GeoViewMapTilesLayer >> resetMapSurface [
 { #category : #private }
 GeoViewMapTilesLayer >> scaleMapBackground: aContext [
 
-	|  proc ratio step scaleCenter scaleCenterAbs  offsetCenter positionPixel prevPositionPixel index |
+	"|  proc ratio step scaleCenter scaleCenterAbs  offsetCenter positionPixel prevPositionPixel index |
 	
 	step := 0.1.
 	index := 1.
 	self isScalingMap ifFalse:[^self].
 		
-	aContext scaleCenterPoint ifNil:[^self]. 
 	scaleCenterAbs := aContext scaleCenterPoint copy.
 	scaleCenterAbs ifNil:[^self].
 	self scalingProc ifNotNil:[ self scalingProc isTerminated ifFalse:[ self scalingProc terminate]. self scalingProc: nil].
@@ -1029,7 +1043,7 @@ GeoViewMapTilesLayer >> scaleMapBackground: aContext [
 	].
 
 	self scalingProc: (proc forkAt: Processor userSchedulingPriority).
-
+"
 	
 
 ]
@@ -1076,6 +1090,12 @@ GeoViewMapTilesLayer >> stopTilesWorker [
 	].
 
 	self loadingTilesWorker: nil.
+	
+	self loadingBufferWorker ifNotNil:[
+		self loadingBufferWorker isTerminated ifFalse:[ self loadingBufferWorker terminate]
+	].
+
+	self loadingBufferWorker: nil.
 ]
 
 { #category : #accessing }
@@ -1145,19 +1165,20 @@ GeoViewMapTilesLayer >> updateMapBackground [
 { #category : #private }
 GeoViewMapTilesLayer >> updateModel: aContext [
 
-	| needToReComputeMap |
 	super updateModel: aContext.
 	self graphicProjection ifNil: [ ^ self ].
 	currentGraphicProjection := self graphicProjection copy.
 aContext isCenterChanged ifTrue:[ self stopTilesWorker ].
 	self requestUpdateTilesWorker ifNotNil:[ self requestUpdateTilesWorker terminate. self requestUpdateTilesWorker: nil].
 
-	self needToMoveMap: aContext.
+
+	self initAndStartMapBuilding.
+	"self needToMoveMap: aContext.
 	self needToScaleMap: aContext.
 	needToReComputeMap := self needToRecomputeMap: aContext.
 	self moveMapBackground.
 	self scaleMapBackground: aContext.
 	needToReComputeMap ifFalse: [ ^self].
-	self launchRequestUpdateTilesWorker.
+	self launchRequestUpdateTilesWorker."
 	
 ]

@@ -3,7 +3,7 @@ This class define default user interactions (using Bloc event handler) with a ge
 This class provided classical mouse and keyboard ergonomic to move, scale and select objets.
 "
 Class {
-	#name : #GeoViewDefaultInteractionsStrategy,
+	#name : #GeoViewInteractionsStrategy,
 	#superclass : #BlEventListener,
 	#instVars : [
 		'allowMapMoving',
@@ -16,31 +16,31 @@ Class {
 }
 
 { #category : #accessing }
-GeoViewDefaultInteractionsStrategy >> allowMapMoving [
+GeoViewInteractionsStrategy >> allowMapMoving [
 
 	^ allowMapMoving ifNil:[ allowMapMoving := true ]
 ]
 
 { #category : #accessing }
-GeoViewDefaultInteractionsStrategy >> allowMapMoving: anObject [
+GeoViewInteractionsStrategy >> allowMapMoving: anObject [
 
 	allowMapMoving := anObject
 ]
 
 { #category : #accessing }
-GeoViewDefaultInteractionsStrategy >> allowMapScaling [
+GeoViewInteractionsStrategy >> allowMapScaling [
 
 	^ allowMapScaling ifNil:[ allowMapScaling := true ]
 ]
 
 { #category : #accessing }
-GeoViewDefaultInteractionsStrategy >> allowMapScaling: anObject [
+GeoViewInteractionsStrategy >> allowMapScaling: anObject [
 
 	allowMapScaling := anObject
 ]
 
 { #category : #'mouse handlers' }
-GeoViewDefaultInteractionsStrategy >> clickEvent: anEvent [
+GeoViewInteractionsStrategy >> clickEvent: anEvent [
 	"pick the geoview on click"
 
 	| element point pickingResult event |
@@ -93,38 +93,38 @@ GeoViewDefaultInteractionsStrategy >> clickEvent: anEvent [
 ]
 
 { #category : #accessing }
-GeoViewDefaultInteractionsStrategy >> isMapMoving [
+GeoViewInteractionsStrategy >> isMapMoving [
 
 	^ isMapMoving ifNil: [ isMapMoving := false ]
 ]
 
 { #category : #accessing }
-GeoViewDefaultInteractionsStrategy >> isMapMoving: aBoolean [
+GeoViewInteractionsStrategy >> isMapMoving: aBoolean [
 
 	isMapMoving := aBoolean
 ]
 
 { #category : #'mouse handlers' }
-GeoViewDefaultInteractionsStrategy >> mouseDownEvent: anEvent [
+GeoViewInteractionsStrategy >> mouseDownEvent: anEvent [
 
 	self mouseDownPosition: anEvent position.
 	self isMapMoving: true
 ]
 
 { #category : #accessing }
-GeoViewDefaultInteractionsStrategy >> mouseDownPosition [
+GeoViewInteractionsStrategy >> mouseDownPosition [
 
 	^ mouseDownPosition
 ]
 
 { #category : #accessing }
-GeoViewDefaultInteractionsStrategy >> mouseDownPosition: aPoint [
+GeoViewInteractionsStrategy >> mouseDownPosition: aPoint [
 
 	mouseDownPosition := aPoint
 ]
 
 { #category : #'mouse handlers' }
-GeoViewDefaultInteractionsStrategy >> mouseMoveEvent: anEvent [
+GeoViewInteractionsStrategy >> mouseMoveEvent: anEvent [
 
 	self sendMouseCoordinatesChanged: anEvent.
 	
@@ -134,13 +134,13 @@ GeoViewDefaultInteractionsStrategy >> mouseMoveEvent: anEvent [
 ]
 
 { #category : #'mouse handlers' }
-GeoViewDefaultInteractionsStrategy >> mouseUpEvent: anEvent [
+GeoViewInteractionsStrategy >> mouseUpEvent: anEvent [
 
 	self isMapMoving: false
 ]
 
 { #category : #'mouse handlers' }
-GeoViewDefaultInteractionsStrategy >> mouseWheelEvent: anEvent [
+GeoViewInteractionsStrategy >> mouseWheelEvent: anEvent [
 	"Scale the map(zoom in or zoom out) but stay centered behind the mouse position"
 	
 	| element point mapProjection graphicProjection geoPoint geoPointPx geoCenterPx difPx geoPointPxNew newPointPx geoPointFinal |
@@ -160,8 +160,8 @@ GeoViewDefaultInteractionsStrategy >> mouseWheelEvent: anEvent [
 	
 	"Scale"
 	anEvent isScrollDown 
-		ifTrue: [ element scaleDownOn: geoPoint ] 
-		ifFalse:[ anEvent isScrollUp ifTrue: [ element scaleUpOn: geoPoint ] ifFalse:[ ^ self ] ].
+		ifTrue: [ element scaleDown ] 
+		ifFalse:[ anEvent isScrollUp ifTrue: [ element scaleUp ] ifFalse:[ ^ self ] ].
 	
 	self allowMapMoving ifFalse:[ ^ self ].
 	
@@ -175,7 +175,7 @@ GeoViewDefaultInteractionsStrategy >> mouseWheelEvent: anEvent [
 ]
 
 { #category : #'events - processing' }
-GeoViewDefaultInteractionsStrategy >> moveMap: anEvent [ 
+GeoViewInteractionsStrategy >> moveMap: anEvent [ 
 
 	| point difPx geoCenterPx element |
 	
@@ -196,20 +196,20 @@ GeoViewDefaultInteractionsStrategy >> moveMap: anEvent [
 ]
 
 { #category : #picking }
-GeoViewDefaultInteractionsStrategy >> pickingRadius [
+GeoViewInteractionsStrategy >> pickingRadius [
 	"Consider this radius as a device coordinates (i.e. pixels)"
 
 	^ pickingRadius ifNil: [ pickingRadius := 5 ]
 ]
 
 { #category : #picking }
-GeoViewDefaultInteractionsStrategy >> pickingRadius: aNumber [
+GeoViewInteractionsStrategy >> pickingRadius: aNumber [
 
 	pickingRadius := aNumber
 ]
 
 { #category : #'events - processing' }
-GeoViewDefaultInteractionsStrategy >> sendMouseCoordinatesChanged: anEvent [
+GeoViewInteractionsStrategy >> sendMouseCoordinatesChanged: anEvent [
 
 	| element coordinates event |
 	element := anEvent currentTarget.
