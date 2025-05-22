@@ -10,7 +10,8 @@ Class {
 		'allowMapScaling',
 		'isMapMoving',
 		'mouseDownPosition',
-		'pickingRadius'
+		'pickingRadius',
+		'lastMouseMoveEventTimestamp'
 	],
 	#category : #'GeoView-Events'
 }
@@ -126,6 +127,13 @@ GeoViewInteractionsStrategy >> mouseDownPosition: aPoint [
 { #category : #'mouse handlers' }
 GeoViewInteractionsStrategy >> mouseMoveEvent: anEvent [
 
+	"optimize mouse event processing"
+	lastMouseMoveEventTimestamp ifNotNil:[ | duration |
+		duration := anEvent timestamp - lastMouseMoveEventTimestamp.
+		duration < self pulsePeriodInMs ifTrue:[ ^ self ].  
+	].
+	lastMouseMoveEventTimestamp := anEvent timestamp copy.
+
 	self sendMouseCoordinatesChanged: anEvent.
 	
 	"Process mouse map moving"
@@ -206,6 +214,13 @@ GeoViewInteractionsStrategy >> pickingRadius [
 GeoViewInteractionsStrategy >> pickingRadius: aNumber [
 
 	pickingRadius := aNumber
+]
+
+{ #category : #accessing }
+GeoViewInteractionsStrategy >> pulsePeriodInMs [
+	"BlHostPulseLoop>>defaultPulsePeriod"
+
+	^ 15 milliSecond
 ]
 
 { #category : #'events - processing' }

@@ -237,13 +237,13 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 	"force sorted to remove and add datas - execute my only with a bloc command applier"
 
 	| datas |
+
+	sortedDatas ifNil: [ ^ self ].
 	
 	self userDataChangesMutex critical: [
 		self isNeedToSortDatas: false.
 		datas := self graphicModel getDatas
 	].
-
-	sortedDatas ifNil: [ ^ self ].
 
 	"sort by reset"
 	sortedDatas removeAll; addAll: datas
