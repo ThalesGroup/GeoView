@@ -4,8 +4,8 @@ I am the generic GeoviewManager implementation.
 Class {
 	#name : #GeoViewManagerImpl,
 	#superclass : #MolAbstractComponentImpl,
-	#traits : 'GeoViewManager + GeoViewManagerObjectsServices + GeoViewManagerParameters + GeoViewManagerServices + GeoViewManagerPickingServices + SmockSelectionManagerEvents',
-	#classTraits : 'GeoViewManager classTrait + GeoViewManagerObjectsServices classTrait + GeoViewManagerParameters classTrait + GeoViewManagerServices classTrait + GeoViewManagerPickingServices classTrait + SmockSelectionManagerEvents classTrait',
+	#traits : 'GeoViewManager + GeoViewManagerObjectsServices + GeoViewManagerParameters + GeoViewManagerServices + GeoViewManagerPickingServices + SmockSelectionManagerEvents + SmockSymbologyManagerEvents',
+	#classTraits : 'GeoViewManager classTrait + GeoViewManagerObjectsServices classTrait + GeoViewManagerParameters classTrait + GeoViewManagerServices classTrait + GeoViewManagerPickingServices classTrait + SmockSelectionManagerEvents classTrait + SmockSymbologyManagerEvents classTrait',
 	#instVars : [
 		'view'
 	],
@@ -59,9 +59,10 @@ GeoViewManagerImpl >> centerOnPoint: aGlobalPoint [
 GeoViewManagerImpl >> componentActivate [
 
 	super componentActivate.
-	
+
 	self activateComponents.
-	self getSmockSelectionManagerEventsSubscriber subscribe: self
+	self getSmockSelectionManagerEventsSubscriber subscribe: self.
+	self getSmockSymbologyManagerEventsSubscriber subscribe: self
 ]
 
 { #category : #'life cycle' }
@@ -78,6 +79,7 @@ GeoViewManagerImpl >> componentInitialize [
 { #category : #'life cycle' }
 GeoViewManagerImpl >> componentPassivate [
 
+	self getSmockSymbologyManagerEventsSubscriber unsubscribe: self.
 	self getSmockSelectionManagerEventsSubscriber unsubscribe: self.
 	self passivateComponents.
 	
@@ -240,6 +242,18 @@ GeoViewManagerImpl >> getSmockSelectionManagerServicesProvider [
 
 	servicesProvider := MolComponentManager default locatorServices searchServicesProviderFor: SmockSelectionManagerServices named: servicesSymbol.
 	^servicesProvider
+]
+
+{ #category : #'component accessing' }
+GeoViewManagerImpl >> getSmockSymbologyManagerEventsSubscriber [
+	| eventsSymbol eventsSubscriber itf |
+	itf := SmockSymbologyManagerEvents.
+	eventsSymbol := self eventsSubscribers at: itf ifAbsent: [^MolNotFoundEventsSubscriber new interface: itf name: nil].
+	eventsSymbol isCollection
+	 	ifTrue: 
+			[eventsSubscriber := MolComponentManager default locatorServices 
+						searchEventsSubscriberFor: SmockSymbologyManagerEvents named: eventsSymbol ]. 
+	^eventsSubscriber
 ]
 
 { #category : #'component accessing' }
@@ -515,6 +529,13 @@ GeoViewManagerImpl >> strategyRequestRemoveSelection: anObjectIndexesList [
 GeoViewManagerImpl >> strategyRequestSetSelection: anObjectIndexesList [
 
 	self getSmockSelectionManagerServicesProvider setSelectedKeys: anObjectIndexesList
+]
+
+{ #category : #'events - symbology manager' }
+GeoViewManagerImpl >> symbologyHasChanged: aSymbologyKey [
+	"update all symbols - need to update all DCompositeShapes"
+
+	self view updateModel: GeoViewSymbologyChanges new
 ]
 
 { #category : #private }

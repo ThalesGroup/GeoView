@@ -185,10 +185,17 @@ GeoViewDomainObjectsLayer >> setProcessData: aProcessData forClass: aDomainObjec
 GeoViewDomainObjectsLayer >> updateModel: aContext [
 
 	| dShapes |
-	self userDataChangesMutex critical: [
-		dShapes := self displayModel getDatas select: [ :e |
-			           e hasUserComputing ].
-
+	self userDataChangesMutex critical: [ | datas |
+		
+		datas := self displayModel getDatas.
+		
+		"In case of projection changes, select only dShapes drawed in user coordinates to update, else select all"
+		dShapes := aContext isProjectionChanges ifTrue:[
+			datas select: [ :e | e hasUserComputing ].
+		] ifFalse:[
+			datas
+		].
+		
 		self updateDShapesInternally: dShapes ]
 ]
 

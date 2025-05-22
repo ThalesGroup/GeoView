@@ -133,7 +133,7 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 		super updateDShapes: toUpdate ]
 ]
 
-{ #category : #'API -- DShapes' }
+{ #category : #private }
 GeoViewDShapesLayer >> updateDShapesInternally: aDShapeList [
 
 	| toUpdate |
@@ -152,8 +152,16 @@ GeoViewDShapesLayer >> updateDShapesInternally: aDShapeList [
 GeoViewDShapesLayer >> updateModel: aContext [
 
 	| dShapes |
-	self userDataChangesMutex critical: [
-		dShapes := self userModel select: [ :e | e hasUserComputing ].
+	self userDataChangesMutex critical: [ | datas |
+		
+		datas := self userModel.
+		
+		"In case of projection changes, select only dShapes drawed in user coordinates to update, else select all"
+		dShapes := aContext isProjectionChanges ifTrue:[
+			datas select: [ :e | e hasUserComputing ].
+		] ifFalse:[
+			datas copy
+		].
 
 		super updateDShapesInternally: dShapes ]
 ]

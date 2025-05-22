@@ -13,7 +13,9 @@ Trait {
 GeoViewManager classSide >> consumedComponentEvents [
 
 	<componentContract>
-	^ { SmockSelectionManagerEvents }
+	^ {
+		  SmockSelectionManagerEvents.
+		  SmockSymbologyManagerEvents }
 ]
 
 { #category : #'accessing - events' }
@@ -48,6 +50,6 @@ GeoViewManager classSide >> usedComponentServices [
 
 	<componentContract>
 	^ {
-		  SmockSymbologyManagerServices.
-		  SmockSelectionManagerServices }
+		  SmockSelectionManagerServices.
+		  SmockSymbologyManagerServices }
 ]
