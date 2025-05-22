@@ -16,9 +16,9 @@ Class {
 GeoViewManagerImpl >> activateComponents [
 
 	(MolComponentManager default homeServices
-		 isWaitingForActivation: SmockSymbologyProvider
+		 isWaitingForActivation: SmockSymbologyManagerImpl
 		 named: self componentName) ifTrue: [
-		SmockSymbologyProvider activate: self componentName ].
+		SmockSymbologyManagerImpl activate: self componentName ].
 
 	(MolComponentManager default homeServices
 		 isWaitingForActivation: SmockSelectionManagerImpl
@@ -303,8 +303,8 @@ GeoViewManagerImpl >> initializeSymbologyManager [
 
 	(MolUtils allComponentInstancesOfType: SmockSymbologyManager)
 		ifEmpty: [
-			SmockSymbologyProvider deploy.
-			SmockSymbologyProvider instantiate: self componentName.
+			SmockSymbologyManagerImpl deploy.
+			SmockSymbologyManagerImpl instantiate: self componentName.
 			self setSymbologyManagerName: self componentName ]
 ]
 
@@ -348,9 +348,9 @@ GeoViewManagerImpl >> mouseCursorCoordinatesChanged: anAbsoluteCoordinates [
 GeoViewManagerImpl >> passivateComponents [
 
 	(MolComponentManager default homeServices
-		 instanceOf: SmockSymbologyProvider
+		 instanceOf: SmockSymbologyManagerImpl
 		 named: self componentName) ifNotNil: [
-		SmockSymbologyProvider passivate: self componentName ].
+		SmockSymbologyManagerImpl passivate: self componentName ].
 	
 	(MolComponentManager default homeServices
 		 instanceOf: SmockSelectionManagerImpl
@@ -385,9 +385,9 @@ GeoViewManagerImpl >> removeAllLayers [
 GeoViewManagerImpl >> removeComponents [
 
 	(MolComponentManager default homeServices
-		 instanceOf: SmockSymbologyProvider
+		 instanceOf: SmockSymbologyManagerImpl
 		 named: self componentName) ifNotNil: [
-		SmockSymbologyProvider remove: self componentName ].
+		SmockSymbologyManagerImpl remove: self componentName ].
 	
 	(MolComponentManager default homeServices
 		 instanceOf: SmockSelectionManagerImpl
