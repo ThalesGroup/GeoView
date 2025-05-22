@@ -72,23 +72,6 @@ GeoViewExamples class >> createTask: aBlockClosure [
 	^ serv
 ]
 
-{ #category : #examples }
-GeoViewExamples class >> exampleGeoViewWithCartoTilesLayer [
-	"This example show a map layer (assuming there are tiles on default tiles directory (/map/r)"
-	
-	| element layer |
-	element := GeoViewAeElement new.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	
-	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithLocalDirectory name: 'Tiles Layer'.
-	element addLayer: layer.
-
-	^ self openViewInWindow: element
-	
-]
-
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleHybrid [
 	"This example show a map layer (assuming an internet connection to default url of google"
@@ -190,6 +173,23 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrainOnly
 	"add carto layer"
 	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
 	layer tilesProvider beTerrainOnlyType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #examples }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingLocal [
+	"This example show a map layer (assuming there are tiles on default tiles directory (/map/r)"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithLocalDirectory name: 'Tiles Layer'.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element

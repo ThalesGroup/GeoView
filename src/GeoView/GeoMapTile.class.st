@@ -63,9 +63,9 @@ GeoMapTile >> isNoPicture [
 ]
 
 { #category : #accessing }
-GeoMapTile >> isNoPicture: anObject [
+GeoMapTile >> isNoPicture: aBoolean [
 
-	isNoPicture := anObject
+	isNoPicture := aBoolean
 ]
 
 { #category : #accessing }
@@ -88,9 +88,9 @@ GeoMapTile >> offcenter [
 ]
 
 { #category : #accessing }
-GeoMapTile >> offcenter: anObject [
+GeoMapTile >> offcenter: anOffsetInPixels [
 
-	offcenter := anObject
+	offcenter := anOffsetInPixels
 ]
 
 { #category : #accessing }
@@ -112,9 +112,9 @@ GeoMapTile >> position [
 ]
 
 { #category : #accessing }
-GeoMapTile >> position: anObject [
+GeoMapTile >> position: aGeoPoint [
 
-	position := anObject
+	position := aGeoPoint
 ]
 
 { #category : #accessing }
@@ -125,9 +125,9 @@ GeoMapTile >> scale [
 ]
 
 { #category : #accessing }
-GeoMapTile >> scale: anObject [
+GeoMapTile >> scale: aPoint [
 
-	scale := anObject
+	scale := aPoint
 ]
 
 { #category : #accessing }
