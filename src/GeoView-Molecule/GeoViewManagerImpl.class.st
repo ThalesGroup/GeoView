@@ -531,6 +531,13 @@ GeoViewManagerImpl >> strategyRequestSetSelection: anObjectIndexesList [
 	self getSmockSelectionManagerServicesProvider setSelectedKeys: anObjectIndexesList
 ]
 
+{ #category : #'events - symbology manager' }
+GeoViewManagerImpl >> symbologyHasChanged: aSymbologyKey [
+	"update all symbols - need to update all DCompositeShapes"
+
+	self view updateModel: GeoViewSymbologyChanges new
+]
+
 { #category : #private }
 GeoViewManagerImpl >> unconfigureLayer: aLayer [
 

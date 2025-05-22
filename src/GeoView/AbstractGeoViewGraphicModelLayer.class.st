@@ -148,13 +148,13 @@ AbstractGeoViewGraphicModelLayer >> initializeSortedDatas [
 	sortedDatas sortBlock: self graphicalOrderSortBlock
 ]
 
-{ #category : #accessing }
+{ #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> isNeedToSortDatas [
 
 	^ isNeedToSortDatas ifNil: [ isNeedToSortDatas := false ]
 ]
 
-{ #category : #accessing }
+{ #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> isNeedToSortDatas: aBoolean [
 
 	isNeedToSortDatas := aBoolean
@@ -222,7 +222,7 @@ AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 	self needToSortDatas
 ]
 
-{ #category : #private }
+{ #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> sendSortRequest [
 	"Notify that the layer need to be sorted"
 	

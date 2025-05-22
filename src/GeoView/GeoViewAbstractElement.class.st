@@ -633,6 +633,7 @@ GeoViewAbstractElement >> updateDisplayToGraphicProjection [
 { #category : #private }
 GeoViewAbstractElement >> updateModel: aContext [
 
+	aContext ifNil:[ ^ self ].
 	self layers ifEmpty: [ ^ self ].
 
 	self layers do: [ :l | l updateModel: aContext ]

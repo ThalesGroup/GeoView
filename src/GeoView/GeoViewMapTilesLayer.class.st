@@ -1166,6 +1166,8 @@ GeoViewMapTilesLayer >> updateMapBackground [
 GeoViewMapTilesLayer >> updateModel: aContext [
 
 	super updateModel: aContext.
+	aContext isProjectionChanges ifFalse:[ ^ self ].
+	
 	self graphicProjection ifNil: [ ^ self ].
 	currentGraphicProjection := self graphicProjection copy.
 aContext isCenterChanged ifTrue:[ self stopTilesWorker ].
