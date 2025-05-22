@@ -160,7 +160,7 @@ GeoViewDShapesLayer >> updateModel: aContext [
 		dShapes := aContext isProjectionChanges ifTrue:[
 			datas select: [ :e | e hasUserComputing ].
 		] ifFalse:[
-			datas copy
+			datas collect:[ :e | e isComposite ifTrue:[ e updateChildrenInDepth ]. e ].
 		].
 
 		super updateDShapesInternally: dShapes ]
