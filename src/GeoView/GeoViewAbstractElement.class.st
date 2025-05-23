@@ -315,7 +315,8 @@ GeoViewAbstractElement >> layerNeedToBeSorted: anEvent [
 	task := BlTaskAction new.
 	task action: [
 		layer sortDatas.
-		self requestRepaint ].
+		self requestRepaint
+	].
 
 	self enqueueTask: task
 ]

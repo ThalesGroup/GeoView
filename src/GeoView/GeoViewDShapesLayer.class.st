@@ -41,7 +41,7 @@ GeoViewDShapesLayer >> addDShapes: aDShapeList [
 GeoViewDShapesLayer >> haveDShapeKey: aKey [
 	"Warning : call this message only on a user changes critical block"
 
-	aKey ifNil: [ ^ self ].
+	aKey ifNil: [ ^ false ].
 	^ self userModel includesKey: aKey
 ]
 
@@ -134,21 +134,6 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 ]
 
 { #category : #private }
-GeoViewDShapesLayer >> updateDShapesInternally: aDShapeList [
-
-	| toUpdate |
-	aDShapeList ifNil: [ ^ self ].
-
-	self userDataChangesMutex critical: [
-		toUpdate := OrderedCollection new.
-		aDShapeList do: [ :e |
-			(self haveDShapeKey: e key) ifTrue: [
-				self userModel at: e key put: e.
-				toUpdate add: e ] ].
-		super updateDShapesInternally: toUpdate ]
-]
-
-{ #category : #private }
 GeoViewDShapesLayer >> updateModel: aContext [
 
 	| dShapes |
@@ -163,7 +148,7 @@ GeoViewDShapesLayer >> updateModel: aContext [
 			datas collect:[ :e | e isComposite ifTrue:[ e updateChildrenInDepth ]. e ].
 		].
 
-		super updateDShapesInternally: dShapes ]
+		super updateGraphicModelWithDShapes: dShapes ]
 ]
 
 { #category : #accessing }

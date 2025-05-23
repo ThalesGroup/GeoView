@@ -28,15 +28,14 @@ GeoViewDomainObjectsLayer >> addObject: anObject [
 { #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> addObjects: anObjectList [
 
-	| dShapeList |
 	anObjectList ifNil: [ ^ self ].
 
-	dShapeList := OrderedCollection new.
 	self userDataChangesMutex critical: [
+		| dShapeList |
+		dShapeList := OrderedCollection new.
 		anObjectList do: [ :e |
-			(self displayModel created: e) ifNotNil: [ :f | dShapeList add: f ] ] .
-
-	self addDShapes: dShapeList ]
+			(self displayModel created: e) ifNotNil: [ :f | dShapeList add: f ] ].
+		dShapeList ifNotEmpty: [ :e | self addDShapes: e ] ]
 ]
 
 { #category : #accessing }
@@ -147,15 +146,14 @@ GeoViewDomainObjectsLayer >> removeObject: anObject [
 { #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> removeObjects: anObjectList [
 
-	| dShapeList |
 	anObjectList ifNil: [ ^ self ].
 
-	dShapeList := OrderedCollection new.
 	self userDataChangesMutex critical: [
+		| dShapeList |
+		dShapeList := OrderedCollection new.
 		anObjectList do: [ :e |
-			(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ] ] .
-
-	self removeDShapes: dShapeList ]
+			(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ] ].
+		dShapeList ifNotEmpty: [ :e | self removeDShapes: e ] ]
 ]
 
 { #category : #'API -- process datas' }
@@ -184,19 +182,29 @@ GeoViewDomainObjectsLayer >> setProcessData: aProcessData forClass: aDomainObjec
 { #category : #private }
 GeoViewDomainObjectsLayer >> updateModel: aContext [
 
-	| dShapes |
-	self userDataChangesMutex critical: [ | datas |
+	"don't update when not visible"
+	self isVisible ifFalse:[ ^ self ].
 		
+	self userDataChangesMutex critical: [ | datas dShapes |
+		
+		dShapes := OrderedCollection new.
 		datas := self displayModel getDatas.
 		
 		"In case of projection changes, select only dShapes drawed in user coordinates to update, else select all"
-		dShapes := aContext isProjectionChanges ifTrue:[
-			datas select: [ :e | e hasUserComputing ].
+		aContext isProjectionChanges ifTrue:[
+			dShapes := datas select: [ :e | e hasUserComputing ].
 		] ifFalse:[
-			datas collect:[ :e | e isComposite ifTrue:[ e updateChildrenInDepth ]. e ].
+			self dirtyDShapes ifNotEmpty:[ 	
+				datas do:[ :e | self dirtyDShapes at: e key ifAbsentPut:[ e ] ].
+				datas := self dirtyDShapes values.
+				self dirtyDShapes: nil.
+			].
+			dShapes := datas collect:[ :e | e isComposite ifTrue:[ e updateChildrenInDepth ]. e ].
 		].
 		
-		self updateDShapesInternally: dShapes ]
+		self updateDShapes: dShapes.
+		(aContext isBeVisibleChanges and:[ self isNeedToSortDatas ]) ifTrue:[ self sendSortRequest ].
+	]
 ]
 
 { #category : #'API -- objects management' }
@@ -212,13 +220,12 @@ GeoViewDomainObjectsLayer >> updateObject: anObject [
 { #category : #'API -- objects management' }
 GeoViewDomainObjectsLayer >> updateObjects: anObjectList [
 
-	| dShapeList |
-	dShapeList := OrderedCollection new.
 	self userDataChangesMutex critical: [
+		| dShapeList |
+		dShapeList := OrderedCollection new.
 		anObjectList do: [ :e |
-			(self displayModel updated: e) ifNotNil: [ :f | dShapeList add: f ] ] .
-
-	self updateDShapes: dShapeList ]
+			(self displayModel updated: e) ifNotNil: [ :f | dShapeList add: f ] ].
+		dShapeList ifNotEmpty: [ :e | self updateDShapes: e ] ]
 ]
 
 { #category : #'private - state' }

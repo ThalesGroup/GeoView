@@ -179,7 +179,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrainOnly
 	
 ]
 
-{ #category : #examples }
+{ #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingLocal [
 	"This example show a map layer (assuming there are tiles on default tiles directory (/map/r)"
 	
@@ -367,23 +367,23 @@ GeoViewExamples class >> exampleWithGeoObjectsParallelsUpdates [
 	"Objet update thread"
 	task1 := (self createAndStartTask: [
 		self updateGeoCirclesIn: list1 geoView: element.
-	]) stepDelay: 5 milliSecond.
+	]) stepDelay: 30 milliSecond.
 
 	task2 := (self createAndStartTask: [
 		self updateGeoCirclesIn: list2 geoView: element.
-	]) stepDelay: 5 milliSecond.
+	]) stepDelay: 30 milliSecond.
 
 	task3 := (self createAndStartTask: [
 		self updateGeoCirclesIn: list3 geoView: element.
-	]) stepDelay: 5 milliSecond.
+	]) stepDelay: 30 milliSecond.
 
 	task4 := (self createAndStartTask: [
 		self updateGeoCirclesIn: list4 geoView: element.
-	]) stepDelay: 5 milliSecond.
+	]) stepDelay: 30 milliSecond.
 
 	task5 := (self createAndStartTask: [
 		self updateGeoCirclesIn: list5 geoView: element.
-	]) stepDelay: 5 milliSecond.
+	]) stepDelay: 30 milliSecond.
 
 	"Stop thread when window is closed"
 	space addEventHandler: (BlEventHandler
