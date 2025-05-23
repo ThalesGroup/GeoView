@@ -1,14 +1,13 @@
 Class {
 	#name : #AbstractGeoViewGraphicModelLayer,
 	#superclass : #AbstractGeoViewLayer,
-	#traits : 'TSmockHandleDShapes',
-	#classTraits : 'TSmockHandleDShapes classTrait',
 	#instVars : [
 		'sortedDatas',
 		'graphicModel',
 		'graphicalOrderSortBlock',
 		'userDataChangesMutex',
-		'isNeedToSortDatas'
+		'isNeedToSortDatas',
+		'dirtyDShapes'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -19,30 +18,44 @@ AbstractGeoViewGraphicModelLayer class >> isAbstract [
 	^ self == AbstractGeoViewGraphicModelLayer 
 ]
 
-{ #category : #'API -- DShapes' }
+{ #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> addDShape: aDShape [
 
 	aDShape ifNil:[ ^ self ].
 
 	"convert dShape to gShape"
-	self graphicModel created: aDShape.
+	self addDShapeInGraphicModel: aDShape.
 	self needToSortDatas
 ]
 
-{ #category : #'API -- DShapes' }
+{ #category : #'private - DShapes' }
+AbstractGeoViewGraphicModelLayer >> addDShapeInGraphicModel: aDShape [
+
+	self graphicModel created: aDShape.
+	self isVisible ifTrue:[ self sendRepaintRequest ].
+]
+
+{ #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 
 	aDShapeList ifNil: [ ^ self ].
+	aDShapeList ifEmpty: [ ^ self ].
 
 	"convert dShape to gShape"
-	aDShapeList do: [ :e | self graphicModel created: e ].
+	self addDShapesInGraphicModel: aDShapeList.
 	self needToSortDatas
+]
+
+{ #category : #'private - DShapes' }
+AbstractGeoViewGraphicModelLayer >> addDShapesInGraphicModel: aDShapeList [
+
+	aDShapeList do: [ :e | self graphicModel created: e ].
+	self isVisible ifTrue:[ self sendRepaintRequest ].
 ]
 
 { #category : #drawing }
 AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 
-	self isVisible ifFalse: [ ^ self ].
 	self datasAeDrawOn: aeCanvas
 ]
 
@@ -51,6 +64,18 @@ AbstractGeoViewGraphicModelLayer >> datasAeDrawOn: aeCanvas [
 
 	sortedDatas ifNil: [ ^ self ].
 	sortedDatas do: [ :e | e aeDrawOn: aeCanvas ]
+]
+
+{ #category : #'private - DShapes' }
+AbstractGeoViewGraphicModelLayer >> dirtyDShapes [
+
+	^ dirtyDShapes ifNil: [ dirtyDShapes := Dictionary new ]
+]
+
+{ #category : #'private - DShapes' }
+AbstractGeoViewGraphicModelLayer >> dirtyDShapes: anObject [
+
+	dirtyDShapes := nil
 ]
 
 { #category : #accessing }
@@ -97,11 +122,11 @@ AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock: aBlockClosure [
 		self needToSortDatas ]
 ]
 
-{ #category : #'API -- DShapes' }
+{ #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> haveDShapeKey: aKey [
 	"check in the graphic model because if not present here, the object is not managed"
 
-	aKey ifNil: [ ^ self ].
+	aKey ifNil: [ ^ false ].
 	^ self graphicModel haveDataIndex: aKey
 ]
 
@@ -166,7 +191,8 @@ AbstractGeoViewGraphicModelLayer >> needToSortDatas [
 
 	self isNeedToSortDatas ifTrue: [ ^ self ].
 	self isNeedToSortDatas: true.
-	self sendSortRequest
+	"sort only when the layer is visible, then sort on visibility change"
+	self isVisible ifTrue:[ self sendSortRequest ]
 ]
 
 { #category : #'API -- picking' }
@@ -203,23 +229,38 @@ AbstractGeoViewGraphicModelLayer >> populatePickingResult: aPickingResult at: in
  	^ pickingElement 
 ]
 
-{ #category : #'API -- DShapes' }
+{ #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> removeDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
 	"remove gShape"
-	self graphicModel deleted: aDShape.
+	self removeDShapeFromGraphicModel: aDShape.
 	self needToSortDatas
 ]
 
-{ #category : #'API -- DShapes' }
+{ #category : #'private - DShapes' }
+AbstractGeoViewGraphicModelLayer >> removeDShapeFromGraphicModel: aDShape [
+
+	self graphicModel deleted: aDShape.
+	self isVisible ifTrue:[ self sendRepaintRequest ].
+]
+
+{ #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 
 	aDShapeList ifNil: [ ^ self ].
+	aDShapeList ifEmpty:[ ^ self ].
+
+	self removeDShapesFromGraphicModel: aDShapeList.
+	self needToSortDatas
+]
+
+{ #category : #'private - DShapes' }
+AbstractGeoViewGraphicModelLayer >> removeDShapesFromGraphicModel: aDShapeList [
 
 	aDShapeList do: [ :e | self graphicModel deleted: e ].
-	self needToSortDatas
+	self isVisible ifTrue:[ self sendRepaintRequest ].
 ]
 
 { #category : #'private - sort' }
@@ -234,7 +275,7 @@ AbstractGeoViewGraphicModelLayer >> sendSortRequest [
 
 { #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> sortDatas [
-	"force sorted to remove and add datas - execute my only with a bloc command applier"
+	"force sorted to remove and add datas - execute my only with a bloc command applier - return true / false if need to repaint"
 
 	| datas |
 
@@ -261,31 +302,52 @@ AbstractGeoViewGraphicModelLayer >> symbologyProvider: aSymbologyProvider [
 	self graphicModel symbologyProvider: aSymbologyProvider
 ]
 
-{ #category : #'API -- DShapes' }
+{ #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> updateDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
-	self graphicModel updated: aDShape.
-	self needToSortDatas
+	self isVisible ifFalse:[ 
+		"doesn't update when the layer is not visible, waiting for update when the visibility is on"
+		self dirtyDShapes at: (aDShape key) put: aDShape.
+		^ self
+	].
+
+	self updateGraphicModelWithDShape: aDShape
 ]
 
-{ #category : #'API -- DShapes' }
+{ #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> updateDShapes: aDShapeList [
 
 	aDShapeList ifNil: [ ^ self ].
+	aDShapeList ifEmpty:[ ^ self ].
 
-	self updateDShapesInternally: aDShapeList.
-	self needToSortDatas
+	self isVisible ifFalse:[ 
+		"doesn't update when the layer is not visible, waiting for update when the visibility is on"
+		aDShapeList do:[ :e | self dirtyDShapes at: (e key) put: e ].
+		^ self
+	].
+
+	self updateGraphicModelWithDShapes: aDShapeList
 ]
 
-{ #category : #private }
-AbstractGeoViewGraphicModelLayer >> updateDShapesInternally: aDShapeList [
+{ #category : #'private - DShapes' }
+AbstractGeoViewGraphicModelLayer >> updateGraphicModelWithDShape: aDShape [
 
-	aDShapeList ifNil: [ ^ self ].
+	self graphicModel updated: aDShape.
+	
+	self needToSortDatas.
+	self isVisible ifTrue:[ self sendRepaintRequest ].
+]
+
+{ #category : #'private - DShapes' }
+AbstractGeoViewGraphicModelLayer >> updateGraphicModelWithDShapes: aDShapeList [
 
 	aDShapeList do: [ :e | self graphicModel updated: e ].
-	self sendRepaintRequest
+	aDShapeList ifEmpty: [ ^ self ].
+	
+	self needToSortDatas.
+	self isVisible ifTrue:[ self sendRepaintRequest ].
 ]
 
 { #category : #accessing }

@@ -211,6 +211,7 @@ GeoViewMapTilesLayer >> doLoadingTilesThread [
 		tilesXYBuffer := self getTilesXYForBuffer: centerGeoPoint level: level.
 		
 		findAtLeastOneTile := self buildVMapLayerTiles:  tilesXY buffer: tilesXYBuffer level: level.
+		Processor yield.
 	].
 	
 ]
@@ -547,7 +548,7 @@ GeoViewMapTilesLayer >> initAndStartMapBuilding [
 			currentGraphicProjection extentInPixels extent + (1024 @ 1024) ].
 
 	self loadingTilesWorker: ([ self doLoadingTilesThread ]
-			 forkAt: Processor userSchedulingPriority 
+			 forkAt: Processor userBackgroundPriority 
 			 named: 'Map tiles loading')
 ]
 
@@ -625,7 +626,7 @@ GeoViewMapTilesLayer >> isScalingMap: aBoolean [
 GeoViewMapTilesLayer >> launchRequestUpdateTilesWorker [
 
 	self requestUpdateTilesWorker ifNotNil:[ self requestUpdateTilesWorker terminate. self requestUpdateTilesWorker: nil].
-	self requestUpdateTilesWorker: ([100 milliSeconds wait. self initAndStartMapBuilding ]  forkAt: Processor systemBackgroundPriority
+	self requestUpdateTilesWorker: ([100 milliSeconds wait. self initAndStartMapBuilding ]  forkAt: Processor userBackgroundPriority
 			 named: 'Update tiles after delay')
 
 ]

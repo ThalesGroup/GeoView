@@ -5,6 +5,12 @@ Class {
 }
 
 { #category : #testing }
+GeoViewUpdateContext >> isBeVisibleChanges [
+
+	^ false
+]
+
+{ #category : #testing }
 GeoViewUpdateContext >> isProjectionChanges [
 
 	^ false
