@@ -21,7 +21,8 @@ Class {
 		'tilesProvider',
 		'isDisplayTilesProviderNote',
 		'tilesProviderNoteGText',
-		'loadingBufferWorker'
+		'loadingBufferWorker',
+		'doubleBufferedScene'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -67,8 +68,14 @@ GeoViewMapTilesLayer >> aeDrawOn: aeCanvas [
 	self mapBackground ifNil: [ ^ self ].
 	self mapBackground surface ifNil: [ ^ self ].
 
+	"draw the map with the double buffered stuff"
+	cairoContext := aeCanvas privateAeCairoContext.
+	doubleBufferedScene currentBuffer content ifNotNil: [ :e |
+		cairoContext sourceSurface: e; paint 
+	].
+
 	self flag:'TODO pla: map mutex is used in tiles computation and rendering: this is a problem and why osm is not speed - need to refactor before'.
-	self mapMutex critical: [
+	"self mapMutex critical: [
 		self mapBackground ifNotNil: [ :e |
 			scale := self mapBackground scale.
 			e surface ifNotNil: [ :f |
@@ -79,12 +86,12 @@ GeoViewMapTilesLayer >> aeDrawOn: aeCanvas [
 				extent := surface extent copy.
 				 ] 
 		] 
-	].
+	]."
 
-	cairoContext := aeCanvas privateAeCairoContext.
+	"cairoContext := aeCanvas privateAeCairoContext.
 	cairoContext sourceSurface: surface x: offcenter x  y: offcenter y.
 	cairoContext rectangle: (0 @ 0 extent: extent).
-	cairoContext fill. 
+	cairoContext fill. "
 	
 	self flag:'pla: need to display this text on top of the view (not only in the layer) because it can be hidden by on top objects'.
 	self isDisplayTilesProviderNote ifFalse:[ ^ self ].
@@ -568,6 +575,7 @@ GeoViewMapTilesLayer >> initialize [
 
 	| font |
 	super initialize.
+	self initializeDoubleBufferScene.
 
 	self tilesProvider: GeoViewOpenStreetMapTilesProvider new.
 
@@ -582,6 +590,12 @@ GeoViewMapTilesLayer >> initialize [
 		smockFont: font nearestFont;
 		fillStyle: (SmockFillStyle paint: Color black);
 		setBottomRight 
+]
+
+{ #category : #initialization }
+GeoViewMapTilesLayer >> initializeDoubleBufferScene [.
+
+	doubleBufferedScene := SmockDoubleBufferedScene new
 ]
 
 { #category : #'API -- parameters' }
@@ -1154,11 +1168,34 @@ GeoViewMapTilesLayer >> updateMapBackground [
 
 	self surfaceMap ifNil: [ ^ self ].
 
-	self mapMutex critical: [
+	self mapMutex critical: [ | surface offcenter cairoSurface nextBufferedCanvas |
 		self mapBackground: self surfaceMap.
 		self mapBackground offcenter: self mapOffcenter.
 		self mapBackground scale: 1 @ 1.
 		self mapBackground position: currentGraphicProjection cartesianCenter.
+		
+		surface := self mapBackground surface.
+		offcenter := self mapOffcenter.
+		
+		"prepare new buffer: setup size and draw current buffer on it to conserve current paint"
+		cairoSurface := AeCairoImageSurface extent: surface extent.
+		doubleBufferedScene nextBuffer content: cairoSurface.
+		nextBufferedCanvas := AeCanvas newFor: cairoSurface.
+		
+		"need to draw the current buffer on the next to preserve the drawing"
+		"doubleBufferedScene currentBuffer content ifNotNil:[ :content | | context |
+			context := nextBufferedCanvas privateAeCairoContext.
+			context sourceSurface: content; paint.
+		]."
+		
+		"render the map"
+		doubleBufferedScene nextBuffer content ifNotNil:[ :content | | context |
+			context := nextBufferedCanvas privateAeCairoContext.
+			context sourceSurface: surface x: offcenter x y: offcenter y; paint.
+		].
+
+		"swap and notify repaint"
+		doubleBufferedScene swap.
 		self sendRepaintRequest
 	]
 ]
