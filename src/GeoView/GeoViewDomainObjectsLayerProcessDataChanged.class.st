@@ -7,5 +7,5 @@ Class {
 { #category : #sending }
 GeoViewDomainObjectsLayerProcessDataChanged >> sendTo: anObject [
 
-	anObject geoViewLayerProcessDataChanged: self
+	anObject geoViewDomainObjectsLayerProcessDataChanged: self
 ]

@@ -72,6 +72,180 @@ GeoViewExamples class >> createTask: aBlockClosure [
 	^ serv
 ]
 
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleHybrid [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	layer tilesProvider beHybridType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadmap [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	layer tilesProvider beRoadmapType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadsOnly [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	layer tilesProvider beRoadsOnlyType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleSatellite [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrain [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	layer tilesProvider beTerrainType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrainOnly [
+	"This example show a map layer (assuming an internet connection to default url of google"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
+	layer tilesProvider beTerrainOnlyType.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingLocal [
+	"This example show a map layer (assuming there are tiles on default tiles directory (/map/r)"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithLocalDirectory name: 'Tiles Layer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
+	"This example show a map layer (assuming an internet connection to default url open street map"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #examples }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
+	"This example show a map layer with update of map center every seconds (during 30s)"
+	
+	| element layer newCenter space circle|
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	element scaleInMeters: 150000.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithLocalDirectory.
+	layer name: 'SampleCartoLayer'.
+	layer allowSlideMoving: false.
+	element addLayerAtFirst: layer.
+	
+	circle := GeoCircle new key: 1; radiusInMeters: 2000; fillStyle: (Color red asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates frBrest.
+	element addObject: circle.
+
+	space := self openViewInWindow: element.
+
+	4 seconds wait.
+	newCenter := AbsoluteCoordinates frBrest copy.
+	[ (1 to: 30) do:[:i | 1 seconds wait.
+		newCenter := AbsoluteCoordinates latitudeInDegrees: (newCenter latitudeInDegrees + 0.05)  longitudeInDegrees: (newCenter longitudeInDegrees + 0.05).
+		element geoCenter: newCenter.
+		circle absoluteCoordinates:newCenter.
+		element updateObjects: (OrderedCollection with: circle).
+		]
+	] forkAt: Processor userBackgroundPriority 
+	
+]
+
 { #category : #examples }
 GeoViewExamples class >> exampleWithDShapesLayer [
 	
@@ -136,7 +310,7 @@ GeoViewExamples class >> exampleWithGeoObjects [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 	
 	"create sample datas"
-	objects := self createGeoObjects.
+	objects := self createGeoObjects: 1000.
 	element addObjects: objects.
 
 	"Example of event handler behavior on geoView domain event"
@@ -172,7 +346,54 @@ GeoViewExamples class >> exampleWithGeoObjectsAlt [
 	^ self openViewInWindow: element
 ]
 
-{ #category : #examples }
+{ #category : #'examples - updates' }
+GeoViewExamples class >> exampleWithGeoObjectsParallelsUpdates [
+	"This example show how GeoView can be used by multiples processes which update the model"
+
+	| element space task1 list list1 list2 list3 list4 list5 task2 task3 task4 task5 |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	space := self openViewInWindow: element.
+
+	"initial object list"
+	list := self createRandomPositionGeoCircles: 5000 color: Color random radius: 100000.
+	element addObjects: list.	
+
+	list1 := list copyFrom: 1 to: 1000.
+	list2 := list copyFrom: 1001 to: 2000.
+	list3 := list copyFrom: 2001 to: 3000.
+	list4 := list copyFrom: 3001 to: 4000.
+	list5 := list copyFrom: 4001 to: 5000.
+
+	"Objet update thread"
+	task1 := (self createAndStartTask: [
+		self updateGeoCirclesIn: list1 geoView: element.
+	]) stepDelay: 30 milliSecond.
+
+	task2 := (self createAndStartTask: [
+		self updateGeoCirclesIn: list2 geoView: element.
+	]) stepDelay: 30 milliSecond.
+
+	task3 := (self createAndStartTask: [
+		self updateGeoCirclesIn: list3 geoView: element.
+	]) stepDelay: 30 milliSecond.
+
+	task4 := (self createAndStartTask: [
+		self updateGeoCirclesIn: list4 geoView: element.
+	]) stepDelay: 30 milliSecond.
+
+	task5 := (self createAndStartTask: [
+		self updateGeoCirclesIn: list5 geoView: element.
+	]) stepDelay: 30 milliSecond.
+
+	"Stop thread when window is closed"
+	space addEventHandler: (BlEventHandler
+			 on: BlSpaceCloseRequest
+			 do: [ :event | task1 kill. task2 kill. task3 kill. task4 kill. task5 kill ]).
+
+	^ space
+]
+
+{ #category : #'examples - updates' }
 GeoViewExamples class >> exampleWithGeoObjectsStimulation [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) with creation, update and deletion"
 
@@ -200,12 +421,12 @@ GeoViewExamples class >> exampleWithGeoObjectsStimulation [
 	^ space
 ]
 
-{ #category : #examples }
+{ #category : #'examples - updates' }
 GeoViewExamples class >> exampleWithGeoObjectsUpdated [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
 
 	| element objects space task |
-	element := GeoViewUtils createGeoViewForGeoObjects.
+	element := GeoViewUtils createGeoViewForGeoObjectsWithOSM.
 
 	"create sample datas"
 	objects := self createGeoObjects.
@@ -216,9 +437,9 @@ GeoViewExamples class >> exampleWithGeoObjectsUpdated [
 	task := self createAndStartTask: [
 		        | random |
 		        random := Random new.
-		        objects do: [ :o |
-			        o radiusInMeters: random next * 200000.
-			        element updateObject: o ] ].
+		        objects do: [ :o | o radiusInMeters: random next * 200000].
+			        element updateObjects: objects ].
+	task stepDelay: 1 second.
 
 	"Stop thread when window is closed"
 	space addEventHandler: (BlEventHandler
@@ -286,55 +507,90 @@ GeoViewExamples class >> openViewInWindow: aGeoViewElement [
 
 { #category : #private }
 GeoViewExamples class >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex: anIndex [
-	"at each step create / update and delete some GeoObjects"
+    "At each step, create / update and delete some GeoObjects, 
+    but ensure that the total number of objects never decreases."
 
-	| random color radiusInM createList updateList removeList newIndex maxRadiusInM maxNbOfCircles unchangeList |
-	createList := OrderedCollection new.
-	updateList := OrderedCollection new.
-	unchangeList := OrderedCollection new.
-	removeList := OrderedCollection new.
+    | random color radiusInM createList updateList removeList newIndex 
+      maxRadiusInM unchangeList nbToCreate |
+
+    createList := OrderedCollection new.
+    updateList := OrderedCollection new.
+    unchangeList := OrderedCollection new.
+    removeList := OrderedCollection new.
+    random := Random new.
+    color := Color random.
+    maxRadiusInM := 300000.
+    radiusInM := random next * maxRadiusInM.
+    newIndex := anIndex.
+
+    aList do: [ :circle |
+        | next |
+        "First, randomize update / deletion"
+        next := random next.
+        next <= 0.1
+            ifTrue: [ 
+                "Update the object"
+                circle fillStyle: color asSmockFillStyle.
+                circle radiusInMeters: radiusInM.
+                updateList add: circle ]
+            ifFalse: [
+                next >= 0.9
+                    ifTrue: [ 
+                        "Remove the object"
+                        removeList add: circle ]
+                    ifFalse: [ 
+                        "Do nothing"
+                        unchangeList add: circle ] ] ].
+
+    color := Color random.
+    radiusInM := random next * maxRadiusInM.
+
+    "Create at least as many new objects as were removed, 
+    without exceeding the max number of circles"
+    nbToCreate := removeList size.
+    (nbToCreate > 0) ifTrue: [
+        (self createRandomPositionGeoCircles: nbToCreate color: color radius: radiusInM) do: [ :e |
+            newIndex := newIndex + 1.
+            e key: newIndex.
+            createList add: e.
+        ].
+    ].
+
+    "Update the geo view"
+    aGeoView updateObjects: updateList.
+    aGeoView removeObjects: removeList.
+    aGeoView addObjects: createList.
+
+    "Rebuild aList to maintain consistency"
+    aList removeAll.
+    aList addAll: unchangeList;
+          addAll: updateList;
+          addAll: createList.
+
+    ^ newIndex
+
+]
+
+{ #category : #private }
+GeoViewExamples class >> updateGeoCirclesIn: aList geoView: aGeoView [
+	"At each step, update all GeoObjects"
+
+	| random color radiusInM updateList maxRadiusInM |
 	random := Random new.
 	color := Color random.
 	maxRadiusInM := 300000.
-	maxNbOfCircles := 10000.
 	radiusInM := random next * maxRadiusInM.
-	newIndex := anIndex.
-
-	aList do: [ :circle |
-		| next |
-		"first randomize update / deletion"
-		next := random next.
-		next <= 0.1
-			ifTrue: [ "update the object"
-				circle fillStyle: color asSmockFillStyle.
-				circle radiusInMeters: radiusInM.
-				updateList add: circle ]
-			ifFalse: [
-				next >= 0.9
-					ifTrue: [ "remove the object" removeList add: circle ]
-					ifFalse: [ "do nothing ;-)" unchangeList add: circle ] ] ].
-
+	updateList := OrderedCollection new.
 	color := Color random.
 	radiusInM := random next * maxRadiusInM.
 
-	"create objects when removed, to have between one and 1000"
-	(removeList isNotEmpty and: [ aList size < maxNbOfCircles ]) ifTrue:[
-		(self createRandomPositionGeoCircles: ((random next * 100) asInteger) color: color radius: radiusInM) do:[ :e |
-			newIndex := newIndex + 1.
-			e key: newIndex.
-			createList add: e.
-		].
-	].
+	updateList := aList collect: [ :circle | "Update the object"
+		              circle fillStyle: color asSmockFillStyle.
+		              circle radiusInMeters: radiusInM.
+		              circle ].
 
-	"update geoview"
-	aGeoView updateObjects: updateList.
-	aGeoView removeObjects: removeList.
-	aGeoView addObjects: createList.
-
-	aList removeAll.
-	aList addAll: unchangeList;	addAll: updateList; addAll: createList.
-		
-	^ newIndex
+	"Update the geo view"
+	aGeoView updateObjects: updateList
 ]
 
 { #category : #'see class side' }

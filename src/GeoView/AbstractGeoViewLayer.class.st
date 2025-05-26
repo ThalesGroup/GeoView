@@ -67,7 +67,12 @@ AbstractGeoViewLayer >> isVisible [
 { #category : #'API -- graphic properties' }
 AbstractGeoViewLayer >> isVisible: aBoolean [
 
-	isVisible := aBoolean
+	isVisible ~= aBoolean ifFalse: [ ^ self ].
+	isVisible := aBoolean.
+	self sendRepaintRequest.
+	
+	isVisible ifFalse: [ ^ self ].
+	self updateModel: GeoViewBeVisibleChanges new
 ]
 
 { #category : #'API -- projection' }
@@ -132,7 +137,7 @@ AbstractGeoViewLayer >> symbologyProvider: aSymbologyProvider [
 { #category : #private }
 AbstractGeoViewLayer >> updateModel: aContext [
 
-	self explicitRequirement 
+	"do nothing"
 ]
 
 { #category : #'API -- graphic properties' }

@@ -41,7 +41,7 @@ GeoViewDShapesLayer >> addDShapes: aDShapeList [
 GeoViewDShapesLayer >> haveDShapeKey: aKey [
 	"Warning : call this message only on a user changes critical block"
 
-	aKey ifNil: [ ^ self ].
+	aKey ifNil: [ ^ false ].
 	^ self userModel includesKey: aKey
 ]
 
@@ -137,10 +137,18 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 GeoViewDShapesLayer >> updateModel: aContext [
 
 	| dShapes |
-	self userDataChangesMutex critical: [
-		dShapes := self userModel select: [ :e | e hasUserComputing ].
+	self userDataChangesMutex critical: [ | datas |
+		
+		datas := self userModel.
+		
+		"In case of projection changes, select only dShapes drawed in user coordinates to update, else select all"
+		dShapes := aContext isProjectionChanges ifTrue:[
+			datas select: [ :e | e hasUserComputing ].
+		] ifFalse:[
+			datas collect:[ :e | e isComposite ifTrue:[ e updateChildrenInDepth ]. e ].
+		].
 
-		super updateDShapes: dShapes ]
+		super updateGraphicModelWithDShapes: dShapes ]
 ]
 
 { #category : #accessing }

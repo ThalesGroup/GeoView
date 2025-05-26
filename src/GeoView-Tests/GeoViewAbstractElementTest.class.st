@@ -167,13 +167,13 @@ GeoViewAbstractElementTest >> testInitialize [
 { #category : #tests }
 GeoViewAbstractElementTest >> testInteractionsStrategy [
 
-	self assert: geoView interactionsStrategy class equals: GeoViewDefaultInteractionsStrategy
+	self assert: geoView interactionsStrategy class equals: GeoViewInteractionsStrategy
 ]
 
 { #category : #tests }
 GeoViewAbstractElementTest >> testNewInteractionsStrategy [
 
-	self assert: geoView newInteractionsStrategy class equals: GeoViewDefaultInteractionsStrategy.
+	self assert: geoView newInteractionsStrategy class equals: GeoViewInteractionsStrategy.
 ]
 
 { #category : #tests }

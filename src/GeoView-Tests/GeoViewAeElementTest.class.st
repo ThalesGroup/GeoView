@@ -6,7 +6,7 @@ Class {
 	#superclass : #TestCase,
 	#instVars : [
 		'geoView',
-		'task'
+		'spacePulseTask'
 	],
 	#category : #'GeoView-Tests-Cases - Core'
 }
@@ -73,8 +73,8 @@ GeoViewAeElementTest >> setUp [
 	container forceLayout.
 
 	"simulation a rendering thread"
-	task := self createTask: [ space pulse ] delay: 16.67 milliSeconds. 
-	task start.
+	spacePulseTask := self createTask: [ space pulse ] delay: 16.67 milliSeconds. 
+	spacePulseTask start.
 ]
 
 { #category : #private }
@@ -133,7 +133,7 @@ GeoViewAeElementTest >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex
 { #category : #running }
 GeoViewAeElementTest >> tearDown [
 
-	task stop.
+	spacePulseTask stop.
 	geoView := nil.
 	super tearDown
 ]
@@ -144,16 +144,13 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 	
 	| index list updateTask layer uiTask |
 	
-	0.1 seconds wait.
 	geoView addLayer: (GeoViewUtils createGeoObjectsLayer: #layer).
 	
 	index := 5000.
 	list := self createRandomPositionGeoCircles: index color: Color random radius: 100000.
 	geoView addObjects: list.
 	
-	0.1 seconds wait.
-	
-	"stimuate datas"
+	"stimulate datas"
 	updateTask := (self createTask: [ | newIndex |
 		newIndex := self stimulateGeoCirclesIn: list geoView: geoView fromIndex: index.
 		index := newIndex. 	
@@ -164,13 +161,19 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 		geoView updateModel: GeoViewProjectionChanges new.
 	] delay: 5 milliSeconds) start; yourself.
 
-	5 seconds wait.
+	"waiting here to simulate user interaction a lot of time"
+	4 seconds wait.
+	
+	"stop tasks"
 	updateTask stop.
 	uiTask stop.
-	task stop.
 	
-	layer := geoView getLayer: #layer.
+	"waiting for last pulses"
+	0.5 seconds wait.
+	spacePulseTask stop.
+		
 	"test to compare list model and graphic model"
+	layer := geoView getLayer: #layer.
 	self assert: (layer displayModel getDatas size) equals: (list size).
 	self assert: (layer graphicModel getDatas size) equals: (list size).
 ]

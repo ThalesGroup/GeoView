@@ -136,6 +136,9 @@ GeoViewAbstractElement >> configureLayer: aLayer [
 	
 	aLayer announcer when: GeoViewLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
 
+	aLayer haveGraphicModel ifFalse:[ ^ self ].
+	aLayer announcer when: GeoViewGraphicModelLayerSortRequest send: #layerNeedToBeSorted: to: self.
+
 	aLayer haveDomainObjects ifFalse:[ ^ self ].
 	aLayer displayModel indexAccessor: self objectIndexAccessor.
 	aLayer announcer when: GeoViewDomainObjectsLayerProcessDataChanged send: #layerProcessDataChanged: to: self
@@ -303,6 +306,22 @@ GeoViewAbstractElement >> layerNeedToBeRepaint: anEvent [
 ]
 
 { #category : #'private - events' }
+GeoViewAbstractElement >> layerNeedToBeSorted: anEvent [
+	"Create a BlTask to sort the layer"
+
+	| task layer |
+	layer := anEvent layer.
+
+	task := BlTaskAction new.
+	task action: [
+		layer sortDatas.
+		self requestRepaint
+	].
+
+	self enqueueTask: task
+]
+
+{ #category : #'private - events' }
 GeoViewAbstractElement >> layerProcessDataChanged: anEvent [
 
 	"Send scale event"
@@ -386,7 +405,7 @@ GeoViewAbstractElement >> minScaleInMeters: anObject [
 { #category : #'strategy management' }
 GeoViewAbstractElement >> newInteractionsStrategy [
 
-	^ GeoViewDefaultInteractionsStrategy new
+	^ GeoViewInteractionsStrategy new
 ]
 
 { #category : #'API -- objects parameters' }
@@ -552,7 +571,7 @@ GeoViewAbstractElement >> scaleInMeters: aNumber [
 	
 	self displayToGraphicProjection altitudeInMeters: self scaleInMeters.
 	self displayToGraphicProjection updateResolution: self extent.
-	self updateModel: ((GeoViewProjectionChanges new) isScaleChanged: true; isResolutionChanged: true).
+	self updateModel: ((GeoViewProjectionChanges new) isScaleChanged: true; isResolutionChanged: true; yourself).
 	
 	"Send scale event"
 	geoViewEvent := GeoViewScaleChangedEvent new.
@@ -615,6 +634,7 @@ GeoViewAbstractElement >> updateDisplayToGraphicProjection [
 { #category : #private }
 GeoViewAbstractElement >> updateModel: aContext [
 
+	aContext ifNil:[ ^ self ].
 	self layers ifEmpty: [ ^ self ].
 
 	self layers do: [ :l | l updateModel: aContext ]

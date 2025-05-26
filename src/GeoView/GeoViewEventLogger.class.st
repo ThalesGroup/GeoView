@@ -34,13 +34,19 @@ GeoViewEventLogger >> geoViewCursorCoordinatesChangedEvent: anEvent [
 ]
 
 { #category : #events }
-GeoViewEventLogger >> geoViewLayerAddedEvent: anEvent [
+GeoViewEventLogger >> geoViewDomainObjectsLayerProcessDataChanged: anEvent [
 
 	anEvent traceCr.
 ]
 
 { #category : #events }
-GeoViewEventLogger >> geoViewLayerProcessDataChanged: anEvent [
+GeoViewEventLogger >> geoViewGraphicModelLayerNeedToBeSorted: anEvent [
+
+	anEvent traceCr.
+]
+
+{ #category : #events }
+GeoViewEventLogger >> geoViewLayerAddedEvent: anEvent [
 
 	anEvent traceCr.
 ]
