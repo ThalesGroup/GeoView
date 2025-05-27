@@ -371,6 +371,24 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
 	
 ]
 
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithSmallTileSize [
+	"This example show a map layer (assuming an internet connection to default url open street map"
+	
+	| element layer |
+	element := GeoViewAeElement new.
+	
+	element maxScaleInMeters: element maxScaleInMeters * 8.
+	
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
+	layer tileSize: 64.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+	
+]
+
 { #category : #examples }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	"This example show a map layer with update of map center every seconds (during 30s)"

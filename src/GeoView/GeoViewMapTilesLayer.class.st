@@ -2,6 +2,7 @@ Class {
 	#name : #GeoViewMapTilesLayer,
 	#superclass : #AbstractGeoViewBasicLayer,
 	#instVars : [
+		'tileSize',
 		'loadingTilesWorker',
 		'dictTilesByLevel',
 		'previousCenter',
@@ -64,7 +65,7 @@ GeoViewMapTilesLayer >> addedToSceneGraph [
 { #category : #drawing }
 GeoViewMapTilesLayer >> aeDrawOn: aeCanvas [
 
-	| cairoContext surface extent offcenter scale gText |
+	| cairoContext gText |
 	self mapBackground ifNil: [ ^ self ].
 	self mapBackground surface ifNil: [ ^ self ].
 
@@ -73,25 +74,6 @@ GeoViewMapTilesLayer >> aeDrawOn: aeCanvas [
 	doubleBufferedScene currentBuffer content ifNotNil: [ :e |
 		cairoContext sourceSurface: e; paint 
 	].
-
-	self flag:'TODO pla: map mutex is used in tiles computation and rendering: this is a problem and why osm is not speed - need to refactor before'.
-	"self mapMutex critical: [
-		self mapBackground ifNotNil: [ :e |
-			scale := self mapBackground scale.
-			e surface ifNotNil: [ :f |
-				surface := f.
-				
-				offcenter := e offcenter copy.
-				surface deviceScale: scale.
-				extent := surface extent copy.
-				 ] 
-		] 
-	]."
-
-	"cairoContext := aeCanvas privateAeCairoContext.
-	cairoContext sourceSurface: surface x: offcenter x  y: offcenter y.
-	cairoContext rectangle: (0 @ 0 extent: extent).
-	cairoContext fill. "
 	
 	self flag:'pla: need to display this text on top of the view (not only in the layer) because it can be hidden by on top objects'.
 	self isDisplayTilesProviderNote ifFalse:[ ^ self ].
@@ -126,8 +108,7 @@ GeoViewMapTilesLayer >> buildVMapLayerTiles: aVMapTilesXY buffer: aLargerVMapTil
 	self surfaceMap offcenter: self mapOffcenter.
 	self surfaceMap position: currentGraphicProjection cartesianCenter.
 
-	context := self surfaceMap surface newContext"; paint".
-"	context sourceColor: self class colorWithoutTile; paint."
+	context := self surfaceMap surface newContext.
 
 	findAtLeastOneTile := self loadAndRenderTiles: aVMapTilesXY on: self surfaceMap offset: self mapOffcenter negated level: aLevel.
 	
@@ -147,7 +128,7 @@ GeoViewMapTilesLayer >> buildVMapLayerTiles: aVMapTilesXY buffer: aLargerVMapTil
 				self dictTilesByLevel at: aLevel put: vMapServerTiles. 
 			]
 		]
-	] forkAt: Processor systemBackgroundPriority named: 'Map buffer loading').
+	] forkAt: Processor userBackgroundPriority named: 'Map buffer loading').
 
 	^findAtLeastOneTile
 ]
@@ -168,15 +149,21 @@ GeoViewMapTilesLayer >> computeGraphicBoundsForTile: aGeoFormTile level: aLevel 
 		centerGeoPoint := self getCenterInGeoPoint.
 		vMapTileCenter := self getTileXYFromGeoPoint: centerGeoPoint level: aLevel.
 		diffXY := aGeoFormTile tileXY - vMapTileCenter.
-		diffPixel := diffXY * (256@256).
+		diffPixel := diffXY * (self defaultTileSize asPoint).
 		origin := (centerPixel) + diffPixel.
-		corner := origin + (256@256).
+		corner := origin + (self defaultTileSize asPoint).
 	] ifFalse:[
 		origin := self getGraphicPositionFromGeoPosition: aGeoFormTile geoBounds origin.
 		corner := self getGraphicPositionFromGeoPosition: aGeoFormTile geoBounds corner.
 	].
 	graphicBounds := origin floor corner: corner floor.
 	aGeoFormTile graphicBounds: graphicBounds
+]
+
+{ #category : #'API -- tiles' }
+GeoViewMapTilesLayer >> defaultTileSize [
+
+	^ 256
 ]
 
 { #category : #accessing }
@@ -254,7 +241,7 @@ GeoViewMapTilesLayer >> getGeoBoundsFromTileXY: aPt level: aLevel [
 
 	| pt1 pt2 |
 	pt1 := self getPixelXYFromTileXY: aPt.
-	pt2 := pt1 + (256 @ 256).
+	pt2 := pt1 + (self defaultTileSize asPoint).
 	pt1 := self getGeoPointFromPixelXY: pt1 level: aLevel.
 	pt2 := self getGeoPointFromPixelXY: pt2 level: aLevel.
 	^pt1  corner: pt2
@@ -312,9 +299,9 @@ GeoViewMapTilesLayer >> getGeoRectanglePointsFromTileXY: aPt level: aLevel [
 	| pt1 pt2 pt3 pt4 |
 	
 	pt1 := self getPixelXYFromTileXY: aPt.
-	pt3 := pt1 + (256 @ 256).
-	pt2 := pt1 + (256 @ 0).
-	pt4 := pt1 + (0 @ 256).
+	pt3 := pt1 + (self defaultTileSize asPoint).
+	pt2 := pt1 + (self defaultTileSize @ 0).
+	pt4 := pt1 + (0 @ self defaultTileSize).
 	pt1 := self getGeoPointFromPixelXY: pt1 level: aLevel.
 	pt2 := self getGeoPointFromPixelXY: pt2 level: aLevel.
 	pt3 := self getGeoPointFromPixelXY: pt3 level: aLevel.
@@ -364,7 +351,7 @@ GeoViewMapTilesLayer >> getPixelXYFromTileXY: aTilePt [
 
 	| pt |
 	pt := 0 @ 0.
-	pt setX: (aTilePt x * 256) setY: (aTilePt y * 256).
+	pt setX: (aTilePt x * self defaultTileSize) setY: (aTilePt y * self defaultTileSize).
 	^pt
 ]
 
@@ -373,7 +360,7 @@ GeoViewMapTilesLayer >> getTileSurfaceFromGeoImage: aGeoImageTile [
 
 	| tileSurface context|
 	aGeoImageTile pngReference ifNil:[
-		tileSurface := AeCairoImageSurface extent: 256@256.
+		tileSurface := AeCairoImageSurface extent: (self tileSize asPoint).
 		context := tileSurface newContext.
 		"context sourceColor: self class colorWithoutTile ;paint"
 	] ifNotNil:[
@@ -398,7 +385,7 @@ GeoViewMapTilesLayer >> getTileXYFromPixelXY: aPixelPt [
 
 	| pt |
 	pt := 0 @ 0.
-	pt setX: ((aPixelPt x / 256) asInteger) setY: ((aPixelPt y / 256) asInteger).
+	pt setX: ((aPixelPt x / self defaultTileSize) asInteger) setY: ((aPixelPt y / self defaultTileSize) asInteger).
 	^pt
 	
 ]
@@ -406,9 +393,8 @@ GeoViewMapTilesLayer >> getTileXYFromPixelXY: aPixelPt [
 { #category : #level }
 GeoViewMapTilesLayer >> getTilesLevelForCurrentResolution [
 
-	| tile points pt2 pt3 h current tileHeight centerGeoPoint|
+	| tile points pt2 pt3 h current centerGeoPoint|
 	
-	tileHeight := 128.
 	centerGeoPoint := self getCenterInGeoPoint.
 	(18 to: 1 by: -1) detect: 
 			[:i |
@@ -419,9 +405,9 @@ GeoViewMapTilesLayer >> getTilesLevelForCurrentResolution [
 			pt3 := points at: 3.
 			h := (pt2 - pt3) r.
 			current := i -> h.
-			h >= tileHeight
+			h >= self tileSize
 				ifTrue: [true]
-				ifFalse: [false]] ifNone:[ 0 -> tileHeight].
+				ifFalse: [false]] ifNone:[ 0 -> self tileSize].
 	^current
 	
 ]
@@ -435,7 +421,7 @@ GeoViewMapTilesLayer >> getTilesXYFor: aCenter level: aLevel [
 	vMapTileCenter := self getTileXYFromGeoPoint: aCenter level: aLevel.
 
 	"Compute nb of tiles (rows and columns) + 2@2 => add 2 tiles on each side"
-	tileQt := ((currentGraphicProjection extentInPixels extent / 256) + (2@2)) rounded.
+	tileQt := ((currentGraphicProjection extentInPixels extent / (self tileSize)) + (2@2)) rounded.
 
 	"compute size of the square containing these tiles, and define order to start on center and go to the side on a spiral"
 	squareSize := (tileQt x) max: (tileQt y).
@@ -512,7 +498,7 @@ GeoViewMapTilesLayer >> getTilesXYForBuffer: aCenter level: aLevel [
 	vMapTilesXYBuffer := OrderedCollection new.
 	vMapTileCenter := self getTileXYFromGeoPoint: aCenter level: aLevel.
 
-	tileQt := (((currentGraphicProjection extentInPixels extent / 256) / 2) + (2@2)) rounded.
+	tileQt := (((currentGraphicProjection extentInPixels extent / (self defaultTileSize)) / 2) + (2@2)) rounded.
 
 	x := tileQt x + 1.
 	y := tileQt y + 1.
@@ -731,13 +717,13 @@ GeoViewMapTilesLayer >> mapMutex [
 { #category : #accessing }
 GeoViewMapTilesLayer >> mapOffcenter [
 
-	^(-512)@(-512)
+	^ self tileSize * 4 negated asPoint
 ]
 
 { #category : #computing }
 GeoViewMapTilesLayer >> mapSize: aLevel [
 
-	^(256 bitShift: aLevel) asInteger
+	^ (self defaultTileSize bitShift: aLevel) asInteger
 ]
 
 { #category : #private }
@@ -769,7 +755,7 @@ GeoViewMapTilesLayer >> moveMapBackground [
 		self movingProc: nil.
 	].
 
-	self movingProc: (proc forkAt: Processor userSchedulingPriority).
+	self movingProc: (proc forkAt: Processor userBackgroundPriority).
 
 	
 
@@ -816,7 +802,7 @@ GeoViewMapTilesLayer >> needToMoveMap: aContext [
 	
 	(aContext isScaleChanged or:[aContext isResolutionChanged]) ifTrue:[ ^self].
 	
-	(aContext isCenterChanged and:[ centerOffsetPixel r <= 256 ]) ifTrue:[
+	(aContext isCenterChanged and:[ centerOffsetPixel r <= self defaultTileSize ]) ifTrue:[
 		self isMovingMap: true.
 	].
 ]
@@ -841,7 +827,7 @@ GeoViewMapTilesLayer >> needToRecomputeMap: aContext [
 		aContext isExtentChanged ifFalse:[
 				aContext isResolutionChanged ifFalse:[
 						aContext isScaleChanged ifFalse:[ 
-							(aContext isCenterChanged and:[ centerOffsetPixel r <= 128 ]) ifTrue:[
+							(aContext isCenterChanged and:[ centerOffsetPixel r <= (self tileSize) ]) ifTrue:[
 								^ false
 							] 
 						].
@@ -939,7 +925,7 @@ GeoViewMapTilesLayer >> renderSurface: aSurface on: aTargetSurface scale: aXYSca
 	targetContext sourceColor: Color red.
 	targetContext translateBy: aPoint.
 	targetContext scaleBy: aXYScale.
-	offset := 0@0 - (128@128).
+	offset := 0@0 - (((self tileSize / 2) asPoint)).
 	targetContext translateBy: offset.
 	targetContext sourceSurface: aSurface x: 0 y: 0.
 	targetContext paint.
@@ -960,7 +946,7 @@ GeoViewMapTilesLayer >> renderTileImage: aGeoImageTile on: aSurface [
 		corner := aGeoImageTile graphicBounds corner
 	].
 
-	scale := (corner y - origin y) / 256.
+	scale := (corner y - origin y) / self defaultTileSize.
 	"Slightly increase size of tiles to avoid space between tiles"
 	scale := scale + ((0.005 * scale) max: 0.01).
 	
@@ -1140,6 +1126,18 @@ GeoViewMapTilesLayer >> tileNumberForLat: aLat long: aLong zoom: aZoomLevel [
 ]
 
 { #category : #'API -- tiles' }
+GeoViewMapTilesLayer >> tileSize [
+
+	^ tileSize ifNil: [ tileSize := self defaultTileSize ]
+]
+
+{ #category : #'API -- tiles' }
+GeoViewMapTilesLayer >> tileSize: anObject [
+
+	tileSize := anObject
+]
+
+{ #category : #'API -- tiles' }
 GeoViewMapTilesLayer >> tilesProvider [
 
 	^ tilesProvider
@@ -1196,8 +1194,8 @@ GeoViewMapTilesLayer >> updateMapBackground [
 
 		"swap and notify repaint"
 		doubleBufferedScene swap.
-		self sendRepaintRequest
-	]
+	].
+	self sendRepaintRequest
 ]
 
 { #category : #private }
