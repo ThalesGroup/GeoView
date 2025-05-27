@@ -7,7 +7,9 @@ Class {
 		'graphicalOrderSortBlock',
 		'userDataChangesMutex',
 		'isNeedToSortDatas',
-		'dirtyDShapes'
+		'dirtyDShapes',
+		'maximumDisplayedObjects',
+		'isMaximumDisplayedObjectsReach'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -158,7 +160,8 @@ AbstractGeoViewGraphicModelLayer >> initializeGraphicModel [
 	self graphicModel setProcessData: DSymbolGeoViewProcessData new forClass: SmockDSymbol.
 	self graphicModel setProcessData: DImageGeoViewProcessData new forClass: SmockDImage.
 	self graphicModel setProcessData: DCircleGeoViewProcessData new forClass: SmockDCircle.
-	self graphicModel setProcessData: DTextGeoViewProcessData new forClass: SmockDText.
+	self graphicModel setProcessData: DEllipseGeoViewProcessData new forClass: SmockDEllipse. 
+	self graphicModel setProcessData: DTextGeoViewProcessData new forClass: SmockDText. 
 	self graphicModel setProcessData: DPolygonGeoViewProcessData new forClass: SmockDPolygon.
 	self graphicModel setProcessData: DPolylineGeoViewProcessData new forClass: SmockDPolyline.
 	self graphicModel setProcessData: DSegmentGeoViewProcessData new forClass: SmockDSegment.
@@ -173,6 +176,13 @@ AbstractGeoViewGraphicModelLayer >> initializeSortedDatas [
 	sortedDatas sortBlock: self graphicalOrderSortBlock
 ]
 
+{ #category : #'API -- drawing' }
+AbstractGeoViewGraphicModelLayer >> isMaximumDisplayedObjectsReach [
+
+	^ isMaximumDisplayedObjectsReach ifNil: [
+		  isMaximumDisplayedObjectsReach := false ]
+]
+
 { #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> isNeedToSortDatas [
 
@@ -183,6 +193,20 @@ AbstractGeoViewGraphicModelLayer >> isNeedToSortDatas [
 AbstractGeoViewGraphicModelLayer >> isNeedToSortDatas: aBoolean [
 
 	isNeedToSortDatas := aBoolean
+]
+
+{ #category : #'API -- drawing' }
+AbstractGeoViewGraphicModelLayer >> maximumDisplayedObjects [
+	"basic way to limit the number of displayed objects in case of too much datas"
+	
+	^ maximumDisplayedObjects
+]
+
+{ #category : #'API -- drawing' }
+AbstractGeoViewGraphicModelLayer >> maximumDisplayedObjects: aNumber [
+	"basic way to limit the number of displayed objects in case of too much datas"
+	
+	maximumDisplayedObjects := aNumber 
 ]
 
 { #category : #'private - sort' }
@@ -283,11 +307,27 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 	
 	self userDataChangesMutex critical: [
 		self isNeedToSortDatas: false.
-		datas := self graphicModel getDatas
+		"select only drawable datas"
+		datas := self graphicModel getDatas select:[ :e | e isDrawable ].
 	].
 
-	"sort by reset"
-	sortedDatas removeAll; addAll: datas
+	"sort by reset content of the list"
+	sortedDatas removeAll.
+
+	(self maximumDisplayedObjects notNil and:[ datas size > self maximumDisplayedObjects ]) ifTrue:[ 
+		| temp |
+		temp := sortedDatas copy.
+		temp addAll: datas.
+		datas := temp copyFrom: 1 to: (self maximumDisplayedObjects min: (temp size)).
+		datas do:[ :e | sortedDatas addNoSort: e ].
+		self isMaximumDisplayedObjectsReach ifFalse:[
+			isMaximumDisplayedObjectsReach := true.
+			self announce: GeoViewLayerReachMaximumDisplayedObjectsEvent new.
+		].
+	] ifFalse:[
+		self isMaximumDisplayedObjectsReach ifTrue:[ isMaximumDisplayedObjectsReach := false ].
+		sortedDatas addAll: datas.
+	].
 ]
 
 { #category : #'API -- symbology' }

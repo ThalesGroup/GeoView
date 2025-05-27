@@ -13,13 +13,7 @@ GeoViewExamples class >> createAndStartTask: aBlockClosure [
 ]
 
 { #category : #private }
-GeoViewExamples class >> createGeoObjects [
-
-	^ self createGeoObjects: 1000
-]
-
-{ #category : #private }
-GeoViewExamples class >> createGeoObjects: aQuantity [
+GeoViewExamples class >> createGeoCircles: aQuantity [
 
 	| list random nb |
 	list := OrderedCollection new.
@@ -37,6 +31,35 @@ GeoViewExamples class >> createGeoObjects: aQuantity [
 	].
 
 	^ list
+]
+
+{ #category : #private }
+GeoViewExamples class >> createGeoEllipses: aQuantity [
+
+	| list random nb |
+	list := OrderedCollection new.
+	random := Random new.
+	nb := aQuantity.
+	
+	1 to: nb do:[ :i | | object |
+		object := GeoEllipse new.
+		object key: i.
+		object fillStyle: (Color random asSmockFillStyle).
+		object strokeStyle: (Color random asSmockStrokeStyle).
+		object absoluteCoordinates: AbsoluteCoordinates random.
+		object radiusInMeters1: (random next * 100000).
+		object radiusInMeters2: (random next * 100000).
+		object orientationInAzimuths: ((random next * 360) \\ 360).
+		list add: object.
+	].
+
+	^ list
+]
+
+{ #category : #private }
+GeoViewExamples class >> createGeoObjects [
+
+	^ self createGeoCircles: 1000
 ]
 
 { #category : #private }
@@ -70,6 +93,141 @@ GeoViewExamples class >> createTask: aBlockClosure [
 		        yourself.
 
 	^ serv
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoCircle [
+
+	| element circle |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+
+	"create sample datas"
+	circle := (GeoCircle key: 1)
+		          radiusInMeters: 1000000;
+		          strokeStyle: Color white asSmockStrokeStyle;
+		          absoluteCoordinates: AbsoluteCoordinates zero.
+	element addObject: circle.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoCircles [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	
+	"create sample datas"
+	objects := self createGeoCircles: 1000.
+	element addObjects: objects.
+
+	"Example of event handler behavior on geoView domain event"
+	element addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent do: [ :event |
+		event absoluteCoordinates printString traceCr.
+	].
+
+	"Example of custom EventHandler, here a logger"
+	element addEventHandler: (GeoViewEventLogger new).
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoCirclesAddedOneByOne [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	
+	"create sample datas one by one (not optimal but usefull for testing performances)"
+	objects := self createGeoCircles: 1000.
+	objects do: [ :e | element addObject: e ].
+
+	"Example of event handler behavior on geoView domain event"
+	element addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent do: [ :event |
+		event absoluteCoordinates printString traceCr.
+	].
+
+	"Example of custom EventHandler, here a logger"
+	element addEventHandler: (GeoViewEventLogger new).
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoEllipse [
+
+	| element ellipse |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+
+	"create sample datas"
+	ellipse := (GeoEllipse key: 1)
+		          radiusInMeters1: 2000000;
+		          radiusInMeters2: 1000000;
+					 orientationInAzimuths: 45;
+		          strokeStyle: Color white asSmockStrokeStyle;
+		          absoluteCoordinates: AbsoluteCoordinates zero.
+	element addObject: ellipse.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoEllipses [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	
+	"create sample datas"
+	objects := self createGeoEllipses: 1000.
+	element addObjects: objects.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoPositions [
+	
+	| geoView city |
+	geoView := GeoViewUtils createGeoViewForGeoObjects.
+	geoView addLayerAtFirst: (GeoViewMapTilesLayer newWithGoogle).
+	geoView id: #geoView.
+	
+	city := GeoPosition key: 1.
+	city text: 'Brest'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frBrest).
+	geoView addObject: city.
+	
+	city := GeoPosition key: 2.
+	city text: 'Nevers'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frNevers).
+	geoView addObject: city.
+
+	city := GeoPosition key: 3.
+	city text: 'Bordeaux'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frBordeaux).
+	geoView addObject: city.
+	
+	city := GeoPosition key: 4.
+	city text: 'Marseille'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frMarseille).
+	geoView addObject: city.
+	
+	city := GeoPosition key: 5.
+	city text: 'Lyon'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frLyon).
+	geoView addObject: city.
+	
+	city := GeoPosition key: 6.
+	city text: 'Saint Renan'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frStRenan).
+	geoView addObject: city.
+	
+	city := GeoPosition key: 7.
+	city text: 'Paris'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frParis).
+	geoView addObject: city.
+	
+	city := GeoPosition key: 8.
+	city text: 'Elancourt'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frElancourt).
+	geoView addObject: city.
+	
+	^ self openViewInWindow: geoView
 ]
 
 { #category : #'examples - tiles provider' }
@@ -246,6 +404,20 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	
 ]
 
+{ #category : #'examples - data' }
+GeoViewExamples class >> exampleLargestCitiesOfTheWorld [
+
+	| geoView nb |
+	geoView := GeoViewUtils createGeoViewForGeoObjects.
+	geoView addLayerAtFirst: (GeoViewMapTilesLayer newWithGoogle).
+
+	"add largest cities with the same icon"
+	nb := 1.
+	geoView addObjects: (self largest50Cities collect:[ :e | e key: nb; image: (self iconNamed: #info). nb := nb + 1 ]).
+
+	^ self openViewInWindow: geoView
+]
+
 { #category : #examples }
 GeoViewExamples class >> exampleWithDShapesLayer [
 	
@@ -274,19 +446,6 @@ GeoViewExamples class >> exampleWithDShapesLayer [
 ]
 
 { #category : #examples }
-GeoViewExamples class >> exampleWithGeoCircle [
-	
-	| element circle |
-	element := GeoViewUtils createGeoViewForGeoObjects.
-	
-	"create sample datas"
-	circle := GeoCircle new key: 1; radiusInMeters: 1000000; strokeStyle: (Color white asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates zero.
-	element addObject: circle.
-
-	^ self openViewInWindow: element
-]
-
-{ #category : #examples }
 GeoViewExamples class >> exampleWithGeoLabeledCircle [
 	
 	| element circle |
@@ -298,50 +457,6 @@ GeoViewExamples class >> exampleWithGeoLabeledCircle [
 	"create sample datas"
 	circle := GeoCircle new key: 1; radiusInMeters: 1000000; strokeStyle: (Color white asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates zero.
 	element addObject: circle.
-
-	^ self openViewInWindow: element
-]
-
-{ #category : #examples }
-GeoViewExamples class >> exampleWithGeoObjects [
-	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
-	
-	| element objects |
-	element := GeoViewUtils createGeoViewForGeoObjects.
-	
-	"create sample datas"
-	objects := self createGeoObjects: 1000.
-	element addObjects: objects.
-
-	"Example of event handler behavior on geoView domain event"
-	element addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent do: [ :event |
-		event absoluteCoordinates printString traceCr.
-	].
-
-	"Example of custom EventHandler, here a logger"
-	element addEventHandler: (GeoViewEventLogger new).
-
-	^ self openViewInWindow: element
-]
-
-{ #category : #examples }
-GeoViewExamples class >> exampleWithGeoObjectsAlt [
-	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
-	
-	| element objects |
-	element := GeoViewUtils createGeoViewForGeoObjects.
-	
-	"create sample datas one by one (not optimal but usefull for testing performances)"
-	objects := self createGeoObjects.
-	objects do: [ :e | element addObject: e ].
-
-	"Example of event handler behavior on geoView domain event"
-	element addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent do: [ :event |
-		event absoluteCoordinates printString traceCr.
-	].
-
-	"Example of custom EventHandler, here a logger"
-	element addEventHandler: (GeoViewEventLogger new).
 
 	^ self openViewInWindow: element
 ]
@@ -447,48 +562,6 @@ GeoViewExamples class >> exampleWithGeoObjectsUpdated [
 			 do: [ :event | task kill ]).
 
 	^ space
-]
-
-{ #category : #examples }
-GeoViewExamples class >> exampleWithGeoPositions [
-	
-	| geoView city |
-	geoView := GeoViewUtils createGeoViewForGeoObjects.
-	geoView id: #geoView.
-	
-	city := GeoPosition new key: 1.
-	city text: 'Brest'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frBrest).
-	geoView addObject: city.
-	
-	city := GeoPosition new key: 2.
-	city text: 'Nevers'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frNevers).
-	geoView addObject: city.
-
-	city := GeoPosition new key: 3.
-	city text: 'Bordeaux'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frBordeaux).
-	geoView addObject: city.
-	
-	city := GeoPosition new key: 4.
-	city text: 'Marseille'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frMarseille).
-	geoView addObject: city.
-	
-	city := GeoPosition new key: 5.
-	city text: 'Lyon'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frLyon).
-	geoView addObject: city.
-	
-	city := GeoPosition new key: 6.
-	city text: 'Saint Renan'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frStRenan).
-	geoView addObject: city.
-	
-	city := GeoPosition new key: 7.
-	city text: 'Paris'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frParis).
-	geoView addObject: city.
-	
-	city := GeoPosition new key: 8.
-	city text: 'Elancourt'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frElancourt).
-	geoView addObject: city.
-	
-	^ self openViewInWindow: geoView
 ]
 
 { #category : #private }
