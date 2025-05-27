@@ -300,33 +300,33 @@ AbstractGeoViewGraphicModelLayer >> sendSortRequest [
 { #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> sortDatas [
 	"force sorted to remove and add datas - execute my only with a bloc command applier - return true / false if need to repaint"
-
-	| datas |
+	| sortableDatas |
 
 	sortedDatas ifNil: [ ^ self ].
-	
 	self userDataChangesMutex critical: [
 		self isNeedToSortDatas: false.
-		"select only drawable datas"
-		datas := self graphicModel getDatas select:[ :e | e isDrawable ].
+		sortableDatas := self graphicModel getDatas.
 	].
+
+	"select only drawable datas to sort"
+	sortableDatas := sortableDatas select:[ :e | e isDrawable ].
 
 	"sort by reset content of the list"
 	sortedDatas removeAll.
 
-	(self maximumDisplayedObjects notNil and:[ datas size > self maximumDisplayedObjects ]) ifTrue:[ 
+	(self maximumDisplayedObjects notNil and:[ sortableDatas size > self maximumDisplayedObjects ]) ifTrue:[ 
 		| temp |
 		temp := sortedDatas copy.
-		temp addAll: datas.
-		datas := temp copyFrom: 1 to: (self maximumDisplayedObjects min: (temp size)).
-		datas do:[ :e | sortedDatas addNoSort: e ].
+		temp addAll: sortableDatas.
+		sortableDatas := temp copyFrom: 1 to: (self maximumDisplayedObjects min: (temp size)).
+		sortableDatas do:[ :e | sortedDatas addNoSort: e ].
 		self isMaximumDisplayedObjectsReach ifFalse:[
 			isMaximumDisplayedObjectsReach := true.
 			self announce: GeoViewLayerReachMaximumDisplayedObjectsEvent new.
 		].
 	] ifFalse:[
 		self isMaximumDisplayedObjectsReach ifTrue:[ isMaximumDisplayedObjectsReach := false ].
-		sortedDatas addAll: datas.
+		sortedDatas addAll: sortableDatas.
 	].
 ]
 
