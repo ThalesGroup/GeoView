@@ -382,7 +382,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithSmallTileS
 	
 	"add carto layer"
 	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
-	layer tileSize: 64.
+	layer tileSize: 128.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
