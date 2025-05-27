@@ -28,6 +28,14 @@ AbstractGeoViewLayer >> aeDrawOn: aeCanvas [
 	self subclassResponsibility 
 ]
 
+{ #category : #private }
+AbstractGeoViewLayer >> announce: anAnnouncement [
+	"Notify an announcement"
+
+	anAnnouncement layerName: self name.
+	self announcer announce: anAnnouncement
+]
+
 { #category : #accessing }
 AbstractGeoViewLayer >> announcer [
 
@@ -115,11 +123,8 @@ AbstractGeoViewLayer >> removedFromSceneGraph [
 { #category : #private }
 AbstractGeoViewLayer >> sendRepaintRequest [
 	"Notify that the layer need to be repaint, use it if the layer manage internal changes of his own graphical model"
-	
-	| announcement |
-	announcement := GeoViewLayerRepaintRequest new.
-	announcement layerName: self name.
-	self announcer announce: announcement
+
+	self announce: GeoViewLayerRepaintRequest new
 ]
 
 { #category : #'API -- symbology' }

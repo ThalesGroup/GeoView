@@ -25,11 +25,13 @@ GeoArcBand >> apertureInRadians: anObject [
 
 { #category : #accessing }
 GeoArcBand >> orientationInAzimuths [
+
 	^ orientationInAzimuths
 ]
 
 { #category : #accessing }
 GeoArcBand >> orientationInAzimuths: anObject [
+
 	orientationInAzimuths := anObject
 ]
 

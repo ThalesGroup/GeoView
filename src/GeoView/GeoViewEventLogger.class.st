@@ -14,6 +14,7 @@ GeoViewEventLogger >> eventsToHandle [
 		  GeoViewPickingEvent.
 		  GeoViewLayerAddedEvent.
 		  GeoViewLayerRemovedEvent.
+		  GeoViewLayerReachMaximumDisplayedObjectsEvent.
 		  GeoViewDomainObjectsLayerProcessDataChanged.
 		  GeoViewObjectSelectionChanged.
 		  GeoViewObjectSelectionAdded.
@@ -47,6 +48,12 @@ GeoViewEventLogger >> geoViewGraphicModelLayerNeedToBeSorted: anEvent [
 
 { #category : #events }
 GeoViewEventLogger >> geoViewLayerAddedEvent: anEvent [
+
+	anEvent traceCr.
+]
+
+{ #category : #events }
+GeoViewEventLogger >> geoViewLayerReachMaximumDisplayedObjectsEvent: anEvent [
 
 	anEvent traceCr.
 ]

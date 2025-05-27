@@ -26,7 +26,7 @@ GeoViewExamplesMolecule class >> createGeoObjects [
 ]
 
 { #category : #examples }
-GeoViewExamplesMolecule class >> exampleWithGeoObjects [
+GeoViewExamplesMolecule class >> exampleGeoCircles [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
 	
 	| geoViewManager layer objects |

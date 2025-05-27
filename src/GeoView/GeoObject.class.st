@@ -15,6 +15,12 @@ Class {
 }
 
 { #category : #accessing }
+GeoObject class >> key: aKey [
+
+	^ self new key: aKey
+]
+
+{ #category : #accessing }
 GeoObject >> absoluteCoordinates [
 	^ absoluteCoordinates
 ]
