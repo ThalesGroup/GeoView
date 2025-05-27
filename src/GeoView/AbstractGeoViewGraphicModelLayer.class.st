@@ -253,6 +253,40 @@ AbstractGeoViewGraphicModelLayer >> populatePickingResult: aPickingResult at: in
  	^ pickingElement 
 ]
 
+{ #category : #'private - sort' }
+AbstractGeoViewGraphicModelLayer >> populateSortedDatasLimited: aCollection [
+
+	| temp limitedDatas |
+	temp := sortedDatas copy.
+	temp addAll: aCollection.
+	limitedDatas := temp copyFrom: 1 to: (self maximumDisplayedObjects min: temp size).
+	limitedDatas do: [ :e | sortedDatas addNoSort: e ].
+
+	self isMaximumDisplayedObjectsReach ifTrue: [ ^ self ].
+	isMaximumDisplayedObjectsReach := true.
+	self announce: GeoViewLayerReachMaximumDisplayedObjectsEvent new
+]
+
+{ #category : #'private - sort' }
+AbstractGeoViewGraphicModelLayer >> populateSortedDatasNormally: aCollection [
+	"force sorted to remove and add datas - execute my only with a bloc command applier - return true / false if need to repaint"
+
+	self isMaximumDisplayedObjectsReach ifTrue:[ isMaximumDisplayedObjectsReach := false ].
+	sortedDatas addAll: aCollection.
+
+]
+
+{ #category : #'private - sort' }
+AbstractGeoViewGraphicModelLayer >> populateSortedDatasWith: aCollection [
+	"force sorted to remove and add datas - execute my only with a bloc command applier - return true / false if need to repaint"
+
+	(self maximumDisplayedObjects notNil and:[ aCollection size > self maximumDisplayedObjects ]) ifTrue:[ 
+		self populateSortedDatasLimited: aCollection
+	] ifFalse:[
+		self populateSortedDatasNormally: aCollection
+	].
+]
+
 { #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> removeDShape: aDShape [
 
@@ -300,34 +334,19 @@ AbstractGeoViewGraphicModelLayer >> sendSortRequest [
 { #category : #'private - sort' }
 AbstractGeoViewGraphicModelLayer >> sortDatas [
 	"force sorted to remove and add datas - execute my only with a bloc command applier - return true / false if need to repaint"
-	| sortableDatas |
 
+	| sortableDatas |
 	sortedDatas ifNil: [ ^ self ].
 	self userDataChangesMutex critical: [
 		self isNeedToSortDatas: false.
-		sortableDatas := self graphicModel getDatas.
-	].
+		sortableDatas := self graphicModel getDatas ].
 
 	"select only drawable datas to sort"
-	sortableDatas := sortableDatas select:[ :e | e isDrawable ].
+	sortableDatas := sortableDatas select: [ :e | e isDrawable ].
 
 	"sort by reset content of the list"
 	sortedDatas removeAll.
-
-	(self maximumDisplayedObjects notNil and:[ sortableDatas size > self maximumDisplayedObjects ]) ifTrue:[ 
-		| temp |
-		temp := sortedDatas copy.
-		temp addAll: sortableDatas.
-		sortableDatas := temp copyFrom: 1 to: (self maximumDisplayedObjects min: (temp size)).
-		sortableDatas do:[ :e | sortedDatas addNoSort: e ].
-		self isMaximumDisplayedObjectsReach ifFalse:[
-			isMaximumDisplayedObjectsReach := true.
-			self announce: GeoViewLayerReachMaximumDisplayedObjectsEvent new.
-		].
-	] ifFalse:[
-		self isMaximumDisplayedObjectsReach ifTrue:[ isMaximumDisplayedObjectsReach := false ].
-		sortedDatas addAll: sortableDatas.
-	].
+	self populateSortedDatasWith: sortableDatas
 ]
 
 { #category : #'API -- symbology' }
