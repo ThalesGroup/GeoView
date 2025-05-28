@@ -4,7 +4,7 @@ A GeoTextTest is a test class for testing the behavior of GeoText
 Class {
 	#name : #GeoTextTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - GeoObjects'
+	#category : #'GeoView-Tests-GeoObjects'
 }
 
 { #category : #'tests - instance' }

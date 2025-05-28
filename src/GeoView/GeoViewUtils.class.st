@@ -13,6 +13,7 @@ GeoViewUtils class >> createGeoObjectsLayer: aName [
 
 	layer setProcessData: GeoCircleProcessData new forClass: GeoCircle.
 	layer setProcessData: GeoEllipseProcessData new forClass: GeoEllipse.
+	layer setProcessData: GeoSegmentProcessData new forClass: GeoSegment.
 	layer setProcessData: GeoPolygonProcessData new forClass: GeoPolygon.
 	layer setProcessData: GeoPolylineProcessData new forClass: GeoPolyline.
 	layer setProcessData: GeoRectangleProcessData new forClass: GeoRectangle.

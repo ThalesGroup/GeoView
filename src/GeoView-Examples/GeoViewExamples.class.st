@@ -63,6 +63,26 @@ GeoViewExamples class >> createGeoObjects [
 ]
 
 { #category : #private }
+GeoViewExamples class >> createGeoSegment: aQuantity [
+
+	| list random nb |
+	list := OrderedCollection new.
+	random := Random new.
+	nb := aQuantity.
+	
+	1 to: nb do:[ :i | | object |
+		object := GeoSegment new.
+		object key: i.
+		object strokeStyle: (Color random asSmockStrokeStyle).
+		object fromAbsolutePosition: AbsoluteCoordinates random.
+		object toAbsolutePosition: AbsoluteCoordinates random.
+		list add: object.
+	].
+
+	^ list
+]
+
+{ #category : #private }
 GeoViewExamples class >> createRandomPositionGeoCircles: aQuantity color: aColor radius: aRadiusInMeters [
 
 	| list random |
@@ -228,6 +248,19 @@ GeoViewExamples class >> exampleGeoPositions [
 	geoView addObject: city.
 	
 	^ self openViewInWindow: geoView
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoSegments [
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	
+	"create sample datas"
+	objects := self createGeoSegment: 1000.
+	element addObjects: objects.
+
+	^ self openViewInWindow: element
 ]
 
 { #category : #'examples - tiles provider' }
