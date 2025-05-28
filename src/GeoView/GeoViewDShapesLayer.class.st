@@ -18,9 +18,10 @@ GeoViewDShapesLayer >> addDShape: aDShape [
 
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifFalse: [
-			self userModel at: aDShape key put: aDShape ] ].
+			self userModel at: aDShape key put: aDShape ].
 
-	self graphicModelMutex critical: [ super addDShape: aDShape ]
+		self graphicModelMutex critical: [ super addDShape: aDShape ]
+	].
 ]
 
 { #category : #'API -- DShapes' }
@@ -34,17 +35,21 @@ GeoViewDShapesLayer >> addDShapes: aDShapeList [
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifFalse: [
 				self userModel at: e key put: e.
-				toAdd add: e ] ] ].
+				toAdd add: e ] ].
 
-	self graphicModelMutex critical: [ super addDShapes: toAdd ]
+		self graphicModelMutex critical: [ super addDShapes: toAdd ] 
+	].
 ]
 
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> haveDShapeKey: aKey [
 	"Warning : call this message only on a user changes critical block"
 
+	| includes |
 	aKey ifNil: [ ^ false ].
-	^ self userModel includesKey: aKey
+	self displayModelMutex critical: [
+		includes := self userModel includesKey: aKey ].
+	^ includes
 ]
 
 { #category : #initialization }
@@ -92,9 +97,10 @@ GeoViewDShapesLayer >> removeDShape: aDShape [
 
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifTrue: [
-			self userModel removeKey: aDShape key ] ].
+			self userModel removeKey: aDShape key ].
 
-	self graphicModelMutex critical: [ super removeDShape: aDShape ]
+		self graphicModelMutex critical: [ super removeDShape: aDShape ]
+	]
 ]
 
 { #category : #'API -- DShapes' }
@@ -108,9 +114,10 @@ GeoViewDShapesLayer >> removeDShapes: aDShapeList [
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifFalse: [
 				self userModel at: e key put: e.
-				toRemove add: e ] ] ].
+				toRemove add: e ] ].
 
-	self graphicModelMutex critical: [ super removeDShapes: toRemove ]
+		self graphicModelMutex critical: [ super removeDShapes: toRemove ] 
+	]
 ]
 
 { #category : #'API -- DShapes' }
@@ -118,9 +125,10 @@ GeoViewDShapesLayer >> updateDShape: aDShape [
 
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifTrue: [
-			self userModel at: aDShape key put: aDShape ] ].
+			self userModel at: aDShape key put: aDShape ].
 
-	self graphicModelMutex critical: [ super updateDShape: aDShape ]
+		self graphicModelMutex critical: [ super updateDShape: aDShape ]
+	]
 ]
 
 { #category : #'API -- DShapes' }
@@ -134,9 +142,10 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifTrue: [
 				self userModel at: e key put: e.
-				toUpdate add: e ] ] ].
+				toUpdate add: e ] ].
 
-	self graphicModelMutex critical: [ super updateDShapes: toUpdate ]
+		self graphicModelMutex critical: [ super updateDShapes: toUpdate ]
+	]
 ]
 
 { #category : #private }

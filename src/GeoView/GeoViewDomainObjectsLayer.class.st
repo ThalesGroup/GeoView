@@ -21,9 +21,9 @@ GeoViewDomainObjectsLayer >> addObject: anObject [
 
 	| shapes |
 	self displayModelMutex critical: [
-		shapes := self displayModel created: anObject ].
-
-	self graphicModelMutex critical: [ self addDShape: shapes ]
+		shapes := self displayModel created: anObject.
+		self graphicModelMutex critical: [ self addDShape: shapes ] 
+	]
 ]
 
 { #category : #'API -- objects management' }
@@ -35,10 +35,11 @@ GeoViewDomainObjectsLayer >> addObjects: anObjectList [
 
 	self displayModelMutex critical: [
 		anObjectList do: [ :e |
-			(self displayModel created: e) ifNotNil: [ :f | dShapeList add: f ] ] ].
+			(self displayModel created: e) ifNotNil: [ :f | dShapeList add: f ] ].
 
-	self graphicModelMutex critical: [
-		dShapeList ifNotEmpty: [ :e | self addDShapes: e ] ]
+		self graphicModelMutex critical: [
+			dShapeList ifNotEmpty: [ :e | self addDShapes: e ] ] 
+	]
 ]
 
 { #category : #accessing }
@@ -141,9 +142,10 @@ GeoViewDomainObjectsLayer >> removeObject: anObject [
 
 	| shape |
 	self displayModelMutex critical: [
-		shape := self displayModel deleted: anObject ].
-	
-	self graphicModelMutex critical: [ self removeDShape: shape ]
+		shape := self displayModel deleted: anObject.
+
+		self graphicModelMutex critical: [ self removeDShape: shape ] 
+	]
 ]
 
 { #category : #'API -- objects management' }
@@ -156,10 +158,11 @@ GeoViewDomainObjectsLayer >> removeObjects: anObjectList [
 
 	self displayModelMutex critical: [
 		anObjectList do: [ :e |
-			(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ] ] ].
+			(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ] ].
 
-	self graphicModelMutex critical: [
-		dShapeList ifNotEmpty: [ :e | self removeDShapes: e ] ]
+		self graphicModelMutex critical: [
+			dShapeList ifNotEmpty: [ :e | self removeDShapes: e ] ] 
+	]
 ]
 
 { #category : #'API -- process datas' }
@@ -220,9 +223,10 @@ GeoViewDomainObjectsLayer >> updateObject: anObject [
 
 	| shape |
 	self displayModelMutex critical: [
-		shape := self displayModel updated: anObject ].
+		shape := self displayModel updated: anObject.
 
-	self graphicModelMutex critical: [ self updateDShape: shape ]
+		self graphicModelMutex critical: [ self updateDShape: shape ] 
+	]
 ]
 
 { #category : #'API -- objects management' }
@@ -233,10 +237,11 @@ GeoViewDomainObjectsLayer >> updateObjects: anObjectList [
 
 	self displayModelMutex critical: [
 		anObjectList do: [ :e |
-			(self displayModel updated: e) ifNotNil: [ :f | dShapeList add: f ] ] ].
+			(self displayModel updated: e) ifNotNil: [ :f | dShapeList add: f ] ].
 
-	self graphicModelMutex critical: [
-		dShapeList ifNotEmpty: [ :e | self updateDShapes: e ] ]
+		self graphicModelMutex critical: [
+			dShapeList ifNotEmpty: [ :e | self updateDShapes: e ] ] 
+	]
 ]
 
 { #category : #'private - state' }
