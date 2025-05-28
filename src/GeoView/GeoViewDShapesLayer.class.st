@@ -18,8 +18,9 @@ GeoViewDShapesLayer >> addDShape: aDShape [
 
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifFalse: [
-			self userModel at: aDShape key put: aDShape.
-			super addDShape: aDShape ] ]
+			self userModel at: aDShape key put: aDShape ] ].
+
+	self graphicModelMutex critical: [ super addDShape: aDShape ]
 ]
 
 { #category : #'API -- DShapes' }
@@ -27,14 +28,15 @@ GeoViewDShapesLayer >> addDShapes: aDShapeList [
 
 	| toAdd |
 	aDShapeList ifNil: [ ^ self ].
+	toAdd := OrderedCollection new.
 
 	self displayModelMutex critical: [
-		toAdd := OrderedCollection new.
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifFalse: [
 				self userModel at: e key put: e.
-				toAdd add: e ] ].
-		super addDShapes: toAdd ]
+				toAdd add: e ] ] ].
+
+	self graphicModelMutex critical: [ super addDShapes: toAdd ]
 ]
 
 { #category : #'API -- DShapes' }
@@ -90,8 +92,9 @@ GeoViewDShapesLayer >> removeDShape: aDShape [
 
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifTrue: [
-			self userModel removeKey: aDShape key.
-			super removeDShape: aDShape ] ]
+			self userModel removeKey: aDShape key ] ].
+
+	self graphicModelMutex critical: [ super removeDShape: aDShape ]
 ]
 
 { #category : #'API -- DShapes' }
@@ -99,14 +102,15 @@ GeoViewDShapesLayer >> removeDShapes: aDShapeList [
 
 	| toRemove |
 	aDShapeList ifNil: [ ^ self ].
+	toRemove := OrderedCollection new.
 
 	self displayModelMutex critical: [
-		toRemove := OrderedCollection new.
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifFalse: [
 				self userModel at: e key put: e.
-				toRemove add: e ] ].
-		super removeDShapes: toRemove ]
+				toRemove add: e ] ] ].
+
+	self graphicModelMutex critical: [ super removeDShapes: toRemove ]
 ]
 
 { #category : #'API -- DShapes' }
@@ -114,8 +118,9 @@ GeoViewDShapesLayer >> updateDShape: aDShape [
 
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifTrue: [
-			self userModel at: aDShape key put: aDShape.
-			super updateDShape: aDShape ] ]
+			self userModel at: aDShape key put: aDShape ] ].
+
+	self graphicModelMutex critical: [ super updateDShape: aDShape ]
 ]
 
 { #category : #'API -- DShapes' }
@@ -123,14 +128,15 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 
 	| toUpdate |
 	aDShapeList ifNil: [ ^ self ].
+	toUpdate := OrderedCollection new.
 
 	self displayModelMutex critical: [
-		toUpdate := OrderedCollection new.
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifTrue: [
 				self userModel at: e key put: e.
-				toUpdate add: e ] ].
-		super updateDShapes: toUpdate ]
+				toUpdate add: e ] ] ].
+
+	self graphicModelMutex critical: [ super updateDShapes: toUpdate ]
 ]
 
 { #category : #private }
@@ -147,8 +153,11 @@ GeoViewDShapesLayer >> updateModel: aContext [
 		] ifFalse:[
 			datas collect:[ :e | e isComposite ifTrue:[ e updateChildrenInDepth ]. e ].
 		].
+	].
 
-		super updateGraphicModelWithDShapes: dShapes ]
+	self graphicModelMutex critical:[	
+		super updateGraphicModelWithDShapes: dShapes 
+	]
 ]
 
 { #category : #accessing }
