@@ -15,6 +15,15 @@ Class {
 	#category : #'GeoView-Layers'
 }
 
+{ #category : #sorting }
+AbstractGeoViewGraphicModelLayer class >> defaultGraphicalOrderSortBlock [
+	"Setup a sort block to change the order of graphic element stack"
+
+	"this default sort block place all selected shapes on top of the drawing"
+
+	^ [ :gShapeA :gShapeB | (gShapeA isPropertyExists: #selected) not ]
+]
+
 { #category : #testing }
 AbstractGeoViewGraphicModelLayer class >> isAbstract [ 
 
@@ -69,15 +78,6 @@ AbstractGeoViewGraphicModelLayer >> datasAeDrawOn: aeCanvas [
 
 	toBeDisplayDatas ifNil: [ ^ self ].
 	toBeDisplayDatas do: [ :e | e aeDrawOn: aeCanvas ]
-]
-
-{ #category : #private }
-AbstractGeoViewGraphicModelLayer >> defaultGraphicalOrderSortBlock [
-	"Setup a sort block to change the order of graphic element stack"
-
-	"this default sort block place all selected shapes on top of the drawing"
-
-	^ [ :gShapeA :gShapeB | (gShapeA isPropertyExists: #selected) not ]
 ]
 
 { #category : #'private - DShapes' }
