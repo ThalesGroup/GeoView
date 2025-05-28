@@ -4,7 +4,7 @@ A GeoArcBandTest is a test class for testing the behavior of GeoArcBand
 Class {
 	#name : #GeoArcBandTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - GeoObjects'
+	#category : #'GeoView-Tests-GeoObjects'
 }
 
 { #category : #'tests-updating' }

@@ -16,6 +16,7 @@ GeoViewUtilsTest >> testCreateGeoObjectsLayer [
 	self assert: layer class equals: GeoViewDomainObjectsLayer.
 	self assert: (layer getProcessDataForClass: GeoCircle) class equals: GeoCircleProcessData.
 	self assert: (layer getProcessDataForClass: GeoEllipse) class equals: GeoEllipseProcessData.
+	self assert: (layer getProcessDataForClass: GeoSegment) class equals: GeoSegmentProcessData.
 	self assert: (layer getProcessDataForClass: GeoPolygon) class equals: GeoPolygonProcessData.
 	self assert: (layer getProcessDataForClass: GeoPolyline) class equals: GeoPolylineProcessData.
 	self assert: (layer getProcessDataForClass: GeoRectangle) class equals: GeoRectangleProcessData.

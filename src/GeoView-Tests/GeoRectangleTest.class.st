@@ -4,7 +4,7 @@ A GeoRectangleTest is a test class for testing the behavior of GeoRectangle
 Class {
 	#name : #GeoRectangleTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - GeoObjects'
+	#category : #'GeoView-Tests-GeoObjects'
 }
 
 { #category : #'tests - instance' }
