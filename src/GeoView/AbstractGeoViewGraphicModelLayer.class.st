@@ -2,7 +2,6 @@ Class {
 	#name : #AbstractGeoViewGraphicModelLayer,
 	#superclass : #AbstractGeoViewLayer,
 	#instVars : [
-		'sortedDatas',
 		'graphicModel',
 		'graphicalOrderSortBlock',
 		'isNeedToSortDatas',
@@ -10,7 +9,8 @@ Class {
 		'maximumDisplayedObjects',
 		'isMaximumDisplayedObjectsReach',
 		'displayModelMutex',
-		'graphicModelMutex'
+		'graphicModelMutex',
+		'toBeDisplayDatas'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -67,8 +67,8 @@ AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 { #category : #drawing }
 AbstractGeoViewGraphicModelLayer >> datasAeDrawOn: aeCanvas [
 
-	sortedDatas ifNil: [ ^ self ].
-	sortedDatas do: [ :e | e aeDrawOn: aeCanvas ]
+	toBeDisplayDatas ifNil: [ ^ self ].
+	toBeDisplayDatas do: [ :e | e aeDrawOn: aeCanvas ]
 ]
 
 { #category : #private }
@@ -141,18 +141,10 @@ AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock [
 AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock: aBlockClosure [
 	"Setup a sort block to change the order of graphic element stack"
 
+	graphicalOrderSortBlock ~= aBlockClosure ifFalse: [ ^ self ].
+
 	graphicalOrderSortBlock := aBlockClosure.
-
-	graphicalOrderSortBlock ifNil:[
-		sortedDatas := OrderedCollection new: self graphicModel capacity.	
-	]ifNotNil: [ :e |
-		(sortedDatas isKindOf: SortedCollection) ifFalse:[ 
-			sortedDatas := SortedCollection new: self graphicModel capacity.
-		].
-		sortedDatas sortBlock: self graphicalOrderSortBlock.
-		self needToSortDatas.
-	].
-
+	self updateToBeDisplayedDatas
 ]
 
 { #category : #'private - DShapes' }
@@ -174,7 +166,7 @@ AbstractGeoViewGraphicModelLayer >> initialize [
 
 	super initialize.
 	self initializeGraphicModel.
-	self initializeSortedDatas.
+	self initializeToBeDisplayedDatas.
 
 ]
 
@@ -201,10 +193,9 @@ AbstractGeoViewGraphicModelLayer >> initializeGraphicModel [
 ]
 
 { #category : #initialization }
-AbstractGeoViewGraphicModelLayer >> initializeSortedDatas [
+AbstractGeoViewGraphicModelLayer >> initializeToBeDisplayedDatas [
 
-	sortedDatas := SortedCollection new: self graphicModel capacity.
-	sortedDatas sortBlock: self defaultGraphicalOrderSortBlock 
+	toBeDisplayDatas := OrderedCollection new: self graphicModel capacity
 ]
 
 { #category : #'API -- drawing' }
@@ -288,10 +279,15 @@ AbstractGeoViewGraphicModelLayer >> populatePickingResult: aPickingResult at: in
 AbstractGeoViewGraphicModelLayer >> populateSortedDatasLimited: aCollection [
 
 	| temp limitedDatas |
-	temp := sortedDatas copy.
+	temp := toBeDisplayDatas copy.
 	temp addAll: aCollection.
 	limitedDatas := temp copyFrom: 1 to: (self maximumDisplayedObjects min: temp size).
-	limitedDatas do: [ :e | sortedDatas addNoSort: e ].
+	
+	(toBeDisplayDatas isKindOf: SortedCollection) ifTrue:[
+		limitedDatas do: [ :e | toBeDisplayDatas addNoSort: e ].
+	] ifFalse:[
+		toBeDisplayDatas addAll: limitedDatas.
+	].
 
 	self isMaximumDisplayedObjectsReach ifTrue: [ ^ self ].
 	isMaximumDisplayedObjectsReach := true.
@@ -303,7 +299,7 @@ AbstractGeoViewGraphicModelLayer >> populateSortedDatasNormally: aCollection [
 	"force sorted to remove and add datas - execute my only with a bloc command applier - return true / false if need to repaint"
 
 	self isMaximumDisplayedObjectsReach ifTrue:[ isMaximumDisplayedObjectsReach := false ].
-	sortedDatas addAll: aCollection.
+	toBeDisplayDatas addAll: aCollection.
 
 ]
 
@@ -369,7 +365,7 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 	"force sorted to remove and add datas - execute my only with a bloc command applier - return true / false if need to repaint"
 
 	| sortableDatas |
-	sortedDatas ifNil: [ ^ self ].
+	toBeDisplayDatas ifNil: [ ^ self ].
 	self graphicModelMutex critical: [
 		self isNeedToSortDatas: false.
 		sortableDatas := self graphicModel getDatas ].
@@ -378,7 +374,7 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 	sortableDatas := sortableDatas select: [ :e | e isDrawable ].
 
 	"sort by reset content of the list"
-	sortedDatas removeAll.
+	toBeDisplayDatas removeAll.
 	self populateSortedDatasWith: sortableDatas
 ]
 
@@ -440,6 +436,20 @@ AbstractGeoViewGraphicModelLayer >> updateGraphicModelWithDShapes: aDShapeList [
 	
 	self needToSortDatas.
 	self isVisible ifTrue:[ self sendRepaintRequest ].
+]
+
+{ #category : #initialization }
+AbstractGeoViewGraphicModelLayer >> updateToBeDisplayedDatas [
+
+	graphicalOrderSortBlock ifNil:[
+		self initializeToBeDisplayedDatas.
+	]ifNotNil: [ :e |
+		(toBeDisplayDatas isKindOf: SortedCollection) ifFalse:[ 
+			toBeDisplayDatas := SortedCollection new: self graphicModel capacity.
+		].
+		toBeDisplayDatas sortBlock: self graphicalOrderSortBlock.
+		self needToSortDatas.
+	].
 ]
 
 { #category : #'API -- graphic properties' }
