@@ -16,7 +16,7 @@ GeoViewDShapesLayer >> addDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
-	self userDataChangesMutex critical: [
+	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifFalse: [
 			self userModel at: aDShape key put: aDShape.
 			super addDShape: aDShape ] ]
@@ -28,7 +28,7 @@ GeoViewDShapesLayer >> addDShapes: aDShapeList [
 	| toAdd |
 	aDShapeList ifNil: [ ^ self ].
 
-	self userDataChangesMutex critical: [
+	self displayModelMutex critical: [
 		toAdd := OrderedCollection new.
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifFalse: [
@@ -79,7 +79,7 @@ GeoViewDShapesLayer >> populatePickingResult: aPickingResult at: index with: aGS
 	pickingElement ifNil:[ ^ nil ].
 	
 	"add dShape"
-	self userDataChangesMutex critical: [ data := self userModel at: index ifAbsent:[ nil ] ].
+	self displayModelMutex critical: [ data := self userModel at: index ifAbsent:[ nil ] ].
 	pickingElement dShape: data. 
 	
  	^ pickingElement 
@@ -88,7 +88,7 @@ GeoViewDShapesLayer >> populatePickingResult: aPickingResult at: index with: aGS
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> removeDShape: aDShape [
 
-	self userDataChangesMutex critical: [
+	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifTrue: [
 			self userModel removeKey: aDShape key.
 			super removeDShape: aDShape ] ]
@@ -100,7 +100,7 @@ GeoViewDShapesLayer >> removeDShapes: aDShapeList [
 	| toRemove |
 	aDShapeList ifNil: [ ^ self ].
 
-	self userDataChangesMutex critical: [
+	self displayModelMutex critical: [
 		toRemove := OrderedCollection new.
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifFalse: [
@@ -112,7 +112,7 @@ GeoViewDShapesLayer >> removeDShapes: aDShapeList [
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> updateDShape: aDShape [
 
-	self userDataChangesMutex critical: [
+	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifTrue: [
 			self userModel at: aDShape key put: aDShape.
 			super updateDShape: aDShape ] ]
@@ -124,7 +124,7 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 	| toUpdate |
 	aDShapeList ifNil: [ ^ self ].
 
-	self userDataChangesMutex critical: [
+	self displayModelMutex critical: [
 		toUpdate := OrderedCollection new.
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifTrue: [
@@ -137,7 +137,7 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 GeoViewDShapesLayer >> updateModel: aContext [
 
 	| dShapes |
-	self userDataChangesMutex critical: [ | datas |
+	self displayModelMutex critical: [ | datas |
 		
 		datas := self userModel.
 		
