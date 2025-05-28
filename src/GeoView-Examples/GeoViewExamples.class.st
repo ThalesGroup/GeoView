@@ -433,7 +433,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	element scaleInMeters: 150000.
 	
 	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithLocalDirectory.
+	layer := GeoViewMapTilesLayer new.
 	layer name: 'SampleCartoLayer'.
 	layer allowSlideMoving: false.
 	element addLayerAtFirst: layer.
