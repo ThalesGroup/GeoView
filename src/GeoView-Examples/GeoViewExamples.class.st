@@ -469,6 +469,26 @@ GeoViewExamples class >> exampleLargestCitiesOfTheWorld [
 	^ self openViewInWindow: geoView
 ]
 
+{ #category : #'examples - data' }
+GeoViewExamples class >> exampleLargestCountriesOfTheWorld [
+
+	| geoView nb |
+	geoView := GeoViewUtils createGeoViewForGeoObjects.
+	geoView addLayerAtFirst: (GeoViewMapTilesLayer newWithGoogle).
+
+	"add largest countries with a gradient circle"
+	nb := 1.
+	geoView addObjects: (self largest50Countries collect:[ :e | 
+		e key: nb.
+		e radiusInMeters: e radiusInMeters * 3.
+		e fillStyle: (SmockRadialGradientPaint new stops: { (0 -> (Color transparent)) . (0.5 -> (Color black alpha: 0)) . 1 -> (Color cyan) }).
+		nb := nb + 1. 
+		e 
+	]).
+
+	^ self openViewInWindow: geoView
+]
+
 { #category : #examples }
 GeoViewExamples class >> exampleWithDShapesLayer [
 	
@@ -617,6 +637,7 @@ GeoViewExamples class >> exampleWithGeoObjectsUpdated [
 
 { #category : #'private - datas' }
 GeoViewExamples class >> largest50Cities [
+	"example: not realistic"
 
         | positions |
         positions := OrderedCollection new.
@@ -672,6 +693,56 @@ GeoViewExamples class >> largest50Cities [
         positions add: ((GeoPosition new) text: 'Tucson'; absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 32.2226 longitudeInDegrees: -110.9747 altitudeInMeters: 0)).
         positions add: ((GeoPosition new) text: 'Charlotte'; absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 35.2271 longitudeInDegrees: -80.8431 altitudeInMeters: 0)).
         
+        ^positions
+]
+
+{ #category : #'private - datas' }
+GeoViewExamples class >> largest50Countries [
+	"example: not realistic"
+
+        | positions |
+        positions := OrderedCollection new.
+
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 39.9042 longitudeInDegrees: 116.4074); radiusInMeters: 1000000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 28.6139 longitudeInDegrees: 77.2090); radiusInMeters: 900000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 38.9072 longitudeInDegrees: -77.0369); radiusInMeters: 800000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: -6.2088 longitudeInDegrees: 106.8456); radiusInMeters: 600000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 30.3753 longitudeInDegrees: 69.3451); radiusInMeters: 500000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: -14.2350 longitudeInDegrees: -51.9253); radiusInMeters: 400000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 9.0820 longitudeInDegrees: 8.6753); radiusInMeters: 350000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 23.6850 longitudeInDegrees: 90.3563); radiusInMeters: 300000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 55.7558 longitudeInDegrees: 37.6173); radiusInMeters: 250000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 23.6345 longitudeInDegrees: -102.5528); radiusInMeters: 200000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 35.6828 longitudeInDegrees: 139.7595); radiusInMeters: 150000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 9.1450 longitudeInDegrees: 40.4897); radiusInMeters: 140000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 12.8797 longitudeInDegrees: 121.7740); radiusInMeters: 130000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 26.8206 longitudeInDegrees: 30.8025); radiusInMeters: 120000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 14.0583 longitudeInDegrees: 108.2772); radiusInMeters: 110000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: -4.0383 longitudeInDegrees: 21.7587); radiusInMeters: 100000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 38.9637 longitudeInDegrees: 35.2433); radiusInMeters: 95000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 32.4279 longitudeInDegrees: 53.6880); radiusInMeters: 90000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 51.1657 longitudeInDegrees: 10.4515); radiusInMeters: 85000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 15.8700 longitudeInDegrees: 100.9925); radiusInMeters: 80000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 55.3781 longitudeInDegrees: -3.4360); radiusInMeters: 75000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 46.6034 longitudeInDegrees: 1.8883); radiusInMeters: 70000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 41.8719 longitudeInDegrees: 12.5674); radiusInMeters: 65000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: -6.3690 longitudeInDegrees: 34.8888); radiusInMeters: 60000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: -30.5595 longitudeInDegrees: 22.9375); radiusInMeters: 55000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: -18.6657 longitudeInDegrees: 35.5296); radiusInMeters: 50000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: -1.2864 longitudeInDegrees: 36.8172); radiusInMeters: 40000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 4.5709 longitudeInDegrees: -74.2973); radiusInMeters: 35000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 40.4637 longitudeInDegrees: -3.7492); radiusInMeters: 30000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: -38.4161 longitudeInDegrees: -63.6167); radiusInMeters: 25000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 1.3733 longitudeInDegrees: 32.2903); radiusInMeters: 24000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 28.0339 longitudeInDegrees: 1.6596); radiusInMeters: 23000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 12.8628 longitudeInDegrees: 30.2176); radiusInMeters: 22000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 33.2232 longitudeInDegrees: 43.4119); radiusInMeters: 21000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 33.9391 longitudeInDegrees: 67.7099); radiusInMeters: 20000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 51.9194 longitudeInDegrees: 19.1451); radiusInMeters: 19000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 56.1304 longitudeInDegrees: -106.3468); radiusInMeters: 18000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 31.7917 longitudeInDegrees: -7.0926); radiusInMeters: 17000).
+        positions add: ((GeoCircle new) absoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: -6.3690 longitudeInDegrees: 34.8888); radiusInMeters: 16000).
+
         ^positions
 ]
 
