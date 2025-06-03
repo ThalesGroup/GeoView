@@ -23,7 +23,11 @@ DImageGeoViewProcessData >> processUpdatedData: aKey incoming: aDImage with: aGB
 	aGBitmap2D rotation: (aDImage orientation % 360).	
 	aGBitmap2D scale: aDImage scale.
 
-	aDImage isDrawModeUser ifTrue:[ "no yet supported" ].
+	aDImage isDrawModeUser ifTrue:[ 
+		aGBitmap2D form ifNotNil:[
+			aGBitmap2D scale: (aGBitmap2D form extent x * self processor projection metersByPixel ) asPoint.
+		].
+	].
 
 	^ aGBitmap2D 
 ]
