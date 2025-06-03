@@ -114,6 +114,12 @@ GeoViewAbstractElement >> addObjects: anUserObjectList [
 		e haveDomainObjects ifTrue: [ e addObjects: anUserObjectList ] ]
 ]
 
+{ #category : #'API -- filters' }
+GeoViewAbstractElement >> applyDisplayFilterToAllLayers: aDisplayFilter [
+
+	self layers do: [ :l | l displayFilter: aDisplayFilter ]
+]
+
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 	"Center the map on a global point"
@@ -121,6 +127,18 @@ GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 	| absoluteCoordinates |
 	absoluteCoordinates := self absoluteCoordinatesFromGlobalPoint: aGlobalPoint.
 	self geoCenter: absoluteCoordinates
+]
+
+{ #category : #'API -- filters' }
+GeoViewAbstractElement >> commonDisplayFilter [
+
+	| firstFilter |
+	self hasLayer ifFalse:[ ^ nil ].
+	firstFilter := self layers first displayFilter.
+	(self layers allSatisfy: [ :layer |
+		 layer displayFilter = firstFilter ])
+		ifTrue: [ ^ firstFilter ]
+		ifFalse: [ ^ nil ]
 ]
 
 { #category : #private }
@@ -254,6 +272,12 @@ GeoViewAbstractElement >> globalPointFromLocalPoint: aLocalPoint [
 
 	aLocalPoint ifNil: [ ^ nil ].
 	^ self localPointToGlobal: aLocalPoint
+]
+
+{ #category : #'API -- layers management' }
+GeoViewAbstractElement >> hasLayer [
+
+	^ self layers notEmpty
 ]
 
 { #category : #'API -- objects management' }
@@ -408,13 +432,13 @@ GeoViewAbstractElement >> newInteractionsStrategy [
 	^ GeoViewInteractionsStrategy new
 ]
 
-{ #category : #'API -- objects parameters' }
+{ #category : #'API -- objects management' }
 GeoViewAbstractElement >> objectIndexAccessor [
 
 	^ objectIndexAccessor ifNil: [ objectIndexAccessor := #key ]
 ]
 
-{ #category : #'API -- objects parameters' }
+{ #category : #'API -- objects management' }
 GeoViewAbstractElement >> objectIndexAccessor: aSymbol [
 
 	objectIndexAccessor := aSymbol
@@ -534,8 +558,7 @@ GeoViewAbstractElement >> removeObjects: anUserObjectList [
 { #category : #private }
 GeoViewAbstractElement >> requestRepaint [
 
-	self layers ifEmpty: [ ^ self ].
-	self invalidate.
+	self invalidate
 ]
 
 { #category : #'API -- scale and center' }
@@ -664,7 +687,6 @@ GeoViewAbstractElement >> updateState: aStateSymbol withIndexes: aKeyList [
 
 	aKeyList ifNil: [ ^ self ].
 	aStateSymbol ifNil: [ ^ self ].
-	self layers ifEmpty: [ ^ self ].
 
 	self layers do: [ :l |
 		l haveDomainObjects ifTrue: [

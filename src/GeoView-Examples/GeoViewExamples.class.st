@@ -15,6 +15,12 @@ GeoViewExamples class >> createAndStartTask: aBlockClosure [
 { #category : #private }
 GeoViewExamples class >> createGeoCircles: aQuantity [
 
+	^ self createGeoCircles: aQuantity do: nil
+]
+
+{ #category : #private }
+GeoViewExamples class >> createGeoCircles: aQuantity do: aBlock [
+
 	| list random nb |
 	list := OrderedCollection new.
 	random := Random new.
@@ -27,6 +33,7 @@ GeoViewExamples class >> createGeoCircles: aQuantity [
 		object strokeStyle: (Color random asSmockStrokeStyle).
 		object absoluteCoordinates: AbsoluteCoordinates random.
 		object radiusInMeters: (random next * 100000).
+		aBlock ifNotNil: [ :b | b value: object ].
 		list add: object.
 	].
 
@@ -486,6 +493,30 @@ GeoViewExamples class >> exampleLargestCountriesOfTheWorld [
 		e 
 	]).
 
+	^ self openViewInWindow: geoView
+]
+
+{ #category : #'examples - filters' }
+GeoViewExamples class >> exampleObjectsFilter [
+
+	| geoView objects filter colorToAttr |
+	geoView := GeoViewUtils createGeoViewForGeoObjects.
+	
+	"set a filter"
+	filter := GeoViewAttributesDisplayFilter new.
+	filter allowedAttributes: #(#red #yellow #green).
+	geoView applyDisplayFilterToAllLayers: filter.
+	
+	colorToAttr := Dictionary newFrom: { Color red -> #red . Color yellow -> #yellow . Color green -> #green }.
+	
+	"create sample datas"
+	objects := self createGeoCircles: 5000 do:[ :e | | color |
+		"building attribute depending the nature of the circle and using properties, this is an example - from a static way, can be setup with a process data when the object change with clean property or something like that"
+		color := e fillStyle paint.
+		(colorToAttr includesKey: color) ifTrue: [ e setProperty: #filterAttribute value: (colorToAttr at: color) ].
+	].
+	geoView addObjects: objects.
+	
 	^ self openViewInWindow: geoView
 ]
 

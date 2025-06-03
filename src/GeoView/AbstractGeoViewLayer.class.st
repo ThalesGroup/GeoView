@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'isVisible',
 		'name',
-		'announcer'
+		'announcer',
+		'displayFilter'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -40,6 +41,20 @@ AbstractGeoViewLayer >> announce: anAnnouncement [
 AbstractGeoViewLayer >> announcer [
 
 	^ announcer ifNil:[ announcer := Announcer new ]
+]
+
+{ #category : #'API -- filters' }
+AbstractGeoViewLayer >> displayFilter [
+
+	^ displayFilter
+]
+
+{ #category : #'API -- filters' }
+AbstractGeoViewLayer >> displayFilter: aDisplayFilter [
+
+	displayFilter = aDisplayFilter ifTrue:[ ^ self ].
+	displayFilter := aDisplayFilter.
+	self sendRepaintRequest 
 ]
 
 { #category : #'API -- projection' }
