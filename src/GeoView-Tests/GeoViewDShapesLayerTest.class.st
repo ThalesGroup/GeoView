@@ -4,7 +4,7 @@ A GeoViewDShapesLayerTest is a test class for testing the behavior of GeoViewDSh
 Class {
 	#name : #GeoViewDShapesLayerTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - Core'
+	#category : #'GeoView-Tests-Core'
 }
 
 { #category : #tests }

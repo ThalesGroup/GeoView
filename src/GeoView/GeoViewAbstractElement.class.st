@@ -15,7 +15,8 @@ Class {
 		'displayToGraphicProjection',
 		'mapProjection',
 		'viewInfos',
-		'interactionsStrategy'
+		'interactionsStrategy',
+		'displayFilter'
 	],
 	#category : #'GeoView-Core'
 }
@@ -117,7 +118,9 @@ GeoViewAbstractElement >> addObjects: anUserObjectList [
 { #category : #'API -- filters' }
 GeoViewAbstractElement >> applyDisplayFilterToAllLayers: aDisplayFilter [
 
-	self layers do: [ :l | l displayFilter: aDisplayFilter ]
+	self layers
+		select: [ :l | l haveGraphicModel ]
+		thenDo: [ :l | l displayFilter: aDisplayFilter ]
 ]
 
 { #category : #'API -- scale and center' }
@@ -129,32 +132,19 @@ GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 	self geoCenter: absoluteCoordinates
 ]
 
-{ #category : #'API -- filters' }
-GeoViewAbstractElement >> commonDisplayFilter [
-
-	| firstFilter |
-	self hasLayer ifFalse:[ ^ nil ].
-	firstFilter := self layers first displayFilter.
-	(self layers allSatisfy: [ :layer |
-		 layer displayFilter = firstFilter ])
-		ifTrue: [ ^ firstFilter ]
-		ifFalse: [ ^ nil ]
-]
-
 { #category : #private }
 GeoViewAbstractElement >> configureLayer: aLayer [
 	
 	aLayer viewInfos: self viewInfos.
-	
 	"Setup the map projection (from a cartographic point of view) of the layer"
 	aLayer mapProjection: self mapProjection.
-	
 	"Setup the graphic projection (from a device point of view) of the layer"
 	aLayer graphicProjection: self displayToGraphicProjection.
-	
 	aLayer announcer when: GeoViewLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
 
-	aLayer haveGraphicModel ifFalse:[ ^ self ].
+	aLayer haveGraphicModel ifFalse:[ ^ self ].	
+	"Setup the display filter"
+	aLayer displayFilter: self displayFilter.
 	aLayer announcer when: GeoViewGraphicModelLayerSortRequest send: #layerNeedToBeSorted: to: self.
 
 	aLayer haveDomainObjects ifFalse:[ ^ self ].
@@ -181,6 +171,21 @@ GeoViewAbstractElement >> createPickingResultAt: aGlobalPoint [
 		cartesianCoordinates: (self mapProjection projLatLonToCart: absoluteCoordinates).
 	
 	^ pickingResult
+]
+
+{ #category : #'API -- filters' }
+GeoViewAbstractElement >> displayFilter [
+
+	^ displayFilter
+]
+
+{ #category : #'API -- filters' }
+GeoViewAbstractElement >> displayFilter: aDisplayFilter [
+	"setup a general display filter for all layers"
+
+	displayFilter ~= aDisplayFilter ifFalse: [ ^ self ].
+	displayFilter := aDisplayFilter.
+	self applyDisplayFilterToAllLayers: displayFilter
 ]
 
 { #category : #accessing }

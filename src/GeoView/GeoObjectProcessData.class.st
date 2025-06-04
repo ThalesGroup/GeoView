@@ -1,6 +1,9 @@
 Class {
 	#name : #GeoObjectProcessData,
 	#superclass : #SmockProcessData,
+	#instVars : [
+		'displayFilterBlock'
+	],
 	#category : #'GeoView-ProcessDatas'
 }
 
@@ -8,6 +11,15 @@ Class {
 GeoObjectProcessData class >> isAbstract [ 
 
 	^ self == GeoObjectProcessData 
+]
+
+{ #category : #private }
+GeoObjectProcessData >> computeDisplayFilter: aKey incoming: aTObject with: aDShape context: aContext [
+
+	"propose a block to setup the filter externally"
+	self displayFilterBlock ifNotNil:[ :b | b cull: aKey cull: aTObject cull: aDShape cull: aContext ].
+
+	^ aDShape
 ]
 
 { #category : #private }
@@ -30,6 +42,18 @@ GeoObjectProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape
 	^ aDShape
 ]
 
+{ #category : #accessing }
+GeoObjectProcessData >> displayFilterBlock [
+
+	^ displayFilterBlock
+]
+
+{ #category : #accessing }
+GeoObjectProcessData >> displayFilterBlock: anObject [
+
+	displayFilterBlock := anObject
+]
+
 { #category : #processing }
 GeoObjectProcessData >> processCreatedData: aKey incoming: aGeoObject with: aDShape context: aContext [
 	| dShape |
@@ -39,8 +63,9 @@ GeoObjectProcessData >> processCreatedData: aKey incoming: aGeoObject with: aDSh
 	dShape key: aGeoObject key.
 	dShape isVisible: aGeoObject isVisible.
 	self computePosition: aKey incoming: aGeoObject with: aDShape context: aContext.
+	self computeDisplayFilter: aKey incoming: aGeoObject with: aDShape context: aContext.
 	
-	^dShape
+	^ dShape
 ]
 
 { #category : #processing }
@@ -74,6 +99,7 @@ GeoObjectProcessData >> processUpdatedData: aKey incoming: aGeoObject with: aDSh
 
 	aDShape isVisible: aGeoObject isVisible.
 	self computePosition: aKey incoming: aGeoObject with: aDShape context: aContext.
+	self computeDisplayFilter: aKey incoming: aGeoObject with: aDShape context: aContext.
 
 	^ aDShape
 ]

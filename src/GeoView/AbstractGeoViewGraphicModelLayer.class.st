@@ -92,6 +92,20 @@ AbstractGeoViewGraphicModelLayer >> dirtyDShapes: anObject [
 	dirtyDShapes := nil
 ]
 
+{ #category : #'API -- filters' }
+AbstractGeoViewGraphicModelLayer >> displayFilter [
+
+	^ self graphicModel displayFilter
+]
+
+{ #category : #'API -- filters' }
+AbstractGeoViewGraphicModelLayer >> displayFilter: aDisplayFilter [
+
+	self graphicModel displayFilter = aDisplayFilter ifTrue:[ ^ self ].
+	self graphicModel displayFilter: aDisplayFilter.
+	self updateModel: GeoViewDisplayFilterChanges new
+]
+
 { #category : #accessing }
 AbstractGeoViewGraphicModelLayer >> displayModelMutex [
 
@@ -173,7 +187,7 @@ AbstractGeoViewGraphicModelLayer >> initialize [
 { #category : #initialization }
 AbstractGeoViewGraphicModelLayer >> initializeGraphicModel [
 
-	self graphicModel: GeoViewModel new.
+	self graphicModel: (GeoViewModel new name: 'Graphic Shape Model').
 	
 	"Initialize a default graphic projection to work locally, will be change when the layer will be added in a geoview"
 	self graphicModel projection: GeoView2DProjection new.
@@ -196,6 +210,19 @@ AbstractGeoViewGraphicModelLayer >> initializeGraphicModel [
 AbstractGeoViewGraphicModelLayer >> initializeToBeDisplayedDatas [
 
 	toBeDisplayDatas := OrderedCollection new: self graphicModel capacity
+]
+
+{ #category : #'API -- filters' }
+AbstractGeoViewGraphicModelLayer >> isGShapeFiltered: aGShape [
+
+	^ (self isGShapeUnfiltered: aGShape) not
+]
+
+{ #category : #'API -- filters' }
+AbstractGeoViewGraphicModelLayer >> isGShapeUnfiltered: aGShape [
+
+	self displayFilter ifNil: [ ^ true ].
+	^ self displayFilter isGShapeUnfiltered: aGShape
 ]
 
 { #category : #'API -- drawing' }
@@ -370,8 +397,8 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 		self isNeedToSortDatas: false.
 		sortableDatas := self graphicModel getDatas ].
 
-	"select only drawable datas to sort"
-	sortableDatas := sortableDatas select: [ :e | e isDrawable ].
+	"select only drawable and unfiltered datas to sort"
+	sortableDatas := sortableDatas select: [ :gShape | gShape isDrawable and:[ (self isGShapeUnfiltered: gShape) ] ].
 
 	"sort by reset content of the list"
 	toBeDisplayDatas removeAll.

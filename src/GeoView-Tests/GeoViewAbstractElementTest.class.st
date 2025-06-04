@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'geoView'
 	],
-	#category : #'GeoView-Tests-Cases - Core'
+	#category : #'GeoView-Tests-Core'
 }
 
 { #category : #private }
@@ -99,6 +99,28 @@ GeoViewAbstractElementTest >> testAddLayer [
 	geoView addLayer: layer.
 	
 	self assert: (geoView getLayer: #test) equals: layer.
+]
+
+{ #category : #'tests - filters' }
+GeoViewAbstractElementTest >> testApplyDisplayFilterToAllLayers [
+	
+	| filter |
+	filter := SmockAttributesDisplayFilter new.
+	geoView applyDisplayFilterToAllLayers: filter.
+	self assert: geoView displayFilter isNil
+]
+
+{ #category : #'tests - filters' }
+GeoViewAbstractElementTest >> testDisplayFilter [
+	
+	| filter |
+	filter := SmockAttributesDisplayFilter new.
+	geoView displayFilter: filter.
+	self assert: geoView displayFilter equals: filter. 
+	
+	geoView addLayer: GeoViewDomainObjectsLayer new.
+	self assert: geoView displayFilter equals: filter. 
+	
 ]
 
 { #category : #tests }

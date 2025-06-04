@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'layer'
 	],
-	#category : #'GeoView-Tests-Cases - Core'
+	#category : #'GeoView-Tests-Core'
 }
 
 { #category : #running }
@@ -15,6 +15,17 @@ AbstractGeoViewGraphicModelLayerTest >> setUp [
 	super setUp.
 
 	layer := AbstractGeoViewGraphicModelLayer new
+]
+
+{ #category : #tests }
+AbstractGeoViewGraphicModelLayerTest >> testDisplayFilter [
+
+	| filter |
+	self assert: layer displayFilter isNil.
+
+	filter := SmockAttributesDisplayFilter new.
+	layer displayFilter: filter.
+	self assert: layer displayFilter equals: filter
 ]
 
 { #category : #tests }
@@ -40,6 +51,43 @@ AbstractGeoViewGraphicModelLayerTest >> testInitializeGraphicModel [
 	
 	"Test model initialization"
 	self assert: (layer graphicModel projection isKindOf: GeoView2DProjection).
+]
+
+{ #category : #tests }
+AbstractGeoViewGraphicModelLayerTest >> testIsGShapeFiltered [
+
+	| gShape |
+	gShape := SmockGShape2D new.
+	self deny: (layer isGShapeFiltered: gShape). "no layer filter: not filtered"
+	
+	gShape displayMask: (SmockAttributesDisplayFilter new addAttribute: #typeA) mask.
+	self deny: (layer isGShapeFiltered: gShape). "dShape display mask but no layer filter: not filtered"
+	
+	layer displayFilter: (SmockAttributesDisplayFilter new addAttribute: #typeA; addAttribute: #typeB).
+	self deny: (layer isGShapeFiltered: gShape). "not filtered because same attributes"
+	
+	gShape displayMask: nil.
+	self assert: (layer isGShapeFiltered: gShape). "filtered because display mask is nil and layer filter not nil"
+	
+	gShape displayMask: (layer displayFilter maskForAttribute: nil).
+	self assert: (layer isGShapeFiltered: gShape). "filtered because display mask is 0"
+	
+	gShape displayMask: (layer displayFilter maskForAttribute: #typeA).
+	self deny: (layer isGShapeFiltered: gShape). "not filtered because display attribute includes"
+	
+	gShape displayMask: (layer displayFilter maskForAttributes: #(#typeA #typeB)).
+	self deny: (layer isGShapeFiltered: gShape). "not filtered because display attribute includes"
+	
+	gShape displayMask: (layer displayFilter maskForAttributes: #typeC).
+	self assert: (layer isGShapeFiltered: gShape). "filtered because display attribute is not includes"
+]
+
+{ #category : #tests }
+AbstractGeoViewGraphicModelLayerTest >> testIsGShapeUnfiltered [
+
+	| gShape |
+	gShape := SmockGShape2D new.
+	self assert: (layer isGShapeUnfiltered: gShape). "no layer filter: not filtered"
 ]
 
 { #category : #tests }
