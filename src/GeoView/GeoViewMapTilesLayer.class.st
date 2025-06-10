@@ -271,7 +271,7 @@ GeoViewMapTilesLayer >> getGeoImageAtTileXY: axyPoint level: aLevel [
 	geoImage isNoPicture: isNoPicture.
 	geoImage geoBounds: geoBounds.
 	geoImage tileXY: axyPoint.
-	geoImage pngReference: img.
+	geoImage imageReference: img.
 	geoImage level: aLevel.
 	^geoImage
 
@@ -359,12 +359,12 @@ GeoViewMapTilesLayer >> getPixelXYFromTileXY: aTilePt [
 GeoViewMapTilesLayer >> getTileSurfaceFromGeoImage: aGeoImageTile [
 
 	| tileSurface context|
-	aGeoImageTile pngReference ifNil:[
+	aGeoImageTile imageReference ifNil:[
 		tileSurface := AeCairoImageSurface extent: (self tileSize asPoint).
-		context := tileSurface newContext.
-		"context sourceColor: self class colorWithoutTile ;paint"
-	] ifNotNil:[
-		tileSurface := aGeoImageTile pngReference isForm ifTrue:[ AeCairoImageSurface fromForm: aGeoImageTile pngReference]  ifFalse:[ AeCairoImageSurface newFromPngFileAt: aGeoImageTile pngReference]
+		context := tileSurface newContext
+	] ifNotNil:[ | form |
+		form := aGeoImageTile imageReference isForm ifTrue:[ aGeoImageTile imageReference ] ifFalse:[ ImageReadWriter formFromFileNamed: aGeoImageTile imageReference ].
+		tileSurface := AeCairoImageSurface fromForm: form.
 	].
 	^tileSurface
 ]
