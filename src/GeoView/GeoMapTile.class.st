@@ -13,8 +13,8 @@ Class {
 		'scale',
 		'graphicBounds',
 		'geoBounds',
-		'pngReference',
-		'level'
+		'level',
+		'imageReference'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -56,6 +56,18 @@ GeoMapTile >> graphicBounds: anObject [
 ]
 
 { #category : #accessing }
+GeoMapTile >> imageReference [
+
+	^ imageReference
+]
+
+{ #category : #accessing }
+GeoMapTile >> imageReference: aFileReference [
+
+	imageReference := aFileReference
+]
+
+{ #category : #accessing }
 GeoMapTile >> isNoPicture [
 
 	isNoPicture ifNil:[ isNoPicture := false].
@@ -91,18 +103,6 @@ GeoMapTile >> offcenter [
 GeoMapTile >> offcenter: anOffsetInPixels [
 
 	offcenter := anOffsetInPixels
-]
-
-{ #category : #accessing }
-GeoMapTile >> pngReference [
-
-	^ pngReference
-]
-
-{ #category : #accessing }
-GeoMapTile >> pngReference: aFileReference [
-
-	pngReference := aFileReference
 ]
 
 { #category : #accessing }
