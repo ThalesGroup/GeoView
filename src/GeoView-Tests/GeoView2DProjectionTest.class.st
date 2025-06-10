@@ -4,7 +4,7 @@ A GeoView2DProjectionTest is a test class for testing the behavior of GeoView2DP
 Class {
 	#name : #GeoView2DProjectionTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - Projections'
+	#category : #'GeoView-Tests-Projections'
 }
 
 { #category : #tests }

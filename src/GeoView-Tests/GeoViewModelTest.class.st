@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoViewModelTest,
 	#superclass : #TestCase,
-	#category : #'GeoView-Tests-Cases - Core'
+	#category : #'GeoView-Tests-Core'
 }
 
 { #category : #tests }

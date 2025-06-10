@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'layer'
 	],
-	#category : #'GeoView-Tests-Cases - Core'
+	#category : #'GeoView-Tests-Core'
 }
 
 { #category : #running }

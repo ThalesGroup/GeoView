@@ -8,7 +8,7 @@ Class {
 		'geoView',
 		'spacePulseTask'
 	],
-	#category : #'GeoView-Tests-Cases - Core'
+	#category : #'GeoView-Tests-Core'
 }
 
 { #category : #private }

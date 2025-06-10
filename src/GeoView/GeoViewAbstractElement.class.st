@@ -15,7 +15,8 @@ Class {
 		'displayToGraphicProjection',
 		'mapProjection',
 		'viewInfos',
-		'interactionsStrategy'
+		'interactionsStrategy',
+		'displayFilter'
 	],
 	#category : #'GeoView-Core'
 }
@@ -114,6 +115,14 @@ GeoViewAbstractElement >> addObjects: anUserObjectList [
 		e haveDomainObjects ifTrue: [ e addObjects: anUserObjectList ] ]
 ]
 
+{ #category : #'API -- filters' }
+GeoViewAbstractElement >> applyDisplayFilterToAllLayers: aDisplayFilter [
+
+	self layers
+		select: [ :l | l haveGraphicModel ]
+		thenDo: [ :l | l displayFilter: aDisplayFilter ]
+]
+
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 	"Center the map on a global point"
@@ -127,16 +136,15 @@ GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 GeoViewAbstractElement >> configureLayer: aLayer [
 	
 	aLayer viewInfos: self viewInfos.
-	
 	"Setup the map projection (from a cartographic point of view) of the layer"
 	aLayer mapProjection: self mapProjection.
-	
 	"Setup the graphic projection (from a device point of view) of the layer"
 	aLayer graphicProjection: self displayToGraphicProjection.
-	
 	aLayer announcer when: GeoViewLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
 
-	aLayer haveGraphicModel ifFalse:[ ^ self ].
+	aLayer haveGraphicModel ifFalse:[ ^ self ].	
+	"Setup the display filter"
+	aLayer displayFilter: self displayFilter.
 	aLayer announcer when: GeoViewGraphicModelLayerSortRequest send: #layerNeedToBeSorted: to: self.
 
 	aLayer haveDomainObjects ifFalse:[ ^ self ].
@@ -163,6 +171,20 @@ GeoViewAbstractElement >> createPickingResultAt: aGlobalPoint [
 		cartesianCoordinates: (self mapProjection projLatLonToCart: absoluteCoordinates).
 	
 	^ pickingResult
+]
+
+{ #category : #'API -- filters' }
+GeoViewAbstractElement >> displayFilter [
+
+	^ displayFilter
+]
+
+{ #category : #'API -- filters' }
+GeoViewAbstractElement >> displayFilter: aDisplayFilter [
+	"setup a general display filter for all layers"
+
+	displayFilter := aDisplayFilter.
+	self applyDisplayFilterToAllLayers: displayFilter
 ]
 
 { #category : #accessing }
@@ -254,6 +276,12 @@ GeoViewAbstractElement >> globalPointFromLocalPoint: aLocalPoint [
 
 	aLocalPoint ifNil: [ ^ nil ].
 	^ self localPointToGlobal: aLocalPoint
+]
+
+{ #category : #'API -- layers management' }
+GeoViewAbstractElement >> hasLayer [
+
+	^ self layers notEmpty
 ]
 
 { #category : #'API -- objects management' }
@@ -408,13 +436,13 @@ GeoViewAbstractElement >> newInteractionsStrategy [
 	^ GeoViewInteractionsStrategy new
 ]
 
-{ #category : #'API -- objects parameters' }
+{ #category : #'API -- objects management' }
 GeoViewAbstractElement >> objectIndexAccessor [
 
 	^ objectIndexAccessor ifNil: [ objectIndexAccessor := #key ]
 ]
 
-{ #category : #'API -- objects parameters' }
+{ #category : #'API -- objects management' }
 GeoViewAbstractElement >> objectIndexAccessor: aSymbol [
 
 	objectIndexAccessor := aSymbol
@@ -534,8 +562,7 @@ GeoViewAbstractElement >> removeObjects: anUserObjectList [
 { #category : #private }
 GeoViewAbstractElement >> requestRepaint [
 
-	self layers ifEmpty: [ ^ self ].
-	self invalidate.
+	self invalidate
 ]
 
 { #category : #'API -- scale and center' }
@@ -664,7 +691,6 @@ GeoViewAbstractElement >> updateState: aStateSymbol withIndexes: aKeyList [
 
 	aKeyList ifNil: [ ^ self ].
 	aStateSymbol ifNil: [ ^ self ].
-	self layers ifEmpty: [ ^ self ].
 
 	self layers do: [ :l |
 		l haveDomainObjects ifTrue: [

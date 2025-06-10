@@ -11,6 +11,12 @@ GeoViewUpdateContext >> isBeVisibleChanges [
 ]
 
 { #category : #testing }
+GeoViewUpdateContext >> isDisplayFilterChanges [
+
+	^ false
+]
+
+{ #category : #testing }
 GeoViewUpdateContext >> isProjectionChanges [
 
 	^ false

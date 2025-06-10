@@ -97,7 +97,7 @@ GeoViewDomainObjectsLayer >> initialize [
 { #category : #initialization }
 GeoViewDomainObjectsLayer >> initializeDisplayModel [
 
-	self displayModel: GeoViewModel new
+	self displayModel: (GeoViewModel new name: 'Display Shape Model').
 ]
 
 { #category : #'API -- projection' }
@@ -214,6 +214,7 @@ GeoViewDomainObjectsLayer >> updateModel: aContext [
 
 	self graphicModelMutex critical: [ self updateDShapes: dShapes ].
 
+	aContext isDisplayFilterChanges ifTrue:[ self sendSortRequest. ^ self ].
 	(aContext isBeVisibleChanges and: [ self isNeedToSortDatas ])
 		ifTrue: [ self sendSortRequest ]
 ]
