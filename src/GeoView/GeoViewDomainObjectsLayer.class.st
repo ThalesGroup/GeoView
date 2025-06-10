@@ -158,7 +158,7 @@ GeoViewDomainObjectsLayer >> removeObjects: anObjectList [
 
 	self displayModelMutex critical: [
 		anObjectList do: [ :e |
-			(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ] ].
+			(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ]].
 
 		self graphicModelMutex critical: [
 			dShapeList ifNotEmpty: [ :e | self removeDShapes: e ] ] 
@@ -204,15 +204,16 @@ GeoViewDomainObjectsLayer >> updateModel: aContext [
 		aContext isProjectionChanges
 			ifTrue: [ dShapes := datas select: [ :e | e hasUserComputing ] ]
 			ifFalse: [
-				self dirtyDShapes ifNotEmpty: [
-					datas do: [ :e | self dirtyDShapes at: e key ifAbsentPut: [ e ] ].
-					datas := self dirtyDShapes values.
-					self dirtyDShapes: nil ].
+				self dShapesWaitingToBeUpdated ifNotEmpty: [
+					datas do: [ :e | self dShapesWaitingToBeUpdated at: e key ifAbsentPut: [ e ] ].
+					datas := self dShapesWaitingToBeUpdated values.
+					self dShapesWaitingToBeUpdated: nil ].
 				dShapes := datas collect: [ :e |
 					           e isComposite ifTrue: [ e updateChildrenInDepth ].
-					           e ] ] ].
-
-	self graphicModelMutex critical: [ self updateDShapes: dShapes ].
+					           e ] ]. 		
+					
+		self graphicModelMutex critical: [ self updateDShapes: dShapes ].
+	].
 
 	aContext isDisplayFilterChanges ifTrue:[ self sendSortRequest. ^ self ].
 	(aContext isBeVisibleChanges and: [ self isNeedToSortDatas ])
