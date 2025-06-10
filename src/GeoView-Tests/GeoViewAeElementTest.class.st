@@ -172,7 +172,7 @@ GeoViewAeElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
 	"stop tasks"
 	updateTask stop.
 	
-	self assert: layer dShapesWaitingToBeUpdated size notEmpty.
+	self assert: layer dShapesWaitingToBeUpdated notEmpty.
 	
 	geoView removeObjects: list.
 	
