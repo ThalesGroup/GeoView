@@ -183,7 +183,6 @@ GeoViewAbstractElement >> displayFilter [
 GeoViewAbstractElement >> displayFilter: aDisplayFilter [
 	"setup a general display filter for all layers"
 
-	displayFilter ~= aDisplayFilter ifFalse: [ ^ self ].
 	displayFilter := aDisplayFilter.
 	self applyDisplayFilterToAllLayers: displayFilter
 ]

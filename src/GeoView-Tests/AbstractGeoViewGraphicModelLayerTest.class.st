@@ -54,40 +54,51 @@ AbstractGeoViewGraphicModelLayerTest >> testInitializeGraphicModel [
 ]
 
 { #category : #tests }
-AbstractGeoViewGraphicModelLayerTest >> testIsGShapeFiltered [
+AbstractGeoViewGraphicModelLayerTest >> testIsGShapeDisplayed [
 
 	| gShape |
 	gShape := SmockGShape2D new.
-	self deny: (layer isGShapeFiltered: gShape). "no layer filter: not filtered"
-	
-	gShape displayMask: (SmockAttributesDisplayFilter new addAttribute: #typeA) mask.
-	self deny: (layer isGShapeFiltered: gShape). "dShape display mask but no layer filter: not filtered"
-	
-	layer displayFilter: (SmockAttributesDisplayFilter new addAttribute: #typeA; addAttribute: #typeB).
-	self deny: (layer isGShapeFiltered: gShape). "not filtered because same attributes"
-	
-	gShape displayMask: nil.
-	self assert: (layer isGShapeFiltered: gShape). "filtered because display mask is nil and layer filter not nil"
-	
-	gShape displayMask: (layer displayFilter maskForAttribute: nil).
-	self assert: (layer isGShapeFiltered: gShape). "filtered because display mask is 0"
-	
-	gShape displayMask: (layer displayFilter maskForAttribute: #typeA).
-	self deny: (layer isGShapeFiltered: gShape). "not filtered because display attribute includes"
-	
-	gShape displayMask: (layer displayFilter maskForAttributes: #(#typeA #typeB)).
-	self deny: (layer isGShapeFiltered: gShape). "not filtered because display attribute includes"
-	
-	gShape displayMask: (layer displayFilter maskForAttributes: #typeC).
-	self assert: (layer isGShapeFiltered: gShape). "filtered because display attribute is not includes"
+	self assert: (layer isGShapeDisplayed: gShape). "no filter: display the object"
 ]
 
 { #category : #tests }
-AbstractGeoViewGraphicModelLayerTest >> testIsGShapeUnfiltered [
+AbstractGeoViewGraphicModelLayerTest >> testIsGShapeDisplayedWithAllowedAttributesDisplayFilter [
+
+	| gShape attributes |
+	layer displayFilter: (SmockAttributesDisplayFilter fromObjects: { #typeA . #typeB }).
+	gShape := SmockGShape2D new.
+	attributes := SmockAttributeList fromObjects: { #typeA . #typeB }.
+	gShape displayMask: (layer displayFilter maskForAttributes: attributes attributes).
+	self assert: (layer isGShapeDisplayed: gShape). "filter and object with an attribute includes in the allowed attributes: display the object"
+	
+	gShape displayMask: nil.
+	self assert: (layer isGShapeDisplayed: gShape). "object without attributes: display the object because by default this layer filter allow display to object without attributes"
+	
+	gShape displayMask: (layer displayFilter maskForAttribute: nil).
+	self deny: (layer isGShapeDisplayed: gShape). "the attribute 'nil' is not includes in the allowed attributes: hide the object"
+	
+	gShape displayMask: (layer displayFilter maskForAttribute: #typeA).
+	self assert: (layer isGShapeDisplayed: gShape). "allowed attribute: display the object"
+	
+	gShape displayMask: (layer displayFilter maskForAttributes: #(#typeA #typeB)).
+	self assert: (layer isGShapeDisplayed: gShape). "allowed attributes: display the object"
+	
+	gShape displayMask: (layer displayFilter maskForAttributes: #typeC).
+	self deny: (layer isGShapeDisplayed: gShape). "attribute not in the allowed list: hide the object"
+
+	"filter setting to hide objects without filter configuration"
+	layer displayFilter displayObjectsWithoutAttributes: false.
+	gShape displayMask: nil.
+	self deny: (layer isGShapeDisplayed: gShape). "object without attributes: hide the object because the filter is not configurated to allow that"
+
+]
+
+{ #category : #tests }
+AbstractGeoViewGraphicModelLayerTest >> testIsGShapeNotDisplayed [
 
 	| gShape |
 	gShape := SmockGShape2D new.
-	self assert: (layer isGShapeUnfiltered: gShape). "no layer filter: not filtered"
+	self deny: (layer isGShapeNotDisplayed: gShape). "no layer filter: display the object"
 ]
 
 { #category : #tests }

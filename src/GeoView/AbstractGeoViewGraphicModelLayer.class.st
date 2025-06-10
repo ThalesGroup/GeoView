@@ -101,7 +101,6 @@ AbstractGeoViewGraphicModelLayer >> displayFilter [
 { #category : #'API -- filters' }
 AbstractGeoViewGraphicModelLayer >> displayFilter: aDisplayFilter [
 
-	self graphicModel displayFilter = aDisplayFilter ifTrue:[ ^ self ].
 	self graphicModel displayFilter: aDisplayFilter.
 	self updateModel: GeoViewDisplayFilterChanges new
 ]
@@ -213,16 +212,16 @@ AbstractGeoViewGraphicModelLayer >> initializeToBeDisplayedDatas [
 ]
 
 { #category : #'API -- filters' }
-AbstractGeoViewGraphicModelLayer >> isGShapeFiltered: aGShape [
+AbstractGeoViewGraphicModelLayer >> isGShapeDisplayed: aGShape [
 
-	^ (self isGShapeUnfiltered: aGShape) not
+	self displayFilter ifNil: [ ^ true ].
+	^ self displayFilter isGShapeDisplayed: aGShape
 ]
 
 { #category : #'API -- filters' }
-AbstractGeoViewGraphicModelLayer >> isGShapeUnfiltered: aGShape [
+AbstractGeoViewGraphicModelLayer >> isGShapeNotDisplayed: aGShape [
 
-	self displayFilter ifNil: [ ^ true ].
-	^ self displayFilter isGShapeUnfiltered: aGShape
+	^ (self isGShapeDisplayed: aGShape) not
 ]
 
 { #category : #'API -- drawing' }
@@ -398,7 +397,7 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 		sortableDatas := self graphicModel getDatas ].
 
 	"select only drawable and unfiltered datas to sort"
-	sortableDatas := sortableDatas select: [ :gShape | gShape isDrawable and:[ (self isGShapeUnfiltered: gShape) ] ].
+	sortableDatas := sortableDatas select: [ :gShape | gShape isDrawable and:[ (self isGShapeDisplayed: gShape) ] ].
 
 	"sort by reset content of the list"
 	toBeDisplayDatas removeAll.

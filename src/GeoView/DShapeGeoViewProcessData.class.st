@@ -72,7 +72,7 @@ DShapeGeoViewProcessData >> processUpdatedData: aKey incoming: aDShape with: aGS
 	
 	"Compute display mask"
 	self processor displayFilter ifNotNil:[ :displayFilter | 
-		displayFilter configureFromDShape: aDShape toGShape: aGShape2D.
+		displayFilter processDShape: aDShape toGShape: aGShape2D.
 	].
 	
 	^ aGShape2D
