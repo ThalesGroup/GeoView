@@ -139,16 +139,70 @@ GeoViewAeElementTest >> tearDown [
 ]
 
 { #category : #tests }
+GeoViewAeElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
+	
+	| index list updateTask layer uiTask |
+	
+	layer := GeoViewUtils createGeoObjectsLayer: #layer.
+	layer isVisible: false.
+	geoView addLayer: layer.
+	
+	index := 5000.
+	list := self createRandomPositionGeoCircles: index color: Color random radius: 100000.
+	geoView addObjects: list.
+	
+	self assert: layer displayModel getDatas size equals: index.
+	self assert: layer graphicModel getDatas size equals: index.
+	self assert: layer dShapesWaitingToBeUpdated size equals: 0.
+	
+	"stimulate datas"
+	updateTask := (self createTask: [ | newIndex |
+		newIndex := self stimulateGeoCirclesIn: list geoView: geoView fromIndex: index.
+		index := newIndex. 	
+	] delay: 30 milliSeconds) start; yourself.
+
+	"stimulate user interaction by updating the model"
+	uiTask := (self createTask: [
+		geoView updateModel: GeoViewProjectionChanges new.
+	] delay: 5 milliSeconds) start; yourself.
+
+	"waiting here to simulate user interaction a lot of time"
+	4 seconds wait.
+	
+	"stop tasks"
+	updateTask stop.
+	
+	self assert: layer dShapesWaitingToBeUpdated notEmpty.
+	
+	geoView removeObjects: list.
+	
+	uiTask stop.
+	
+	"waiting for last pulses"
+	0.5 seconds wait.
+	spacePulseTask stop.
+		
+	"test to compare list model and graphic model"
+	self assert: (layer displayModel getDatas size) equals: 0.
+	self assert: (layer graphicModel getDatas size) equals: 0.
+	self assert: layer dShapesWaitingToBeUpdated size equals: 0.
+]
+
+{ #category : #tests }
 GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 	"Create a lot of objects and stimulate them, control the state of the model"
 	
 	| index list updateTask layer uiTask |
 	
-	geoView addLayer: (GeoViewUtils createGeoObjectsLayer: #layer).
+	layer := GeoViewUtils createGeoObjectsLayer: #layer.
+	geoView addLayer: layer.
 	
 	index := 5000.
 	list := self createRandomPositionGeoCircles: index color: Color random radius: 100000.
 	geoView addObjects: list.
+	
+	self assert: (layer displayModel getDatas size) equals: index.
+	self assert: (layer graphicModel getDatas size) equals: index.
 	
 	"stimulate datas"
 	updateTask := (self createTask: [ | newIndex |
@@ -173,7 +227,6 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 	spacePulseTask stop.
 		
 	"test to compare list model and graphic model"
-	layer := geoView getLayer: #layer.
 	self assert: (layer displayModel getDatas size) equals: (list size).
 	self assert: (layer graphicModel getDatas size) equals: (list size).
 ]

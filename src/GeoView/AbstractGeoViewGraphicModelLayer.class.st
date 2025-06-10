@@ -5,12 +5,12 @@ Class {
 		'graphicModel',
 		'graphicalOrderSortBlock',
 		'isNeedToSortDatas',
-		'dirtyDShapes',
 		'maximumDisplayedObjects',
 		'isMaximumDisplayedObjectsReach',
 		'displayModelMutex',
 		'graphicModelMutex',
-		'toBeDisplayDatas'
+		'toBeDisplayDatas',
+		'dShapesWaitingToBeUpdated'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -73,23 +73,24 @@ AbstractGeoViewGraphicModelLayer >> aeDrawOn: aeCanvas [
 	self datasAeDrawOn: aeCanvas
 ]
 
+{ #category : #'private - DShapes' }
+AbstractGeoViewGraphicModelLayer >> dShapesWaitingToBeUpdated [
+	"this list contains DShape which need to be updated when the layer becomes visible"
+
+	^ dShapesWaitingToBeUpdated ifNil: [ dShapesWaitingToBeUpdated := Dictionary new ]
+]
+
+{ #category : #'private - DShapes' }
+AbstractGeoViewGraphicModelLayer >> dShapesWaitingToBeUpdated: anObject [
+
+	dShapesWaitingToBeUpdated := nil
+]
+
 { #category : #drawing }
 AbstractGeoViewGraphicModelLayer >> datasAeDrawOn: aeCanvas [
 
 	toBeDisplayDatas ifNil: [ ^ self ].
 	toBeDisplayDatas do: [ :e | e aeDrawOn: aeCanvas ]
-]
-
-{ #category : #'private - DShapes' }
-AbstractGeoViewGraphicModelLayer >> dirtyDShapes [
-
-	^ dirtyDShapes ifNil: [ dirtyDShapes := Dictionary new ]
-]
-
-{ #category : #'private - DShapes' }
-AbstractGeoViewGraphicModelLayer >> dirtyDShapes: anObject [
-
-	dirtyDShapes := nil
 ]
 
 { #category : #'API -- filters' }
@@ -345,6 +346,9 @@ AbstractGeoViewGraphicModelLayer >> removeDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
+	"clean waiting shapes list"
+	self dShapesWaitingToBeUpdated removeKey: aDShape key ifAbsent:[ nil ].
+
 	"remove gShape"
 	self removeDShapeFromGraphicModel: aDShape.
 	self needToSortDatas
@@ -363,6 +367,9 @@ AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 	aDShapeList ifNil: [ ^ self ].
 	aDShapeList ifEmpty:[ ^ self ].
 
+	"clean waiting shapes list"
+	aDShapeList do:[ :e | self dShapesWaitingToBeUpdated removeKey: e key ifAbsent:[ nil ] ].
+
 	self removeDShapesFromGraphicModel: aDShapeList.
 	self needToSortDatas
 ]
@@ -370,7 +377,9 @@ AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 { #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> removeDShapesFromGraphicModel: aDShapeList [
 
-	aDShapeList do: [ :e | self graphicModel deleted: e ].
+	aDShapeList do: [ :e |
+		self graphicModel deleted: e
+	].
 	aDShapeList ifEmpty: [ ^ self ].
 	
 	self isVisible ifTrue:[ self sendRepaintRequest ].
@@ -421,9 +430,9 @@ AbstractGeoViewGraphicModelLayer >> updateDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
 
+	"doesn't update DShape when the layer is not visible, waiting for update when the visibility is on to adding each dShape in a waiting list"
 	self isVisible ifFalse:[ 
-		"doesn't update when the layer is not visible, waiting for update when the visibility is on"
-		self dirtyDShapes at: (aDShape key) put: aDShape.
+		self dShapesWaitingToBeUpdated at: (aDShape key) put: aDShape.
 		^ self
 	].
 
@@ -436,9 +445,9 @@ AbstractGeoViewGraphicModelLayer >> updateDShapes: aDShapeList [
 	aDShapeList ifNil: [ ^ self ].
 	aDShapeList ifEmpty:[ ^ self ].
 
+	"doesn't update DShape when the layer is not visible, waiting for update when the visibility is on to adding each dShape in a waiting list"
 	self isVisible ifFalse:[ 
-		"doesn't update when the layer is not visible, waiting for update when the visibility is on"
-		aDShapeList do:[ :e | self dirtyDShapes at: (e key) put: e ].
+		aDShapeList do:[ :e | self dShapesWaitingToBeUpdated at: (e key) put: e ].
 		^ self
 	].
 
