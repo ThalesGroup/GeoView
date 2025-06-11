@@ -254,10 +254,11 @@ GeoViewDomainObjectsLayer >> updateState: aStateSymbol withIndexes: aKeyList [
 	self displayModelMutex critical: [
 		shapes := self displayModel
 			          updateState: aStateSymbol
-			          withIndexes: aKeyList ].
+			          withIndexes: aKeyList.
 
-	self graphicModelMutex critical: [ "Update the graphic model to considere the updated state"
-		self updateDShapes: shapes ]
+		self graphicModelMutex critical: [ "Update the graphic model to considere the updated state"
+			self updateDShapes: shapes ] 
+	]
 ]
 
 { #category : #'API -- graphic properties' }
