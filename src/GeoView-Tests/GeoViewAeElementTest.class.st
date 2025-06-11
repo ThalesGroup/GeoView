@@ -170,7 +170,7 @@ GeoViewAeElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
 	4 seconds wait.
 	
 	"stop tasks"
-	updateTask stop.
+	updateTask kill.
 	
 	self assert: layer dShapesWaitingToBeUpdated notEmpty.
 	
@@ -222,10 +222,10 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 	"stop tasks"
 	updateTask stop.
 	uiTask stop.
-	spacePulseTask stop.
 	
 	"waiting for last pulses"
 	0.5 seconds wait.
+	spacePulseTask stop.
 		
 	"test to compare list model and graphic model"
 	self assert: (layer displayModel getDatas size) equals: (list size).
