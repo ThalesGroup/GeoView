@@ -203,6 +203,7 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 	
 	self assert: (layer displayModel getDatas size) equals: index.
 	self assert: (layer graphicModel getDatas size) equals: index.
+	self assert: layer dShapesWaitingToBeUpdated size equals: 0.
 	
 	"stimulate datas"
 	updateTask := (self createTask: [ | newIndex |
@@ -221,12 +222,13 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 	"stop tasks"
 	updateTask stop.
 	uiTask stop.
+	spacePulseTask stop.
 	
 	"waiting for last pulses"
 	0.5 seconds wait.
-	spacePulseTask stop.
 		
 	"test to compare list model and graphic model"
 	self assert: (layer displayModel getDatas size) equals: (list size).
 	self assert: (layer graphicModel getDatas size) equals: (list size).
+	self assert: layer dShapesWaitingToBeUpdated size equals: 0.
 ]

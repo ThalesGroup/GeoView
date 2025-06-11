@@ -21,9 +21,8 @@ GeoViewDomainObjectsLayer >> addObject: anObject [
 
 	| shapes |
 	self displayModelMutex critical: [
-		shapes := self displayModel created: anObject.
-		self graphicModelMutex critical: [ self addDShape: shapes ] 
-	]
+		shapes := self displayModel created: anObject ].
+	self addDShape: shapes
 ]
 
 { #category : #'API -- objects management' }
@@ -35,11 +34,8 @@ GeoViewDomainObjectsLayer >> addObjects: anObjectList [
 
 	self displayModelMutex critical: [
 		anObjectList do: [ :e |
-			(self displayModel created: e) ifNotNil: [ :f | dShapeList add: f ] ].
-
-		self graphicModelMutex critical: [
-			dShapeList ifNotEmpty: [ :e | self addDShapes: e ] ] 
-	]
+			(self displayModel created: e) ifNotNil: [ :f | dShapeList add: f ] ] ].
+	dShapeList ifNotEmpty: [ :e | self addDShapes: e ]
 ]
 
 { #category : #accessing }
@@ -142,10 +138,8 @@ GeoViewDomainObjectsLayer >> removeObject: anObject [
 
 	| shape |
 	self displayModelMutex critical: [
-		shape := self displayModel deleted: anObject.
-
-		self graphicModelMutex critical: [ self removeDShape: shape ] 
-	]
+		shape := self displayModel deleted: anObject ].
+	self removeDShape: shape
 ]
 
 { #category : #'API -- objects management' }
@@ -158,11 +152,8 @@ GeoViewDomainObjectsLayer >> removeObjects: anObjectList [
 
 	self displayModelMutex critical: [
 		anObjectList do: [ :e |
-			(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ]].
-
-		self graphicModelMutex critical: [
-			dShapeList ifNotEmpty: [ :e | self removeDShapes: e ] ] 
-	]
+			(self displayModel deleted: e) ifNotNil: [ :f | dShapeList add: f ] ] ].
+	dShapeList ifNotEmpty: [ :e | self removeDShapes: e ]
 ]
 
 { #category : #'API -- process datas' }
@@ -192,13 +183,12 @@ GeoViewDomainObjectsLayer >> setProcessData: aProcessData forClass: aDomainObjec
 GeoViewDomainObjectsLayer >> updateModel: aContext [
 	"don't update when not visible"
 
-	| dShapes |
+	| dShapes datas |
 	self isVisible ifFalse: [ ^ self ].
 	dShapes := OrderedCollection new.
 
 	self displayModelMutex critical: [
-		| datas |
-		datas := self displayModel getDatas.
+		datas := self displayModel getDatas].
 
 		"In case of projection changes, select only dShapes drawed in user coordinates to update, else select all"
 		aContext isProjectionChanges
@@ -211,9 +201,8 @@ GeoViewDomainObjectsLayer >> updateModel: aContext [
 				dShapes := datas collect: [ :e |
 					           e isComposite ifTrue: [ e updateChildrenInDepth ].
 					           e ] ]. 		
-					
-		self graphicModelMutex critical: [ self updateDShapes: dShapes ].
-	].
+
+	self updateDShapes: dShapes.
 
 	aContext isDisplayFilterChanges ifTrue:[ self sendSortRequest. ^ self ].
 	(aContext isBeVisibleChanges and: [ self isNeedToSortDatas ])
@@ -225,10 +214,8 @@ GeoViewDomainObjectsLayer >> updateObject: anObject [
 
 	| shape |
 	self displayModelMutex critical: [
-		shape := self displayModel updated: anObject.
-
-		self graphicModelMutex critical: [ self updateDShape: shape ] 
-	]
+		shape := self displayModel updated: anObject ].
+	self updateDShape: shape
 ]
 
 { #category : #'API -- objects management' }
@@ -239,11 +226,8 @@ GeoViewDomainObjectsLayer >> updateObjects: anObjectList [
 
 	self displayModelMutex critical: [
 		anObjectList do: [ :e |
-			(self displayModel updated: e) ifNotNil: [ :f | dShapeList add: f ] ].
-
-		self graphicModelMutex critical: [
-			dShapeList ifNotEmpty: [ :e | self updateDShapes: e ] ] 
-	]
+			(self displayModel updated: e) ifNotNil: [ :f | dShapeList add: f ] ] ].
+	dShapeList ifNotEmpty: [ :e | self updateDShapes: e ]
 ]
 
 { #category : #'private - state' }
@@ -254,11 +238,9 @@ GeoViewDomainObjectsLayer >> updateState: aStateSymbol withIndexes: aKeyList [
 	self displayModelMutex critical: [
 		shapes := self displayModel
 			          updateState: aStateSymbol
-			          withIndexes: aKeyList.
-
-		self graphicModelMutex critical: [ "Update the graphic model to considere the updated state"
-			self updateDShapes: shapes ] 
-	]
+			          withIndexes: aKeyList ].
+	"Update the graphic model to considere the updated state"
+	self updateDShapes: shapes
 ]
 
 { #category : #'API -- graphic properties' }
