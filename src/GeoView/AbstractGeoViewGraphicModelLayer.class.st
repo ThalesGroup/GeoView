@@ -43,7 +43,8 @@ AbstractGeoViewGraphicModelLayer >> addDShape: aDShape [
 { #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> addDShapeInGraphicModel: aDShape [
 
-	self graphicModel created: aDShape.
+	aDShape ifNil:[ ^ self ].
+	self graphicModelMutex critical:[ self graphicModel created: aDShape ].
 	self isVisible ifTrue:[ self sendRepaintRequest ].
 ]
 
@@ -61,8 +62,8 @@ AbstractGeoViewGraphicModelLayer >> addDShapes: aDShapeList [
 { #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> addDShapesInGraphicModel: aDShapeList [
 
-	aDShapeList do: [ :e | self graphicModel created: e ].
 	aDShapeList ifEmpty: [ ^ self ].
+	self graphicModelMutex critical:[ aDShapeList do: [ :e | self graphicModel created: e ] ].
 	
 	self isVisible ifTrue:[ self sendRepaintRequest ].
 ]
@@ -165,8 +166,10 @@ AbstractGeoViewGraphicModelLayer >> graphicalOrderSortBlock: aBlockClosure [
 AbstractGeoViewGraphicModelLayer >> haveDShapeKey: aKey [
 	"check in the graphic model because if not present here, the object is not managed"
 
+	| have |
 	aKey ifNil: [ ^ false ].
-	^ self graphicModel haveDataIndex: aKey
+	self graphicModelMutex critical:[ have := self graphicModel haveDataIndex: aKey ].
+	^ have
 ]
 
 { #category : #testing }
@@ -272,7 +275,7 @@ AbstractGeoViewGraphicModelLayer >> needToSortDatas [
 AbstractGeoViewGraphicModelLayer >> populatePickingResult: aPickingResult [
 
 	| datas |
-	datas := self graphicModel getDatas.
+  	self graphicModelMutex critical: [ datas := self graphicModel getDatas ].
 	datas do: [ :gShape |
 		self
 			populatePickingResult: aPickingResult
@@ -357,7 +360,8 @@ AbstractGeoViewGraphicModelLayer >> removeDShape: aDShape [
 { #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> removeDShapeFromGraphicModel: aDShape [
 
-	self graphicModel deleted: aDShape.
+	aDShape ifNil:[ ^ self ].
+	self graphicModelMutex critical:[ self graphicModel deleted: aDShape ].
 	self isVisible ifTrue:[ self sendRepaintRequest ].
 ]
 
@@ -377,10 +381,10 @@ AbstractGeoViewGraphicModelLayer >> removeDShapes: aDShapeList [
 { #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> removeDShapesFromGraphicModel: aDShapeList [
 
-	aDShapeList do: [ :e |
-		self graphicModel deleted: e
-	].
 	aDShapeList ifEmpty: [ ^ self ].
+	self graphicModelMutex critical:[ aDShapeList do: [ :e |
+		self graphicModel deleted: e
+	] ].
 	
 	self isVisible ifTrue:[ self sendRepaintRequest ].
 ]
@@ -403,7 +407,8 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 	toBeDisplayDatas ifNil: [ ^ self ].
 	self graphicModelMutex critical: [
 		self isNeedToSortDatas: false.
-		sortableDatas := self graphicModel getDatas ].
+		sortableDatas := self graphicModel getDatas.
+	].
 
 	"select only drawable and unfiltered datas to sort"
 	sortableDatas := sortableDatas select: [ :gShape | gShape isDrawable and:[ (self isGShapeDisplayed: gShape) ] ].
@@ -457,7 +462,8 @@ AbstractGeoViewGraphicModelLayer >> updateDShapes: aDShapeList [
 { #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> updateGraphicModelWithDShape: aDShape [
 
-	self graphicModel updated: aDShape.
+	aDShape ifNil:[ ^ self ].
+	self graphicModelMutex critical:[ self graphicModel updated: aDShape ].
 	
 	self needToSortDatas.
 	self isVisible ifTrue:[ self sendRepaintRequest ].
@@ -466,8 +472,8 @@ AbstractGeoViewGraphicModelLayer >> updateGraphicModelWithDShape: aDShape [
 { #category : #'private - DShapes' }
 AbstractGeoViewGraphicModelLayer >> updateGraphicModelWithDShapes: aDShapeList [
 
-	aDShapeList do: [ :e | self graphicModel updated: e ].
 	aDShapeList ifEmpty: [ ^ self ].
+	self graphicModelMutex critical:[ aDShapeList do: [ :e | self graphicModel updated: e ] ].
 	
 	self needToSortDatas.
 	self isVisible ifTrue:[ self sendRepaintRequest ].
