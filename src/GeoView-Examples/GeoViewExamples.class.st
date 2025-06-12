@@ -447,10 +447,8 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	
 	circle := GeoCircle new key: 1; radiusInMeters: 2000; fillStyle: (Color red asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates frBrest.
 	element addObject: circle.
-
 	space := self openViewInWindow: element.
 
-	4 seconds wait.
 	newCenter := AbsoluteCoordinates frBrest copy.
 	[ (1 to: 30) do:[:i | 1 seconds wait.
 		newCenter := AbsoluteCoordinates latitudeInDegrees: (newCenter latitudeInDegrees + 0.05)  longitudeInDegrees: (newCenter longitudeInDegrees + 0.05).

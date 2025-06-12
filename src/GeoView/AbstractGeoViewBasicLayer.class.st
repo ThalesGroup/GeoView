@@ -58,12 +58,6 @@ AbstractGeoViewBasicLayer >> symbologyProvider: aSymbologyProvider [
 	symbologyProvider := aSymbologyProvider 
 ]
 
-{ #category : #private }
-AbstractGeoViewBasicLayer >> updateModel: aContext [
-
-	"do nothing"
-]
-
 { #category : #'API -- graphic properties' }
 AbstractGeoViewBasicLayer >> viewInfos [
 

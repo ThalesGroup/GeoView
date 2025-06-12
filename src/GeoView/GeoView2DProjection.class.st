@@ -19,13 +19,20 @@ Class {
 { #category : #accessing }
 GeoView2DProjection >> altitudeInMeters [
 
-	^ altitudeInMeters ifNil: [ altitudeInMeters := 1.4816e7 ]
+	^ altitudeInMeters ifNil: [
+		  altitudeInMeters := self defaultAltitudeInMeters ]
 ]
 
 { #category : #accessing }
 GeoView2DProjection >> altitudeInMeters: aNumber [
 
 	altitudeInMeters := aNumber
+]
+
+{ #category : #accessing }
+GeoView2DProjection >> boundsInPixels [
+
+	^ 0@0 extent: self extentInPixels 
 ]
 
 { #category : #accessing }
@@ -41,10 +48,16 @@ GeoView2DProjection >> cartesianCenter: aCartesianCoordinates [
 	cartesianCenter := aCartesianCoordinates
 ]
 
+{ #category : #initialization }
+GeoView2DProjection >> defaultAltitudeInMeters [
+
+	^ 1.4816e7
+]
+
 { #category : #accessing }
 GeoView2DProjection >> extentInPixels [
 
-	^ 0@0 extent: (self offsetInPixels * 2) 
+	^ self offsetInPixels * 2
 ]
 
 { #category : #accessing }
@@ -56,12 +69,6 @@ GeoView2DProjection >> haveResolution: aViewSize [
 	mapHeight = 0 ifTrue:[ mapHeight := 1 ].
 	
 	^ self metersByPixel = (viewHeight / mapHeight)
-]
-
-{ #category : #initialization }
-GeoView2DProjection >> initialize [ 
-
-	super initialize
 ]
 
 { #category : #accessing }
@@ -134,7 +141,7 @@ GeoView2DProjection >> projPixelToCart: aPoint [
 GeoView2DProjection >> updateResolution: aPoint [
 	| viewHeight mapHeight |
 	
-	self assert: [aPoint isNotNil] description: ['[View2DProjection] View size cannot be nil.'].
+	self assert: [aPoint isNotNil] description: ['[GeoView] 2D projection view size cannot be nil.'].
 	viewHeight := aPoint y.
 	mapHeight := 2 * self altitudeInMeters.
 	mapHeight = 0 ifTrue:[ mapHeight := 1 ].

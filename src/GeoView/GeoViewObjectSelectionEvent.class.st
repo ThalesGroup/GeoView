@@ -18,9 +18,3 @@ GeoViewObjectSelectionEvent >> objectIndexesList: aList [
 
 	objectIndexesList := aList
 ]
-
-{ #category : #sending }
-GeoViewObjectSelectionEvent >> sendTo: anObject [
-
-	anObject geoViewObjectSelectionChanged: self
-]
