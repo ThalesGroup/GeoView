@@ -16,7 +16,9 @@ Class {
 		'isDisplayTilesProviderNote',
 		'tilesProviderNoteGText',
 		'loadingBufferWorker',
-		'doubleBufferedScene'
+		'doubleBufferedScene',
+		'moveMapWorker',
+		'resetMapWorker'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -75,20 +77,16 @@ GeoViewMapTilesLayer >> buildVMapLayerTiles: aVMapTilesXY buffer: aLargerVMapTil
 	| findAtLeastOneTile vMapServerTiles |
 	
 	findAtLeastOneTile := false.
-	self surfaceMap ifNil:[^findAtLeastOneTile].
+	self surfaceMap ifNil:[ ^ findAtLeastOneTile ].
 	self surfaceMap offcenter: self mapOffcenter.
 	self surfaceMap position: currentGraphicProjection cartesianCenter.
 
 	findAtLeastOneTile := self loadAndRenderTiles: aVMapTilesXY on: self surfaceMap offset: self mapOffcenter negated level: aLevel.
 	
 	"VMAP Tiles computing completed"
- 	"self updateMapBackground."
-	
 	"worker qui charge uniquement les tuiles en dehors de la vue en arrière plan (à la marge)"
 	self loadingBufferWorker: ([
 		self loadAndRenderTiles: aLargerVMapTilesXY on: self surfaceMap offset: (self mapOffcenter negated) level: aLevel.
-	
-		"self updateMapBackground."
 	
 		vMapServerTiles := self dictTilesByLevel at: aLevel ifAbsent:[nil].
 		vMapServerTiles ifNotNil:[
@@ -97,7 +95,7 @@ GeoViewMapTilesLayer >> buildVMapLayerTiles: aVMapTilesXY buffer: aLargerVMapTil
 				self dictTilesByLevel at: aLevel put: vMapServerTiles. 
 			]
 		]
-	] forkAt: Processor userBackgroundPriority named: '[GeoView] Map Tiles hidden stroke loading').
+	] forkAt: Processor userBackgroundPriority named: '[GeoView] Map stroke tiles loading').
 
 	^findAtLeastOneTile
 ]
@@ -152,28 +150,29 @@ GeoViewMapTilesLayer >> doLoadingTilesThread [
 
 	| centerGeoPoint level tilesXY tilesXYBuffer findAtLeastOneTile realLevel|
 
-	"self previousCenter: currentGraphicProjection cartesianCenter."
-	self previousScale: currentGraphicProjection altitudeInMeters copy.
+	self previousScale: currentGraphicProjection altitudeInMeters.
 	self surfaceMap offcenter: self mapOffcenter.
 	self surfaceMap scale: 1@1.
 
 	centerGeoPoint := self getCenterInGeoPoint.
-	level := (self getTilesLevelForCurrentResolution) key copy.
+	level := (self getTilesLevelForCurrentResolution) key.
 	
-	tilesXY := (self getTilesXYFor: centerGeoPoint level: level) copy.
-	tilesXYBuffer := (self getTilesXYForBuffer: centerGeoPoint level: level) copy.
+	tilesXY := self getTilesXYFor: centerGeoPoint level: level.
+	tilesXYBuffer := self getTilesXYForBuffer: centerGeoPoint level: level.
 	
 	findAtLeastOneTile := self buildVMapLayerTiles:  tilesXY buffer: tilesXYBuffer level: level.
 	
-	realLevel := level copy.
-	[findAtLeastOneTile or:[(realLevel - level) > 3]] whileFalse:[
+	realLevel := level.
+	[findAtLeastOneTile or:[(realLevel - level) > 3]] whileFalse: [
+
+		Processor yield.
 		level := level -1.
 		
 		tilesXY := self getTilesXYFor: centerGeoPoint level: level.
 		tilesXYBuffer := self getTilesXYForBuffer: centerGeoPoint level: level.
 		
 		findAtLeastOneTile := self buildVMapLayerTiles:  tilesXY buffer: tilesXYBuffer level: level.
-		Processor yield.
+
 	].
 	
 ]
@@ -184,11 +183,7 @@ GeoViewMapTilesLayer >> getCenterInGeoPoint [
 	| center centerGeoPoint |
 	center := currentGraphicProjection cartesianCenter.
 	centerGeoPoint := self mapProjection projCartToLatLon: center.
-	
-	^centerGeoPoint longitudeInDegrees@centerGeoPoint latitudeInDegrees
-	
-
-	
+	^ centerGeoPoint asLonLatDegreesPoint
 ]
 
 { #category : #accessing }
@@ -221,15 +216,8 @@ GeoViewMapTilesLayer >> getGeoImageAtTileXY: axyPoint level: aLevel [
 	| geoBounds img isNoPicture geoImage|
 	
 	self tilesProvider ifNil: [ ^ nil ].
-	self flag:'pla: mettre un controle derreur reseau (si offline par exemple)'.
 	img := self tilesProvider tileFor: aLevel x: axyPoint x y: axyPoint y.
 	
-	"img := self useLocalTilesDirectory ifTrue:[
-		self getImageInCacheFromTileXY: axyPoint level: aLevel
-	] ifFalse:[
-		self downloadImageFromTileXY:  axyPoint level: aLevel
-	]."
-
 	isNoPicture := false.
 	geoBounds := self getGeoBoundsFromTileXY: axyPoint level: aLevel.
 	img ifNil:[ isNoPicture := true].
@@ -382,80 +370,81 @@ GeoViewMapTilesLayer >> getTilesLevelForCurrentResolution [
 
 { #category : #tiles }
 GeoViewMapTilesLayer >> getTilesXYFor: aCenter level: aLevel [
-	
-	| vMapTilesXY tileQt squareSize vMapTileCenter diff pos maxTiles |	
 
+	| vMapTilesXY tileQt squareSize vMapTileCenter diff pos maxTiles minX maxX minY maxY |
 	vMapTilesXY := OrderedCollection new.
 	vMapTileCenter := self getTileXYFromGeoPoint: aCenter level: aLevel.
 
 	"Compute nb of tiles (rows and columns) + 2@2 => add 2 tiles on each side"
-	tileQt := ((currentGraphicProjection extentInPixels / (self tileSize)) + (2@2)) rounded.
-
+	tileQt := (currentGraphicProjection extentInPixels / self tileSize
+	           + self nbTilesRowOnEachSide asPoint) rounded.
 	"compute size of the square containing these tiles, and define order to start on center and go to the side on a spiral"
-	squareSize := (tileQt x) max: (tileQt y).
+	squareSize := tileQt x max: tileQt y.
 
 	vMapTilesXY add: vMapTileCenter.
 	pos := vMapTileCenter copy.
-	1 to: squareSize do:[:i |
-		i even ifFalse:[
-			1 to: i do:[:j |
-				pos := pos +  (1@0).
-				vMapTilesXY add: pos
-			].
-			1 to: i do:[:j |
-				pos := pos +  (0@1).
-				vMapTilesXY add: pos
-			]
-		] ifTrue:[
-			1 to:i  do:[:j |
-				pos := pos +  ((1 negated)@0).
-				vMapTilesXY add: pos
-			].
-			1 to: i  do:[:j |
-				pos := pos +  (0@(1 negated)).
-				vMapTilesXY add: pos
-			]
-		].
-	].
-	squareSize even ifTrue:[
-		1 to: squareSize do:[:j |
-			pos := pos +  (1@0).
-			vMapTilesXY add: pos
-		]
-	] ifFalse:[
-		1 to: squareSize  do:[:j |
-			pos := pos +  ((1 negated)@0).
-			vMapTilesXY add: pos
-		].
-	].
+	1 to: squareSize do: [ :i |
+		i even
+			ifFalse: [
+				1 to: i do: [ :j |
+					pos := pos + (1 @ 0).
+					vMapTilesXY add: pos ].
+				1 to: i do: [ :j |
+					pos := pos + (0 @ 1).
+					vMapTilesXY add: pos ] ]
+			ifTrue: [
+				1 to: i do: [ :j |
+					pos := pos + (1 negated @ 0).
+					vMapTilesXY add: pos ].
+				1 to: i do: [ :j |
+					pos := pos + (0 @ 1 negated).
+					vMapTilesXY add: pos ] ] ].
+	squareSize even
+		ifTrue: [
+			1 to: squareSize do: [ :j |
+				pos := pos + (1 @ 0).
+				vMapTilesXY add: pos ] ]
+		ifFalse: [
+			1 to: squareSize do: [ :j |
+				pos := pos + (1 negated @ 0).
+				vMapTilesXY add: pos ] ].
 
 	"Add sides"
-	diff := (tileQt x) - (tileQt y).
-	diff abs > 1 ifTrue:[
-		diff > 0 ifTrue:[
-			0 to: diff do:[:i | 
-				0 to: squareSize do:[:j | 
-					vMapTilesXY add:  pos +  (i@j).
-					vMapTilesXY add:  pos + ((squareSize negated)@0) +  ((i negated)@j).
-				].
-			] 
-		] ifFalse:[
-			diff := diff negated.
-			0 to: diff do:[:i | 
-				0 to: squareSize do:[:j | 
-					vMapTilesXY add:  pos +  (j@i).
-					vMapTilesXY add:  pos + ((squareSize negated)@0) +  (j@(i negated)).
-				].
-
-			] 
-		]
-	].
+	diff := tileQt x - tileQt y.
+	diff abs > 1 ifTrue: [
+		diff > 0
+			ifTrue: [
+				0 to: diff do: [ :i |
+					0 to: squareSize do: [ :j |
+						vMapTilesXY add: pos + (i @ j).
+						vMapTilesXY add:
+							pos + (squareSize negated @ 0) + (i negated @ j) ] ] ]
+			ifFalse: [
+				diff := diff negated.
+				0 to: diff do: [ :i |
+					0 to: squareSize do: [ :j |
+						vMapTilesXY add: pos + (j @ i).
+						vMapTilesXY add:
+							pos + (squareSize negated @ 0) + (j @ i negated) ] ] ] ].
 
 	maxTiles := 2 raisedTo: aLevel.
 
-	vMapTilesXY := vMapTilesXY select:[:t | (t x >= 0) and:[(t y >= 0) and:[ (t x < maxTiles) and:[ t y < maxTiles]]]].
+	"considere real size ot the screen to select only necessary tiles"
+	minX := vMapTileCenter x - (tileQt x // 2).
+	maxX := vMapTileCenter x + (tileQt x // 2).
+	minY := vMapTileCenter y - (tileQt y // 2).
+	maxY := vMapTileCenter y + (tileQt y // 2).
 
-	^vMapTilesXY
+	vMapTilesXY := vMapTilesXY select: [ :t |
+		               (t x between: minX and: maxX) and: [
+			               t y between: minY and: maxY ] ].
+
+	vMapTilesXY := vMapTilesXY select: [ :t |
+		               t x >= 0 and: [
+			               t y >= 0 and: [
+				               t x < maxTiles and: [ t y < maxTiles ] ] ] ].
+
+	^ vMapTilesXY
 ]
 
 { #category : #tiles }
@@ -584,6 +573,7 @@ GeoViewMapTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: an
 				vMapServerTilesCopy := vMapServerTilesCopy copy.
 
 				self updateMapBackground.
+				
 				Processor yield.
 				
 			] on:[ Exception ] do:[:ex |
@@ -654,34 +644,55 @@ GeoViewMapTilesLayer >> mapSize: aLevel [
 ]
 
 { #category : #private }
-GeoViewMapTilesLayer >> moveMapBackground [
+GeoViewMapTilesLayer >> moveMap [
+
+	| center projection pixelCenter surface |
+	
+	self surfaceMap ifNil:[ ^ self ].
+	surface := self surfaceMap surface.
+	
+	projection := currentGraphicProjection copy.
+	center := self previousCenter copy.
+	pixelCenter := self getCenterInPixel copy.
+	
+	moveMapWorker ifNotNil:[ moveMapWorker terminate. moveMapWorker := nil ].
+	moveMapWorker := 
+	[ 
+		self previousCenter: projection cartesianCenter.
+		self moveMapBackground: projection previousCenter: center newCenter: pixelCenter previousSurface: surface.	
+	] forkAt: Processor userSchedulingPriority named: '[GeoView] Map moving'. 
+
+]
+
+{ #category : #private }
+GeoViewMapTilesLayer >> moveMapBackground: aGraphicProjection previousCenter: pCenter newCenter: newCenter previousSurface: aSurface [ 
 
 	| previousPixel offsetPixel nextSurface previousSurface context extent |
 	self surfaceMap ifNil:[ ^ self ].
-	self surfaceMap surface ifNil:[ ^ self ].
 
 	"translate the map background from previous center to next center"
-	previousPixel := currentGraphicProjection projCartToPixel: self previousCenter.
-	offsetPixel := (previousPixel - self getCenterInPixel).
-	extent := (currentGraphicProjection extentInPixels + (self mapOffcenter negated * 2)).
+	previousPixel := aGraphicProjection projCartToPixel: pCenter.
+	offsetPixel := (previousPixel - newCenter).
+	extent := (aGraphicProjection extentInPixels + (self mapOffcenter negated * 2)).
 	
-	"paint previous surface in a new suface"
 	nextSurface := AeCairoImageSurface extent: extent. 
 	context := nextSurface newContext.
-	
-	previousSurface := self surfaceMap surface.
+
+	previousSurface := aSurface.
 	context sourceSurface: previousSurface x: offsetPixel x y: offsetPixel y; paint.
 	
-	self mapMutex critical:[
-		self surfaceMap surface: nextSurface.
-		self surfaceMap position: currentGraphicProjection cartesianCenter.
-	].
-
-	self previousCenter: currentGraphicProjection cartesianCenter copy.
+	self surfaceMap surface: nextSurface.
+	self surfaceMap position: aGraphicProjection cartesianCenter.
 
 	"send repaint order"
 	self updateMapBackground.
 
+]
+
+{ #category : #accessing }
+GeoViewMapTilesLayer >> nbTilesRowOnEachSide [
+	
+	^ 2
 ]
 
 { #category : #tiles }
@@ -813,12 +824,29 @@ GeoViewMapTilesLayer >> requestUpdateTilesWorker: anObject [
 ]
 
 { #category : #private }
-GeoViewMapTilesLayer >> restartMapBuilding [
+GeoViewMapTilesLayer >> resetMap [
+
+	| projection |
+	projection := currentGraphicProjection copy.
+	
+	resetMapWorker ifNotNil:[  resetMapWorker terminate. resetMapWorker := nil ].
+		resetMapWorker := [ 
+			self initSurfaceMap: projection extentInPixels + (self mapOffcenter negated).
+			self updateMapBackground 
+	] forkAt: Processor userSchedulingPriority named: '[GeoView] Reset map background'.	
+	
+]
+
+{ #category : #private }
+GeoViewMapTilesLayer >> restartTilesWorker: aDuration [
 
 	self stopTilesWorker.
 
-	self loadingTilesWorker: ([ self doLoadingTilesThread ]
-			 forkAt: Processor userBackgroundPriority named: '[GeoView] Map Tiles loading')
+	self loadingTilesWorker: ([
+		 (aDuration ifNil: [ 20 milliseconds ]) wait.
+		 self doLoadingTilesThread ]
+			 forkAt: Processor userBackgroundPriority
+			 named: '[GeoView] Map tiles loading')
 ]
 
 { #category : #computing }
@@ -830,17 +858,13 @@ GeoViewMapTilesLayer >> sinLatitude: aLatitude [
 { #category : #private }
 GeoViewMapTilesLayer >> stopTilesWorker [
 
-	self loadingTilesWorker ifNotNil:[
-		self loadingTilesWorker isTerminated ifFalse:[ self loadingTilesWorker terminate ]
-	].
-
+	self loadingTilesWorker ifNotNil: [
+		self loadingTilesWorker terminate ].
 	self loadingTilesWorker: nil.
-	
-	self loadingBufferWorker ifNotNil:[
-		self loadingBufferWorker isTerminated ifFalse:[ self loadingBufferWorker terminate]
-	].
 
-	self loadingBufferWorker: nil.
+	self loadingBufferWorker ifNotNil: [
+		self loadingBufferWorker terminate ].
+	self loadingBufferWorker: nil
 ]
 
 { #category : #accessing }
@@ -914,10 +938,10 @@ GeoViewMapTilesLayer >> tilesProviderNoteGText2D [
 { #category : #'loading and updating' }
 GeoViewMapTilesLayer >> updateMapBackground [ 
 
-	| offcenter |
+	| offcenter surface cairoSurface nextBufferedCanvas |
 	offcenter := self mapOffcenter.
-	
-	self mapMutex critical: [ | surface cairoSurface nextBufferedCanvas |
+
+	"self mapMutex critical: [" 
 		
 		self surfaceMap ifNil: [ ^ self ].
 		self surfaceMap surface ifNil:[ ^ self ].
@@ -942,7 +966,9 @@ GeoViewMapTilesLayer >> updateMapBackground [
 
 		"swap and notify repaint"
 		doubleBufferedScene swap.
-	].
+	"]."
+
+	Processor yield.
 
 	self sendRepaintRequest
 ]
@@ -951,24 +977,28 @@ GeoViewMapTilesLayer >> updateMapBackground [
 GeoViewMapTilesLayer >> updateModel: aContext [
 
 	super updateModel: aContext.
-	
-	currentGraphicProjection := self graphicProjection copy.
-	
-	aContext isProjectionChanges ifFalse:[ ^ self ].
-	self graphicProjection ifNil: [ ^ self ].
 
-	(aContext isExtentChanged or:[ aContext isScaleChanged ]) ifTrue:[
-		self initSurfaceMap:
-			currentGraphicProjection extentInPixels + (self mapOffcenter negated).
-		self updateMapBackground.	
-	].
+	self graphicProjection
+		ifNil: [ ^ self ]
+		ifNotNil: [ :e | currentGraphicProjection := e copy ].
 
-	self previousCenter ifNil:[self previousCenter: currentGraphicProjection cartesianCenter copy]. 
+	aContext isProjectionChanges ifFalse: [ ^ self ].
+	self updateWhenProjectionChanged: aContext
+]
+
+{ #category : #private }
+GeoViewMapTilesLayer >> updateWhenProjectionChanged: aContext [
+
+	self stopTilesWorker.
+
+	"for instant, when the scale or view extent change, rebuild the entirely view from scratch - in the futur do a zoom and extent / crop the map background"
+	(aContext isExtentChanged or:[ aContext isScaleChanged ]) ifTrue:[ self resetMap ].
+	
 	aContext isCenterChanged ifTrue:[ 
-		self stopTilesWorker.
-		self moveMapBackground. 
+			self previousCenter ifNil:[ self previousCenter: currentGraphicProjection cartesianCenter copy ]. 
+		self moveMap 
 	].
 
-	self restartMapBuilding
+	self restartTilesWorker: 20 milliSeconds.
 	
 ]

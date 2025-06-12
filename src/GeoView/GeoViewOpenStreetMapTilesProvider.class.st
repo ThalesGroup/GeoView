@@ -2,7 +2,8 @@ Class {
 	#name : #GeoViewOpenStreetMapTilesProvider,
 	#superclass : #GeoViewTilesProvider,
 	#instVars : [
-		'serverUrl'
+		'serverUrl',
+		'znClient'
 	],
 	#category : #'GeoView-Map'
 }
@@ -35,8 +36,21 @@ GeoViewOpenStreetMapTilesProvider class >> primaryTileUrl [
 GeoViewOpenStreetMapTilesProvider >> initialize [
 
 	super initialize.
-	self haveCopyrightNote: true.
-	self defaultCopyrightNote: self class attributionText 
+	self initializeZnClient.
+	self haveCopyrightNote: true. 
+	self defaultCopyrightNote: self class attributionText
+]
+
+{ #category : #initialization }
+GeoViewOpenStreetMapTilesProvider >> initializeZnClient [
+
+	znClient := ZnClient new.
+	znClient
+		loggingOff;
+		accept: ZnMimeType imagePng;
+		enforceHttpSuccess: true;
+		enforceAcceptContentType: true;
+		beOneShot
 ]
 
 { #category : #accessing }
@@ -62,9 +76,22 @@ GeoViewOpenStreetMapTilesProvider >> tileFilenameFor: aZoomLevel x: anXCoordinat
 { #category : #request }
 GeoViewOpenStreetMapTilesProvider >> tileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
 
-	^ ZnEasy getPng:
-		  (self
-			   tileFilenameFor: aZoomLevel
-			   x: anXCoordinate
-			   y: anYCoordinate)
+	| url contents |
+	url := self
+		       tileFilenameFor: aZoomLevel
+		       x: anXCoordinate
+		       y: anYCoordinate.
+	url ifNil: [ ^ nil ].
+
+	self znClient get: url.
+	contents := self znClient contents.
+	contents ifNil: [ ^ nil ].
+
+	^ ImageReadWriter formFromStream: contents readStream
+]
+
+{ #category : #initialization }
+GeoViewOpenStreetMapTilesProvider >> znClient [
+	
+	^ znClient
 ]

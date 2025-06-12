@@ -262,7 +262,7 @@ GeoViewExamples class >> exampleGeoSegments [
 	
 	| element objects |
 	element := GeoViewUtils createGeoViewForGeoObjects.
-	
+		
 	"create sample datas"
 	objects := self createGeoSegment: 1000.
 	element addObjects: objects.
