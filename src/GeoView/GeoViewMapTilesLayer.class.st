@@ -583,7 +583,8 @@ GeoViewMapTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: an
 				self dictTilesByLevel at: aLevel put: vMapServerTilesCopy.
 				vMapServerTilesCopy := vMapServerTilesCopy copy.
 
-				self updateMapBackground
+				self updateMapBackground.
+				Processor yield.
 				
 			] on:[ Exception ] do:[:ex |
 					Transcript show: '[GeoView] Error on Tiles loading :'; show: ex printString; cr.
@@ -817,7 +818,7 @@ GeoViewMapTilesLayer >> restartMapBuilding [
 	self stopTilesWorker.
 
 	self loadingTilesWorker: ([ self doLoadingTilesThread ]
-			 forkAt: Processor userSchedulingPriority named: '[GeoView] Map Tiles loading')
+			 forkAt: Processor userBackgroundPriority named: '[GeoView] Map Tiles loading')
 ]
 
 { #category : #computing }
@@ -953,14 +954,14 @@ GeoViewMapTilesLayer >> updateModel: aContext [
 	
 	currentGraphicProjection := self graphicProjection copy.
 	
+	aContext isProjectionChanges ifFalse:[ ^ self ].
+	self graphicProjection ifNil: [ ^ self ].
+
 	(aContext isExtentChanged or:[ aContext isScaleChanged ]) ifTrue:[
 		self initSurfaceMap:
 			currentGraphicProjection extentInPixels + (self mapOffcenter negated).
 		self updateMapBackground.	
 	].
-	
-	aContext isProjectionChanges ifFalse:[ ^ self ].
-	self graphicProjection ifNil: [ ^ self ].
 
 	self previousCenter ifNil:[self previousCenter: currentGraphicProjection cartesianCenter copy]. 
 	aContext isCenterChanged ifTrue:[ 
