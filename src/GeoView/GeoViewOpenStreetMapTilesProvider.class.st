@@ -1,9 +1,6 @@
 Class {
 	#name : #GeoViewOpenStreetMapTilesProvider,
-	#superclass : #GeoViewTilesProvider,
-	#instVars : [
-		'serverUrl'
-	],
+	#superclass : #GeoViewTilesProviderTMS,
 	#category : #'GeoView-Map'
 }
 
@@ -28,7 +25,9 @@ GeoViewOpenStreetMapTilesProvider class >> mirror2TileUrl [
 { #category : #constants }
 GeoViewOpenStreetMapTilesProvider class >> primaryTileUrl [
 
+	"^ 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'"
 	^ 'https://a.tile.openstreetmap.org'
+	
 ]
 
 { #category : #initialization }
@@ -36,35 +35,12 @@ GeoViewOpenStreetMapTilesProvider >> initialize [
 
 	super initialize.
 	self haveCopyrightNote: true.
-	self defaultCopyrightNote: self class attributionText 
+	self defaultCopyrightNote: self class attributionText.
+	self updateUrl
 ]
 
 { #category : #accessing }
-GeoViewOpenStreetMapTilesProvider >> serverUrl [
+GeoViewOpenStreetMapTilesProvider >> updateUrl [ 
 
-	^ serverUrl ifNil: [ serverUrl := self class primaryTileUrl ]
-]
-
-{ #category : #accessing }
-GeoViewOpenStreetMapTilesProvider >> serverUrl: anObject [
-
-	serverUrl := anObject
-]
-
-{ #category : #request }
-GeoViewOpenStreetMapTilesProvider >> tileFilenameFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
-
-	^ self serverUrl , '/' , aZoomLevel printString , '/'
-	  , anXCoordinate printString , '/' , anYCoordinate printString
-	  , '.png'
-]
-
-{ #category : #request }
-GeoViewOpenStreetMapTilesProvider >> tileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
-
-	^ ZnEasy getPng:
-		  (self
-			   tileFilenameFor: aZoomLevel
-			   x: anXCoordinate
-			   y: anYCoordinate)
+	self service url: self serverUrl, '/{z}/{x}/{y}.png'
 ]

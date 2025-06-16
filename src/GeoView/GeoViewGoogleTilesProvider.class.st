@@ -1,8 +1,7 @@
 Class {
 	#name : #GeoViewGoogleTilesProvider,
-	#superclass : #GeoViewTilesProvider,
+	#superclass : #GeoViewTilesProviderTMS,
 	#instVars : [
-		'serverUrl',
 		'tilesType'
 	],
 	#category : #'GeoView-Map'
@@ -35,37 +34,43 @@ GeoViewGoogleTilesProvider class >> primaryTileUrl [
 { #category : #'tiles type' }
 GeoViewGoogleTilesProvider >> beHybridType [
 
-	tilesType := 'y'
+	tilesType := 'y'.
+	self updateUrl
 ]
 
 { #category : #'tiles type' }
 GeoViewGoogleTilesProvider >> beRoadmapType [
 
-	tilesType := 'm'
+	tilesType := 'm'.
+	self updateUrl
 ]
 
 { #category : #'tiles type' }
 GeoViewGoogleTilesProvider >> beRoadsOnlyType [
 
-	tilesType := 'h'
+	tilesType := 'h'.
+	self updateUrl
 ]
 
 { #category : #'tiles type' }
 GeoViewGoogleTilesProvider >> beSatelliteType [
 
-	tilesType := 's'
+	tilesType := 's'.
+	self updateUrl
 ]
 
 { #category : #'tiles type' }
 GeoViewGoogleTilesProvider >> beTerrainOnlyType [
 
-	tilesType := 't'
+	tilesType := 't'.
+	self updateUrl
 ]
 
 { #category : #'tiles type' }
 GeoViewGoogleTilesProvider >> beTerrainType [
 
-	tilesType := 'p'
+	tilesType := 'p'.
+	self updateUrl
 ]
 
 { #category : #initialization }
@@ -79,34 +84,13 @@ GeoViewGoogleTilesProvider >> initialize [
 ]
 
 { #category : #accessing }
-GeoViewGoogleTilesProvider >> serverUrl [
+GeoViewGoogleTilesProvider >> updateUrl [
 
-	^ serverUrl ifNil: [ serverUrl := self class primaryTileUrl ]
-]
-
-{ #category : #accessing }
-GeoViewGoogleTilesProvider >> serverUrl: anObject [
-
-	serverUrl := anObject
-]
-
-{ #category : #request }
-GeoViewGoogleTilesProvider >> tileFilenameFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
-
-	^ self serverUrl , '/lyrs=' , ( tilesType asString ) , '&x=' , anXCoordinate printString , '&y='
-	  , anYCoordinate printString , '&z=' , aZoomLevel printString
-]
-
-{ #category : #request }
-GeoViewGoogleTilesProvider >> tileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
-
-	| url |
-	url := self
-		       tileFilenameFor: aZoomLevel
-		       x: anXCoordinate
-		       y: anYCoordinate.
-
+	| format |
+	
+	format := '.png'.
 	(tilesType = 's' or:[tilesType = 'y' or:[tilesType = 't' or:[tilesType = 'p']]])
-		ifTrue: [ ^ ZnEasy getJpeg: url ]
-		ifFalse: [ ^ ZnEasy getPng: url ]
+		ifTrue: [ format := '.jpg' ].
+		
+	self service url: self serverUrl, '?lyrs=', ( tilesType asString ), '&x={x}&y={y}&z={z}&ext=', format
 ]
