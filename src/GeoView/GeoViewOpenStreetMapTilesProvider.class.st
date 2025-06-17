@@ -1,8 +1,7 @@
 Class {
 	#name : #GeoViewOpenStreetMapTilesProvider,
-	#superclass : #GeoViewTilesProvider,
+	#superclass : #GeoViewTilesProviderTMS,
 	#instVars : [
-		'serverUrl',
 		'znClient'
 	],
 	#category : #'GeoView-Map'
@@ -36,62 +35,13 @@ GeoViewOpenStreetMapTilesProvider class >> primaryTileUrl [
 GeoViewOpenStreetMapTilesProvider >> initialize [
 
 	super initialize.
-	self initializeZnClient.
 	self haveCopyrightNote: true. 
-	self defaultCopyrightNote: self class attributionText
+	self defaultCopyrightNote: self class attributionText.
+	self updateUrl
 ]
 
-{ #category : #initialization }
-GeoViewOpenStreetMapTilesProvider >> initializeZnClient [
+{ #category : #update }
+GeoViewOpenStreetMapTilesProvider >> updateUrl [
 
-	znClient := ZnClient new.
-	znClient
-		loggingOff;
-		accept: ZnMimeType imagePng;
-		enforceHttpSuccess: true;
-		enforceAcceptContentType: true;
-		beOneShot
-]
-
-{ #category : #accessing }
-GeoViewOpenStreetMapTilesProvider >> serverUrl [
-
-	^ serverUrl ifNil: [ serverUrl := self class primaryTileUrl ]
-]
-
-{ #category : #accessing }
-GeoViewOpenStreetMapTilesProvider >> serverUrl: anObject [
-
-	serverUrl := anObject
-]
-
-{ #category : #request }
-GeoViewOpenStreetMapTilesProvider >> tileFilenameFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
-
-	^ self serverUrl , '/' , aZoomLevel printString , '/'
-	  , anXCoordinate printString , '/' , anYCoordinate printString
-	  , '.png'
-]
-
-{ #category : #request }
-GeoViewOpenStreetMapTilesProvider >> tileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
-
-	| url contents |
-	url := self
-		       tileFilenameFor: aZoomLevel
-		       x: anXCoordinate
-		       y: anYCoordinate.
-	url ifNil: [ ^ nil ].
-
-	self znClient get: url.
-	contents := self znClient contents.
-	contents ifNil: [ ^ nil ].
-
-	^ ImageReadWriter formFromStream: contents readStream
-]
-
-{ #category : #initialization }
-GeoViewOpenStreetMapTilesProvider >> znClient [
-	
-	^ znClient
+	self service url: self serverUrl, '/{z}/{x}/{y}.png'
 ]
