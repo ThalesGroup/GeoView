@@ -1,9 +1,6 @@
 Class {
 	#name : #GeoViewOpenStreetMapTilesProvider,
 	#superclass : #GeoViewTilesProviderTMS,
-	#instVars : [
-		'znClient'
-	],
 	#category : #'GeoView-Map'
 }
 
