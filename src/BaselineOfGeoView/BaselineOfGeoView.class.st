@@ -34,7 +34,7 @@ BaselineOfGeoView >> commonDependencies: spec [
 	"GeoTools"
 	spec 
 		baseline: 'GeoTools' 
-		with: [	spec repository: 'github://OpenSmock/GeoTools:main' ].
+		with: [	spec repository: 'github://ThalesGroup/GeoTools:main' ].
 			
 	"OpenSmock"
 	spec 
