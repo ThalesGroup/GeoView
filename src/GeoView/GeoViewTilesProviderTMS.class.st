@@ -24,7 +24,7 @@ GeoViewTilesProviderTMS >> serverUrl: anObject [
 { #category : #accessing }
 GeoViewTilesProviderTMS >> service [
 
-	^ service ifNil: [ service := PharoOWSTMS new ]
+	^ service ifNil: [ service := OWSTMS new ]
 ]
 
 { #category : #request }
