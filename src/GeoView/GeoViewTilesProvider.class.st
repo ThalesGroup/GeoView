@@ -46,12 +46,6 @@ GeoViewTilesProvider >> initialize [
 ]
 
 { #category : #request }
-GeoViewTilesProvider >> tileFilenameFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
-
-	self subclassResponsibility 
-]
-
-{ #category : #request }
 GeoViewTilesProvider >> tileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
 
 	self subclassResponsibility 

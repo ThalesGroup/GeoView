@@ -180,10 +180,11 @@ GeoViewMapTilesLayer >> doLoadingTilesThread [
 { #category : #accessing }
 GeoViewMapTilesLayer >> getCenterInGeoPoint [
 
-	| center centerGeoPoint |
+	| center centerGeoPoint coords |
 	center := currentGraphicProjection cartesianCenter.
 	centerGeoPoint := self mapProjection projCartToLatLon: center.
-	^ centerGeoPoint asLonLatDegreesPoint
+	coords :=  centerGeoPoint asLatLonDegreesPoint.
+	^ coords y @ coords x
 ]
 
 { #category : #accessing }
