@@ -1,8 +1,8 @@
 [![Pharo 12](https://img.shields.io/badge/Pharo-12-%23aac9ff.svg)](https://pharo.org/download)
 [![Pharo 13](https://img.shields.io/badge/Pharo-13-%23aac9ff.svg)](https://pharo.org/download)
 
-[![License](https://img.shields.io/github/license/OpenSmock/GeoView.svg)](./LICENSE)
-[![Unit tests](https://github.com/OpenSmock/GeoView/actions/workflows/CI.yml/badge.svg)](https://github.com/OpenSmock/GeoView/actions/workflows/CI.yml)
+[![License](https://img.shields.io/github/license/ThalesGroup/GeoView.svg)](./LICENSE)
+[![Unit tests](https://github.com/ThalesGroup/GeoView/actions/workflows/CI.yml/badge.svg)](https://github.com/ThalesGroup/GeoView/actions/workflows/CI.yml)
 
 # GeoView
 
@@ -85,7 +85,7 @@ To install **GeoView** with all features and dependencies, simply execute the fo
 ```smalltalk
 Metacello new
    baseline: 'GeoView';
-   repository: 'github://OpenSmock/GeoView:main/src';
+   repository: 'github://ThalesGroup/GeoView:main/src';
    load.
 ```
 
@@ -96,7 +96,7 @@ If you prefer to install only the core version of GeoView (without Molecule comp
 ```smalltalk
 Metacello new
    baseline: 'GeoView';
-   repository: 'github://OpenSmock/GeoView:main/src';
+   repository: 'github://ThalesGroup/GeoView:main/src';
    load: 'Core'.
 ```
 
@@ -107,7 +107,8 @@ Core :
 - [Alexandrie](https://github.com/pharo-graphics/alexandrie)
 - [Bloc](https://github.com/pharo-graphics/bloc)
 - [OpenSmock(Core)](https://github.com/OpenSmock/OpenSmock)
-- [GeoTools](https://github.com/OpenSmock/GeoTools)
+- [GeoTools](https://github.com/ThalesGroup/GeoTools)
+- [PharoOWS](https://github.com/ThalesGroup/PharoOWS)
 
 Default/Full adding :
 
