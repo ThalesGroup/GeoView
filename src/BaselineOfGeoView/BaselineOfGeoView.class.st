@@ -24,8 +24,8 @@ BaselineOfGeoView >> baselineForCommon: spec [
 	self moleculePackages: spec.
 	
 	"Groups"
-    spec group: 'default' with: (#('OpenSmock' 'GeoTools'), self corePackagesNames , self moleculePackagesNames).
-    spec group: 'Core' with: (#('OpenSmockCoreWithBloc' 'GeoTools'), self corePackagesNames).
+    spec group: 'default' with: (#('OpenSmock' 'GeoTools' 'OWS'), self corePackagesNames , self moleculePackagesNames).
+    spec group: 'Core' with: (#('OpenSmockCoreWithBloc' 'GeoTools' 'OWS'), self corePackagesNames).
 ]
 
 { #category : #dependencies }
@@ -35,6 +35,11 @@ BaselineOfGeoView >> commonDependencies: spec [
 	spec 
 		baseline: 'GeoTools' 
 		with: [	spec repository: 'github://ThalesGroup/GeoTools:main' ].
+		
+	"OWS"
+	spec 
+		baseline: 'OWS' 
+		with: [	spec repository: 'github://ThalesGroup/PharoOWS:main' ].
 			
 	"OpenSmock"
 	spec 
