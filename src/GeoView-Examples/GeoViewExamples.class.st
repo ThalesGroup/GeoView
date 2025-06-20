@@ -70,6 +70,25 @@ GeoViewExamples class >> createGeoObjects [
 ]
 
 { #category : #private }
+GeoViewExamples class >> createGeoPolyline: aQuantity [
+
+	| list random nb |
+	list := OrderedCollection new.
+	random := Random new.
+	nb := aQuantity.
+	
+	1 to: nb do:[ :i | | object |
+		object := GeoPolyline new.
+		object key: i.
+		object strokeStyle: (Color random asSmockStrokeStyle).
+		object absolutePositions: { AbsoluteCoordinates random . AbsoluteCoordinates random . AbsoluteCoordinates random }.
+		list add: object.
+	].
+
+	^ list
+]
+
+{ #category : #private }
 GeoViewExamples class >> createGeoSegment: aQuantity [
 
 	| list random nb |
@@ -209,6 +228,19 @@ GeoViewExamples class >> exampleGeoEllipses [
 	
 	"create sample datas"
 	objects := self createGeoEllipses: 1000.
+	element addObjects: objects.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoPolylines [
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+		
+	"create sample datas"
+	objects := self createGeoPolyline: 1000.
 	element addObjects: objects.
 
 	^ self openViewInWindow: element
@@ -624,6 +656,29 @@ GeoViewExamples class >> exampleObjectsFilterOnlyRedAndBig [
 	geoView addObjects: objects.
 	
 	^ self openViewInWindow: geoView
+]
+
+{ #category : #'examples - geodesie' }
+GeoViewExamples class >> exampleTrajectoireOrthodromique [
+	
+	| element layer parisNewyork |
+	element := GeoViewUtils createGeoView.
+	element addLayer: GeoViewMapTilesLayer new.
+	
+	layer := GeoViewDomainObjectsLayer new name: #ProjectedGeoObjectLayer.
+	layer setProcessData: (GeoSegmentProjectedProcessData new) forClass: GeoSegment.
+	element addLayer: layer.
+	
+	layer := GeoViewDomainObjectsLayer new name: #ProjectedGeoObjectLayer.
+	layer setProcessData: (GeoSegmentProcessData new) forClass: GeoSegment.
+	element addLayer: layer.
+		
+	"create sample datas"
+	parisNewyork := (GeoSegment key: 1) fromAbsolutePosition: AbsoluteCoordinates frParis; toAbsolutePosition: AbsoluteCoordinates usaNewYork.
+	parisNewyork strokeStyle: (Color black asSmockStrokeStyle width: 4).
+	element addObject: parisNewyork.
+
+	^ self openViewInWindow: element
 ]
 
 { #category : #examples }

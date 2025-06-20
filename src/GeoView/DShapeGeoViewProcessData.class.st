@@ -15,7 +15,7 @@ DShapeGeoViewProcessData class >> isAbstract [
 { #category : #computing }
 DShapeGeoViewProcessData >> computePositionFor: aDShape context: aContext [
 
-	| offset |
+	| offset position |
 	aDShape coordinates ifNil: [ ^ aDShape coordinatesDeviceOffset ].
 	self processor ifNil: [ ^ nil ].
 
@@ -25,8 +25,10 @@ DShapeGeoViewProcessData >> computePositionFor: aDShape context: aContext [
 	(aDShape isDrawModeDevice and: [ aDShape isTranslatedByParent ])
 		ifTrue: [ ^ aDShape coordinates + offset ].
 
-	^ (self processor projection projCartToPixel: aDShape coordinates)
-	  + offset
+	position := (self processor projection projCartToPixel:
+		             aDShape coordinates) ifNil: [ 0 @ 0 ].
+	
+	^ position + offset
 ]
 
 { #category : #processing }
@@ -68,7 +70,7 @@ DShapeGeoViewProcessData >> processUpdatedData: aKey incoming: aDShape with: aGS
 	
 	"Update geo position"
 	position := self computePositionFor: aDShape context: aContext.	
-	aGShape2D position: (position ifNil:[ 0@0 ]).
+	aGShape2D position: position.
 	
 	"Compute display mask"
 	self processor displayFilter ifNotNil:[ :displayFilter | 

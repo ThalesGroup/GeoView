@@ -37,8 +37,8 @@ GeoObjectProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape
 		absoluteCoordinates := AbsoluteCoordinates zero ].
 	coordinates := self processor projection projLatLonToCart:
 		               absoluteCoordinates.
-	aDShape coordinates: coordinates.
 
+	aDShape coordinates: coordinates.
 	^ aDShape
 ]
 
