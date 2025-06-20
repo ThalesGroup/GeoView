@@ -4,14 +4,13 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 on:
-  push:
-    branches:
-      - 'main'
-  pull_request:
-    types: [assigned, opened, synchronize, reopened]
+  pull_request: #necessary to display "check" step in a PR
+    types: [labeled]
+  workflow_dispatch: #manual trigger
 
 jobs:
   test:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.label.name == 'run-ci')
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
