@@ -675,7 +675,7 @@ GeoViewExamples class >> exampleTrajectoireOrthodromique [
 		
 	"create sample datas"
 	parisNewyork := (GeoSegment key: 1) fromAbsolutePosition: AbsoluteCoordinates frParis; toAbsolutePosition: AbsoluteCoordinates usaNewYork.
-	parisNewyork strokeStyle: (Color black asSmockStrokeStyle width: 4).
+	parisNewyork strokeStyle: (Color cyan asSmockStrokeStyle width: 4).
 	element addObject: parisNewyork.
 
 	^ self openViewInWindow: element
