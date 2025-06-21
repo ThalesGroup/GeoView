@@ -20,15 +20,19 @@ GeoSegmentProjectedProcessData >> processCreatedData: aKey incoming: aGeoSegment
 	from := aGeoSegment fromAbsolutePosition.
 	to := aGeoSegment toAbsolutePosition.
 	distance := GeodesicUtils distanceInMetersFrom: from to: to.
-	firstAzimuth := GeodesicUtils distanceInMetersFrom: from to: to.
+	firstAzimuth := GeodesicUtils azimuthInRadiansFrom: from to: to.
+	
 	
 	"echantillonage sur 10 points"
-	n := 10.
+	n := 500.
 	step := distance / n.
-	points := (0 to: n) collect:[ :i |
+	points := OrderedCollection new.
+	points add: (self processor projection projLatLonToCart: from).
+	points addAll: ((1 to: (n - 1)) collect:[ :i |
 		self processor projection projLatLonToCart:
 		(GeodesicUtils absoluteCoordinatesFrom: from distanceInM: (step * i) azimuthInRadians: firstAzimuth ).
-	].
+	]).
+	points add: (self processor projection projLatLonToCart: to).
 
 	dPolyline points: points.
 
