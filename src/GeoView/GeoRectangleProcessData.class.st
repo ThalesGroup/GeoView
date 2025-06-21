@@ -19,16 +19,16 @@ GeoRectangleProcessData >> processUpdatedData: aKey incoming: aGeoRectangle with
 	dRectangle := aDRectangle.
 	super processUpdatedData: aKey incoming: aGeoRectangle with: dRectangle context: aContext.
 	
-	length1 := GeodesicUtilities
-		          projectedRadiusInMCenter:
+	length1 := GeodesicUtils
+		          approximateProjectedRadiusInMCenter:
 		          aGeoRectangle absoluteCoordinates
 		          radius: aGeoRectangle lengthInMeters1
 		          azimuth: 90
 		          projection: self processor projection.
 	dRectangle length1: length1.
 
-	length2 := GeodesicUtilities
-		          projectedRadiusInMCenter:
+	length2 := GeodesicUtils
+		          approximateProjectedRadiusInMCenter:
 		          aGeoRectangle absoluteCoordinates
 		          radius: aGeoRectangle lengthInMeters2
 		          azimuth: 180
