@@ -12,7 +12,11 @@ GeoSegmentProjectedProcessData >> processCreatedData: aKey incoming: aGeoSegment
 
 	| dPolyline distance firstAzimuth from to n step points |
 	dPolyline := aDPolyline ifNil: [ SmockDPolyline new ].
-	super processCreatedData: aKey incoming: aGeoSegment with: dPolyline context: aContext.
+	super
+		processCreatedData: aKey
+		incoming: aGeoSegment
+		with: dPolyline
+		context: aContext.
 
 	"reset segment properties because usage of polyline"
 	dPolyline coordinates: nil.
@@ -21,13 +25,16 @@ GeoSegmentProjectedProcessData >> processCreatedData: aKey incoming: aGeoSegment
 	to := aGeoSegment toAbsolutePosition.
 	distance := GeodesicUtils distanceInMetersFrom: from to: to.
 	firstAzimuth := GeodesicUtils azimuthInRadiansFrom: from to: to.
-	
+
 	"echantillonage sur 10 points"
-	n := 10.
+	n := 100.
 	step := distance / n.
-	points := (0 to: n) collect:[ :i |
+	points := (0 to: n) collect: [ :i |
 		self processor projection projLatLonToCart:
-		(GeodesicUtils absoluteCoordinatesFrom: from distanceInM: (step * i) azimuthInRadians: firstAzimuth ).
+		(GeodesicUtils
+			absoluteCoordinatesAlongGeodesicFrom: from
+			to: to
+			atFraction: i asFloat / n)
 	].
 
 	dPolyline points: points.
