@@ -4,6 +4,26 @@ Class {
 	#category : #'GeoView-ProcessDatas'
 }
 
+{ #category : #private }
+GeoPolygonProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape context: aContext [
+
+	| coordinates absoluteCoordinates |
+	absoluteCoordinates := aGeoObject absoluteCoordinates.
+	absoluteCoordinates
+		ifNotNil: [
+			absoluteCoordinates isEmpty ifTrue: [
+				absoluteCoordinates := AbsoluteCoordinates zero ] ]
+		ifNil: [ ^ aDShape ].
+
+	absoluteCoordinates isEmpty ifTrue: [
+		absoluteCoordinates := AbsoluteCoordinates zero ].
+	coordinates := self processor projection projLatLonToCart:
+		               absoluteCoordinates.
+
+	aDShape coordinates: coordinates.
+	^ aDShape
+]
+
 { #category : #processing }
 GeoPolygonProcessData >> processCreatedData: aKey incoming: aGeoPolygon with: aDPolygon context: aContext [
 	| dPolygon points |

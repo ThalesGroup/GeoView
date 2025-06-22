@@ -18,6 +18,7 @@ DPolygonGeoViewProcessData >> processUpdatedData: aKey incoming: aDPolygon with:
 
 	| points |
 	super processUpdatedData: aKey incoming: aDPolygon with: aGPolygon2D context: aContext.
+	self flag:'laborde: heu si on met a jour le polygon en lui enlevant les points ben ça passe pas ici !!!, il faut renvoyer la forme vide, et dans tous les processdatas cest comme ça'.
 	(aDPolygon points isNil or:[ aDPolygon points isEmpty]) ifTrue:[ ^ aGPolygon2D ].
 	
 	aDPolygon isDrawModeDevice ifTrue:[ 

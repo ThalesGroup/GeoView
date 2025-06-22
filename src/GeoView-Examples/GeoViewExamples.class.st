@@ -296,7 +296,23 @@ GeoViewExamples class >> exampleGeoSegments [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 		
 	"create sample datas"
-	objects := self createGeoSegment: 1000.
+	objects := self createGeoSegment: 200.
+	
+	element addObjects: objects.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - geodesie' }
+GeoViewExamples class >> exampleGeoSegmentsProjected [
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+		
+	element getLayers last setProcessData: (GeoSegmentProjectedProcessData new) forClass: GeoSegment.
+		
+	"create sample datas"
+	objects := self createGeoSegment: 200.
 	
 	element addObjects: objects.
 
@@ -660,9 +676,54 @@ GeoViewExamples class >> exampleObjectsFilterOnlyRedAndBig [
 ]
 
 { #category : #'examples - geodesie' }
-GeoViewExamples class >> exampleTrajectoireOrthodromique [
+GeoViewExamples class >> exampleOrthodromicTrajectoriesBetweenParisNewyorkAndSydney [
 	
-	| element layer segment1 segment2 |
+	| element layer segment1 segment2 segment3 |
+	element := GeoViewUtils createGeoView.
+	element addLayer: GeoViewMapTilesLayer new.
+	
+	layer := GeoViewDomainObjectsLayer new name: #ProjectedGeoObjectLayer.
+	layer setProcessData: (GeoSegmentProjectedProcessData new) forClass: GeoSegment.
+	element addLayer: layer.
+		
+	segment1 := (GeoSegment key: 1) fromAbsolutePosition: AbsoluteCoordinates frParis; toAbsolutePosition: AbsoluteCoordinates usaNewYork.
+	segment1 strokeStyle: (Color green asSmockStrokeStyle width: 4).
+	element addObject: segment1.
+	
+	segment2 := (GeoSegment key: 2) fromAbsolutePosition: AbsoluteCoordinates usaNewYork; toAbsolutePosition: AbsoluteCoordinates ausSydney.
+	segment2 strokeStyle: (Color green asSmockStrokeStyle width: 4).
+	element addObject: segment2.
+
+	segment3 := (GeoSegment key: 3) fromAbsolutePosition: AbsoluteCoordinates ausSydney; toAbsolutePosition: AbsoluteCoordinates frParis.
+	segment3 strokeStyle: (Color green asSmockStrokeStyle width: 4).
+	element addObject: segment3.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - geodesie' }
+GeoViewExamples class >> exampleOrthodromicTrajectoryTransverseMercatorProjectionFromNewyorkToSydney [
+	"this example show a trajectory which exit the mercator projection"
+	
+	| element layer segment1 |
+	element := GeoViewUtils createGeoView.
+	element addLayer: GeoViewMapTilesLayer new.
+	
+	layer := GeoViewDomainObjectsLayer new name: #ProjectedGeoObjectLayer.
+	layer setProcessData: (GeoSegmentProjectedProcessData new) forClass: GeoSegment.
+	element addLayer: layer.
+
+	segment1 := (GeoSegment key: 1) fromAbsolutePosition: AbsoluteCoordinates usaNewYork; toAbsolutePosition: AbsoluteCoordinates ausSydney.
+	segment1 strokeStyle: (Color green asSmockStrokeStyle width: 4).
+	element addObject: segment1.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - geodesie' }
+GeoViewExamples class >> exampleOrthonormicVsOrthodromicFromParisToNewyork [
+	
+	| element layer segment1 |
 	element := GeoViewUtils createGeoView.
 	element addLayer: GeoViewMapTilesLayer new.
 	
@@ -676,12 +737,8 @@ GeoViewExamples class >> exampleTrajectoireOrthodromique [
 		
 	"create sample datas"
 	segment1 := (GeoSegment key: 1) fromAbsolutePosition: AbsoluteCoordinates frParis; toAbsolutePosition: AbsoluteCoordinates usaNewYork.
-	segment1 strokeStyle: (Color red asSmockStrokeStyle width: 4).
+	segment1 strokeStyle: (Color orange asSmockStrokeStyle width: 4).
 	element addObject: segment1.
-	
-	segment2 := (GeoSegment key: 2) fromAbsolutePosition: AbsoluteCoordinates frBrest; toAbsolutePosition: AbsoluteCoordinates ausSydney.
-	segment2 strokeStyle: (Color cyan asSmockStrokeStyle width: 4).
-	element addObject: segment2.
 
 	^ self openViewInWindow: element
 ]

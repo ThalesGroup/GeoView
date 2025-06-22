@@ -53,7 +53,7 @@ GeoViewUTMProjection >> parallel: aNumber [
 	parallel := aNumber
 ]
 
-{ #category : #accessing }
+{ #category : #projection }
 GeoViewUTMProjection >> projCartToLatLon: aCartesianCoordinates [
 	"Spherical formulas"
 	| x y |
@@ -69,7 +69,7 @@ GeoViewUTMProjection >> projCartToLatLon: aCartesianCoordinates [
 		altitudeInMeters: aCartesianCoordinates altitudeInMeters.
 ]
 
-{ #category : #accessing }
+{ #category : #projection }
 GeoViewUTMProjection >> projLatLonToCart: anAbsoluteCoordinates [
 	"Spherical formulas"
 	| lat lon v a t c n0 x y s |

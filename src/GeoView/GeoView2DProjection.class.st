@@ -101,7 +101,7 @@ GeoView2DProjection >> offsetInPixels: aPoint [
 	offsetInPixels := aPoint
 ]
 
-{ #category : #accessing }
+{ #category : #projection }
 GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 
 	| point pixel geoCenter |
@@ -113,7 +113,7 @@ GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 	^ pixel
 ]
 
-{ #category : #accessing }
+{ #category : #projection }
 GeoView2DProjection >> projPixelToCart: aPoint [
 
 	| xCartesian yCartesian xOffset yOffset scale |

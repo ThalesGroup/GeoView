@@ -22,11 +22,11 @@ TGeoViewGraphicProjection >> cartesianCenter: aCartesianCoordinates [
 TGeoViewGraphicProjection >> key [
 ]
 
-{ #category : #accessing }
+{ #category : #projection }
 TGeoViewGraphicProjection >> projCartToPixel: aCartesianCoordinates [
 ]
 
-{ #category : #accessing }
+{ #category : #projection }
 TGeoViewGraphicProjection >> projPixelToCart: aPoint [
 ]
 
