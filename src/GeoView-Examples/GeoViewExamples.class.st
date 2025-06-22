@@ -297,6 +297,7 @@ GeoViewExamples class >> exampleGeoSegments [
 		
 	"create sample datas"
 	objects := self createGeoSegment: 1000.
+	
 	element addObjects: objects.
 
 	^ self openViewInWindow: element
@@ -661,7 +662,7 @@ GeoViewExamples class >> exampleObjectsFilterOnlyRedAndBig [
 { #category : #'examples - geodesie' }
 GeoViewExamples class >> exampleTrajectoireOrthodromique [
 	
-	| element layer parisNewyork |
+	| element layer segment1 segment2 |
 	element := GeoViewUtils createGeoView.
 	element addLayer: GeoViewMapTilesLayer new.
 	
@@ -674,9 +675,13 @@ GeoViewExamples class >> exampleTrajectoireOrthodromique [
 	element addLayer: layer.
 		
 	"create sample datas"
-	parisNewyork := (GeoSegment key: 1) fromAbsolutePosition: AbsoluteCoordinates frParis; toAbsolutePosition: AbsoluteCoordinates usaNewYork.
-	parisNewyork strokeStyle: (Color black asSmockStrokeStyle width: 4).
-	element addObject: parisNewyork.
+	segment1 := (GeoSegment key: 1) fromAbsolutePosition: AbsoluteCoordinates frParis; toAbsolutePosition: AbsoluteCoordinates usaNewYork.
+	segment1 strokeStyle: (Color red asSmockStrokeStyle width: 4).
+	element addObject: segment1.
+	
+	segment2 := (GeoSegment key: 2) fromAbsolutePosition: AbsoluteCoordinates frBrest; toAbsolutePosition: AbsoluteCoordinates ausSydney.
+	segment2 strokeStyle: (Color cyan asSmockStrokeStyle width: 4).
+	element addObject: segment2.
 
 	^ self openViewInWindow: element
 ]

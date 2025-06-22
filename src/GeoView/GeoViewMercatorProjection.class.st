@@ -9,6 +9,18 @@ Class {
 	#category : #'GeoView-Projections'
 }
 
+{ #category : #properties }
+GeoViewMercatorProjection class >> k0 [
+
+	^ 0.9996
+]
+
+{ #category : #properties }
+GeoViewMercatorProjection class >> scaleFactor [
+
+	^ self k0
+]
+
 { #category : #accessing }
 GeoViewMercatorProjection >> key [
 	^#GeoViewMercatorProjection
