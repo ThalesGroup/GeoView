@@ -1,5 +1,5 @@
 "
-I am a transverse Mercator projection.
+I am an universal transverse Mercator projection.
 "
 Class {
 	#name : #GeoViewUTMProjection,
@@ -61,12 +61,11 @@ GeoViewUTMProjection >> projCartToLatLon: aCartesianCoordinates [
 	y := aCartesianCoordinates yInMeters.
 
 	self flag:'Implémenter la transformation'.
-	self halt.
 
 	^ AbsoluteCoordinates new
 		latitudeInDegrees: x;
 		longitudeInDegrees: y;
-		altitudeInMeters: aCartesianCoordinates altitudeInMeters.
+		altitudeInMeters: aCartesianCoordinates zInMeters .
 ]
 
 { #category : #projection }

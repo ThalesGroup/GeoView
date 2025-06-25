@@ -1,5 +1,5 @@
 Class {
 	#name : #GeoSymbol,
 	#superclass : #GeoShape,
-	#category : #'GeoView-GeoObjects'
+	#category : #'GeoView-Business - GeoObjects'
 }

@@ -1,34 +1,28 @@
 Class {
 	#name : #GeoPolylineProcessData,
 	#superclass : #GeoShapeProcessData,
-	#category : #'GeoView-ProcessDatas'
+	#category : #'GeoView-Business - GeoObjects'
 }
 
 { #category : #private }
 GeoPolylineProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape context: aContext [
+	"Position makes no sense for a Geo polyline"
 
-	| coordinates absoluteCoordinates |
-	absoluteCoordinates := aGeoObject absoluteCoordinates.
-	absoluteCoordinates
-		ifNotNil: [
-			absoluteCoordinates isEmpty ifTrue: [
-				absoluteCoordinates := AbsoluteCoordinates zero ] ]
-		ifNil: [ ^ aDShape ].
-
-	absoluteCoordinates isEmpty ifTrue: [
-		absoluteCoordinates := AbsoluteCoordinates zero ].
-	coordinates := self processor projection projLatLonToCart:
-		               absoluteCoordinates.
-
-	aDShape coordinates: coordinates.
 	^ aDShape
+]
+
+{ #category : #dShape }
+GeoPolylineProcessData >> createDShapeInstance [
+
+	^ SmockDPolyline new
 ]
 
 { #category : #processing }
 GeoPolylineProcessData >> processCreatedData: aKey incoming: aGeoPolyline with: aDPolyline context: aContext [
 	| dPolyline points |
-	dPolyline := aDPolyline ifNil:[SmockDPolyline new].
-	super processCreatedData: aKey incoming: aGeoPolyline with: dPolyline context: aContext.
+	
+	dPolyline := aDPolyline.
+	dPolyline := super processCreatedData: aKey incoming: aGeoPolyline with: dPolyline context: aContext.
 	
 	points := aGeoPolyline absolutePositions collect: [ :e | self processor projection projLatLonToCart: e].
 	dPolyline points: points.

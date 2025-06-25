@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoPositionProcessData,
 	#superclass : #GeoObjectProcessData,
-	#category : #'GeoView-ProcessDatas'
+	#category : #'GeoView-Business - GeoObjects'
 }
 
 { #category : #processing }

@@ -1,15 +1,21 @@
 Class {
 	#name : #GeoSegmentProcessData,
 	#superclass : #GeoShapeProcessData,
-	#category : #'GeoView-ProcessDatas'
+	#category : #'GeoView-Business - GeoObjects'
 }
+
+{ #category : #dShape }
+GeoSegmentProcessData >> createDShapeInstance [
+
+	^ SmockDSegment new
+]
 
 { #category : #processing }
 GeoSegmentProcessData >> processCreatedData: aKey incoming: aGeoSegment with: aDSegment context: aContext [
-
 	| dSegment |
-	dSegment := aDSegment ifNil: [ SmockDSegment new ].
-	super processCreatedData: aKey incoming: aGeoSegment with: dSegment context: aContext.
+	
+	dSegment := aDSegment.
+	dSegment := super processCreatedData: aKey incoming: aGeoSegment with: dSegment context: aContext.
 
 	aGeoSegment toAbsolutePosition ifNotNil:[ :e |
 		dSegment coordinates2: (self processor projection projLatLonToCart: e).
@@ -20,8 +26,8 @@ GeoSegmentProcessData >> processCreatedData: aKey incoming: aGeoSegment with: aD
 
 { #category : #processing }
 GeoSegmentProcessData >> processUpdatedData: aKey incoming: aGeoSegment with: aDSegment context: aContext [
-
 	| dSegment |
+	
 	dSegment := aDSegment.
 	super processUpdatedData: aKey incoming: aGeoSegment with: dSegment context: aContext.
 

@@ -1,14 +1,21 @@
 Class {
 	#name : #GeoTextProcessData,
 	#superclass : #GeoShapeProcessData,
-	#category : #'GeoView-ProcessDatas'
+	#category : #'GeoView-Business - GeoObjects'
 }
+
+{ #category : #dShape }
+GeoTextProcessData >> createDShapeInstance [
+
+	^ SmockDText new
+]
 
 { #category : #processing }
 GeoTextProcessData >> processCreatedData: aKey incoming: aGeoText with: aDText context: aContext [
 	| dText |
-	dText := aDText ifNil:[SmockDText new].
-	super processCreatedData: aKey incoming: aGeoText with: dText context: aContext.
+	
+	dText := aDText.
+	dText := super processCreatedData: aKey incoming: aGeoText with: dText context: aContext.
 	
 	self flag:'labordep: use a smockfont from aGeoText'.
 	dText smockFont: SmockFont defaultFont.

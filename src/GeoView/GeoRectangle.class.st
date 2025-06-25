@@ -8,7 +8,7 @@ Class {
 		'lengthInMeters1',
 		'lengthInMeters2'
 	],
-	#category : #'GeoView-GeoObjects'
+	#category : #'GeoView-Business - GeoObjects'
 }
 
 { #category : #accessing }

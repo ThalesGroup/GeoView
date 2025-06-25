@@ -1,10 +1,13 @@
+"
+Processdata hierarchy to process GeoObjects class hierarchy (GeoCircle, GeoEllipse, etc.)
+"
 Class {
 	#name : #GeoObjectProcessData,
-	#superclass : #SmockProcessData,
+	#superclass : #GeoBusinessObjectProcessData,
 	#instVars : [
 		'displayFilterBlock'
 	],
-	#category : #'GeoView-ProcessDatas'
+	#category : #'GeoView-Business - GeoObjects'
 }
 
 { #category : #accessing }
@@ -13,7 +16,7 @@ GeoObjectProcessData class >> isAbstract [
 	^ self == GeoObjectProcessData 
 ]
 
-{ #category : #private }
+{ #category : #computing }
 GeoObjectProcessData >> computeDisplayFilter: aKey incoming: aTObject with: aDShape context: aContext [
 
 	"propose a block to setup the filter externally"
@@ -22,7 +25,7 @@ GeoObjectProcessData >> computeDisplayFilter: aKey incoming: aTObject with: aDSh
 	^ aDShape
 ]
 
-{ #category : #private }
+{ #category : #computing }
 GeoObjectProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape context: aContext [
 
 	| coordinates absoluteCoordinates |
@@ -42,19 +45,19 @@ GeoObjectProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape
 	^ aDShape
 ]
 
-{ #category : #accessing }
+{ #category : #computing }
 GeoObjectProcessData >> displayFilterBlock [
 
 	^ displayFilterBlock
 ]
 
-{ #category : #accessing }
+{ #category : #computing }
 GeoObjectProcessData >> displayFilterBlock: anObject [
 
 	displayFilterBlock := anObject
 ]
 
-{ #category : #processing }
+{ #category : #computing }
 GeoObjectProcessData >> processCreatedData: aKey incoming: aGeoObject with: aDShape context: aContext [
 	| dShape |
 	dShape := aDShape.
@@ -68,13 +71,13 @@ GeoObjectProcessData >> processCreatedData: aKey incoming: aGeoObject with: aDSh
 	^ dShape
 ]
 
-{ #category : #processing }
+{ #category : #computing }
 GeoObjectProcessData >> processDeletedData: aKey incoming: aGeoObject with: aDShape context: aContext [
 
 	^ aDShape
 ]
 
-{ #category : #processing }
+{ #category : #computing }
 GeoObjectProcessData >> processRecycledData: aKey incoming: aGeoObject with: aDShape context: aContext [
 	
 	aDShape key: nil.
@@ -88,13 +91,13 @@ GeoObjectProcessData >> processRecycledData: aKey incoming: aGeoObject with: aDS
 	^ aDShape
 ]
 
-{ #category : #processing }
+{ #category : #computing }
 GeoObjectProcessData >> processStateChanged: aKey state: aState value: aValueOrNil with: aDShape context: aContext [
 
 	^ aDShape
 ]
 
-{ #category : #processing }
+{ #category : #computing }
 GeoObjectProcessData >> processUpdatedData: aKey incoming: aGeoObject with: aDShape context: aContext [
 
 	aDShape isVisible: aGeoObject isVisible.

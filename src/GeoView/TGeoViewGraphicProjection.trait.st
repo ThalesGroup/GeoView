@@ -3,7 +3,7 @@ I am a view Projection, convert cartesian coordinates to graphic device coordina
 "
 Trait {
 	#name : #TGeoViewGraphicProjection,
-	#category : #'GeoView-Projections'
+	#category : #'GeoView-Core'
 }
 
 { #category : #accessing }

@@ -141,6 +141,30 @@ GeoViewExamples class >> createTask: aBlockClosure [
 	^ serv
 ]
 
+{ #category : #private }
+GeoViewExamples class >> createTissotIndicatorCircles [
+	"create Tissot indicator objects: some circles around the world"
+	
+	| radiusInM circles i |
+	radiusInM := 500000.
+	circles := OrderedCollection new.
+	
+	i := 1.
+	-70 to: 70 by: 15 do:[ :lat | 
+		-180 to: 180 by: 15 do:[ :lon | 
+			circles add: (GeoCircle new key: i;
+				absoluteCoordinates: ( lat @ lon ) asAbsoluteCoordinates ;
+				fillStyle: (Color green alpha: 0.5) asSmockFillStyle;
+				strokeStyle: (Color green asSmockStrokeStyle width: 1);
+				radiusInMeters: radiusInM;
+				yourself).
+			i := i + 1.
+		].	
+	].
+
+	^ circles
+]
+
 { #category : #'examples - GeoObjects' }
 GeoViewExamples class >> exampleGeoCircle [
 
@@ -303,7 +327,7 @@ GeoViewExamples class >> exampleGeoSegments [
 	^ self openViewInWindow: element
 ]
 
-{ #category : #'examples - geodesie' }
+{ #category : #'examples - GeoObjects' }
 GeoViewExamples class >> exampleGeoSegmentsProjected [
 	
 	| element objects |
@@ -741,6 +765,48 @@ GeoViewExamples class >> exampleOrthonormicVsOrthodromicFromParisToNewyork [
 	element addObject: segment1.
 
 	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - projections' }
+GeoViewExamples class >> exampleTissotIndicatorMercator [
+	"This example implement the indicator of Tissot (Nicolas August) for a projection, this indicator indicate the level of deformation of the selection projection"
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	element mapProjection: GeoViewMercatorProjection new. "by default"
+	"laborde: better to have a vectorial map to considere the deformation because tiles are not available for all projections"
+	
+	"create sample datas"
+	objects := self createTissotIndicatorCircles.
+	element addObjects: objects.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - projections' }
+GeoViewExamples class >> exampleTissotIndicatorUTM [
+	"This example implement the indicator of Tissot (Nicolas August) for a projection, this indicator indicate the level of deformation of the selection projection"
+	
+	| element objects |
+	
+	"warning before opening"
+	(UIManager default
+		 confirm:
+			 'This Tissot indicator example using a not finalized UTM Projection, it can works but without stability.
+			Start ?'
+		 label: 'GeoView - Work in progress') ifFalse:[ ^ self ].
+	
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	element mapProjection: GeoViewUTMProjection new.
+	"laborde: better to have a vectorial map to considere the deformation because tiles are not available for all projections"
+	
+	"create sample datas"
+	objects := self createTissotIndicatorCircles.
+	element addObjects: objects.
+
+	^ self openViewInWindow: element
+	
 ]
 
 { #category : #examples }

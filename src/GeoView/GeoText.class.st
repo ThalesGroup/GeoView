@@ -8,7 +8,7 @@ Class {
 		'text',
 		'smockFont'
 	],
-	#category : #'GeoView-GeoObjects'
+	#category : #'GeoView-Business - GeoObjects'
 }
 
 { #category : #accessing }

@@ -10,7 +10,7 @@ Class {
 		'orientationInAzimuths',
 		'apertureInRadians'
 	],
-	#category : #'GeoView-GeoObjects'
+	#category : #'GeoView-Business - GeoObjects'
 }
 
 { #category : #accessing }
