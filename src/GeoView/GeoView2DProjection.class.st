@@ -105,6 +105,9 @@ GeoView2DProjection >> offsetInPixels: aPoint [
 GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 
 	| point pixel geoCenter |
+	
+	aCartesianCoordinates ifNil:[ ^ nil ].
+	
 	point := aCartesianCoordinates asPoint.
 	geoCenter := self cartesianCenter asPoint.
 	pixel := ((point x @ point y negated) - (geoCenter x @ geoCenter y negated))
