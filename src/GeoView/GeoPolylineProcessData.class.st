@@ -1,14 +1,28 @@
 Class {
 	#name : #GeoPolylineProcessData,
 	#superclass : #GeoShapeProcessData,
-	#category : #'GeoView-ProcessDatas'
+	#category : #'GeoView-Domain - GeoObjects'
 }
+
+{ #category : #private }
+GeoPolylineProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape context: aContext [
+	"Position makes no sense for a Geo polyline"
+
+	^ aDShape
+]
+
+{ #category : #dShape }
+GeoPolylineProcessData >> createDShapeInstance [
+
+	^ SmockDPolyline new
+]
 
 { #category : #processing }
 GeoPolylineProcessData >> processCreatedData: aKey incoming: aGeoPolyline with: aDPolyline context: aContext [
 	| dPolyline points |
-	dPolyline := aDPolyline ifNil:[SmockDPolyline new].
-	super processCreatedData: aKey incoming: aGeoPolyline with: dPolyline context: aContext.
+	
+	dPolyline := aDPolyline.
+	dPolyline := super processCreatedData: aKey incoming: aGeoPolyline with: dPolyline context: aContext.
 	
 	points := aGeoPolyline absolutePositions collect: [ :e | self processor projection projLatLonToCart: e].
 	dPolyline points: points.

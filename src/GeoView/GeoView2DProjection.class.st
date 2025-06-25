@@ -13,7 +13,7 @@ Class {
 		'metersByPixel',
 		'offsetInPixels'
 	],
-	#category : #'GeoView-Projections'
+	#category : #'GeoView-Core'
 }
 
 { #category : #accessing }
@@ -101,10 +101,13 @@ GeoView2DProjection >> offsetInPixels: aPoint [
 	offsetInPixels := aPoint
 ]
 
-{ #category : #accessing }
+{ #category : #projection }
 GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 
 	| point pixel geoCenter |
+	
+	aCartesianCoordinates ifNil:[ ^ nil ].
+	
 	point := aCartesianCoordinates asPoint.
 	geoCenter := self cartesianCenter asPoint.
 	pixel := ((point x @ point y negated) - (geoCenter x @ geoCenter y negated))
@@ -113,7 +116,7 @@ GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 	^ pixel
 ]
 
-{ #category : #accessing }
+{ #category : #projection }
 GeoView2DProjection >> projPixelToCart: aPoint [
 
 	| xCartesian yCartesian xOffset yOffset scale |

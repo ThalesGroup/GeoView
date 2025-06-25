@@ -1,10 +1,13 @@
+"
+Processdata hierarchy to process GeoObjects class hierarchy (GeoCircle, GeoEllipse, etc.)
+"
 Class {
 	#name : #GeoObjectProcessData,
-	#superclass : #SmockProcessData,
+	#superclass : #GeoViewDomainProcessData,
 	#instVars : [
 		'displayFilterBlock'
 	],
-	#category : #'GeoView-ProcessDatas'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #accessing }
@@ -13,7 +16,7 @@ GeoObjectProcessData class >> isAbstract [
 	^ self == GeoObjectProcessData 
 ]
 
-{ #category : #private }
+{ #category : #computing }
 GeoObjectProcessData >> computeDisplayFilter: aKey incoming: aTObject with: aDShape context: aContext [
 
 	"propose a block to setup the filter externally"
@@ -22,7 +25,7 @@ GeoObjectProcessData >> computeDisplayFilter: aKey incoming: aTObject with: aDSh
 	^ aDShape
 ]
 
-{ #category : #private }
+{ #category : #computing }
 GeoObjectProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape context: aContext [
 
 	| coordinates absoluteCoordinates |
@@ -37,20 +40,22 @@ GeoObjectProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape
 		absoluteCoordinates := AbsoluteCoordinates zero ].
 	coordinates := self processor projection projLatLonToCart:
 		               absoluteCoordinates.
-	aDShape coordinates: coordinates.
 
+	aDShape coordinates: coordinates.
 	^ aDShape
 ]
 
-{ #category : #accessing }
+{ #category : #computing }
 GeoObjectProcessData >> displayFilterBlock [
 
+	self flag:'labordep: for examples, dirty, need to be reworked'.
 	^ displayFilterBlock
 ]
 
-{ #category : #accessing }
+{ #category : #computing }
 GeoObjectProcessData >> displayFilterBlock: anObject [
 
+	self flag:'labordep: for examples, dirty, need to be reworked'.
 	displayFilterBlock := anObject
 ]
 

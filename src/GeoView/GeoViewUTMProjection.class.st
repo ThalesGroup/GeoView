@@ -1,5 +1,5 @@
 "
-I am a transverse Mercator projection.
+I am an universal transverse Mercator projection.
 "
 Class {
 	#name : #GeoViewUTMProjection,
@@ -38,6 +38,17 @@ GeoViewUTMProjection >> initialize [
 	s4 := e6 * 35 / 3072.
 ]
 
+{ #category : #testing }
+GeoViewUTMProjection >> isAbsoluteCoordinatesOutsideProjectionLimit: anAbsoluteCoordinates [
+	"Sometimes coordinates can be correct from a geographic point of view but outside of the map projection"
+	
+	| lat |
+	anAbsoluteCoordinates isValid ifFalse:[ ^ true ].
+	lat := anAbsoluteCoordinates latitudeInDegrees.
+	^ lat < -80.0 or:[ lat > 84.0 ]
+	
+]
+
 { #category : #accessing }
 GeoViewUTMProjection >> key [
 	^#GeoViewUTMProjection
@@ -53,7 +64,7 @@ GeoViewUTMProjection >> parallel: aNumber [
 	parallel := aNumber
 ]
 
-{ #category : #accessing }
+{ #category : #projection }
 GeoViewUTMProjection >> projCartToLatLon: aCartesianCoordinates [
 	"Spherical formulas"
 	| x y |
@@ -61,24 +72,27 @@ GeoViewUTMProjection >> projCartToLatLon: aCartesianCoordinates [
 	y := aCartesianCoordinates yInMeters.
 
 	self flag:'Implémenter la transformation'.
-	self halt.
 
 	^ AbsoluteCoordinates new
 		latitudeInDegrees: x;
 		longitudeInDegrees: y;
-		altitudeInMeters: aCartesianCoordinates altitudeInMeters.
+		altitudeInMeters: aCartesianCoordinates zInMeters .
 ]
 
-{ #category : #accessing }
+{ #category : #projection }
 GeoViewUTMProjection >> projLatLonToCart: anAbsoluteCoordinates [
 	"Spherical formulas"
 	| lat lon v a t c n0 x y s |
+	
+	(self isAbsoluteCoordinatesOutsideProjectionLimit: anAbsoluteCoordinates) ifTrue:[ ^ nil ].
+	
 	lat := anAbsoluteCoordinates latitudeInRadians.
 	lon := anAbsoluteCoordinates longitudeInRadians.
 	
 	v := 1 / (1 - (e2 * lat sin * lat sin)) sqrt.
 	a := (lon - self parallel) * lat cos.
 	s := (s1 * lat) - (s2 * (lat * 2) sin) + (s3 * (lat * 4) sin) - (s4 * (lat * 6) sin).
+	
 	t := lat tan * lat tan.
 	c := lat cos * lat cos * e2 / (1 - e2).
 	n0 := lat >= 0 ifTrue: [ 0 ] ifFalse: [ 0"10000e3" ].

@@ -9,7 +9,7 @@ Class {
 		'radiusInMeters2',
 		'orientationInAzimuths'
 	],
-	#category : #'GeoView-GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #accessing }
@@ -22,6 +22,30 @@ GeoEllipse >> orientationInAzimuths [
 GeoEllipse >> orientationInAzimuths: anObject [
 
 	orientationInAzimuths := anObject
+]
+
+{ #category : #accessing }
+GeoEllipse >> radius1InMeters [
+
+	^ self radiusInMeters1
+]
+
+{ #category : #accessing }
+GeoEllipse >> radius1InMeters: anObject [
+
+	self radiusInMeters1: anObject
+]
+
+{ #category : #accessing }
+GeoEllipse >> radius2InMeters [
+
+	^ self radiusInMeters2
+]
+
+{ #category : #accessing }
+GeoEllipse >> radius2InMeters: anObject [
+
+	self radiusInMeters2: anObject
 ]
 
 { #category : #accessing }

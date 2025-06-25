@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'radiusInMeters'
 	],
-	#category : #'GeoView-GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #accessing }

@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'absolutePositions'
 	],
-	#category : #'GeoView-GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #accessing }

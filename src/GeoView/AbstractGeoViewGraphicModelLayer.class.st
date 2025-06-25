@@ -206,6 +206,7 @@ AbstractGeoViewGraphicModelLayer >> initializeGraphicModel [
 	self graphicModel setProcessData: DPolylineGeoViewProcessData new forClass: SmockDPolyline.
 	self graphicModel setProcessData: DSegmentGeoViewProcessData new forClass: SmockDSegment.
 	self graphicModel setProcessData: DSectorGeoViewProcessData new forClass: SmockDSector.
+	self graphicModel setProcessData: DMultiPolylinesGeoViewProcessData new forClass: SmockDMultiPolylines.
 	
 ]
 

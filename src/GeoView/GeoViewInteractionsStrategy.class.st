@@ -163,6 +163,10 @@ GeoViewInteractionsStrategy >> mouseWheelEvent: anEvent [
 	geoPoint := element absoluteCoordinatesFromGlobalPoint: point.
 	geoPointPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: geoPoint).
 	geoCenterPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: element geoCenter).
+	
+	geoPointPx ifNil:[ ^ self ].
+	geoCenterPx ifNil:[ ^ self ].
+	
 	"Compute diff from mouse position to view center in pixel before scale"
 	difPx := geoCenterPx - geoPointPx.
 	

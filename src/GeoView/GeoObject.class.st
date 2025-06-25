@@ -11,7 +11,7 @@ Class {
 		'isVisible',
 		'absoluteCoordinates'
 	],
-	#category : #'GeoView-GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #accessing }
