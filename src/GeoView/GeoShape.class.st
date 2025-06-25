@@ -9,7 +9,7 @@ Class {
 		'fillStyle',
 		'strokeStyle'
 	],
-	#category : #'GeoView-Business - GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #accessing }

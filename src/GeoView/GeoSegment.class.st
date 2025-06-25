@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'toAbsolutePosition'
 	],
-	#category : #'GeoView-Business - GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #accessing }

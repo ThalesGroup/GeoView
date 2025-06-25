@@ -9,7 +9,7 @@ Class {
 		'radiusInMeters2',
 		'orientationInAzimuths'
 	],
-	#category : #'GeoView-Business - GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #accessing }

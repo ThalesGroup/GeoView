@@ -14,20 +14,25 @@ DShapeGeoViewProcessData class >> isAbstract [
 
 { #category : #computing }
 DShapeGeoViewProcessData >> computePositionFor: aDShape context: aContext [
-
+	"Compute the position of DShape and return it considering all additional properties"
 	| offset position |
-	aDShape coordinates ifNil: [ ^ aDShape coordinatesDeviceOffset ].
-	self processor ifNil: [ ^ nil ].
-
+	
+	"device offset is a graphic translation of the dShape (in graphics coordinates, i.e. pixel), by default the shape is not translated"
 	offset := aDShape coordinatesDeviceOffset ifNil: [ 0 @ 0 ].
+	
+	"when the shape haven't coordinates, that mean the shape is managed by a parent (i.e. a dComposite), return an offset if exists"
+	aDShape coordinates ifNil: [ ^ offset ].
+	self processor ifNil: [ ^ nil ].
 
 	"Return device coordinates only for draw mode device and position not managed by the parent"
 	(aDShape isDrawModeDevice and: [ aDShape isTranslatedByParent ])
 		ifTrue: [ ^ aDShape coordinates + offset ].
 
+	"projection the position from cartesian (after the map projection) to the graphic coordinates (screen)"
 	position := (self processor projection projCartToPixel:
 		             aDShape coordinates) ifNil: [ 0 @ 0 ].
 	
+	"add offset if needed"
 	^ position + offset
 ]
 

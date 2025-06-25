@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoShapeProcessData,
 	#superclass : #GeoObjectProcessData,
-	#category : #'GeoView-Business - GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #accessing }

@@ -275,7 +275,7 @@ GeoViewExamples class >> exampleGeoPositions [
 	
 	| geoView city |
 	geoView := GeoViewUtils createGeoViewForGeoObjects.
-	geoView addLayerAtFirst: (GeoViewMapTilesLayer newWithGoogle).
+	geoView addLayerAtFirst: (GeoViewMapTilesLayer new).
 	geoView id: #geoView.
 	
 	city := GeoPosition key: 1.
@@ -309,7 +309,7 @@ GeoViewExamples class >> exampleGeoPositions [
 	city := GeoPosition key: 8.
 	city text: 'Elancourt'; image: (self iconNamed: #pharo); absoluteCoordinates: (AbsoluteCoordinates frElancourt).
 	geoView addObject: city.
-	
+
 	^ self openViewInWindow: geoView
 ]
 
@@ -513,10 +513,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	element scaleInMeters: 150000.
 	
 	"add carto layer"
-	layer := GeoViewMapTilesLayer new.
-	layer name: 'SampleCartoLayer'.
-	layer allowSlideMoving: false.
-	element addLayerAtFirst: layer.
+	element addLayerAtFirst: GeoViewMapTilesLayer new.
 	
 	circle := GeoCircle new key: 1; radiusInMeters: 2000; fillStyle: (Color red asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates frBrest.
 	element addObject: circle.
@@ -538,8 +535,10 @@ GeoViewExamples class >> exampleLargestCitiesOfTheWorld [
 
 	| geoView nb |
 	geoView := GeoViewUtils createGeoViewForGeoObjects.
-	geoView addLayerAtFirst: (GeoViewMapTilesLayer newWithGoogle).
-
+	geoView addLayerAtFirst: (GeoViewMapTilesLayer new).
+	"configure process data of GeoPosition objects"
+	(geoView getLayers last getProcessDataForClass: GeoPosition) textColor: Color black.
+	
 	"add largest cities with the same icon"
 	nb := 1.
 	geoView addObjects: (self largest50Cities collect:[ :e | e key: nb; image: (self iconNamed: #info). nb := nb + 1. e ]).
@@ -552,7 +551,7 @@ GeoViewExamples class >> exampleLargestCountriesOfTheWorld [
 
 	| geoView nb |
 	geoView := GeoViewUtils createGeoViewForGeoObjects.
-	geoView addLayerAtFirst: (GeoViewMapTilesLayer newWithGoogle).
+	geoView addLayerAtFirst: (GeoViewMapTilesLayer new).
 
 	"add largest countries with a gradient circle"
 	nb := 1.

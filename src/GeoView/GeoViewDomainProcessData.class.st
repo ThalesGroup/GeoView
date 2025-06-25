@@ -3,13 +3,13 @@ Subclass me to create your own business object processdata (Boat, Planes, Zones,
 Using a class from this hierarchy is easier because there are a lot of utils.
 "
 Class {
-	#name : #GeoBusinessObjectProcessData,
+	#name : #GeoViewDomainProcessData,
 	#superclass : #SmockProcessData,
-	#category : #'GeoView-Business'
+	#category : #'GeoView-Domain'
 }
 
 { #category : #accessing }
-GeoBusinessObjectProcessData class >> isAbstract [ 
+GeoViewDomainProcessData class >> isAbstract [ 
 
-	^ self == GeoBusinessObjectProcessData 
+	^ self == GeoViewDomainProcessData 
 ]

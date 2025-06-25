@@ -3,11 +3,11 @@ Processdata hierarchy to process GeoObjects class hierarchy (GeoCircle, GeoEllip
 "
 Class {
 	#name : #GeoObjectProcessData,
-	#superclass : #GeoBusinessObjectProcessData,
+	#superclass : #GeoViewDomainProcessData,
 	#instVars : [
 		'displayFilterBlock'
 	],
-	#category : #'GeoView-Business - GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #accessing }
@@ -48,16 +48,18 @@ GeoObjectProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape
 { #category : #computing }
 GeoObjectProcessData >> displayFilterBlock [
 
+	self flag:'labordep: for examples, dirty, need to be reworked'.
 	^ displayFilterBlock
 ]
 
 { #category : #computing }
 GeoObjectProcessData >> displayFilterBlock: anObject [
 
+	self flag:'labordep: for examples, dirty, need to be reworked'.
 	displayFilterBlock := anObject
 ]
 
-{ #category : #computing }
+{ #category : #processing }
 GeoObjectProcessData >> processCreatedData: aKey incoming: aGeoObject with: aDShape context: aContext [
 	| dShape |
 	dShape := aDShape.
@@ -71,13 +73,13 @@ GeoObjectProcessData >> processCreatedData: aKey incoming: aGeoObject with: aDSh
 	^ dShape
 ]
 
-{ #category : #computing }
+{ #category : #processing }
 GeoObjectProcessData >> processDeletedData: aKey incoming: aGeoObject with: aDShape context: aContext [
 
 	^ aDShape
 ]
 
-{ #category : #computing }
+{ #category : #processing }
 GeoObjectProcessData >> processRecycledData: aKey incoming: aGeoObject with: aDShape context: aContext [
 	
 	aDShape key: nil.
@@ -91,13 +93,13 @@ GeoObjectProcessData >> processRecycledData: aKey incoming: aGeoObject with: aDS
 	^ aDShape
 ]
 
-{ #category : #computing }
+{ #category : #processing }
 GeoObjectProcessData >> processStateChanged: aKey state: aState value: aValueOrNil with: aDShape context: aContext [
 
 	^ aDShape
 ]
 
-{ #category : #computing }
+{ #category : #processing }
 GeoObjectProcessData >> processUpdatedData: aKey incoming: aGeoObject with: aDShape context: aContext [
 
 	aDShape isVisible: aGeoObject isVisible.

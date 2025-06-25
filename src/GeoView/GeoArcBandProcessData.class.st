@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoArcBandProcessData,
 	#superclass : #GeoShapeProcessData,
-	#category : #'GeoView-Business - GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #dShape }

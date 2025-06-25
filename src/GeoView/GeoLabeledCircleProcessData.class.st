@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoLabeledCircleProcessData,
 	#superclass : #GeoShapeLabeledProcessData,
-	#category : #'GeoView-Business - GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #processing }

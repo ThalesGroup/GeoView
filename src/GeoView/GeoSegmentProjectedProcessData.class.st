@@ -6,7 +6,7 @@ Class {
 	#superclass : #GeoShapeProcessData,
 	#traits : 'TGeoProjectorProcessData',
 	#classTraits : 'TGeoProjectorProcessData classTrait',
-	#category : #'GeoView-Business - GeoObjects'
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #computing }

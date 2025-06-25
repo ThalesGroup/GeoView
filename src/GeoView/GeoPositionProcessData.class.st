@@ -1,7 +1,13 @@
+"
+GeoPosition Process data, this class is a good example to know how to create personalize geo object rendering. For example the method ""textColor:"" can provide to setup the color of the label of the geoPosition.
+"
 Class {
 	#name : #GeoPositionProcessData,
 	#superclass : #GeoObjectProcessData,
-	#category : #'GeoView-Business - GeoObjects'
+	#instVars : [
+		'textColor'
+	],
+	#category : #'GeoView-Domain - GeoObjects'
 }
 
 { #category : #processing }
@@ -18,7 +24,7 @@ GeoPositionProcessData >> processCreatedData: aKey incoming: aGeoPosition with: 
 
 	"create label"
 	dLabel := SmockDText key: #text.
-	dLabel fillColor: Color white.
+	dLabel fillColor: self textColor.
 	dLabel smockFont: SmockFont defaultFont.
 	dLabel text: aGeoPosition text.
 	dLabel setTopCenter.
@@ -48,4 +54,16 @@ GeoPositionProcessData >> processUpdatedData: aKey incoming: aGeoPosition with: 
 	].
 	
 	^ aDCompositeShape
+]
+
+{ #category : #accessing }
+GeoPositionProcessData >> textColor [
+
+	^ textColor ifNil: [ textColor := Color white ]
+]
+
+{ #category : #accessing }
+GeoPositionProcessData >> textColor: anObject [
+
+	textColor := anObject
 ]
