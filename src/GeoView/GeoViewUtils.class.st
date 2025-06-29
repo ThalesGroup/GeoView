@@ -5,11 +5,20 @@ Class {
 }
 
 { #category : #'layer creation' }
+GeoViewUtils class >> createDomainObjectsLayer: aName [
+	"Create a layer to display Domain Objects using DShape's process datas"
+
+	| layer |
+	layer := GeoViewDomainObjectsLayer new name: aName.
+	^ layer
+]
+
+{ #category : #'layer creation' }
 GeoViewUtils class >> createGeoObjectsLayer: aName [
 	"Create a layer to display GeoObjects"
 
 	| layer |
-	layer := GeoViewDomainObjectsLayer new name: aName.
+	layer := self createDomainObjectsLayer: aName.
 
 	layer setProcessData: GeoCircleProcessData new forClass: GeoCircle.
 	layer setProcessData: GeoEllipseProcessData new forClass: GeoEllipse.

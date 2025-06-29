@@ -52,48 +52,46 @@ GeoViewAbstractElement >> absoluteCoordinatesFromLocalPoint: aLocalPoint [
 { #category : #'API -- layers management' }
 GeoViewAbstractElement >> addLayer: aLayer [
 
+	self addLayer: aLayer afterIndex: nil
+]
+
+{ #category : #'API -- layers management' }
+GeoViewAbstractElement >> addLayer: aLayer afterIndex: anIndex [
+	"Add a layer to a specific index. Littles indexes are displayed before highest indexes"
+
 	| event |
 	(self layers includes: aLayer) ifTrue: [ ^ self ].
 	self configureLayer: aLayer.
-	self layers add: aLayer.
-	self isAttachedToSceneGraph ifTrue:[ aLayer addedToSceneGraph ].
+
+	(anIndex isNil or:[ (anIndex < 0 or:[ anIndex > self layers size ]) ])
+		ifTrue: [ self layers add: aLayer ]
+		ifFalse: [ self layers add: aLayer afterIndex: anIndex ].
+
+	self isAttachedToSceneGraph ifTrue: [ aLayer addedToSceneGraph ].
 
 	"Send layer added event"
 	event := GeoViewLayerAddedEvent new.
 	event layerName: aLayer name.
 	self dispatchEvent: event
+]
+
+{ #category : #'API -- layers management' }
+GeoViewAbstractElement >> addLayer: aLayer beforeIndex: anIndex [
+	"Add a layer to a specific index. Littles indexes are displayed before highest indexes"
+
+	self addLayer: aLayer afterIndex: (anIndex - 1)
 ]
 
 { #category : #'API -- layers management' }
 GeoViewAbstractElement >> addLayerAtFirst: aLayer [
 
-	| event |
-	self flag:'labordep: need to be factorized'.
-	(self layers includes: aLayer) ifTrue: [ ^ self ].
-	self configureLayer: aLayer.
-	self layers addFirst: aLayer.
-	self isAttachedToSceneGraph ifTrue:[ aLayer addedToSceneGraph ].
-
-	"Send layer added event"
-	event := GeoViewLayerAddedEvent new.
-	event layerName: aLayer name.
-	self dispatchEvent: event
+	self addLayer: aLayer afterIndex: 0
 ]
 
 { #category : #'API -- layers management' }
 GeoViewAbstractElement >> addLayerAtLast: aLayer [
 
-	| event |
-	self flag:'labordep: need to be factorized'.
-	(self layers includes: aLayer) ifTrue: [ ^ self ].
-	self configureLayer: aLayer.
-	self layers addLast: aLayer.
-	self isAttachedToSceneGraph ifTrue:[ aLayer addedToSceneGraph ].
-
-	"Send layer added event"
-	event := GeoViewLayerAddedEvent new.
-	event layerName: aLayer name.
-	self dispatchEvent: event
+	self addLayer: aLayer
 ]
 
 { #category : #'API -- objects management' }
