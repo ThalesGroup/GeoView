@@ -6,7 +6,7 @@
 
 # GeoView
 
-![image](https://github.com/user-attachments/assets/81bdfd1b-23ce-46d4-bbf1-670f5142cfc8)
+![ExamplesOverview](https://github.com/user-attachments/assets/ab80da20-bc8a-43b9-a7da-af6114f6da7a)
 
 GeoView is a library for displaying and interacting with geographical objects and cartographic layers in a user interface.
 
@@ -67,6 +67,8 @@ This approach gives developers fine-grained control over how geographical conten
   Seamlessly plug into the Molecule component framework if desired.
 
 ## 📦 Status
+
+![image](https://github.com/user-attachments/assets/81bdfd1b-23ce-46d4-bbf1-670f5142cfc8)
 
 GeoView is in active development but already powers many UI applications and prototypes involving geospatial data.
 
