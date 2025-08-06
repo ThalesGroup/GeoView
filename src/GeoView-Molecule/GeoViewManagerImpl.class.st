@@ -4,8 +4,8 @@ I am the generic GeoviewManager implementation.
 Class {
 	#name : #GeoViewManagerImpl,
 	#superclass : #MolAbstractComponentImpl,
-	#traits : 'GeoViewManager + GeoViewManagerObjectsServices + GeoViewManagerParameters + GeoViewManagerServices + GeoViewManagerPickingServices + SmockSelectionManagerEvents + SmockSymbologyManagerEvents',
-	#classTraits : 'GeoViewManager classTrait + GeoViewManagerObjectsServices classTrait + GeoViewManagerParameters classTrait + GeoViewManagerServices classTrait + GeoViewManagerPickingServices classTrait + SmockSelectionManagerEvents classTrait + SmockSymbologyManagerEvents classTrait',
+	#traits : 'GeoViewManager + SmockSymbologyManagerEvents + SmockSelectionManagerEvents + GeoViewManagerObjectsServices + GeoViewManagerPickingServices + GeoViewManagerServices + GeoViewManagerParameters',
+	#classTraits : 'GeoViewManager classTrait + SmockSymbologyManagerEvents classTrait + SmockSelectionManagerEvents classTrait + GeoViewManagerObjectsServices classTrait + GeoViewManagerPickingServices classTrait + GeoViewManagerServices classTrait + GeoViewManagerParameters classTrait',
 	#instVars : [
 		'view'
 	],
