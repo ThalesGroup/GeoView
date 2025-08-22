@@ -67,12 +67,13 @@ GeoViewAbstractElement >> addLayer: aLayer afterIndex: anIndex [
 		ifTrue: [ self layers add: aLayer ]
 		ifFalse: [ self layers add: aLayer afterIndex: anIndex ].
 
-	self isAttachedToSceneGraph ifTrue: [ aLayer addedToSceneGraph ].
+	self isAttachedToSceneGraph ifTrue: [ aLayer addedToSceneGraph ].	
 
 	"Send layer added event"
 	event := GeoViewLayerAddedEvent new.
 	event layerName: aLayer name.
-	self dispatchEvent: event
+	self dispatchEvent: event.
+	
 ]
 
 { #category : #'API -- layers management' }
@@ -143,7 +144,9 @@ GeoViewAbstractElement >> configureLayer: aLayer [
 	aLayer haveGraphicModel ifFalse:[ ^ self ].	
 	"Setup the display filter"
 	aLayer displayFilter: self displayFilter.
+	"Setup sort mecanism and check if the layer need to be sorted"
 	aLayer announcer when: GeoViewGraphicModelLayerSortRequest send: #layerNeedToBeSorted: to: self.
+	aLayer isNeedToSortDatas ifTrue:[ aLayer sendSortRequest ].
 
 	aLayer haveDomainObjects ifFalse:[ ^ self ].
 	aLayer displayModel indexAccessor: self objectIndexAccessor.

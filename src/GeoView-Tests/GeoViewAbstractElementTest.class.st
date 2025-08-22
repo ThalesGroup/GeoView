@@ -28,16 +28,18 @@ GeoViewAbstractElementTest >> setUp [
 	| container aSpace |
 	super setUp.
 	self createGeoViewElement.
-	geoView constraintsDo: [ :c | c horizontal matchParent. c vertical matchParent ].
+	geoView constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical matchParent ].
 	container := BlElement new.
-	container size: self geoViewSize.
+	container extent: self geoViewSize.
 	container addChild: geoView.
-	
+
 	aSpace := BlSpace new.
 	aSpace host: BlHeadlessHost new.
 	aSpace root addChild: container.
 	container forceLayout.
-	aSpace pulse.
+	aSpace pulse
 ]
 
 { #category : #running }

@@ -62,19 +62,23 @@ GeoViewAeElementTest >> setUp [
 	| container space |
 	super setUp.
 	self createGeoViewElement.
-	geoView constraintsDo: [ :c | c horizontal matchParent. c vertical matchParent ].
+	geoView constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical matchParent ].
 	container := BlElement new.
-	container size: self geoViewSize.
+	container extent: self geoViewSize.
 	container addChild: geoView.
-	
+
 	space := BlSpace new.
 	space host: BlHeadlessHost new.
 	space root addChild: container.
 	container forceLayout.
 
 	"simulation a rendering thread"
-	spacePulseTask := self createTask: [ space pulse ] delay: 16.67 milliSeconds. 
-	spacePulseTask start.
+	spacePulseTask := self
+		                  createTask: [ space pulse ]
+		                  delay: 16.67 milliSeconds.
+	spacePulseTask start
 ]
 
 { #category : #private }
@@ -231,4 +235,23 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 	self assert: (layer displayModel getDatas size) equals: (list size).
 	self assert: (layer graphicModel getDatas size) equals: (list size).
 	self assert: layer dShapesWaitingToBeUpdated size equals: 0.
+]
+
+{ #category : #tests }
+GeoViewAeElementTest >> testLayerNeedToBeSorted [
+	"Test when a added layer that need to be sorted is sorted"
+
+	| layer |
+	layer := GeoViewDShapesLayer new name: #test.
+	layer needToSortDatas.
+	
+	geoView addLayer: layer.
+	0.2 seconds wait.
+	
+	self deny: layer isNeedToSortDatas.
+	
+	layer needToSortDatas.
+	0.2 seconds wait.
+	
+	self deny: layer isNeedToSortDatas.
 ]
