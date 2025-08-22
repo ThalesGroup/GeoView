@@ -83,7 +83,7 @@ GeoViewAbstractElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
 	self assert: abs longitudeInDegrees < 0.
 
 	"at the bottom right"
-	abs := geoView absoluteCoordinatesFromGlobalPoint: geoView size.
+	abs := geoView absoluteCoordinatesFromGlobalPoint: geoView extent.
 	self assert: abs latitudeInDegrees < 0.
 	self assert: abs longitudeInDegrees > 0
 ]
