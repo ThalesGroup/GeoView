@@ -53,15 +53,19 @@ GeoViewAbstractElementTest >> tearDown [
 GeoViewAbstractElementTest >> testAbsoluteCoordinatesFromGlobalPoint [
 
 	| abs center |
-	center := geoView size / 2.
+	center := geoView extent / 2.
 	abs := geoView absoluteCoordinatesFromGlobalPoint: center.
 	self assert: abs latitudeInDegrees equals: 0.
 	self assert: abs longitudeInDegrees equals: 0.
-	
+
 	geoView geoCenter: AbsoluteCoordinates frBrest.
 	abs := geoView absoluteCoordinatesFromGlobalPoint: center.
-	self assert: abs latitudeInDegrees rounded equals: AbsoluteCoordinates frBrest latitudeInDegrees rounded.
-	self assert: abs longitudeInDegrees rounded equals: AbsoluteCoordinates frBrest longitudeInDegrees rounded.
+	self
+		assert: abs latitudeInDegrees rounded
+		equals: AbsoluteCoordinates frBrest latitudeInDegrees rounded.
+	self
+		assert: abs longitudeInDegrees rounded
+		equals: AbsoluteCoordinates frBrest longitudeInDegrees rounded
 ]
 
 { #category : #tests }
@@ -69,19 +73,19 @@ GeoViewAbstractElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
 
 	| abs |
 	"Center should be zero"
-	abs := geoView absoluteCoordinatesFromGlobalPoint: (geoView size / 2).
+	abs := geoView absoluteCoordinatesFromGlobalPoint: geoView extent / 2.
 	self assert: abs latitudeInDegrees equals: 0.
 	self assert: abs longitudeInDegrees equals: 0.
-	
+
 	"at the top left corner"
-	abs := geoView absoluteCoordinatesFromGlobalPoint: 0@0.
+	abs := geoView absoluteCoordinatesFromGlobalPoint: 0 @ 0.
 	self assert: abs latitudeInDegrees > 0.
 	self assert: abs longitudeInDegrees < 0.
-	
+
 	"at the bottom right"
-	abs := geoView absoluteCoordinatesFromGlobalPoint: (geoView size).
+	abs := geoView absoluteCoordinatesFromGlobalPoint: geoView size.
 	self assert: abs latitudeInDegrees < 0.
-	self assert: abs longitudeInDegrees > 0.
+	self assert: abs longitudeInDegrees > 0
 ]
 
 { #category : #tests }
@@ -180,12 +184,18 @@ GeoViewAbstractElementTest >> testGetLayers [
 { #category : #tests }
 GeoViewAbstractElementTest >> testInitialize [
 
-	self assert: geoView size equals: 100@100.
-	self assert: geoView mapProjection class equals: GeoViewMercatorProjection.
-	self assert: geoView displayToGraphicProjection class equals: GeoView2DProjection.
+	self assert: geoView extent equals: 100 @ 100.
+	self
+		assert: geoView mapProjection class
+		equals: GeoViewMercatorProjection.
+	self
+		assert: geoView displayToGraphicProjection class
+		equals: GeoView2DProjection.
 	self assert: geoView geoCenter equals: AbsoluteCoordinates zero.
-	self assert: geoView displayToGraphicProjection cartesianCenter equals: CartesianCoordinates zero.
-	self assert: geoView viewInfos class equals: GeoViewInfos.
+	self
+		assert: geoView displayToGraphicProjection cartesianCenter
+		equals: CartesianCoordinates zero.
+	self assert: geoView viewInfos class equals: GeoViewInfos
 ]
 
 { #category : #tests }
