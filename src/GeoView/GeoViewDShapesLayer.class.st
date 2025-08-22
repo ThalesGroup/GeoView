@@ -47,8 +47,10 @@ GeoViewDShapesLayer >> haveDShapeKey: aKey [
 
 	| includes |
 	aKey ifNil: [ ^ false ].
+	
 	self displayModelMutex critical: [
 		includes := self userModel includesKey: aKey ].
+	
 	^ includes
 ]
 
@@ -95,6 +97,8 @@ GeoViewDShapesLayer >> populatePickingResult: aPickingResult at: index with: aGS
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> removeDShape: aDShape [
 
+	aDShape ifNil: [ ^ self ].
+	
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifTrue: [
 			self userModel removeKey: aDShape key ].
@@ -122,6 +126,8 @@ GeoViewDShapesLayer >> removeDShapes: aDShapeList [
 
 { #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> updateDShape: aDShape [
+
+	aDShape ifNil: [ ^ self ].
 
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifTrue: [
@@ -164,7 +170,9 @@ GeoViewDShapesLayer >> updateModel: aContext [
 		].
 	].
 
-	self graphicModelMutex critical:[	
+	dShapes ifEmpty: [ ^ self ].
+
+	self graphicModelMutex critical:[
 		super updateGraphicModelWithDShapes: dShapes 
 	]
 ]

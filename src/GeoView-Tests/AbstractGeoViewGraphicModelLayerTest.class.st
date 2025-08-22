@@ -46,8 +46,9 @@ AbstractGeoViewGraphicModelLayerTest >> testInitializeGraphicModel [
 	self assert: (layer graphicModel getProcessDataForClass: SmockDText) class equals: DTextGeoViewProcessData.
 	self assert: (layer graphicModel getProcessDataForClass: SmockDPolygon) class equals: DPolygonGeoViewProcessData.
 	self assert: (layer graphicModel getProcessDataForClass: SmockDPolyline) class equals: DPolylineGeoViewProcessData.
-	self assert: (layer graphicModel getProcessDataForClass: SmockDSegment) class equals: DSegmentGeoViewProcessData.
+	self assert: (layer graphicModel getProcessDataForClass: SmockDRectangle) class equals: DRectangleGeoViewProcessData.
 	self assert: (layer graphicModel getProcessDataForClass: SmockDSector) class equals: DSectorGeoViewProcessData.
+	self assert: (layer graphicModel getProcessDataForClass: SmockDSegment) class equals: DSegmentGeoViewProcessData.
 	
 	"Test model initialization"
 	self assert: (layer graphicModel projection isKindOf: GeoView2DProjection).
@@ -108,12 +109,35 @@ AbstractGeoViewGraphicModelLayerTest >> testIsMaximumDisplayedObjectsReach [
 ]
 
 { #category : #tests }
+AbstractGeoViewGraphicModelLayerTest >> testIsNeedToSortDatas [
+
+	self deny: layer isNeedToSortDatas.
+	
+	layer isNeedToSortDatas: true.
+	self assert: layer isNeedToSortDatas.
+]
+
+{ #category : #tests }
 AbstractGeoViewGraphicModelLayerTest >> testMaximumDisplayedObjects [
 
 	self assert: layer maximumDisplayedObjects isNil.
 	
 	layer maximumDisplayedObjects: 500.
 	self assert: layer maximumDisplayedObjects equals: 500.
+]
+
+{ #category : #tests }
+AbstractGeoViewGraphicModelLayerTest >> testNeedToSortDatas [
+
+	"test locally"
+	layer needToSortDatas.
+	self assert: layer isNeedToSortDatas.
+	
+	layer needToSortDatas.
+	self assert: layer isNeedToSortDatas. "already true"
+	
+	layer sortDatas. "call from the manager"
+	self deny: layer isNeedToSortDatas. "now false"
 ]
 
 { #category : #tests }
@@ -131,4 +155,11 @@ AbstractGeoViewGraphicModelLayerTest >> testReachMaximumDisplayedObjects [
 	layer removeDShapes: objects.
 	layer sortDatas.
 	self deny: layer isMaximumDisplayedObjectsReach.
+]
+
+{ #category : #tests }
+AbstractGeoViewGraphicModelLayerTest >> testSortDatas [
+	
+	layer sortDatas. "call from the manager"
+	self deny: layer isNeedToSortDatas.
 ]

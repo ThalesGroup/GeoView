@@ -808,7 +808,7 @@ GeoViewExamples class >> exampleTissotIndicatorUTM [
 	
 ]
 
-{ #category : #examples }
+{ #category : #'examples - dshapeslayer' }
 GeoViewExamples class >> exampleWithDShapesLayer [
 	
 	| element layer circle1 circle2 segment1 segment2 |
@@ -831,6 +831,55 @@ GeoViewExamples class >> exampleWithDShapesLayer [
 	"Device segment"
 	segment2 := (SmockDSegment key: #segment2) coordinates: 150@150; coordinates2: 250@250; strokeColor: Color yellow; strokeWidth: 2; setDrawModeDevice.
 	layer addDShape: segment2.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - dshapeslayer' }
+GeoViewExamples class >> exampleWithDShapesLayerWithDeviceRectanglesResizedOnSizeChanged [
+	"In this test, use of a DShapes layer to display rectangles in device coordinates. These rectangle are resize when the window size change."
+	
+	| element layer rectangle1 rectangle2 rectangle3 |
+	element := GeoViewAeElement new.
+	layer := GeoViewDShapesLayer new name: #shapes. 
+	element addLayer: layer.
+	
+	rectangle1 := (SmockDRectangle key: #rectangle1) setDrawModeDevice; coordinates: 10@10; length1: 100; length2: 100; strokeColor: Color yellow; strokeWidth: 4.
+	layer addDShape: rectangle1.
+	
+	rectangle2 := (SmockDRectangle key: #rectangle2) setDrawModeDevice; coordinates: 20@20; length1: 100; length2: 100; strokeColor: Color yellow; strokeWidth: 4.
+	layer addDShape: rectangle2.
+
+	element 
+		addEventHandlerOn: BlElementExtentChangedEvent
+		do: [ :evt | | extent | "update rectangles size"
+			extent := evt target extent. 
+			
+			rectangle1 length1: (extent x - 20); length2: (extent y - 20).
+			rectangle2 length1: (extent x - 40); length2: (extent y - 40).
+			
+			layer updateDShapes: { rectangle1 . rectangle2 }.
+		].
+
+	"create a user rectangle : not affected by size changed"
+	rectangle3 := (SmockDRectangle key: #rectangle3) coordinates: (element mapProjection projLatLonToCart: AbsoluteCoordinates zero); length1: 1000000; length2: 1000000; strokeColor: Color green; strokeWidth: 2.
+	layer addDShape: rectangle3.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - dshapeslayer' }
+GeoViewExamples class >> exampleWithDShapesLayerWithDeviceRectanglesResizedOnSizeChanged2 [
+	"Same example that exampleWithDShapesLayerWithDeviceRectanglesResizedOnSizeChanged but with a custom DShape layer"
+	
+	| element layer rectangle3 |
+	element := GeoViewAeElement new.
+	layer := GeoViewDShapesExampleRectangleLayer new name: #shapes. 
+	element addLayer: layer.
+
+	"create a user rectangle : not affected by size changed"
+	rectangle3 := (SmockDRectangle key: #rectangle3) coordinates: (element mapProjection projLatLonToCart: AbsoluteCoordinates zero); length1: 1000000; length2: 1000000; strokeColor: Color green; strokeWidth: 2.
+	layer addDShape: rectangle3.
 
 	^ self openViewInWindow: element
 ]

@@ -31,7 +31,7 @@ DEllipseGeoViewProcessData >> processUpdatedData: aKey incoming: aDEllipse with:
 
 	aGEllipse2D radius1: radius1.
 	aGEllipse2D radius2: radius2.
-	aGEllipse2D orientationInDegrees: orientation. 
+	aGEllipse2D rotationInDegrees: orientation. 
 	
 	^ aGEllipse2D 
 ]
