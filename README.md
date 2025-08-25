@@ -13,7 +13,7 @@ GeoView is a library for displaying and interacting with geographical objects an
 GeoView’s architecture is designed to support multiple graphics backends. Currently, the default and only supported backend is Bloc, using the Alexandrie library.
 Thanks to its integration with Bloc, GeoView also works within Toplo UI views.
 
-<img src="/resources/award.jpg" width="200">
+<a href="https://esug.org/2025-Conference/awardsSubmissions.html"><img src="/resources/award.jpg" width="200"></a>
 
 ## 🔧 Key Architectural Features
 
