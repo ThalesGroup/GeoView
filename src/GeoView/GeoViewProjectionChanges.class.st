@@ -57,12 +57,20 @@ GeoViewProjectionChanges >> isProjectionChanges [
 { #category : #accessing }
 GeoViewProjectionChanges >> isResolutionChanged [
 
+	self 
+		deprecated:'This is a scale changed' 
+		transformWith: '`@receiver isResolutionChanged' -> '`@receiver isScaleChanged'.
+		
 	^ isResolutionChanged ifNil: [ isResolutionChanged := false ]
 ]
 
 { #category : #accessing }
 GeoViewProjectionChanges >> isResolutionChanged: anObject [
 
+	self 
+		deprecated:'This is a scale changed' 
+		transformWith: '`@receiver isResolutionChanged: `@anObject' -> '`@receiver isScaleChanged: `@anObject'.
+		
 	isResolutionChanged := anObject
 ]
 

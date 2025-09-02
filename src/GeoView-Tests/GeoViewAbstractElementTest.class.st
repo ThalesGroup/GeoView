@@ -205,9 +205,44 @@ GeoViewAbstractElementTest >> testInteractionsStrategy [
 ]
 
 { #category : #tests }
+GeoViewAbstractElementTest >> testMaxScale [
+
+	self assert: geoView maxScale equals: 100000000.
+	
+	geoView maxScale: 10000000.
+	self assert: geoView maxScale equals: 10000000.
+]
+
+{ #category : #tests }
+GeoViewAbstractElementTest >> testMinScale [
+
+	self assert: geoView minScale equals: 100.
+	
+	geoView minScale: 500.
+	self assert: geoView minScale equals: 500.
+]
+
+{ #category : #tests }
 GeoViewAbstractElementTest >> testNewInteractionsStrategy [
 
 	self assert: geoView newInteractionsStrategy class equals: GeoViewInteractionsStrategy.
+]
+
+{ #category : #tests }
+GeoViewAbstractElementTest >> testNormalizeScale [
+
+	"Min"
+	self assert: (geoView normalizeScale: geoView minScale) equals: (geoView minScale).
+	self assert: (geoView normalizeScale: 100) equals: 100.
+	self assert: (geoView normalizeScale: 1) equals: 100.
+	
+	"Max"
+	self assert: (geoView normalizeScale: geoView maxScale) equals: (geoView maxScale).
+	self assert: (geoView normalizeScale: 100000000) equals: 100000000.
+	self assert: (geoView normalizeScale: 1000000000) equals: 100000000.
+	
+	"Middle"
+	self assert: (geoView normalizeScale: 10000) equals: 10000.
 ]
 
 { #category : #tests }
@@ -314,6 +349,38 @@ GeoViewAbstractElementTest >> testRemoveLayer [
 
 	self assert: geoView getLayers size equals: 0.
 	self assert: (geoView getLayer: #test) isNil
+]
+
+{ #category : #tests }
+GeoViewAbstractElementTest >> testScale [
+
+	self assert: geoView scale equals: geoView defaultScale.
+	
+	geoView scale: 100000.
+	self assert: geoView scale equals: 100000
+]
+
+{ #category : #tests }
+GeoViewAbstractElementTest >> testScaleDown [
+	
+	geoView scaleDown.
+	self assert: geoView scale equals: (geoView defaultScale * geoView scaleFactor).
+]
+
+{ #category : #tests }
+GeoViewAbstractElementTest >> testScaleFactor [
+
+	self assert: geoView scaleFactor equals: 1.5.
+	
+	geoView scaleFactor: 2.
+	self assert: geoView scaleFactor equals: 2
+]
+
+{ #category : #tests }
+GeoViewAbstractElementTest >> testScaleUp [
+	
+	geoView scaleUp.
+	self assert: geoView scale equals: (geoView defaultScale / geoView scaleFactor).
 ]
 
 { #category : #tests }

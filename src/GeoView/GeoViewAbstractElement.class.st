@@ -7,16 +7,16 @@ Class {
 	#instVars : [
 		'geoCenter',
 		'scaleFactor',
-		'maxScaleInMeters',
-		'minScaleInMeters',
-		'scaleInMeters',
 		'objectIndexAccessor',
 		'layers',
 		'displayToGraphicProjection',
 		'mapProjection',
 		'viewInfos',
 		'interactionsStrategy',
-		'displayFilter'
+		'displayFilter',
+		'scale',
+		'maxScale',
+		'minScale'
 	],
 	#category : #'GeoView-Core'
 }
@@ -174,6 +174,13 @@ GeoViewAbstractElement >> createPickingResultAt: aGlobalPoint [
 	^ pickingResult
 ]
 
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> defaultScale [
+	"Default scale is 1:10 000 000"
+
+	^ 10000000
+]
+
 { #category : #'API -- filters' }
 GeoViewAbstractElement >> displayFilter [
 
@@ -199,8 +206,8 @@ GeoViewAbstractElement >> displayToGraphicProjection: aGeoView2DProjection [
 
 	displayToGraphicProjection := aGeoView2DProjection.
 	displayToGraphicProjection ifNil: [ ^ self ].
-	
-	"change projection to layers"
+
+	"inject the projection to all layers"
 	self layers do:[ :l | l graphicProjection: displayToGraphicProjection ].
 	
 	self updateDisplayToGraphicProjection
@@ -213,19 +220,10 @@ GeoViewAbstractElement >> doPicking: aPickingResult [
 	self getLayers do: [ :l | l isVisible ifTrue: [ l populatePickingResult: aPickingResult ] ]
 ]
 
-{ #category : #private }
-GeoViewAbstractElement >> evaluateScale: aNumberInMeters [
-
-	aNumberInMeters < self minScaleInMeters ifTrue: [ ^ self minScaleInMeters ].
-	aNumberInMeters > self maxScaleInMeters ifTrue: [ ^ self maxScaleInMeters ].
-	^ aNumberInMeters 
-]
-
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> geoCenter [
 
-	geoCenter ifNil: [ geoCenter := AbsoluteCoordinates zero ].
-	^ geoCenter
+	^ geoCenter ifNil: [ geoCenter := AbsoluteCoordinates zero ]
 ]
 
 { #category : #'API -- scale and center' }
@@ -297,11 +295,18 @@ GeoViewAbstractElement >> haveObjectIndex: anIndex [
 GeoViewAbstractElement >> initialize [
 
 	super initialize.
-
+	
+	"Initialize default projection systems"
 	self mapProjection: GeoViewMercatorProjection new.
 	self displayToGraphicProjection: GeoView2DProjection new.
+	self scale: self defaultScale.
+	
+	"Initialize events handlers"
+	self initializeEventHandlers.
+	
+	"Bloc customization"
 	self background: Color black.
-	self initializeEventHandlers
+	
 ]
 
 { #category : #initialization }
@@ -408,33 +413,83 @@ GeoViewAbstractElement >> mapProjection: aMapProjection [
 ]
 
 { #category : #'API -- scale and center' }
-GeoViewAbstractElement >> maxScaleInMeters [
+GeoViewAbstractElement >> maxScale [
+	"Default maximum scale is 1:100 000 000"
 
-	^ maxScaleInMeters ifNil: [ maxScaleInMeters := 1.5171584e7 ]
+	^ maxScale ifNil: [ maxScale := 100000000 ]
 ]
 
 { #category : #'API -- scale and center' }
-GeoViewAbstractElement >> maxScaleInMeters: anObject [
+GeoViewAbstractElement >> maxScale: aNumber [
 
-	maxScaleInMeters := anObject
+	maxScale := aNumber
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> maxScaleInMeters [
+
+	self 
+		deprecated:'Use generic message' 
+		transformWith: '`@receiver maxScaleInMeters' -> '`@receiver maxScale'.
+
+	^ self maxScale
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> maxScaleInMeters: aNumber [
+
+	self 
+		deprecated:'Use generic message' 
+		transformWith: '`@receiver maxScaleInMeters: `@aNumber' -> '`@receiver maxScale: `@aNumber'.
+
+	self maxScale: aNumber
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> minScale [
+	"Default minimum scale is 1:100"
+
+	^ minScale ifNil: [ minScale := 100 ]
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> minScale: aNumber [
+
+	minScale := aNumber
 ]
 
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> minScaleInMeters [
+	
+	self 
+		deprecated:'Use generic message' 
+		transformWith: '`@receiver minScaleInMeters' -> '`@receiver minScale'.
 
-	^ minScaleInMeters ifNil: [ minScaleInMeters := 1852.0 ]
+	^ self minScale
 ]
 
 { #category : #'API -- scale and center' }
-GeoViewAbstractElement >> minScaleInMeters: anObject [
+GeoViewAbstractElement >> minScaleInMeters: aNumber [
 
-	minScaleInMeters := anObject
+	self 
+		deprecated:'Use generic message' 
+		transformWith: '`@receiver minScaleInMeters: `@aNumber' -> '`@receiver minScale: `@aNumber'.
+
+	self minScale: aNumber
 ]
 
 { #category : #'strategy management' }
 GeoViewAbstractElement >> newInteractionsStrategy [
 
 	^ GeoViewInteractionsStrategy new
+]
+
+{ #category : #private }
+GeoViewAbstractElement >> normalizeScale: aNumberInMeters [
+
+	aNumberInMeters < self minScale ifTrue: [ ^ self minScale ].
+	aNumberInMeters > self maxScale ifTrue: [ ^ self maxScale ].
+	^ aNumberInMeters
 ]
 
 { #category : #'API -- objects management' }
@@ -567,15 +622,41 @@ GeoViewAbstractElement >> requestRepaint [
 ]
 
 { #category : #'API -- scale and center' }
+GeoViewAbstractElement >> scale [
+
+	^ scale
+]
+
+{ #category : #'API -- scale and center' }
+GeoViewAbstractElement >> scale: aNumber [
+
+	| newScale geoViewEvent |
+	newScale := self normalizeScale: aNumber.
+	
+	scale = newScale ifTrue:[ ^ self ].
+	scale := newScale.
+	
+	self updateDisplayToGraphicProjection.
+	
+	"Send scale event"
+	geoViewEvent := GeoViewScaleChangedEvent new.
+	geoViewEvent scale: self scale.
+	self dispatchEvent: geoViewEvent.
+]
+
+{ #category : #'API -- scale and center' }
 GeoViewAbstractElement >> scaleDown [
 
-	self scaleInMeters: self scaleInMeters * self scaleFactor
+	self scale: (self scale * self scaleFactor)
 ]
 
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> scaleFactor [
+	"The scale factor is the multiplicator / diviser for default zoom up/down"
 
-	^ scaleFactor ifNil: [ scaleFactor := 2 ]
+	(scaleFactor = 0 or: [ scaleFactor isNil ]) ifTrue: [
+		scaleFactor := 1.5 ].
+	^ scaleFactor
 ]
 
 { #category : #'API -- scale and center' }
@@ -587,30 +668,27 @@ GeoViewAbstractElement >> scaleFactor: aNumber [
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> scaleInMeters [
 
-	^ scaleInMeters ifNil: [ scaleInMeters := 1.4816e7 ]
+	self 
+		deprecated:'Use generic message' 
+		transformWith: '`@receiver scaleInMeters' -> '`@receiver scale'.
+
+	^ self scale
 ]
 
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> scaleInMeters: aNumber [
 
-	| scale geoViewEvent |
-	scale := self evaluateScale: aNumber.
-	scaleInMeters := scale.
-	
-	self displayToGraphicProjection altitudeInMeters: self scaleInMeters.
-	self displayToGraphicProjection updateResolution: self extent.
-	self updateModel: ((GeoViewProjectionChanges new) isScaleChanged: true; isResolutionChanged: true; yourself).
-	
-	"Send scale event"
-	geoViewEvent := GeoViewScaleChangedEvent new.
-	geoViewEvent scaleInMeters: self scaleInMeters.
-	self dispatchEvent: geoViewEvent.
+	self 
+		deprecated:'Use generic message' 
+		transformWith: '`@receiver scaleInMeters: `@aNumber' -> '`@receiver scale: `@aNumber'.
+		
+	self scale: aNumber
 ]
 
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> scaleUp [
 
-	self scaleInMeters: self scaleInMeters / self scaleFactor
+	self scale: (self scale / self scaleFactor)
 ]
 
 { #category : #'API -- selection' }
@@ -644,19 +722,28 @@ GeoViewAbstractElement >> unconfigureLayer: aLayer [
 { #category : #private }
 GeoViewAbstractElement >> updateDisplayToGraphicProjection [
 
-	| extent offset |
+	| extent offset changes |
+	"cannot update when scale is not defined, initialize it before"
+	self scale ifNil:[ ^ self ].
 	extent := self viewInfos extent.
+	extent = (0@0) ifTrue:[ ^ self ]. 
 	offset := extent / 2.
 
 	(self displayToGraphicProjection offsetInPixels ~= offset or: [
 		 (self displayToGraphicProjection haveResolution: extent) not ])
 		ifFalse: [ ^ self ].
-		
+	
+	changes := GeoViewProjectionChanges new isExtentChanged: true.
 	self displayToGraphicProjection offsetInPixels: offset.
-	self displayToGraphicProjection updateResolution: extent.
-	self updateModel: (GeoViewProjectionChanges new
-			 isExtentChanged: true;
-			 isResolutionChanged: true)
+	
+	"Check if need to update the scale of the graphic projection when scale are differents"
+	self scale ~= self displayToGraphicProjection scale ifTrue:[
+		self displayToGraphicProjection scale: self scale.
+		self displayToGraphicProjection updateResolution: extent.	
+		changes isScaleChanged: true.
+	].
+	
+	self updateModel: changes
 ]
 
 { #category : #private }

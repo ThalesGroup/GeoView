@@ -172,6 +172,12 @@ GeoViewManagerImpl >> getGlobalPointFromLocalPoint: aLocalPoint [
 	^ self getView globalPointFromLocalPoint: aLocalPoint 
 ]
 
+{ #category : #'parameters - interactions' }
+GeoViewManagerImpl >> getInteractionsStrategy [
+
+	^ self getView interactionsStrategy 
+]
+
 { #category : #'services - layer' }
 GeoViewManagerImpl >> getLayer: aKey [
 
@@ -209,6 +215,12 @@ GeoViewManagerImpl >> getObjectIndexAccessor [
 ]
 
 { #category : #services }
+GeoViewManagerImpl >> getScale [
+
+	^ self view scale
+]
+
+{ #category : #services }
 GeoViewManagerImpl >> getScaleFactor [
 
 	^ self view scaleFactor 
@@ -217,7 +229,11 @@ GeoViewManagerImpl >> getScaleFactor [
 { #category : #services }
 GeoViewManagerImpl >> getScaleInMeters [
 
-	^ self view scaleInMeters 
+	self 
+		deprecated:'Use generic message' 
+		transformWith: '`@receiver getScaleInMeters' -> '`@receiver getScale'.
+
+	^ self getScale
 ]
 
 { #category : #'component accessing' }
@@ -449,6 +465,12 @@ GeoViewManagerImpl >> setGeoCenter: anAbsoluteCoordinates [
 	self view geoCenter: anAbsoluteCoordinates
 ]
 
+{ #category : #'parameters - interactions' }
+GeoViewManagerImpl >> setInteractionsStrategy: aStrategy [
+
+	self getView setInteractionsStrategy: aStrategy 
+]
+
 { #category : #'services - map projection' }
 GeoViewManagerImpl >> setMapProjection: aMapProjection [
 
@@ -462,6 +484,12 @@ GeoViewManagerImpl >> setObjectIndexAccessor: aSymbol [
 ]
 
 { #category : #services }
+GeoViewManagerImpl >> setScale: aNumber [
+
+	self view scale: aNumber 
+]
+
+{ #category : #services }
 GeoViewManagerImpl >> setScaleFactor: aNumber [
 
 	self view scaleFactor: aNumber
@@ -470,7 +498,11 @@ GeoViewManagerImpl >> setScaleFactor: aNumber [
 { #category : #services }
 GeoViewManagerImpl >> setScaleInMeters: aNumber [
 
-	self view scaleInMeters: aNumber
+	self 
+		deprecated:'Use generic message' 
+		transformWith: '`@receiver setScaleInMeters: `@aNumber' -> '`@receiver setScale: `@aNumber'.
+
+	self setScale: aNumber
 ]
 
 { #category : #'parameters - selection manager' }

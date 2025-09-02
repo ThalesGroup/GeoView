@@ -65,11 +65,11 @@ GeoViewManagerServices >> getMapProjection [
 ]
 
 { #category : #services }
-GeoViewManagerServices >> getScaleFactor [
+GeoViewManagerServices >> getScale [
 ]
 
 { #category : #services }
-GeoViewManagerServices >> getScaleInMeters [
+GeoViewManagerServices >> getScaleFactor [
 ]
 
 { #category : #services }
@@ -105,9 +105,9 @@ GeoViewManagerServices >> setMapProjection: aMapProjection [
 ]
 
 { #category : #services }
-GeoViewManagerServices >> setScaleFactor: aNumber [
+GeoViewManagerServices >> setScale: aNumber [
 ]
 
 { #category : #services }
-GeoViewManagerServices >> setScaleInMeters: aNumber [
+GeoViewManagerServices >> setScaleFactor: aNumber [
 ]

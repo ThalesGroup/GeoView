@@ -150,7 +150,7 @@ GeoViewMapTilesLayer >> doLoadingTilesThread [
 
 	| centerGeoPoint level tilesXY tilesXYBuffer findAtLeastOneTile realLevel|
 
-	self previousScale: currentGraphicProjection altitudeInMeters.
+	self previousScale: currentGraphicProjection scale.
 	self surfaceMap offcenter: self mapOffcenter.
 	self surfaceMap scale: 1@1.
 

@@ -9,9 +9,9 @@ Class {
 	#classTraits : 'TGeoViewGraphicProjection classTrait',
 	#instVars : [
 		'cartesianCenter',
-		'altitudeInMeters',
 		'metersByPixel',
-		'offsetInPixels'
+		'offsetInPixels',
+		'scale'
 	],
 	#category : #'GeoView-Core'
 }
@@ -19,14 +19,15 @@ Class {
 { #category : #accessing }
 GeoView2DProjection >> altitudeInMeters [
 
-	^ altitudeInMeters ifNil: [
-		  altitudeInMeters := self defaultAltitudeInMeters ]
+	self deprecated:'use scale'.
+	^ self scale
 ]
 
 { #category : #accessing }
 GeoView2DProjection >> altitudeInMeters: aNumber [
 
-	altitudeInMeters := aNumber
+	self deprecated:'use scale:'.
+	self scale: aNumber
 ]
 
 { #category : #accessing }
@@ -48,10 +49,15 @@ GeoView2DProjection >> cartesianCenter: aCartesianCoordinates [
 	cartesianCenter := aCartesianCoordinates
 ]
 
-{ #category : #initialization }
-GeoView2DProjection >> defaultAltitudeInMeters [
+{ #category : #private }
+GeoView2DProjection >> computeResolution: aNumber [
 
-	^ 1.4816e7
+	| viewHeight mapHeight |
+	viewHeight := aNumber.
+	mapHeight := 2 * self scale.
+	mapHeight = 0 ifTrue: [ mapHeight := 1 ].
+
+	^ (viewHeight / mapHeight) asPoint
 ]
 
 { #category : #accessing }
@@ -60,15 +66,15 @@ GeoView2DProjection >> extentInPixels [
 	^ self offsetInPixels * 2
 ]
 
-{ #category : #accessing }
+{ #category : #testing }
 GeoView2DProjection >> haveResolution: aViewSize [
+	"Test if the projection have this resolution"
 
-	| viewHeight mapHeight |
-	viewHeight := aViewSize y.
-	mapHeight := 2 * self altitudeInMeters.
-	mapHeight = 0 ifTrue:[ mapHeight := 1 ].
-	
-	^ self metersByPixel = (viewHeight / mapHeight)
+	aViewSize ifNil:[ ^ false ].
+	aViewSize isPoint ifFalse:[ ^ false ].
+	self scale ifNil:[ ^ false ].
+		
+	^ self metersByPixel = (self computeResolution: aViewSize y)
 ]
 
 { #category : #accessing }
@@ -84,9 +90,9 @@ GeoView2DProjection >> metersByPixel [
 ]
 
 { #category : #accessing }
-GeoView2DProjection >> metersByPixel: aNumber [
+GeoView2DProjection >> metersByPixel: aPoint [
 
-	metersByPixel := aNumber
+	metersByPixel := aPoint
 ]
 
 { #category : #accessing }
@@ -119,7 +125,7 @@ GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 { #category : #projection }
 GeoView2DProjection >> projPixelToCart: aPoint [
 
-	| xCartesian yCartesian xOffset yOffset scale |
+	| xCartesian yCartesian xOffset yOffset scale scaleX scaleY |
 	
 	"Calculate the X offset from the center of the view"
     xOffset := aPoint x - self offsetInPixels x.
@@ -129,25 +135,35 @@ GeoView2DProjection >> projPixelToCart: aPoint [
 	
 	 "Calculate the Cartesian coordinates based on the center of the view and the scale"
 	scale := self metersByPixel.
-	scale = 0 ifTrue:[
-		xCartesian := xOffset + self cartesianCenter xInMeters.
-  	 	yCartesian := yOffset + self cartesianCenter yInMeters.
-	] ifFalse:[
-		xCartesian := (xOffset / scale) + self cartesianCenter xInMeters.
-  	 	yCartesian := (yOffset / scale) + self cartesianCenter yInMeters.
-	].
+	scaleX := (scale x = 0 ifTrue:[ 1 ] ifFalse:[ scale x ]).
+	scaleY := (scale y = 0 ifTrue:[ 1 ] ifFalse:[ scale y ]).
+	
+	xCartesian := (xOffset / (scaleX)) + self cartesianCenter xInMeters.
+  	yCartesian := (yOffset / (scaleY)) + self cartesianCenter yInMeters.
 	
 	^ CartesianCoordinates xInMeters: xCartesian yInMeters: yCartesian
 ]
 
 { #category : #accessing }
-GeoView2DProjection >> updateResolution: aPoint [
-	| viewHeight mapHeight |
-	
-	self assert: [aPoint isNotNil] description: ['[GeoView] 2D projection view size cannot be nil.'].
-	viewHeight := aPoint y.
-	mapHeight := 2 * self altitudeInMeters.
-	mapHeight = 0 ifTrue:[ mapHeight := 1 ].
-	
-	self metersByPixel: viewHeight / mapHeight. 
+GeoView2DProjection >> scale [
+
+	^ scale
+]
+
+{ #category : #accessing }
+GeoView2DProjection >> scale: aNumber [
+
+	scale := aNumber
+]
+
+{ #category : #update }
+GeoView2DProjection >> updateResolution: aViewSize [
+
+	| resolution |
+	aViewSize ifNil: [ ^ self ].
+	aViewSize isPoint ifFalse:[ ^ self ].
+	self scale ifNil:[ ^ self ].
+
+	resolution := self computeResolution: aViewSize y.
+	self metersByPixel: resolution
 ]

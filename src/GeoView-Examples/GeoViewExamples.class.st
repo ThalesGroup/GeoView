@@ -510,7 +510,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 	
 	element maxScaleInMeters: element maxScaleInMeters * 8.
-	element scaleInMeters: 150000.
+	element scale: 150000.
 	
 	"add carto layer"
 	element addLayerAtFirst: GeoViewMapTilesLayer new.
