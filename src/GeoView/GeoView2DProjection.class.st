@@ -11,7 +11,8 @@ Class {
 		'cartesianCenter',
 		'metersByPixel',
 		'offsetInPixels',
-		'scale'
+		'scale',
+		'resolution'
 	],
 	#category : #'GeoView-Core'
 }
@@ -66,17 +67,6 @@ GeoView2DProjection >> extentInPixels [
 	^ self offsetInPixels * 2
 ]
 
-{ #category : #testing }
-GeoView2DProjection >> haveResolution: aViewSize [
-	"Test if the projection have this resolution"
-
-	aViewSize ifNil:[ ^ false ].
-	aViewSize isPoint ifFalse:[ ^ false ].
-	self scale ifNil:[ ^ false ].
-		
-	^ self metersByPixel = (self computeResolution: aViewSize y)
-]
-
 { #category : #accessing }
 GeoView2DProjection >> key [
 
@@ -85,20 +75,15 @@ GeoView2DProjection >> key [
 
 { #category : #accessing }
 GeoView2DProjection >> metersByPixel [
+	"By default return x value of the resolution"
 
-	^ metersByPixel ifNil: [ metersByPixel := 0 @ 0 ]
-]
-
-{ #category : #accessing }
-GeoView2DProjection >> metersByPixel: aPoint [
-
-	metersByPixel := aPoint
+	^ self resolution x
 ]
 
 { #category : #accessing }
 GeoView2DProjection >> offsetInPixels [
 
-	^ offsetInPixels ifNil: [ offsetInPixels := 0 @ 0 ]
+	^ offsetInPixels ifNil: [ offsetInPixels := 0 asPoint ]
 ]
 
 { #category : #accessing }
@@ -117,7 +102,7 @@ GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 	point := aCartesianCoordinates asPoint.
 	geoCenter := self cartesianCenter asPoint.
 	pixel := ((point x @ point y negated) - (geoCenter x @ geoCenter y negated))
-		* self metersByPixel
+		* self resolution
 		+ self offsetInPixels.
 	^ pixel
 ]
@@ -125,7 +110,7 @@ GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 { #category : #projection }
 GeoView2DProjection >> projPixelToCart: aPoint [
 
-	| xCartesian yCartesian xOffset yOffset scale scaleX scaleY |
+	| xCartesian yCartesian xOffset yOffset resX resY |
 	
 	"Calculate the X offset from the center of the view"
     xOffset := aPoint x - self offsetInPixels x.
@@ -133,15 +118,26 @@ GeoView2DProjection >> projPixelToCart: aPoint [
 	"Calculate the Y offset from the center of the view, reversing the Y direction"
     yOffset := self offsetInPixels y - aPoint y.
 	
-	 "Calculate the Cartesian coordinates based on the center of the view and the scale"
-	scale := self metersByPixel.
-	scaleX := (scale x = 0 ifTrue:[ 1 ] ifFalse:[ scale x ]).
-	scaleY := (scale y = 0 ifTrue:[ 1 ] ifFalse:[ scale y ]).
+	 "Calculate the Cartesian coordinates based on the center of the view and the resolution"
+	resX := (self resolution x = 0 ifTrue:[ 1 ] ifFalse:[ self resolution x ]).
+	resY := (self resolution y = 0 ifTrue:[ 1 ] ifFalse:[ self resolution y ]).
 	
-	xCartesian := (xOffset / (scaleX)) + self cartesianCenter xInMeters.
-  	yCartesian := (yOffset / (scaleY)) + self cartesianCenter yInMeters.
+	xCartesian := (xOffset / (resX)) + self cartesianCenter xInMeters.
+  	yCartesian := (yOffset / (resY)) + self cartesianCenter yInMeters.
 	
 	^ CartesianCoordinates xInMeters: xCartesian yInMeters: yCartesian
+]
+
+{ #category : #accessing }
+GeoView2DProjection >> resolution [
+
+	^ resolution ifNil: [ resolution := 0 asPoint ]
+]
+
+{ #category : #accessing }
+GeoView2DProjection >> resolution: aPoint [
+
+	resolution := aPoint
 ]
 
 { #category : #accessing }
@@ -159,11 +155,11 @@ GeoView2DProjection >> scale: aNumber [
 { #category : #update }
 GeoView2DProjection >> updateResolution: aViewSize [
 
-	| resolution |
+	| res |
 	aViewSize ifNil: [ ^ self ].
 	aViewSize isPoint ifFalse:[ ^ self ].
 	self scale ifNil:[ ^ self ].
 
-	resolution := self computeResolution: aViewSize y.
-	self metersByPixel: resolution
+	res := self computeResolution: aViewSize y.
+	self resolution: res
 ]

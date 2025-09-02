@@ -729,12 +729,12 @@ GeoViewAbstractElement >> updateDisplayToGraphicProjection [
 	extent = (0@0) ifTrue:[ ^ self ]. 
 	offset := extent / 2.
 
-	(self displayToGraphicProjection offsetInPixels ~= offset or: [
-		 (self displayToGraphicProjection haveResolution: extent) not ])
-		ifFalse: [ ^ self ].
-	
-	changes := GeoViewProjectionChanges new isExtentChanged: true.
-	self displayToGraphicProjection offsetInPixels: offset.
+	changes := GeoViewProjectionChanges new.
+
+	self displayToGraphicProjection offsetInPixels ~= offset ifTrue:[
+		self displayToGraphicProjection offsetInPixels: offset.
+		changes isExtentChanged: true.
+	].
 	
 	"Check if need to update the scale of the graphic projection when scale are differents"
 	self scale ~= self displayToGraphicProjection scale ifTrue:[
@@ -742,7 +742,8 @@ GeoViewAbstractElement >> updateDisplayToGraphicProjection [
 		self displayToGraphicProjection updateResolution: extent.	
 		changes isScaleChanged: true.
 	].
-	
+
+	( changes isExtentChanged or:[ changes isScaleChanged ]) ifFalse:[ ^ self ].	
 	self updateModel: changes
 ]
 
