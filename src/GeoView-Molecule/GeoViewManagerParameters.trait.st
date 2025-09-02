@@ -12,6 +12,10 @@ Trait {
 GeoViewManagerParameters >> getDisplayToGraphicProjection [
 ]
 
+{ #category : #'parameters - interactions' }
+GeoViewManagerParameters >> getInteractionsStrategy [
+]
+
 { #category : #'parameters - objects' }
 GeoViewManagerParameters >> getObjectIndexAccessor [
 ]
@@ -22,6 +26,10 @@ GeoViewManagerParameters >> getViewInfos [
 
 { #category : #'parameters - graphic projection' }
 GeoViewManagerParameters >> setDisplayToGraphicProjection: aGeoView2DProjection [
+]
+
+{ #category : #'parameters - interactions' }
+GeoViewManagerParameters >> setInteractionsStrategy: aStrategy [
 ]
 
 { #category : #'parameters - objects' }

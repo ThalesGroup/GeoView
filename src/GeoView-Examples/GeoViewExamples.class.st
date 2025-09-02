@@ -346,19 +346,18 @@ GeoViewExamples class >> exampleGeoSegmentsProjected [
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleHybrid [
 	"This example show a map layer (assuming an internet connection to default url of google"
-	
+
 	| element layer |
 	element := GeoViewAeElement new.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	
+
+	element maxScaleInMeters: element maxScale * 8.
+
 	"add carto layer"
 	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
 	layer tilesProvider beHybridType.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
-	
 ]
 
 { #category : #'examples - tiles provider' }
@@ -505,29 +504,37 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithSmallTileS
 { #category : #examples }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	"This example show a map layer with update of map center every seconds (during 30s)"
-	
-	| element layer newCenter space circle|
+
+	| element layer newCenter space circle |
 	element := GeoViewUtils createGeoViewForGeoObjects.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	element scaleInMeters: 150000.
-	
+
+	element maxScaleInMeters: element maxScale * 8.
+	element scale: 150000.
+
 	"add carto layer"
 	element addLayerAtFirst: GeoViewMapTilesLayer new.
-	
-	circle := GeoCircle new key: 1; radiusInMeters: 2000; fillStyle: (Color red asSmockStrokeStyle); absoluteCoordinates: AbsoluteCoordinates frBrest.
+
+	circle := GeoCircle new
+		          key: 1;
+		          radiusInMeters: 2000;
+		          fillStyle: Color red asSmockStrokeStyle;
+		          absoluteCoordinates: AbsoluteCoordinates frBrest.
 	element addObject: circle.
 	space := self openViewInWindow: element.
 
 	newCenter := AbsoluteCoordinates frBrest copy.
-	[ (1 to: 30) do:[:i | 1 seconds wait.
-		newCenter := AbsoluteCoordinates latitudeInDegrees: (newCenter latitudeInDegrees + 0.05)  longitudeInDegrees: (newCenter longitudeInDegrees + 0.05).
-		element geoCenter: newCenter.
-		circle absoluteCoordinates:newCenter.
-		element updateObjects: (OrderedCollection with: circle).
-		]
-	] forkAt: Processor userBackgroundPriority 
-	
+	[
+		(1 to: 30) do: [ :i |
+				1 seconds wait.
+				newCenter := AbsoluteCoordinates
+					             latitudeInDegrees:
+					             newCenter latitudeInDegrees + 0.05
+					             longitudeInDegrees:
+					             newCenter longitudeInDegrees + 0.05.
+				element geoCenter: newCenter.
+				circle absoluteCoordinates: newCenter.
+				element updateObjects: (OrderedCollection with: circle) ] ]
+		forkAt: Processor userBackgroundPriority
 ]
 
 { #category : #'examples - data' }

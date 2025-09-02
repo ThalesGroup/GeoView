@@ -12,6 +12,7 @@ Class {
 
 { #category : #running }
 AbstractGeoViewGraphicModelLayerTest >> setUp [
+
 	super setUp.
 
 	layer := AbstractGeoViewGraphicModelLayer new
@@ -144,6 +145,7 @@ AbstractGeoViewGraphicModelLayerTest >> testNeedToSortDatas [
 AbstractGeoViewGraphicModelLayerTest >> testReachMaximumDisplayedObjects [
 
 	| objects |
+	layer graphicProjection: (GeoView2DProjection new resolution: (10 asPoint)).
 	layer maximumDisplayedObjects: 50.
 	
 	objects := (1 to: 100) collect:[ :e | SmockDCircle new key: e; radius: 10; coordinates: 0@0; fillColor: Color red ].

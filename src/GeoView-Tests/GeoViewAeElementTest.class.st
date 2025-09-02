@@ -171,7 +171,7 @@ GeoViewAeElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
 	] delay: 5 milliSeconds) start; yourself.
 
 	"waiting here to simulate user interaction a lot of time"
-	4 seconds wait.
+	2 seconds wait.
 	
 	"stop tasks"
 	updateTask kill.
@@ -183,8 +183,8 @@ GeoViewAeElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
 	uiTask stop.
 	
 	"waiting for last pulses"
-	0.5 seconds wait.
 	spacePulseTask stop.
+	1 seconds wait.
 		
 	"test to compare list model and graphic model"
 	self assert: (layer displayModel getDatas size) equals: 0.
@@ -228,8 +228,8 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 	uiTask stop.
 	
 	"waiting for last pulses"
-	0.5 seconds wait.
 	spacePulseTask stop.
+	1 seconds wait.
 		
 	"test to compare list model and graphic model"
 	self assert: (layer displayModel getDatas size) equals: (list size).

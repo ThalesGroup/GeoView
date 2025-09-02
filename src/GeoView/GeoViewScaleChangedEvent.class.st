@@ -2,21 +2,41 @@ Class {
 	#name : #GeoViewScaleChangedEvent,
 	#superclass : #GeoViewEvent,
 	#instVars : [
-		'scaleInMeters'
+		'scale'
 	],
 	#category : #'GeoView-Events'
 }
 
 { #category : #accessing }
-GeoViewScaleChangedEvent >> scaleInMeters [
+GeoViewScaleChangedEvent >> scale [
 
-	^ scaleInMeters
+	^ scale
 ]
 
 { #category : #accessing }
-GeoViewScaleChangedEvent >> scaleInMeters: anObject [
+GeoViewScaleChangedEvent >> scale: aNumber [
 
-	scaleInMeters := anObject
+	scale := aNumber
+]
+
+{ #category : #accessing }
+GeoViewScaleChangedEvent >> scaleInMeters [
+
+	self 
+		deprecated:'Use generic message' 
+		transformWith: '`@receiver scaleInMeters' -> '`@receiver scale'.
+
+	^ self scale
+]
+
+{ #category : #accessing }
+GeoViewScaleChangedEvent >> scaleInMeters: aNumber [
+
+	self 
+		deprecated:'Use generic message' 
+		transformWith: '`@receiver scaleInMeters: `@aNumber' -> '`@receiver scale: `@aNumber'.
+
+	self scale: aNumber
 ]
 
 { #category : #sending }

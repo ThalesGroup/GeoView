@@ -15,6 +15,5 @@ GeoViewProjectionChangesTest >> testInitialize [
 	self deny: changes isCenterChanged.
 	self deny: changes isExtentChanged.
 	self deny: changes isMapProjectionChange.
-	self deny: changes isResolutionChanged.
 	self deny: changes isScaleChanged.
 ]

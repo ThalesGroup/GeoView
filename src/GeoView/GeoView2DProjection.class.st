@@ -9,9 +9,10 @@ Class {
 	#classTraits : 'TGeoViewGraphicProjection classTrait',
 	#instVars : [
 		'cartesianCenter',
-		'altitudeInMeters',
 		'metersByPixel',
-		'offsetInPixels'
+		'offsetInPixels',
+		'scale',
+		'resolution'
 	],
 	#category : #'GeoView-Core'
 }
@@ -19,14 +20,15 @@ Class {
 { #category : #accessing }
 GeoView2DProjection >> altitudeInMeters [
 
-	^ altitudeInMeters ifNil: [
-		  altitudeInMeters := self defaultAltitudeInMeters ]
+	self deprecated:'use scale'.
+	^ self scale
 ]
 
 { #category : #accessing }
 GeoView2DProjection >> altitudeInMeters: aNumber [
 
-	altitudeInMeters := aNumber
+	self deprecated:'use scale:'.
+	self scale: aNumber
 ]
 
 { #category : #accessing }
@@ -48,27 +50,21 @@ GeoView2DProjection >> cartesianCenter: aCartesianCoordinates [
 	cartesianCenter := aCartesianCoordinates
 ]
 
-{ #category : #initialization }
-GeoView2DProjection >> defaultAltitudeInMeters [
+{ #category : #private }
+GeoView2DProjection >> computeResolution: aNumber [
 
-	^ 1.4816e7
+	| viewHeight mapHeight |
+	viewHeight := aNumber.
+	mapHeight := 2 * self scale.
+	mapHeight = 0 ifTrue: [ mapHeight := 1 ].
+
+	^ (viewHeight / mapHeight) asPoint
 ]
 
 { #category : #accessing }
 GeoView2DProjection >> extentInPixels [
 
 	^ self offsetInPixels * 2
-]
-
-{ #category : #accessing }
-GeoView2DProjection >> haveResolution: aViewSize [
-
-	| viewHeight mapHeight |
-	viewHeight := aViewSize y.
-	mapHeight := 2 * self altitudeInMeters.
-	mapHeight = 0 ifTrue:[ mapHeight := 1 ].
-	
-	^ self metersByPixel = (viewHeight / mapHeight)
 ]
 
 { #category : #accessing }
@@ -79,20 +75,15 @@ GeoView2DProjection >> key [
 
 { #category : #accessing }
 GeoView2DProjection >> metersByPixel [
+	"By default return x value of the resolution"
 
-	^ metersByPixel ifNil: [ metersByPixel := 0 @ 0 ]
-]
-
-{ #category : #accessing }
-GeoView2DProjection >> metersByPixel: aNumber [
-
-	metersByPixel := aNumber
+	^ self resolution x
 ]
 
 { #category : #accessing }
 GeoView2DProjection >> offsetInPixels [
 
-	^ offsetInPixels ifNil: [ offsetInPixels := 0 @ 0 ]
+	^ offsetInPixels ifNil: [ offsetInPixels := 0 asPoint ]
 ]
 
 { #category : #accessing }
@@ -111,7 +102,7 @@ GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 	point := aCartesianCoordinates asPoint.
 	geoCenter := self cartesianCenter asPoint.
 	pixel := ((point x @ point y negated) - (geoCenter x @ geoCenter y negated))
-		* self metersByPixel
+		* self resolution
 		+ self offsetInPixels.
 	^ pixel
 ]
@@ -119,7 +110,7 @@ GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 { #category : #projection }
 GeoView2DProjection >> projPixelToCart: aPoint [
 
-	| xCartesian yCartesian xOffset yOffset scale |
+	| xCartesian yCartesian xOffset yOffset resX resY |
 	
 	"Calculate the X offset from the center of the view"
     xOffset := aPoint x - self offsetInPixels x.
@@ -127,27 +118,48 @@ GeoView2DProjection >> projPixelToCart: aPoint [
 	"Calculate the Y offset from the center of the view, reversing the Y direction"
     yOffset := self offsetInPixels y - aPoint y.
 	
-	 "Calculate the Cartesian coordinates based on the center of the view and the scale"
-	scale := self metersByPixel.
-	scale = 0 ifTrue:[
-		xCartesian := xOffset + self cartesianCenter xInMeters.
-  	 	yCartesian := yOffset + self cartesianCenter yInMeters.
-	] ifFalse:[
-		xCartesian := (xOffset / scale) + self cartesianCenter xInMeters.
-  	 	yCartesian := (yOffset / scale) + self cartesianCenter yInMeters.
-	].
+	 "Calculate the Cartesian coordinates based on the center of the view and the resolution"
+	resX := (self resolution x = 0 ifTrue:[ 1 ] ifFalse:[ self resolution x ]).
+	resY := (self resolution y = 0 ifTrue:[ 1 ] ifFalse:[ self resolution y ]).
+	
+	xCartesian := (xOffset / (resX)) + self cartesianCenter xInMeters.
+  	yCartesian := (yOffset / (resY)) + self cartesianCenter yInMeters.
 	
 	^ CartesianCoordinates xInMeters: xCartesian yInMeters: yCartesian
 ]
 
 { #category : #accessing }
-GeoView2DProjection >> updateResolution: aPoint [
-	| viewHeight mapHeight |
-	
-	self assert: [aPoint isNotNil] description: ['[GeoView] 2D projection view size cannot be nil.'].
-	viewHeight := aPoint y.
-	mapHeight := 2 * self altitudeInMeters.
-	mapHeight = 0 ifTrue:[ mapHeight := 1 ].
-	
-	self metersByPixel: viewHeight / mapHeight. 
+GeoView2DProjection >> resolution [
+
+	^ resolution ifNil: [ resolution := 0 asPoint ]
+]
+
+{ #category : #accessing }
+GeoView2DProjection >> resolution: aPoint [
+
+	resolution := aPoint
+]
+
+{ #category : #accessing }
+GeoView2DProjection >> scale [
+
+	^ scale
+]
+
+{ #category : #accessing }
+GeoView2DProjection >> scale: aNumber [
+
+	scale := aNumber
+]
+
+{ #category : #update }
+GeoView2DProjection >> updateResolution: aViewSize [
+
+	| res |
+	aViewSize ifNil: [ ^ self ].
+	aViewSize isPoint ifFalse:[ ^ self ].
+	self scale ifNil:[ ^ self ].
+
+	res := self computeResolution: aViewSize y.
+	self resolution: res
 ]
