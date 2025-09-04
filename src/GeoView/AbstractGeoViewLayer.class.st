@@ -1,6 +1,8 @@
 Class {
 	#name : #AbstractGeoViewLayer,
 	#superclass : #Object,
+	#traits : 'TSmockHaveProperties',
+	#classTraits : 'TSmockHaveProperties classTrait',
 	#instVars : [
 		'isVisible',
 		'name',
