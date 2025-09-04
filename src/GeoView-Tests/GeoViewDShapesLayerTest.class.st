@@ -20,6 +20,20 @@ GeoViewDShapesLayerTest >> testAddDShape [
 ]
 
 { #category : #tests }
+GeoViewDShapesLayerTest >> testAddDShapes [
+
+	| layer shape1 shape2 |
+	layer := GeoViewDShapesLayer new.	
+	shape1 := SmockDCircle key: 1.
+	shape2 := SmockDCircle key: 2.
+	layer addDShapes: (OrderedCollection with: shape1 with: shape2).
+	
+	self assert: layer userModel size equals: 2.
+	self assert: layer userModel values first equals: shape1.
+	self assert: layer graphicModel getDatas size equals: 2.
+]
+
+{ #category : #tests }
 GeoViewDShapesLayerTest >> testHaveDomainObjects [
 
 	| layer |
@@ -41,6 +55,20 @@ GeoViewDShapesLayerTest >> testRemoveDShape [
 ]
 
 { #category : #tests }
+GeoViewDShapesLayerTest >> testRemoveDShapes [
+
+	| layer shape1 shape2 |
+	layer := GeoViewDShapesLayer new.
+	shape1 := SmockDCircle key: 1.
+	shape2 := SmockDCircle key: 2.
+	layer addDShape: shape1; addDShape: shape2.
+	
+	layer removeDShapes: (OrderedCollection with: shape1 with: shape2).
+	self assert: layer userModel size equals: 0.
+	self assert: layer graphicModel getDatas size equals: 0.
+]
+
+{ #category : #tests }
 GeoViewDShapesLayerTest >> testUpdateDShape [
 
 	| layer shape |
@@ -51,6 +79,21 @@ GeoViewDShapesLayerTest >> testUpdateDShape [
 	self assert: layer userModel size equals: 1.
 	self assert: layer userModel values first equals: shape.
 	self assert: layer graphicModel getDatas size equals: 1.
+]
+
+{ #category : #tests }
+GeoViewDShapesLayerTest >> testUpdateDShapes [
+
+	| layer shape1 shape2 |
+	layer := GeoViewDShapesLayer new.
+	shape1 := SmockDCircle key: 1.
+	shape2 := SmockDCircle key: 2.
+	layer addDShape: shape1; addDShape: shape2.
+	
+	layer updateDShapes: (OrderedCollection with: shape1 with: shape2).
+	self assert: layer userModel size equals: 2.
+	self assert: layer userModel values first equals: shape1.
+	self assert: layer graphicModel getDatas size equals: 2.
 ]
 
 { #category : #tests }
