@@ -116,8 +116,8 @@ GeoViewDShapesLayer >> removeDShapes: aDShapeList [
 
 	self displayModelMutex critical: [
 		aDShapeList do: [ :e |
-			(self haveDShapeKey: e key) ifFalse: [
-				self userModel at: e key put: e.
+			(self haveDShapeKey: e key) ifTrue: [
+				self userModel removeKey: e key.
 				toRemove add: e ] ].
 
 		self graphicModelMutex critical: [ super removeDShapes: toRemove ] 
