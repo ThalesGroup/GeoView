@@ -185,6 +185,7 @@ GeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
 GeoViewElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
 	
 	| index list updateTask layer uiTask |
+	self timeLimit: 10 seconds.
 	
 	layer := GeoViewUtils createGeoObjectsLayer: #layer.
 	layer isVisible: false.
@@ -209,21 +210,15 @@ GeoViewElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
 		geoView updateModel: GeoViewProjectionChanges new.
 	] delay: 5 milliSeconds) start; yourself.
 
-	"waiting here to simulate user interaction a lot of time"
+	"waiting here to simulate user interaction a lot of time and stop tasks"
 	2 seconds wait.
-	
-	"stop tasks"
 	updateTask kill.
+	uiTask stop.
+	spacePulseTask stop.
+	0.25 seconds wait.
 	
 	self assert: layer dShapesWaitingToBeUpdated notEmpty.
-	
 	geoView removeObjects: list.
-	
-	uiTask stop.
-	
-	"waiting for last pulses"
-	spacePulseTask stop.
-	1 seconds wait.
 		
 	"test to compare list model and graphic model"
 	self assert: (layer displayModel getDatas size) equals: 0.
@@ -236,6 +231,7 @@ GeoViewElementTest >> testCreateUpdateRemoveObjects [
 	"Create a lot of objects and stimulate them, control the state of the model"
 	
 	| index list updateTask layer uiTask |
+	self timeLimit: 10 seconds.
 	
 	layer := GeoViewUtils createGeoObjectsLayer: #layer.
 	geoView addLayer: layer.
@@ -261,14 +257,10 @@ GeoViewElementTest >> testCreateUpdateRemoveObjects [
 
 	"waiting here to simulate user interaction a lot of time"
 	4 seconds wait.
-	
-	"stop tasks"
 	updateTask stop.
 	uiTask stop.
-	
-	"waiting for last pulses"
 	spacePulseTask stop.
-	1 seconds wait.
+	0.25 seconds wait.
 		
 	"test to compare list model and graphic model"
 	self assert: (layer displayModel getDatas size) equals: (list size).
