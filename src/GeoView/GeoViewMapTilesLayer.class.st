@@ -276,10 +276,7 @@ GeoViewMapTilesLayer >> getGraphicPositionFromGeoPosition: aGeoPoint [
 	cartCoord := self mapProjection projLatLonToCart: absCoord.
 	
 	pos := currentGraphicProjection projCartToPixel: cartCoord.
-	
-	pos := pos + self viewInfos origin.
-	
-	^pos
+	^ pos
 ]
 
 { #category : #level }
