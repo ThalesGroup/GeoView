@@ -1,32 +1,41 @@
 name: 'CI'
 
-env: 
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 on:
-  pull_request: #necessary to display "check" step in a PR
-    types: [labeled]
-  workflow_dispatch: #manual trigger
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.label.name == 'run-ci')
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
-        smalltalk: [ Pharo64-12, Pharo64-13 ]
-        ston: [ .smalltalkci.default.ston, .smalltalkci.core.ston ]
+        smalltalk: [ Pharo64-12, Pharo64-13 ] #Pharo versions
+        os: [ ubuntu-latest, macos-latest, windows-latest ] #OS versions
+        ston: [ .smalltalkci.core.ston, .smalltalkci.default.ston ] #Can use multiple .ston files
     runs-on: ${{ matrix.os }}
-    name: >
-      ${{ matrix.smalltalk }} • ${{ matrix.ston == '.smalltalkci.default.ston' && 'Full' || 'Core' }} • ${{ matrix.os }}
+    name: ${{ matrix.ston == '.smalltalkci.default.ston' && '[Full] ' || '[Core] ' }} • ${{ matrix.smalltalk }} • ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: hpi-swa/setup-smalltalkCI@v1
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup smalltalkCI
+        uses: hpi-swa/setup-smalltalkCI@v1
         with:
           smalltalk-image: ${{ matrix.smalltalk }}
-
-      - name: Run ${{ matrix.ston == '.smalltalkci.default.ston' && 'Full' || 'Core' }} tests
+      - name: Load in new image and run tests
         run: smalltalkci -s ${{ matrix.smalltalk }} ${{ matrix.ston }}
         shell: bash
         timeout-minutes: 30
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload logs
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Logs_${{ matrix.smalltalk }}_${{ matrix.os }}_${{ matrix.ston }}
+          path: |
+            *.fuel
+            PharoDebug.log
+          retention-days: 5

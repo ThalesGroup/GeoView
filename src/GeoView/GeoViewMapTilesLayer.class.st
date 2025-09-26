@@ -13,8 +13,6 @@ Class {
 		'surfaceMap',
 		'mapBackground',
 		'tilesProvider',
-		'isDisplayTilesProviderNote',
-		'tilesProviderNoteGText',
 		'loadingBufferWorker',
 		'doubleBufferedScene',
 		'moveMapWorker',
@@ -51,7 +49,7 @@ GeoViewMapTilesLayer class >> newWithOpenStreetMap [
 { #category : #drawing }
 GeoViewMapTilesLayer >> aeDrawOn: aeCanvas [
 
-	| cairoContext gText |
+	| cairoContext |
 	doubleBufferedScene ifNil:[ ^ self ].
 	doubleBufferedScene currentBuffer ifNil:[ ^ self ].
 
@@ -59,15 +57,7 @@ GeoViewMapTilesLayer >> aeDrawOn: aeCanvas [
 	cairoContext := aeCanvas privateAeCairoContext.
 	doubleBufferedScene currentBuffer content ifNotNil: [ :e |
 		cairoContext sourceSurface: e; paint 
-	].
-	
-	"pla: need to display this text on top of the view (not only in the layer) because it can be hidden by on top objects"
-	self isDisplayTilesProviderNote ifFalse:[ ^ self ].
-	gText := self tilesProviderNoteGText2D ifNil:[ ^ self ].
-	gText position: (self viewInfos extent) - (15@15).
-	gText setRight.
-	gText aeDrawOn: aeCanvas.
-	
+	]
 	
 ]
 
@@ -175,6 +165,16 @@ GeoViewMapTilesLayer >> doLoadingTilesThread [
 
 	].
 	
+]
+
+{ #category : #'API -- footnotes' }
+GeoViewMapTilesLayer >> footnotes [
+	"return the default provider note if concerned, in a long time this methods can return a dynamic note depending of the displayed content. the note can change depending level or if a several data provider are mixed in same time"
+
+	self tilesProvider ifNil: [ ^ nil ].
+	self tilesProvider haveCopyrightNote ifFalse: [ ^ nil ].
+
+	^ self tilesProvider defaultCopyrightNote
 ]
 
 { #category : #accessing }
@@ -504,41 +504,16 @@ GeoViewMapTilesLayer >> initSurfaceMap: anExtent [
 { #category : #initialization }
 GeoViewMapTilesLayer >> initialize [
 
-	| font |
 	super initialize.
 	self initializeDoubleBufferScene.
 
-	self tilesProvider: GeoViewOpenStreetMapTilesProvider new.
-
-	"init note text"
-	font := SmockFont named: 'Source code pro'.
-	font
-		fontSize: 18;
-		fontSlant: #italic.
-
-	tilesProviderNoteGText := SmockGText2D new.
-	tilesProviderNoteGText
-		smockFont: font nearestFont;
-		fillStyle: (SmockFillStyle paint: Color black);
-		setBottomRight 
+	self tilesProvider: GeoViewOpenStreetMapTilesProvider new
 ]
 
 { #category : #initialization }
 GeoViewMapTilesLayer >> initializeDoubleBufferScene [
 
 	doubleBufferedScene := SmockDoubleBufferedScene new
-]
-
-{ #category : #'API -- parameters' }
-GeoViewMapTilesLayer >> isDisplayTilesProviderNote [
-
-	^ isDisplayTilesProviderNote ifNil: [ isDisplayTilesProviderNote := true ]
-]
-
-{ #category : #'API -- parameters' }
-GeoViewMapTilesLayer >> isDisplayTilesProviderNote: anObject [
-
-	isDisplayTilesProviderNote := anObject
 ]
 
 { #category : #'loading and updating' }
@@ -922,18 +897,6 @@ GeoViewMapTilesLayer >> tilesProvider [
 GeoViewMapTilesLayer >> tilesProvider: anObject [
 
 	tilesProvider := anObject
-]
-
-{ #category : #private }
-GeoViewMapTilesLayer >> tilesProviderNoteGText2D [
-	"return the default provider note if concerned, in a long time this methods can return a dynamic note depending of the displayed content. the note can change depending level or if a several data provider are mixed in same time"
-
-	self tilesProvider ifNil: [ ^ nil ].
-	self tilesProvider haveCopyrightNote ifTrue: [
-		^ tilesProviderNoteGText text:
-			  self tilesProvider defaultCopyrightNote ].
-
-	^ nil
 ]
 
 { #category : #'loading and updating' }

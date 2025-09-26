@@ -44,6 +44,12 @@ AbstractGeoViewLayer >> announcer [
 	^ announcer ifNil:[ announcer := Announcer new ]
 ]
 
+{ #category : #'API -- footnotes' }
+AbstractGeoViewLayer >> footnotes [
+
+	^ nil
+]
+
 { #category : #'API -- projection' }
 AbstractGeoViewLayer >> graphicProjection [
 

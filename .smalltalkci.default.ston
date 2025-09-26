@@ -7,8 +7,6 @@ SmalltalkCISpec {
     }
   ],
   #testing : {
-    #include : {
-      #packages : [ 'GeoView*-Tests' ]
-    }
+    #packages : [ 'GeoView-*' ]
   }
 }

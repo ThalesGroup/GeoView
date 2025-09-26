@@ -12,7 +12,6 @@ Class {
 		'displayToGraphicProjection',
 		'mapProjection',
 		'viewInfos',
-		'interactionsStrategy',
 		'displayFilter',
 		'scale',
 		'maxScale',
@@ -299,38 +298,13 @@ GeoViewAbstractElement >> initialize [
 	"Initialize default projection systems"
 	self mapProjection: GeoViewMercatorProjection new.
 	self displayToGraphicProjection: GeoView2DProjection new.
-	self scale: self defaultScale.
-	
-	"Initialize events handlers"
-	self initializeEventHandlers.
-	
-	"Bloc customization"
-	self background: Color black.
-	
-]
-
-{ #category : #initialization }
-GeoViewAbstractElement >> initializeEventHandlers [
-
-	"Add listeners to process Bloc UI events interactions"
-	self setInteractionsStrategy: self newInteractionsStrategy.
-
-	"Add listener to compute things when extents changed"
-	self addEventHandler: (BlEventHandler
-			 on: BlElementExtentChangedEvent
-			 do: [ :e | self processExtentChangedEvent: e ])
+	self scale: self defaultScale
 ]
 
 { #category : #initialization }
 GeoViewAbstractElement >> initializeViewInfos [
 
 	self viewInfos: GeoViewInfos new
-]
-
-{ #category : #'strategy management' }
-GeoViewAbstractElement >> interactionsStrategy [
-
-	^ interactionsStrategy
 ]
 
 { #category : #'private - events' }
@@ -478,12 +452,6 @@ GeoViewAbstractElement >> minScaleInMeters: aNumber [
 	self minScale: aNumber
 ]
 
-{ #category : #'strategy management' }
-GeoViewAbstractElement >> newInteractionsStrategy [
-
-	^ GeoViewInteractionsStrategy new
-]
-
 { #category : #private }
 GeoViewAbstractElement >> normalizeScale: aNumberInMeters [
 
@@ -571,14 +539,6 @@ GeoViewAbstractElement >> removeAllLayers [
 	list := self getLayers.
 	list copy do: [ :l | self removeLayer: l ].
 	^ list 
-]
-
-{ #category : #'strategy management' }
-GeoViewAbstractElement >> removeInteractionsStrategy [
-
-	interactionsStrategy ifNil:[ ^ self ].
-	self removeEventHandler: interactionsStrategy.
-	interactionsStrategy := nil.
 ]
 
 { #category : #'API -- layers management' }
@@ -695,16 +655,6 @@ GeoViewAbstractElement >> scaleUp [
 GeoViewAbstractElement >> selectedObjectIndexes: anIndexList [
 
 	self updateState: #selected withIndexes: anIndexList
-]
-
-{ #category : #'strategy management' }
-GeoViewAbstractElement >> setInteractionsStrategy: aBlEventListener [
-
-	self removeInteractionsStrategy.
-
-	aBlEventListener ifNil:[ ^ self ].
-	interactionsStrategy := aBlEventListener.
-	self addEventHandler: aBlEventListener.
 ]
 
 { #category : #private }

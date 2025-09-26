@@ -35,7 +35,7 @@ GeoViewUtils class >> createGeoObjectsLayer: aName [
 { #category : #'geoview creation' }
 GeoViewUtils class >> createGeoView [
 
-	^ GeoViewAeElement new
+	^ GeoViewElement new
 ]
 
 { #category : #'geoview creation' }
