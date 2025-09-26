@@ -30,7 +30,7 @@ GeoViewExamplesMolecule class >> exampleGeoCircles [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
 	
 	| geoViewManager layer objects |
-	geoViewManager := GeoViewManagerBlocAeImpl startWithGeneratedName. 
+	geoViewManager := GeoViewManagerBlocImpl startWithGeneratedName. 
 
 	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
 	layer := geoViewManager addLayer: layer.
@@ -47,7 +47,7 @@ GeoViewExamplesMolecule class >> exampleWithGeoObjectsUpdated [
 	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent updated geographical view with a lot of data."
 	
 	| geoViewManager layer objects space thread |
-	geoViewManager := GeoViewManagerBlocAeImpl start: #GeoViewManager , Random new next printString. 
+	geoViewManager := GeoViewManagerBlocImpl start: #GeoViewManager , Random new next printString. 
 
 	layer := GeoViewUtils createGeoObjectsLayer: #layer1.
 	layer := geoViewManager addLayer: layer.

@@ -104,7 +104,9 @@ GeoView2DProjection >> projCartToPixel: aCartesianCoordinates [
 	pixel := ((point x @ point y negated) - (geoCenter x @ geoCenter y negated))
 		* self resolution
 		+ self offsetInPixels.
-	^ pixel
+		
+	"Not necessary to be very precise in pixels, round the point"
+	^ pixel roundTo: 0.1
 ]
 
 { #category : #projection }

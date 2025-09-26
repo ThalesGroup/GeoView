@@ -3,14 +3,12 @@ I am a BlElement which display a GeoViewWidget using Alexandrie backend drawing.
 "
 Class {
 	#name : #GeoViewAeElement,
-	#superclass : #GeoViewAbstractElement,
+	#superclass : #GeoViewElement,
 	#category : #'GeoView-Core'
 }
 
-{ #category : #drawing }
-GeoViewAeElement >> aeDrawOn: aeCanvas [
-	"drawing native bloc elements"
+{ #category : #testing }
+GeoViewAeElement class >> isDeprecated [ 
 
-	super aeDrawOn: aeCanvas.
-	self layers do: [ :l | l isVisible ifTrue: [ l aeDrawOn: aeCanvas ] ]
+	^ true
 ]

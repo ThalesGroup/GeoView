@@ -29,7 +29,7 @@ GeoViewUtilsTest >> testCreateGeoView [
 
 	| view |
 	view := GeoViewUtils createGeoView.
-	self assert: (view isKindOf: GeoViewAeElement).
+	self assert: (view isKindOf: GeoViewElement).
 ]
 
 { #category : #tests }
@@ -37,7 +37,7 @@ GeoViewUtilsTest >> testCreateGeoViewForGeoObjects [
 
 	| view |
 	view := GeoViewUtils createGeoViewForGeoObjects.
-	self assert: (view isKindOf: GeoViewAeElement).
+	self assert: (view isKindOf: GeoViewElement).
 	self assert: ((view getLayer: #GeoObjectsLayer) isKindOf: GeoViewDomainObjectsLayer).
 	self assert: view getLayers size equals: 1
 ]

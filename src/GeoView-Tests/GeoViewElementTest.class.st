@@ -2,7 +2,7 @@
 Test suite with a simulation of a Bloc rendering task
 "
 Class {
-	#name : #GeoViewAeElementTest,
+	#name : #GeoViewElementTest,
 	#superclass : #TestCase,
 	#instVars : [
 		'geoView',
@@ -12,13 +12,13 @@ Class {
 }
 
 { #category : #private }
-GeoViewAeElementTest >> createGeoViewElement [
+GeoViewElementTest >> createGeoViewElement [
 
-	geoView := GeoViewAeElement new
+	geoView := GeoViewElement new
 ]
 
 { #category : #private }
-GeoViewAeElementTest >> createRandomPositionGeoCircles: aQuantity color: aColor radius: aRadiusInMeters [
+GeoViewElementTest >> createRandomPositionGeoCircles: aQuantity color: aColor radius: aRadiusInMeters [
 
 	| list random |
 	list := OrderedCollection new.
@@ -37,7 +37,7 @@ GeoViewAeElementTest >> createRandomPositionGeoCircles: aQuantity color: aColor 
 ]
 
 { #category : #private }
-GeoViewAeElementTest >> createTask: aBlockClosure delay: aDelay [
+GeoViewElementTest >> createTask: aBlockClosure delay: aDelay [
 
 	| serv index |
 	index := (Random new next * 10000) rounded.
@@ -51,13 +51,13 @@ GeoViewAeElementTest >> createTask: aBlockClosure delay: aDelay [
 ]
 
 { #category : #private }
-GeoViewAeElementTest >> geoViewSize [
+GeoViewElementTest >> geoViewSize [
 
 	^ 1000 @ 1000
 ]
 
 { #category : #running }
-GeoViewAeElementTest >> setUp [
+GeoViewElementTest >> setUp [
 
 	| container space |
 	super setUp.
@@ -82,7 +82,7 @@ GeoViewAeElementTest >> setUp [
 ]
 
 { #category : #private }
-GeoViewAeElementTest >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex: anIndex [
+GeoViewElementTest >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex: anIndex [
 	"at each step create / update and delete some GeoObjects"
 
 	| random color radiusInM createList updateList removeList newIndex maxRadiusInM maxNbOfCircles unchangeList |
@@ -135,7 +135,7 @@ GeoViewAeElementTest >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex
 ]
 
 { #category : #running }
-GeoViewAeElementTest >> tearDown [
+GeoViewElementTest >> tearDown [
 
 	spacePulseTask stop.
 	geoView := nil.
@@ -143,7 +143,46 @@ GeoViewAeElementTest >> tearDown [
 ]
 
 { #category : #tests }
-GeoViewAeElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
+GeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint [
+
+	| abs center |
+	center := geoView extent / 2.
+	abs := geoView absoluteCoordinatesFromGlobalPoint: center.
+	self assert: abs latitudeInDegrees equals: 0.
+	self assert: abs longitudeInDegrees equals: 0.
+
+	geoView geoCenter: AbsoluteCoordinates frBrest.
+	abs := geoView absoluteCoordinatesFromGlobalPoint: center.
+	self
+		assert: abs latitudeInDegrees rounded
+		equals: AbsoluteCoordinates frBrest latitudeInDegrees rounded.
+	self
+		assert: abs longitudeInDegrees rounded
+		equals: AbsoluteCoordinates frBrest longitudeInDegrees rounded
+]
+
+{ #category : #tests }
+GeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
+
+	| abs |
+	"Center should be zero"
+	abs := geoView absoluteCoordinatesFromGlobalPoint: geoView extent / 2.
+	self assert: abs latitudeInDegrees equals: 0.
+	self assert: abs longitudeInDegrees equals: 0.
+
+	"at the top left corner"
+	abs := geoView absoluteCoordinatesFromGlobalPoint: 0 @ 0.
+	self assert: abs latitudeInDegrees > 0.
+	self assert: abs longitudeInDegrees < 0.
+
+	"at the bottom right"
+	abs := geoView absoluteCoordinatesFromGlobalPoint: geoView extent.
+	self assert: abs latitudeInDegrees < 0.
+	self assert: abs longitudeInDegrees > 0
+]
+
+{ #category : #tests }
+GeoViewElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
 	
 	| index list updateTask layer uiTask |
 	
@@ -193,7 +232,7 @@ GeoViewAeElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
 ]
 
 { #category : #tests }
-GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
+GeoViewElementTest >> testCreateUpdateRemoveObjects [
 	"Create a lot of objects and stimulate them, control the state of the model"
 	
 	| index list updateTask layer uiTask |
@@ -238,7 +277,13 @@ GeoViewAeElementTest >> testCreateUpdateRemoveObjects [
 ]
 
 { #category : #tests }
-GeoViewAeElementTest >> testLayerNeedToBeSorted [
+GeoViewElementTest >> testInteractionsStrategy [
+
+	self assert: geoView interactionsStrategy class equals: GeoViewInteractionsStrategy
+]
+
+{ #category : #tests }
+GeoViewElementTest >> testLayerNeedToBeSorted [
 	"Test when a added layer that need to be sorted is sorted"
 
 	| layer |
@@ -254,4 +299,41 @@ GeoViewAeElementTest >> testLayerNeedToBeSorted [
 	0.2 seconds wait.
 	
 	self deny: layer isNeedToSortDatas.
+]
+
+{ #category : #tests }
+GeoViewElementTest >> testNewInteractionsStrategy [
+
+	self assert: geoView newInteractionsStrategy class equals: GeoViewInteractionsStrategy.
+]
+
+{ #category : #tests }
+GeoViewElementTest >> testPickAtGeoOrigin [
+
+	| result |
+	result := geoView pickAt: (geoView globalPointFromAbsoluteCoordinates: AbsoluteCoordinates zero).	
+	self assert: result class equals: GeoViewPickingResult.
+	self assert: (result timestamp <= DateAndTime now).
+	self assert: result globalPoint equals: (self geoViewSize / 2).
+	self assert: result localPoint equals: (geoView localPointFromGlobalPoint: (self geoViewSize / 2)).
+	self assert: result absoluteCoordinates equals: (geoView absoluteCoordinatesFromGlobalPoint: (self geoViewSize / 2)).
+	self assert: (result cartesianCoordinates xInMeters closeTo: 0 precision: 1e-8).
+	self assert: (result cartesianCoordinates yInMeters closeTo: 0 precision: 1e-8).
+	self assert: result radiusInPixels equals: 0.
+	
+	self assert: result isEmpty.
+]
+
+{ #category : #tests }
+GeoViewElementTest >> testRemoveInteractionsStrategy [
+
+	geoView removeInteractionsStrategy.
+	self assert: geoView interactionsStrategy isNil
+]
+
+{ #category : #tests }
+GeoViewElementTest >> testSetInteractionsStrategy [
+
+	geoView setInteractionsStrategy: nil.
+	self assert: geoView interactionsStrategy isNil
 ]

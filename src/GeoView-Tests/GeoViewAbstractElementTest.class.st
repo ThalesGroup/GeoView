@@ -50,45 +50,6 @@ GeoViewAbstractElementTest >> tearDown [
 ]
 
 { #category : #tests }
-GeoViewAbstractElementTest >> testAbsoluteCoordinatesFromGlobalPoint [
-
-	| abs center |
-	center := geoView extent / 2.
-	abs := geoView absoluteCoordinatesFromGlobalPoint: center.
-	self assert: abs latitudeInDegrees equals: 0.
-	self assert: abs longitudeInDegrees equals: 0.
-
-	geoView geoCenter: AbsoluteCoordinates frBrest.
-	abs := geoView absoluteCoordinatesFromGlobalPoint: center.
-	self
-		assert: abs latitudeInDegrees rounded
-		equals: AbsoluteCoordinates frBrest latitudeInDegrees rounded.
-	self
-		assert: abs longitudeInDegrees rounded
-		equals: AbsoluteCoordinates frBrest longitudeInDegrees rounded
-]
-
-{ #category : #tests }
-GeoViewAbstractElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
-
-	| abs |
-	"Center should be zero"
-	abs := geoView absoluteCoordinatesFromGlobalPoint: geoView extent / 2.
-	self assert: abs latitudeInDegrees equals: 0.
-	self assert: abs longitudeInDegrees equals: 0.
-
-	"at the top left corner"
-	abs := geoView absoluteCoordinatesFromGlobalPoint: 0 @ 0.
-	self assert: abs latitudeInDegrees > 0.
-	self assert: abs longitudeInDegrees < 0.
-
-	"at the bottom right"
-	abs := geoView absoluteCoordinatesFromGlobalPoint: geoView extent.
-	self assert: abs latitudeInDegrees < 0.
-	self assert: abs longitudeInDegrees > 0
-]
-
-{ #category : #tests }
 GeoViewAbstractElementTest >> testAddGeoViewGeoObjectsLayer [
 
 	| layer |
@@ -199,12 +160,6 @@ GeoViewAbstractElementTest >> testInitialize [
 ]
 
 { #category : #tests }
-GeoViewAbstractElementTest >> testInteractionsStrategy [
-
-	self assert: geoView interactionsStrategy class equals: GeoViewInteractionsStrategy
-]
-
-{ #category : #tests }
 GeoViewAbstractElementTest >> testMaxScale [
 
 	self assert: geoView maxScale equals: 100000000.
@@ -220,12 +175,6 @@ GeoViewAbstractElementTest >> testMinScale [
 	
 	geoView minScale: 500.
 	self assert: geoView minScale equals: 500.
-]
-
-{ #category : #tests }
-GeoViewAbstractElementTest >> testNewInteractionsStrategy [
-
-	self assert: geoView newInteractionsStrategy class equals: GeoViewInteractionsStrategy.
 ]
 
 { #category : #tests }
@@ -265,23 +214,6 @@ GeoViewAbstractElementTest >> testPickAt [
 	self assert: result localPoint equals: (geoView localPointFromGlobalPoint: 0@0).
 	self assert: result absoluteCoordinates equals: (geoView absoluteCoordinatesFromGlobalPoint: 0@0).
 	self assert: result cartesianCoordinates equals: (geoView mapProjection projLatLonToCart: result absoluteCoordinates).
-	self assert: result radiusInPixels equals: 0.
-	
-	self assert: result isEmpty.
-]
-
-{ #category : #tests }
-GeoViewAbstractElementTest >> testPickAtGeoOrigin [
-
-	| result |
-	result := geoView pickAt: (geoView globalPointFromAbsoluteCoordinates: AbsoluteCoordinates zero).	
-	self assert: result class equals: GeoViewPickingResult.
-	self assert: (result timestamp <= DateAndTime now).
-	self assert: result globalPoint equals: (self geoViewSize / 2).
-	self assert: result localPoint equals: (geoView localPointFromGlobalPoint: (self geoViewSize / 2)).
-	self assert: result absoluteCoordinates equals: (geoView absoluteCoordinatesFromGlobalPoint: (self geoViewSize / 2)).
-	self assert: (result cartesianCoordinates xInMeters closeTo: 0 precision: 1e-8).
-	self assert: (result cartesianCoordinates yInMeters closeTo: 0 precision: 1e-8).
 	self assert: result radiusInPixels equals: 0.
 	
 	self assert: result isEmpty.
@@ -333,13 +265,6 @@ GeoViewAbstractElementTest >> testRemoveAllLayers [
 ]
 
 { #category : #tests }
-GeoViewAbstractElementTest >> testRemoveInteractionsStrategy [
-
-	geoView removeInteractionsStrategy.
-	self assert: geoView interactionsStrategy isNil
-]
-
-{ #category : #tests }
 GeoViewAbstractElementTest >> testRemoveLayer [
 
 	| layer |
@@ -381,11 +306,4 @@ GeoViewAbstractElementTest >> testScaleUp [
 	
 	geoView scaleUp.
 	self assert: geoView scale equals: (geoView defaultScale / geoView scaleFactor).
-]
-
-{ #category : #tests }
-GeoViewAbstractElementTest >> testSetInteractionsStrategy [
-
-	geoView setInteractionsStrategy: nil.
-	self assert: geoView interactionsStrategy isNil
 ]

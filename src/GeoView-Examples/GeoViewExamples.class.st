@@ -109,6 +109,15 @@ GeoViewExamples class >> createGeoSegment: aQuantity [
 ]
 
 { #category : #private }
+GeoViewExamples class >> createGeoViewElement [
+
+	| element |
+	element := GeoViewElement new.
+	element footnotes: 'github.com/ThalesGroup/GeoView example, MIT licence'.
+	^ element
+]
+
+{ #category : #private }
 GeoViewExamples class >> createRandomPositionGeoCircles: aQuantity color: aColor radius: aRadiusInMeters [
 
 	| list random |
@@ -163,6 +172,83 @@ GeoViewExamples class >> createTissotIndicatorCircles [
 	].
 
 	^ circles
+]
+
+{ #category : #'examples - interactions' }
+GeoViewExamples class >> exampleDisplayCoordinates [
+	"This example show how to display a text with geographic mouse coordinates"
+
+	| element latitudeText longitudeText |
+	element := GeoViewElement new.
+	element addLayer: (GeoViewMapTilesLayer newWithOpenStreetMap name: #OSMTilesLayer).
+
+	"Create a text to display coordinates"
+	latitudeText := BlTextElement new
+		        constraintsDo: [ :constraints |
+				        constraints horizontal fitContent.
+				        constraints vertical exact: 15.
+				        constraints padding: (BlInsets all: 10.0) ];
+		        id: #latitudeText;
+		        yourself.
+	element addChild: latitudeText.
+	
+	longitudeText := BlTextElement new
+		        constraintsDo: [ :constraints |
+				        constraints horizontal fitContent.
+							constraints vertical exact: 15.
+				        constraints position: 0 @ 20.
+				        constraints padding: (BlInsets all: 10.0) ];
+		        id: #longitudeText;
+		        yourself.
+	element addChild: longitudeText.
+
+	"Listen cursor coordinates change event"
+	element
+		addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent
+		do: [ :event |
+				| lat lon string |
+				lat := event absoluteCoordinates latitudeInDegrees printString.
+				lon := event absoluteCoordinates longitudeInDegrees printString.
+				
+				string := 'Latitude: ', lat.
+				latitudeText text: (BlRopedText new
+						 rope: (BlAttributeRope
+								  attributes: {
+										  (BlFontSizeAttribute new
+											   size: 20;
+											   yourself).
+										  (BlTextBackgroundAttribute new
+											   paint: Color black;
+											   yourself).
+										  (BlTextForegroundAttribute new
+											   paint: Color white;
+											   yourself) }
+								  rope: (BlCollectionRope new
+										   collection: string;
+										   yourself));
+						 yourself).
+				latitudeText textChanged.
+				
+				string := 'Longitude: ', lon.
+				longitudeText text: (BlRopedText new
+						 rope: (BlAttributeRope
+								  attributes: {
+										  (BlFontSizeAttribute new
+											   size: 20;
+											   yourself).
+										  (BlTextBackgroundAttribute new
+											   paint: Color black;
+											   yourself).
+										  (BlTextForegroundAttribute new
+											   paint: Color white;
+											   yourself) }
+								  rope: (BlCollectionRope new
+										   collection: string;
+										   yourself));
+						 yourself).
+				longitudeText textChanged ].
+
+	^ self openViewInWindow: element
 ]
 
 { #category : #'examples - GeoObjects' }
@@ -348,9 +434,9 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleHybrid [
 	"This example show a map layer (assuming an internet connection to default url of google"
 
 	| element layer |
-	element := GeoViewAeElement new.
+	element := GeoViewElement new.
 
-	element maxScaleInMeters: element maxScale * 8.
+	element maxScale: element maxScale * 8.
 
 	"add carto layer"
 	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
@@ -365,7 +451,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadmap [
 	"This example show a map layer (assuming an internet connection to default url of google"
 	
 	| element layer |
-	element := GeoViewAeElement new.
+	element := GeoViewElement new.
 	
 	element maxScaleInMeters: element maxScaleInMeters * 8.
 	
@@ -381,19 +467,18 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadmap [
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadsOnly [
 	"This example show a map layer (assuming an internet connection to default url of google"
-	
+
 	| element layer |
-	element := GeoViewAeElement new.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	
+	element := GeoViewElement new.
+
+	element maxScaleInMeters: element maxScale * 8.
+
 	"add carto layer"
 	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
 	layer tilesProvider beRoadsOnlyType.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
-	
 ]
 
 { #category : #'examples - tiles provider' }
@@ -401,7 +486,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleSatellite [
 	"This example show a map layer (assuming an internet connection to default url of google"
 	
 	| element layer |
-	element := GeoViewAeElement new.
+	element := GeoViewElement new.
 	
 	element maxScaleInMeters: element maxScaleInMeters * 8.
 	
@@ -418,7 +503,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrain [
 	"This example show a map layer (assuming an internet connection to default url of google"
 	
 	| element layer |
-	element := GeoViewAeElement new.
+	element := GeoViewElement new.
 	
 	element maxScaleInMeters: element maxScaleInMeters * 8.
 	
@@ -436,7 +521,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrainOnly
 	"This example show a map layer (assuming an internet connection to default url of google"
 	
 	| element layer |
-	element := GeoViewAeElement new.
+	element := GeoViewElement new.
 	
 	element maxScaleInMeters: element maxScaleInMeters * 8.
 	
@@ -452,53 +537,51 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrainOnly
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingLocal [
 	"This example show a map layer (assuming there are tiles on default tiles directory (/map/r)"
-	
+
 	| element layer |
-	element := GeoViewAeElement new.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	
+	element := GeoViewElement new.
+
+	element maxScaleInMeters: element maxScale * 8.
+
 	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithLocalDirectory name: 'Tiles Layer'.
+	layer := GeoViewMapTilesLayer newWithLocalDirectory name:
+		         'Tiles Layer'.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
-	
 ]
 
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
 	"This example show a map layer (assuming an internet connection to default url open street map"
-	
+
 	| element layer |
-	element := GeoViewAeElement new.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	
+	element := GeoViewElement new.
+
+	element maxScaleInMeters: element maxScale * 8.
+
 	"add carto layer"
 	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
-	
 ]
 
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithSmallTileSize [
 	"This example show a map layer (assuming an internet connection to default url open street map"
-	
+
 	| element layer |
-	element := GeoViewAeElement new.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	
+	element := GeoViewElement new.
+
+	element maxScaleInMeters: element maxScale * 8.
+
 	"add carto layer"
 	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
 	layer tileSize: 128.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
-	
 ]
 
 { #category : #examples }
@@ -508,7 +591,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerWithUpdateCenter [
 	| element layer newCenter space circle |
 	element := GeoViewUtils createGeoViewForGeoObjects.
 
-	element maxScaleInMeters: element maxScale * 8.
+	element maxScale: element maxScale * 8.
 	element scale: 150000.
 
 	"add carto layer"
@@ -819,7 +902,7 @@ GeoViewExamples class >> exampleTissotIndicatorUTM [
 GeoViewExamples class >> exampleWithDShapesLayer [
 	
 	| element layer circle1 circle2 segment1 segment2 |
-	element := GeoViewAeElement new.
+	element := GeoViewElement new.
 	layer := GeoViewDShapesLayer new name: #shapes. 
 	element addLayer: layer.
 	
@@ -847,7 +930,7 @@ GeoViewExamples class >> exampleWithDShapesLayerWithDeviceRectanglesResizedOnSiz
 	"In this test, use of a DShapes layer to display rectangles in device coordinates. These rectangle are resize when the window size change."
 	
 	| element layer rectangle1 rectangle2 rectangle3 |
-	element := GeoViewAeElement new.
+	element := GeoViewElement new.
 	layer := GeoViewDShapesLayer new name: #shapes. 
 	element addLayer: layer.
 	
@@ -880,7 +963,7 @@ GeoViewExamples class >> exampleWithDShapesLayerWithDeviceRectanglesResizedOnSiz
 	"Same example that exampleWithDShapesLayerWithDeviceRectanglesResizedOnSizeChanged but with a custom DShape layer"
 	
 	| element layer rectangle3 |
-	element := GeoViewAeElement new.
+	element := GeoViewElement new.
 	layer := GeoViewDShapesExampleRectangleLayer new name: #shapes. 
 	element addLayer: layer.
 
@@ -1126,12 +1209,15 @@ GeoViewExamples class >> openViewInWindow: aGeoViewElement [
 	"open the view in a window"
 
 	| space |
+	
+	aGeoViewElement footnotes: 'github.com/ThalesGroup/GeoView example, MIT licence'.
+	
 	aGeoViewElement constraintsDo: [ :c |
 		c vertical matchParent.
 		c horizontal matchParent ].
+	
 	space := aGeoViewElement openInSpace.
-	space title: 'GeoView example'.
-
+	space title: 'GeoView Example'.
 	^ space
 ]
 
