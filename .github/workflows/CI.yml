@@ -15,7 +15,7 @@ jobs:
         os: [ ubuntu-latest, macos-latest, windows-latest ] #OS versions
         ston: [ .smalltalkci.core.ston, .smalltalkci.default.ston ] #Can use multiple .ston files
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.smalltalk }} on ${{ matrix.os }}
+    name: ${{ matrix.ston == '.smalltalkci.default.ston' && '[Full] ' || '[Core] ' }} • ${{ matrix.smalltalk }} • ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
         with:

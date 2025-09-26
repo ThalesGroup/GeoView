@@ -7,6 +7,6 @@ SmalltalkCISpec {
     }
   ],
   #testing : {
-    #packages : [ 'GeoView-Tests' 'GeoView-Molecule-Tests' ]
+    #packages : [ 'GeoView-*' ]
   }
 }

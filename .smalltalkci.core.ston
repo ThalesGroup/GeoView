@@ -7,7 +7,7 @@ SmalltalkCISpec {
       #load: 'Core'
     }
   ],
- #testing : {
-    #packages : [ 'GeoView-Tests' ]
+  #testing : {
+    #packages : [ 'GeoView-*' ]
   }
 }
