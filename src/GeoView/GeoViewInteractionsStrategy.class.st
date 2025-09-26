@@ -155,12 +155,12 @@ GeoViewInteractionsStrategy >> mouseWheelEvent: anEvent [
 
 	self allowMapScaling ifFalse:[ ^ self ].
 	element := anEvent currentTarget.
-	point := anEvent position.
+	point := element localPointFromGlobalPoint: anEvent position.
 	
 	mapProjection := element mapProjection ifNil:[ ^ self ].
 	graphicProjection := element displayToGraphicProjection ifNil:[ ^ self ].
 
-	geoPoint := element absoluteCoordinatesFromGlobalPoint: point.
+	geoPoint := element absoluteCoordinatesFromLocalPoint: point.
 	geoPointPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: geoPoint).
 	geoCenterPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: element geoCenter).
 	
@@ -178,11 +178,12 @@ GeoViewInteractionsStrategy >> mouseWheelEvent: anEvent [
 	self allowMapMoving ifFalse:[ ^ self ].
 	
 	"compute new position in pixel for the mouse position before zoom"
+	
 	geoPointPxNew := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: geoPoint).
 	"add the previous diff in pixels to get new center in pixel"
 	newPointPx := geoPointPxNew + difPx.
 	"Compute new position in cartesian for new center"
-	geoPointFinal := element absoluteCoordinatesFromGlobalPoint: newPointPx.
+	geoPointFinal := element absoluteCoordinatesFromLocalPoint: newPointPx.
 	element geoCenter: geoPointFinal.
 ]
 
