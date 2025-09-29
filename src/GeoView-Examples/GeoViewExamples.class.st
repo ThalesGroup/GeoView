@@ -188,7 +188,7 @@ GeoViewExamples class >> exampleDisplayCoordinates [
 				        constraints horizontal fitContent.
 				        constraints vertical exact: 15.
 				        constraints padding: (BlInsets all: 10.0) ];
-		        id: #latitudeText;
+		        id: #latitudeText; text: '--' asRopedText;
 		        yourself.
 	element addChild: latitudeText.
 	
@@ -198,7 +198,7 @@ GeoViewExamples class >> exampleDisplayCoordinates [
 							constraints vertical exact: 15.
 				        constraints position: 0 @ 20.
 				        constraints padding: (BlInsets all: 10.0) ];
-		        id: #longitudeText;
+		        id: #longitudeText; text: '--' asRopedText;
 		        yourself.
 	element addChild: longitudeText.
 

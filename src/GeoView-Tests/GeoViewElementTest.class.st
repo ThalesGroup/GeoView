@@ -268,6 +268,18 @@ GeoViewElementTest >> testCreateUpdateRemoveObjects [
 	self assert: layer dShapesWaitingToBeUpdated size equals: 0.
 ]
 
+{ #category : #'tests - footnotes' }
+GeoViewElementTest >> testFootnotes [
+
+	self assert: geoView footnotes isNil.
+	
+	geoView footnotes: 'My footnotes'.
+	self assert: geoView footnotes equals: 'My footnotes'.
+	
+	geoView footnotes: nil.
+	self assert: geoView footnotes isNil.
+]
+
 { #category : #tests }
 GeoViewElementTest >> testInteractionsStrategy [
 
