@@ -76,10 +76,10 @@ GeoViewElement >> initializeFootnotesElements [
 	element := GeoViewFootnotesElement id: #footnotes.
 	
 	element constraintsDo: [ :c |
-			c horizontal matchParent.
-			c vertical matchParent ].
-		
-	element layout: (BlFlowLayout vertical alignBottomRight).
+		c horizontal matchParent.
+		c vertical matchParent.
+		c padding: (BlInsets all: 4.0).
+	].
 	
 	self footnotesElement: element 
 ]
