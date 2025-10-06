@@ -9,7 +9,7 @@ Class {
 		'rectangle1',
 		'rectangle2'
 	],
-	#category : #'GeoView-Examples'
+	#category : #'GeoView-Examples-Utils'
 }
 
 { #category : #initialization }

@@ -130,6 +130,16 @@ GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 	self geoCenter: absoluteCoordinates
 ]
 
+{ #category : #'API -- states' }
+GeoViewAbstractElement >> clearStateIndexes: aStateSymbol [
+
+	aStateSymbol ifNil: [ ^ self ].
+
+	self layers do: [ :l |
+		l haveDomainObjects ifTrue: [
+			l updateState: aStateSymbol withIndexes: #() ] ]
+]
+
 { #category : #private }
 GeoViewAbstractElement >> configureLayer: aLayer [
 	
@@ -651,7 +661,7 @@ GeoViewAbstractElement >> scaleUp [
 	self scale: (self scale / self scaleFactor)
 ]
 
-{ #category : #'API -- selection' }
+{ #category : #'API -- states' }
 GeoViewAbstractElement >> selectedObjectIndexes: anIndexList [
 
 	self updateState: #selected withIndexes: anIndexList
@@ -725,7 +735,7 @@ GeoViewAbstractElement >> updateObjects: anUserObjectList [
 		e haveDomainObjects ifTrue: [ e updateObjects: anUserObjectList ] ]
 ]
 
-{ #category : #private }
+{ #category : #'API -- states' }
 GeoViewAbstractElement >> updateState: aStateSymbol withIndexes: aKeyList [
 
 	aKeyList ifNil: [ ^ self ].
