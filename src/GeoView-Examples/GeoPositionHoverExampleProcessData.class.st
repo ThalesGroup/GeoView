@@ -15,6 +15,7 @@ GeoPositionHoverExampleProcessData >> processCreatedData: aKey incoming: aGeoPos
 
 	"setup the label visibility to false"
 	dLabel := dCompositeShape getChild: #text.
+	dLabel smockFont fontSize: 20.
 	dLabel isVisible: false.
 	
 	^ dCompositeShape
