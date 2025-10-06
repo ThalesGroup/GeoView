@@ -133,11 +133,7 @@ GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 { #category : #'API -- states' }
 GeoViewAbstractElement >> clearStateIndexes: aStateSymbol [
 
-	aStateSymbol ifNil: [ ^ self ].
-
-	self layers do: [ :l |
-		l haveDomainObjects ifTrue: [
-			l updateState: aStateSymbol withIndexes: #() ] ]
+	self updateState: aStateSymbol withIndexes: #(  )
 ]
 
 { #category : #private }
