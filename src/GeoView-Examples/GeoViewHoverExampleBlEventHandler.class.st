@@ -21,12 +21,12 @@ GeoViewHoverExampleBlEventHandler >> doAction: anEvent [
 	firstElement ifNil:[ 
 		self hoveredIndex ifNotNil:[
 			"reset hovered index"
-			self geoView updateState: #hover withIndexes: #().
+			self geoView updateState: #hover withObjectIndexes: #().
 			self hoveredIndex: nil 
 		].
 	] ifNotNil:[ | newIndex |
 		newIndex := firstElement objectIndex.
-		self geoView updateState: #hover withIndexes: (Set with: newIndex).
+		self geoView updateState: #hover withObjectIndexes: (Set with: newIndex).
 		self hoveredIndex: newIndex 
 	].
 	
