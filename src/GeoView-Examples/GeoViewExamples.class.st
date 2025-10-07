@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoViewExamples,
 	#superclass : #Object,
-	#category : #'GeoView-Examples'
+	#category : #'GeoView-Examples-Examples'
 }
 
 { #category : #private }
@@ -172,6 +172,31 @@ GeoViewExamples class >> createTissotIndicatorCircles [
 	].
 
 	^ circles
+]
+
+{ #category : #'examples - interactions' }
+GeoViewExamples class >> exampleCitiesHover [
+	"This example show how to implement a mouse hover interaction to do something"
+
+	| geoView nb processData |
+	geoView := GeoViewUtils createGeoViewForGeoObjects.
+	geoView addLayerAtFirst: (GeoViewMapTilesLayer new).
+		
+	"Change the process data of GeoPosition to use a custom one which implement an hover state"
+	processData := GeoPositionHoverExampleProcessData new textColor: (Color blue).
+	geoView getLayers last setProcessData: processData forClass: GeoPosition.
+	
+	"add a listener to hover with self injection, dirty but simple example with an all in one handler"
+	geoView addEventHandler: (GeoViewHoverExampleBlEventHandler new geoView: geoView).
+	
+	"manage the graphical order to display hovered city on top"
+	geoView getLayers last graphicalOrderSortBlock: [ :a :b | (a getProperty: #hover) not ].
+	
+	"add cities"
+	nb := 1.
+	geoView addObjects: (self largest50Cities collect:[ :e | e key: nb; image: (self iconNamed: #remote). nb := nb + 1. e ]).
+
+	^ self openViewInWindow: geoView
 ]
 
 { #category : #'examples - interactions' }

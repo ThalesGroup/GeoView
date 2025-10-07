@@ -77,6 +77,32 @@ GeoViewAbstractElementTest >> testApplyDisplayFilterToAllLayers [
 	self assert: geoView displayFilter isNil
 ]
 
+{ #category : #'tests - states' }
+GeoViewAbstractElementTest >> testClearSelectedObjectIndexes [
+
+	geoView addLayer: GeoViewDomainObjectsLayer new.
+	geoView addObject: (GeoObject key: 1).
+	geoView addObject: (GeoObject key: 2).
+	geoView selectedObjectIndexes: #( 1 ).
+	
+	geoView clearSelectedObjectIndexes.
+	self assert: (geoView getLayers first displayModel getStateValue: GeoViewAbstractElement selectedState for: 1) isNil.
+	self assert: (geoView getLayers first displayModel getStateValue: GeoViewAbstractElement selectedState for: 2) isNil.
+]
+
+{ #category : #'tests - states' }
+GeoViewAbstractElementTest >> testClearStateObjectIndexes [
+
+	geoView addLayer: GeoViewDomainObjectsLayer new.
+	geoView addObject: (GeoObject key: 1).
+	geoView addObject: (GeoObject key: 2).
+	geoView updateState: #testState withObjectIndexes: #( 1 2 ).
+
+	geoView clearStateObjectIndexes: #testState.
+	self assert: (geoView getLayers first displayModel getStateValue: #testState for: 1) isNil.
+	self assert: (geoView getLayers first displayModel getStateValue: #testState for: 2) isNil.
+]
+
 { #category : #'tests - filters' }
 GeoViewAbstractElementTest >> testDisplayFilter [
 	
@@ -306,4 +332,48 @@ GeoViewAbstractElementTest >> testScaleUp [
 	
 	geoView scaleUp.
 	self assert: geoView scale equals: (geoView defaultScale / geoView scaleFactor).
+]
+
+{ #category : #'tests - states' }
+GeoViewAbstractElementTest >> testSelectedObjectIndexes [
+
+	geoView addLayer: GeoViewDomainObjectsLayer new.
+	geoView addObject: (GeoObject key: 1).
+	geoView addObject: (GeoObject key: 2).
+	self assert: (geoView getLayers first displayModel getStateValue: GeoViewAbstractElement selectedState for: 1) isNil.
+	self assert: (geoView getLayers first displayModel getStateValue: GeoViewAbstractElement selectedState for: 2) isNil.
+
+	geoView selectedObjectIndexes: #( 1 ).
+	self assert: (geoView getLayers first displayModel getStateValue: GeoViewAbstractElement selectedState for: 1).
+	self assert: (geoView getLayers first displayModel getStateValue: GeoViewAbstractElement selectedState for: 2) isNil.
+	
+	geoView selectedObjectIndexes: #( 1 2 ).
+	self assert: (geoView getLayers first displayModel getStateValue: GeoViewAbstractElement selectedState for: 1).
+	self assert: (geoView getLayers first displayModel getStateValue: GeoViewAbstractElement selectedState for: 2).
+	
+	geoView selectedObjectIndexes: #( ).
+	self assert: (geoView getLayers first displayModel getStateValue: GeoViewAbstractElement selectedState for: 1) isNil.
+	self assert: (geoView getLayers first displayModel getStateValue: GeoViewAbstractElement selectedState for: 2) isNil.
+]
+
+{ #category : #'tests - states' }
+GeoViewAbstractElementTest >> testUpdateStateWithObjectIndexes [
+
+	geoView addLayer: GeoViewDomainObjectsLayer new.
+	geoView addObject: (GeoObject key: 1).
+	geoView addObject: (GeoObject key: 2).
+	self assert: (geoView getLayers first displayModel getStateValue: #testState for: 1) isNil.
+	self assert: (geoView getLayers first displayModel getStateValue: #testState for: 2) isNil.
+
+	geoView updateState: #testState withObjectIndexes: #( 1 ).
+	self assert: (geoView getLayers first displayModel getStateValue: #testState for: 1).
+	self assert: (geoView getLayers first displayModel getStateValue: #testState for: 2) isNil.
+	
+	geoView updateState: #testState withObjectIndexes: #( 1 2 ).
+	self assert: (geoView getLayers first displayModel getStateValue: #testState for: 1).
+	self assert: (geoView getLayers first displayModel getStateValue: #testState for: 2).
+	
+	geoView updateState: #testState withObjectIndexes: #( ).
+	self assert: (geoView getLayers first displayModel getStateValue: #testState for: 1) isNil.
+	self assert: (geoView getLayers first displayModel getStateValue: #testState for: 2) isNil.
 ]

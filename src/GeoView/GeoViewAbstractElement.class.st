@@ -26,6 +26,12 @@ GeoViewAbstractElement class >> isAbstract [
 	^ self = GeoViewAbstractElement
 ]
 
+{ #category : #enumerating }
+GeoViewAbstractElement class >> selectedState [
+
+	^ #selected
+]
+
 { #category : #'API -- coordinates transformations' }
 GeoViewAbstractElement >> absoluteCoordinatesFromGlobalPoint: aGlobalPoint [
 
@@ -128,6 +134,18 @@ GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 	| absoluteCoordinates |
 	absoluteCoordinates := self absoluteCoordinatesFromGlobalPoint: aGlobalPoint.
 	self geoCenter: absoluteCoordinates
+]
+
+{ #category : #'API -- states' }
+GeoViewAbstractElement >> clearSelectedObjectIndexes [
+
+	self selectedObjectIndexes: #(  )
+]
+
+{ #category : #'API -- states' }
+GeoViewAbstractElement >> clearStateObjectIndexes: aStateSymbol [
+
+	self updateState: aStateSymbol withObjectIndexes: #(  )
 ]
 
 { #category : #private }
@@ -651,10 +669,10 @@ GeoViewAbstractElement >> scaleUp [
 	self scale: (self scale / self scaleFactor)
 ]
 
-{ #category : #'API -- selection' }
+{ #category : #'API -- states' }
 GeoViewAbstractElement >> selectedObjectIndexes: anIndexList [
 
-	self updateState: #selected withIndexes: anIndexList
+	self updateState: self class selectedState withObjectIndexes: anIndexList
 ]
 
 { #category : #private }
@@ -725,8 +743,8 @@ GeoViewAbstractElement >> updateObjects: anUserObjectList [
 		e haveDomainObjects ifTrue: [ e updateObjects: anUserObjectList ] ]
 ]
 
-{ #category : #private }
-GeoViewAbstractElement >> updateState: aStateSymbol withIndexes: aKeyList [
+{ #category : #'API -- states' }
+GeoViewAbstractElement >> updateState: aStateSymbol withObjectIndexes: aKeyList [
 
 	aKeyList ifNil: [ ^ self ].
 	aStateSymbol ifNil: [ ^ self ].
