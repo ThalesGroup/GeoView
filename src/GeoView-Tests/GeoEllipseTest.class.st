@@ -3,59 +3,65 @@ A GeoEllipseTest is a test class for testing the behavior of GeoEllipse
 "
 Class {
 	#name : #GeoEllipseTest,
-	#superclass : #TestCase,
+	#superclass : #GeoShapeTest,
 	#category : #'GeoView-Tests-GeoObjects'
 }
 
 { #category : #'tests - instance' }
-GeoEllipseTest >> geoEllipse1 [
+GeoEllipseTest >> geoObject1 [
 
-	^ GeoEllipse new
-		absoluteCoordinates: AbsoluteCoordinates zero;
-		isVisible: true;
-		key: #circle1;
-		fillStyle: Color black asSmockFillStyle;
-		strokeStyle: (Color red asSmockStrokeStyle width: 1);
+	| object |
+	object := super geoObject1.
+
+	^ object
 		radiusInMeters1: 5;
 		radiusInMeters2: 10;
 		yourself.
 ]
 
 { #category : #'tests - instance' }
-GeoEllipseTest >> geoEllipse2 [
+GeoEllipseTest >> geoObject2 [
 
-	^ GeoEllipse new
-		absoluteCoordinates: AbsoluteCoordinates zero;
-		isVisible: true;
-		key: #circle1;
-		fillStyle: Color black asSmockFillStyle;
-		strokeStyle: (Color red asSmockStrokeStyle width: 1);
+	| object |
+	object := super geoObject2.
+
+	^ object
 		radiusInMeters1: 10;
 		radiusInMeters2: 20;
 		yourself.
 ]
 
+{ #category : #accessing }
+GeoEllipseTest >> geoObjectClass [
+
+	^ GeoEllipse 
+]
+
 { #category : #'tests-updating' }
 GeoEllipseTest >> testCopy [
-	| geoEllipse geoEllipseCopy |
-	geoEllipse := self geoEllipse1.
-	geoEllipseCopy := geoEllipse copy.
+
+	| copy |	
+	super testCopy.
+	copy := geoObject copy.
 		
-	self assert: geoEllipse radiusInMeters1 equals: geoEllipseCopy radiusInMeters1.
-	self assert: geoEllipse radiusInMeters2 equals: geoEllipseCopy radiusInMeters2.
+	self assert: geoObject radiusInMeters1 equals: copy radiusInMeters1.
+	self assert: geoObject radiusInMeters2 equals: copy radiusInMeters2.
 ]
 
 { #category : #'tests-updating' }
 GeoEllipseTest >> testUpdateWith [
-	| geoEllipse1 geoEllipse2 |
-	geoEllipse1 := self geoEllipse1.
-	geoEllipse2 := self geoEllipse2.
+	| object1 object2 |
 	
-	self assert: geoEllipse1 radiusInMeters1 ~= geoEllipse2 radiusInMeters1.
-	self assert: geoEllipse1 radiusInMeters2 ~= geoEllipse2 radiusInMeters2.
+	super testUpdateWith.
 	
-	geoEllipse1 updateWith: geoEllipse2.
+	object1 := self geoObject1.
+	object2 := self geoObject2.
+	
+	self assert: object1 radiusInMeters1 ~= object2 radiusInMeters1.
+	self assert: object1 radiusInMeters2 ~= object2 radiusInMeters2.
+	
+	object1 updateWith: object2.
 
-	self assert: geoEllipse1 radiusInMeters1 equals: geoEllipse2 radiusInMeters1.
-	self assert: geoEllipse1 radiusInMeters2 equals: geoEllipse2 radiusInMeters2.
+	self assert: object1 radiusInMeters1 equals: object2 radiusInMeters1.
+	self assert: object1 radiusInMeters2 equals: object2 radiusInMeters2.
 ]
