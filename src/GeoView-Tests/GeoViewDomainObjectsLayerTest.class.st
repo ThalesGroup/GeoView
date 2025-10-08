@@ -3,18 +3,14 @@ A GeoViewGeoObjectsLayerTest is a test class for testing the behavior of GeoView
 "
 Class {
 	#name : #GeoViewDomainObjectsLayerTest,
-	#superclass : #TestCase,
-	#instVars : [
-		'layer'
-	],
+	#superclass : #AbstractGeoViewGraphicModelLayerTest,
 	#category : #'GeoView-Tests-Core'
 }
 
 { #category : #running }
-GeoViewDomainObjectsLayerTest >> setUp [
-	super setUp.
+GeoViewDomainObjectsLayerTest >> layerClass [ 
 
-	layer := GeoViewDomainObjectsLayer new
+	^ GeoViewDomainObjectsLayer
 ]
 
 { #category : #tests }

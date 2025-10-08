@@ -3,19 +3,14 @@ An AbstractGeoViewGraphicModelLayerTest is a test class for testing the behavior
 "
 Class {
 	#name : #AbstractGeoViewGraphicModelLayerTest,
-	#superclass : #TestCase,
-	#instVars : [
-		'layer'
-	],
+	#superclass : #AbstractGeoViewLayerTest,
 	#category : #'GeoView-Tests-Core'
 }
 
-{ #category : #running }
-AbstractGeoViewGraphicModelLayerTest >> setUp [
+{ #category : #testing }
+AbstractGeoViewGraphicModelLayerTest class >> isAbstract [
 
-	super setUp.
-
-	layer := AbstractGeoViewGraphicModelLayer new
+	^ self == AbstractGeoViewGraphicModelLayerTest
 ]
 
 { #category : #tests }
@@ -27,6 +22,12 @@ AbstractGeoViewGraphicModelLayerTest >> testDisplayFilter [
 	filter := SmockAttributesDisplayFilter new.
 	layer displayFilter: filter.
 	self assert: layer displayFilter equals: filter
+]
+
+{ #category : #tests }
+AbstractGeoViewGraphicModelLayerTest >> testHaveGraphicModel [
+
+	self assert: layer haveGraphicModel
 ]
 
 { #category : #tests }

@@ -5,9 +5,6 @@ Use this kind of layers for example to decorate a view with some DShape.
 Class {
 	#name : #GeoViewDShapesLayer,
 	#superclass : #AbstractGeoViewGraphicModelLayer,
-	#instVars : [
-		'userModel'
-	],
 	#category : #'GeoView-Layers'
 }
 
@@ -18,7 +15,7 @@ GeoViewDShapesLayer >> addDShape: aDShape [
 
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifFalse: [
-			self userModel at: aDShape key put: aDShape ].
+			self displayModel at: aDShape key put: aDShape ].
 
 		self graphicModelMutex critical: [ super addDShape: aDShape ]
 	].
@@ -34,7 +31,7 @@ GeoViewDShapesLayer >> addDShapes: aDShapeList [
 	self displayModelMutex critical: [
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifFalse: [
-				self userModel at: e key put: e.
+				self displayModel at: e key put: e.
 				toAdd add: e ] ].
 
 		self graphicModelMutex critical: [ super addDShapes: toAdd ] 
@@ -47,24 +44,28 @@ GeoViewDShapesLayer >> haveDShapeKey: aKey [
 
 	| includes |
 	aKey ifNil: [ ^ false ].
-	
+
 	self displayModelMutex critical: [
-		includes := self userModel includesKey: aKey ].
-	
+		includes := self displayModel includesKey: aKey ].
+
 	^ includes
 ]
 
 { #category : #initialization }
-GeoViewDShapesLayer >> initialize [
+GeoViewDShapesLayer >> initializeDisplayModel [
 
-	super initialize.
-	self initializeUserModel.
+	self displayModel: Dictionary new
 ]
 
 { #category : #initialization }
 GeoViewDShapesLayer >> initializeUserModel [
 
-	userModel := Dictionary new
+	self
+		deprecated: 'Use display model'
+		transformWith: '`@receiver initializeUserModel'
+			-> '`@receiver initializeDisplayModel'.
+
+	self initializeDisplayModel
 ]
 
 { #category : #'API -- projection' }
@@ -88,7 +89,7 @@ GeoViewDShapesLayer >> populatePickingResult: aPickingResult at: index with: aGS
 	pickingElement ifNil:[ ^ nil ].
 	
 	"add dShape"
-	self displayModelMutex critical: [ data := self userModel at: index ifAbsent:[ nil ] ].
+	self displayModelMutex critical: [ data := self displayModel at: index ifAbsent:[ nil ] ].
 	pickingElement dShape: data. 
 	
  	^ pickingElement 
@@ -101,7 +102,7 @@ GeoViewDShapesLayer >> removeDShape: aDShape [
 	
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifTrue: [
-			self userModel removeKey: aDShape key ].
+			self displayModel removeKey: aDShape key ].
 
 		self graphicModelMutex critical: [ super removeDShape: aDShape ]
 	]
@@ -117,7 +118,7 @@ GeoViewDShapesLayer >> removeDShapes: aDShapeList [
 	self displayModelMutex critical: [
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifTrue: [
-				self userModel removeKey: e key.
+				self displayModel removeKey: e key.
 				toRemove add: e ] ].
 
 		self graphicModelMutex critical: [ super removeDShapes: toRemove ] 
@@ -131,7 +132,7 @@ GeoViewDShapesLayer >> updateDShape: aDShape [
 
 	self displayModelMutex critical: [
 		(self haveDShapeKey: aDShape key) ifTrue: [
-			self userModel at: aDShape key put: aDShape ].
+			self displayModel at: aDShape key put: aDShape ].
 
 		self graphicModelMutex critical: [ super updateDShape: aDShape ]
 	]
@@ -147,7 +148,7 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 	self displayModelMutex critical: [
 		aDShapeList do: [ :e |
 			(self haveDShapeKey: e key) ifTrue: [
-				self userModel at: e key put: e.
+				self displayModel at: e key put: e.
 				toUpdate add: e ] ].
 
 		self graphicModelMutex critical: [ super updateDShapes: toUpdate ]
@@ -160,7 +161,7 @@ GeoViewDShapesLayer >> updateModel: aContext [
 	| dShapes |
 	self displayModelMutex critical: [ | datas |
 		
-		datas := self userModel.
+		datas := self displayModel.
 		
 		"In case of projection changes, select only dShapes drawed in user coordinates to update, else select all"
 		dShapes := aContext isProjectionChanges ifTrue:[
@@ -171,7 +172,7 @@ GeoViewDShapesLayer >> updateModel: aContext [
 	].
 
 	dShapes ifEmpty: [ ^ self ].
-
+	
 	self graphicModelMutex critical:[
 		super updateGraphicModelWithDShapes: dShapes 
 	]
@@ -180,5 +181,10 @@ GeoViewDShapesLayer >> updateModel: aContext [
 { #category : #accessing }
 GeoViewDShapesLayer >> userModel [
 
-	^ userModel
+	self
+		deprecated: 'Use display model'
+		transformWith: '`@receiver userModel'
+			-> '`@receiver displayModel'.
+
+	^ self displayModel
 ]

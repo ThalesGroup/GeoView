@@ -10,12 +10,10 @@ GeoPositionHoverExampleProcessData >> processCreatedData: aKey incoming: aGeoPos
 	| dLabel dCompositeShape |
 	dCompositeShape := super processCreatedData: aKey incoming: aGeoPosition with: aDCompositeShape context: aContext.
 	
-	"initialize default property value"
-	dCompositeShape setProperty: #hover value: false. 
-
-	"setup the label visibility to false"
 	dLabel := dCompositeShape getChild: #text.
 	dLabel smockFont fontSize: 20.
+	
+	"setup the label visibility to false by default"
 	dLabel isVisible: false.
 	
 	^ dCompositeShape
@@ -28,13 +26,16 @@ GeoPositionHoverExampleProcessData >> processStateChanged: aKey state: aState va
 	dCompositeShape := super processStateChanged: aKey state: aState value: aValueOrNil with: aDShape context: aContext.
 
 	"process hover state"
-	aState = #hover ifTrue:[
-		dCompositeShape setProperty: aState value: (aValueOrNil ifNil:[ false ]). 
+	aState = #hover ifTrue:[ | isHover |
+		
+		isHover := aValueOrNil ifNil:[ false ].
+		
 		dLabel := dCompositeShape getChild: #text.
-		"setup the label visibility"
-		dLabel isVisible: (dCompositeShape getProperty: aState).
+		"change label visibility"
+		dLabel isVisible: isHover.
 		dCompositeShape updateChild: dLabel.
-		aValueOrNil traceCr.
+		
+		dCompositeShape zIndex: (isHover ifTrue:[ 100 ]). "have a high zIndex to be placed on top"
 	].
 
 	^ aDShape

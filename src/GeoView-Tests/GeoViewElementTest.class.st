@@ -3,9 +3,8 @@ Test suite with a simulation of a Bloc rendering task
 "
 Class {
 	#name : #GeoViewElementTest,
-	#superclass : #TestCase,
+	#superclass : #GeoViewAbstractElementTest,
 	#instVars : [
-		'geoView',
 		'spacePulseTask'
 	],
 	#category : #'GeoView-Tests-Core'
@@ -50,33 +49,14 @@ GeoViewElementTest >> createTask: aBlockClosure delay: aDelay [
 	^ serv
 ]
 
-{ #category : #private }
-GeoViewElementTest >> geoViewSize [
-
-	^ 1000 @ 1000
-]
-
 { #category : #running }
 GeoViewElementTest >> setUp [
 
-	| container space |
 	super setUp.
-	self createGeoViewElement.
-	geoView constraintsDo: [ :c |
-			c horizontal matchParent.
-			c vertical matchParent ].
-	container := BlElement new.
-	container extent: self geoViewSize.
-	container addChild: geoView.
-
-	space := BlSpace new.
-	space host: BlHeadlessHost new.
-	space root addChild: container.
-	container forceLayout.
 
 	"simulation a rendering thread"
 	spacePulseTask := self
-		                  createTask: [ space pulse ]
+		                  createTask: [ space ifNotNil:[ space pulse ] ]
 		                  delay: 16.67 milliSeconds.
 	spacePulseTask start
 ]
@@ -138,7 +118,6 @@ GeoViewElementTest >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex: 
 GeoViewElementTest >> tearDown [
 
 	spacePulseTask stop.
-	geoView := nil.
 	super tearDown
 ]
 

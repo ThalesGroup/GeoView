@@ -189,9 +189,6 @@ GeoViewExamples class >> exampleCitiesHover [
 	"add a listener to hover with self injection, dirty but simple example with an all in one handler"
 	geoView addEventHandler: (GeoViewHoverExampleBlEventHandler new geoView: geoView).
 	
-	"manage the graphical order to display hovered city on top"
-	geoView getLayers last graphicalOrderSortBlock: [ :a :b | (a getProperty: #hover) not ].
-	
 	"add cities"
 	nb := 1.
 	geoView addObjects: (self largest50Cities collect:[ :e | e key: nb; image: (self iconNamed: #remote). nb := nb + 1. e ]).
@@ -997,6 +994,42 @@ GeoViewExamples class >> exampleWithDShapesLayerWithDeviceRectanglesResizedOnSiz
 	layer addDShape: rectangle3.
 
 	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - dshapeslayer' }
+GeoViewExamples class >> exampleWithDShapesLayerWithOrder [
+	
+	| element layer circle task circleOnTop space |
+	element := GeoViewElement new.
+	layer := GeoViewDShapesLayer new name: #shapes. 
+	element addLayer: layer.
+	
+	"User circle (not projected)"
+	circle := (SmockDCircle key: #circle1) coordinates: (element mapProjection projLatLonToCart: (AbsoluteCoordinates latitudeInDegrees: 1 longitudeInDegrees: 1)); radius: 1000000; strokeColor: Color green; strokeWidth: 10.
+	layer addDShape: circle.
+	
+	circleOnTop := (SmockDCircle key: #circle2) coordinates: (element mapProjection projLatLonToCart: AbsoluteCoordinates zero); radius: 1000000; strokeColor: Color red; strokeWidth: 10.
+	layer addDShape: circleOnTop.
+	
+	circle := (SmockDCircle key: #circle3) coordinates: (element mapProjection projLatLonToCart: (AbsoluteCoordinates latitudeInDegrees: -1 longitudeInDegrees: -1)); radius: 1000000; strokeColor: Color green; strokeWidth: 10.
+	layer addDShape: circle.
+
+
+	"Objet update thread"
+	task := self createAndStartTask: [
+		circleOnTop zIndex: (circleOnTop zIndex = 10 ifTrue:[ nil ] ifFalse:[ 10 ]).
+		layer updateDShape: circleOnTop.
+	].
+	task stepDelay: 1 seconds.
+
+	space := self openViewInWindow: element.
+
+	"Stop thread when window is closed"
+	space addEventHandler: (BlEventHandler
+			 on: BlSpaceCloseRequest
+			 do: [ :event | task kill ]).
+
+	
 ]
 
 { #category : #examples }
