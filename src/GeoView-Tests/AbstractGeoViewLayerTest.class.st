@@ -10,11 +10,23 @@ Class {
 	#category : #'GeoView-Tests-Core'
 }
 
+{ #category : #testing }
+AbstractGeoViewLayerTest class >> isAbstract [
+
+	^ self == AbstractGeoViewLayerTest
+]
+
+{ #category : #running }
+AbstractGeoViewLayerTest >> layerClass [
+
+	self subclassResponsibility
+]
+
 { #category : #running }
 AbstractGeoViewLayerTest >> setUp [
-	super setUp.
 
-	layer := AbstractGeoViewLayer new
+	super setUp.
+	layer := self layerClass new
 ]
 
 { #category : #tests }
@@ -39,7 +51,7 @@ AbstractGeoViewLayerTest >> testHaveDomainObjects [
 { #category : #tests }
 AbstractGeoViewLayerTest >> testHaveGraphicModel [
 
-	self deny: layer haveGraphicModel
+	self deny: layer haveGraphicModel 
 ]
 
 { #category : #tests }

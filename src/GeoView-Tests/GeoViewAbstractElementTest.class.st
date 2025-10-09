@@ -5,28 +5,36 @@ Class {
 	#name : #GeoViewAbstractElementTest,
 	#superclass : #TestCase,
 	#instVars : [
-		'geoView'
+		'geoView',
+		'space'
 	],
 	#category : #'GeoView-Tests-Core'
 }
 
+{ #category : #testing }
+GeoViewAbstractElementTest class >> isAbstract [ 
+
+	^ self == GeoViewAbstractElementTest
+]
+
 { #category : #private }
 GeoViewAbstractElementTest >> createGeoViewElement [
 
-	geoView := GeoViewAbstractElement new
+	self subclassResponsibility 
 ]
 
 { #category : #accessing }
 GeoViewAbstractElementTest >> geoViewSize [
 
-	^ 100 @ 100
+	^ 1000 @ 1000
 ]
 
 { #category : #running }
 GeoViewAbstractElementTest >> setUp [
 
-	| container aSpace |
+	| container |
 	super setUp.
+	
 	self createGeoViewElement.
 	geoView constraintsDo: [ :c |
 			c horizontal matchParent.
@@ -35,18 +43,11 @@ GeoViewAbstractElementTest >> setUp [
 	container extent: self geoViewSize.
 	container addChild: geoView.
 
-	aSpace := BlSpace new.
-	aSpace host: BlHeadlessHost new.
-	aSpace root addChild: container.
+	space := BlSpace new.
+	space host: BlHeadlessHost new.
+	space root addChild: container.
 	container forceLayout.
-	aSpace pulse
-]
-
-{ #category : #running }
-GeoViewAbstractElementTest >> tearDown [
-
-	geoView := nil.
-	super tearDown
+	space pulse
 ]
 
 { #category : #tests }
@@ -171,7 +172,7 @@ GeoViewAbstractElementTest >> testGetLayers [
 { #category : #tests }
 GeoViewAbstractElementTest >> testInitialize [
 
-	self assert: geoView extent equals: 100 @ 100.
+	self assert: geoView extent equals: 1000 @ 1000.
 	self
 		assert: geoView mapProjection class
 		equals: GeoViewMercatorProjection.

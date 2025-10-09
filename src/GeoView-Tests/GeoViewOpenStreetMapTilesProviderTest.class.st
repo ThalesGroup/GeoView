@@ -3,19 +3,14 @@ A GeoViewOpenStreetMapTilesProviderTest is a test class for testing the behavior
 "
 Class {
 	#name : #GeoViewOpenStreetMapTilesProviderTest,
-	#superclass : #TestCase,
-	#instVars : [
-		'provider'
-	],
+	#superclass : #GeoViewTilesProviderTest,
 	#category : #'GeoView-Tests-Map'
 }
 
-{ #category : #running }
-GeoViewOpenStreetMapTilesProviderTest >> setUp [
+{ #category : #tests }
+GeoViewOpenStreetMapTilesProviderTest >> testDefaultCopyrightNote [
 
-	super setUp.
-
-	provider := GeoViewOpenStreetMapTilesProvider new
+	self assert: provider defaultCopyrightNote notNil 
 ]
 
 { #category : #tests }
@@ -25,13 +20,13 @@ GeoViewOpenStreetMapTilesProviderTest >> testHaveCopyrightNote [
 ]
 
 { #category : #tests }
-GeoViewOpenStreetMapTilesProviderTest >> testInitialize [
-
-	self assert: provider notNil
-]
-
-{ #category : #tests }
 GeoViewOpenStreetMapTilesProviderTest >> testServerUrl [
 
 	self assert: provider serverUrl equals: (provider class primaryTileUrl)
+]
+
+{ #category : #initialization }
+GeoViewOpenStreetMapTilesProviderTest >> tilesProvider [
+
+	^ GeoViewOpenStreetMapTilesProvider new
 ]

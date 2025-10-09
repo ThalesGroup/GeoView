@@ -3,56 +3,60 @@ A GeoCircleTest is a test class for testing the behavior of GeoCircle
 "
 Class {
 	#name : #GeoCircleTest,
-	#superclass : #TestCase,
+	#superclass : #GeoShapeTest,
 	#category : #'GeoView-Tests-GeoObjects'
 }
 
 { #category : #'tests - instance' }
-GeoCircleTest >> geoCircle1 [
+GeoCircleTest >> geoObject1 [
 
-	^ GeoCircle new
-		absoluteCoordinates: AbsoluteCoordinates zero;
-		isVisible: true;
-		key: #circle1;
-		fillStyle: Color black asSmockFillStyle;
-		strokeStyle: (Color red asSmockStrokeStyle width: 1);
+	| object |
+	object := super geoObject1.
+
+	^ object
 		radiusInMeters: 5;
 		yourself.
 ]
 
 { #category : #'tests - instance' }
-GeoCircleTest >> geoCircle2 [
+GeoCircleTest >> geoObject2 [
 
-	^ GeoCircle new
-		absoluteCoordinates: (AbsoluteCoordinates latitudeInRadians: 0.5 longitudeInRadians: 0.5);
-		isVisible: false;
-		key: #circle2;
-		fillStyle: Color white asSmockFillStyle;
-		strokeStyle: (Color blue asSmockStrokeStyle width: 2);
+	| object |
+	object := super geoObject2.
+
+	^ object
 		radiusInMeters: 10;
 		yourself.
 ]
 
+{ #category : #accessing }
+GeoCircleTest >> geoObjectClass [
+
+	^ GeoCircle 
+]
+
 { #category : #tests }
 GeoCircleTest >> testCopy [
-	| geoCircle geoCircleCopy |
-	geoCircle := self geoCircle1.
-	geoCircleCopy := geoCircle copy.
-	
-	self assert: geoCircle absoluteCoordinates equals: geoCircleCopy absoluteCoordinates.
-	self assert: geoCircle absoluteCoordinates ~~ geoCircleCopy absoluteCoordinates.
-	self assert: geoCircle isVisible equals: geoCircleCopy isVisible
+
+	| copy |	
+	super testCopy.
+	copy := geoObject copy.
+		
+	self assert: geoObject radiusInMeters equals: copy radiusInMeters
 ]
 
 { #category : #tests }
 GeoCircleTest >> testUpdateWith [
-	| geoCircle1 geoCircle2 |
-	geoCircle1 := self geoCircle1.
-	geoCircle2 := self geoCircle2.
+	| object1 object2 |
 	
-	self assert: geoCircle1 radiusInMeters ~= geoCircle2 radiusInMeters.
+	super testUpdateWith.
 	
-	geoCircle1 updateWith: geoCircle2.
+	object1 := self geoObject1.
+	object2 := self geoObject2.
+		
+	self assert: object1 radiusInMeters ~= object2 radiusInMeters.
+	
+	object1 updateWith: object2.
 
-	self assert: geoCircle1 radiusInMeters equals: geoCircle2 radiusInMeters.
+	self assert: object1 radiusInMeters equals: object2 radiusInMeters.
 ]

@@ -10,9 +10,6 @@ Class {
 	#superclass : #AbstractGeoViewGraphicModelLayer,
 	#traits : 'TSmockHandleProcessDatas + TSmockHandleObjects',
 	#classTraits : 'TSmockHandleProcessDatas classTrait + TSmockHandleObjects classTrait',
-	#instVars : [
-		'displayModel'
-	],
 	#category : #'GeoView-Layers'
 }
 
@@ -36,18 +33,6 @@ GeoViewDomainObjectsLayer >> addObjects: anObjectList [
 		anObjectList do: [ :e |
 			(self displayModel created: e) ifNotNil: [ :f | dShapeList add: f ] ] ].
 	dShapeList ifNotEmpty: [ :e | self addDShapes: e ]
-]
-
-{ #category : #accessing }
-GeoViewDomainObjectsLayer >> displayModel [
-
-	^ displayModel 
-]
-
-{ #category : #accessing }
-GeoViewDomainObjectsLayer >> displayModel: anObject [
-
-	displayModel := anObject
 ]
 
 { #category : #'API -- process datas' }
@@ -81,13 +66,6 @@ GeoViewDomainObjectsLayer >> haveObjectIndex: anIndex [
 	self displayModelMutex critical: [
 		index := self displayModel haveDataIndex: anIndex ].
 	^ index
-]
-
-{ #category : #initialization }
-GeoViewDomainObjectsLayer >> initialize [
-
-	super initialize.
-	self initializeDisplayModel
 ]
 
 { #category : #initialization }
@@ -190,17 +168,17 @@ GeoViewDomainObjectsLayer >> updateModel: aContext [
 	self displayModelMutex critical: [
 		datas := self displayModel getDatas].
 
-		"In case of projection changes, select only dShapes drawed in user coordinates to update, else select all"
-		aContext isProjectionChanges
-			ifTrue: [ dShapes := datas select: [ :e | e hasUserComputing ] ]
-			ifFalse: [
-				self dShapesWaitingToBeUpdated ifNotEmpty: [
-					datas do: [ :e | self dShapesWaitingToBeUpdated at: e key ifAbsentPut: [ e ] ].
-					datas := self dShapesWaitingToBeUpdated values.
-					self dShapesWaitingToBeUpdated: nil ].
-				dShapes := datas collect: [ :e |
-					           e isComposite ifTrue: [ e updateChildrenInDepth ].
-					           e ] ]. 		
+	"In case of projection changes, select only dShapes drawed in user coordinates to update, else select all"
+	aContext isProjectionChanges
+		ifTrue: [ dShapes := datas select: [ :e | e hasUserComputing ] ]
+		ifFalse: [
+			self dShapesWaitingToBeUpdated ifNotEmpty: [
+				datas do: [ :e | self dShapesWaitingToBeUpdated at: e key ifAbsentPut: [ e ] ].
+				datas := self dShapesWaitingToBeUpdated values.
+				self dShapesWaitingToBeUpdated: nil ].
+			dShapes := datas collect: [ :e |
+				           e isComposite ifTrue: [ e updateChildrenInDepth ].
+				           e ] ]. 		
 
 	self updateDShapes: dShapes.
 

@@ -3,19 +3,17 @@ A GeoArcBandTest is a test class for testing the behavior of GeoArcBand
 "
 Class {
 	#name : #GeoArcBandTest,
-	#superclass : #TestCase,
+	#superclass : #GeoShapeTest,
 	#category : #'GeoView-Tests-GeoObjects'
 }
 
 { #category : #'tests-updating' }
-GeoArcBandTest >> geoArcBand1 [
+GeoArcBandTest >> geoObject1 [
 
-	^ GeoArcBand  new
-		absoluteCoordinates: AbsoluteCoordinates zero;
-		isVisible: true;
-		key: #arcband1;
-		fillStyle: Color black asSmockFillStyle;
-		strokeStyle: (Color red asSmockStrokeStyle width: 1);
+	| object |
+	object := super geoObject1.
+
+	^ object
 		apertureInRadians: 5;
 		orientationInAzimuths: 10;
 		radiusInMeters1: 50;
@@ -24,14 +22,12 @@ GeoArcBandTest >> geoArcBand1 [
 ]
 
 { #category : #'tests-updating' }
-GeoArcBandTest >> geoArcBand2 [
+GeoArcBandTest >> geoObject2 [
 
-	^ GeoArcBand  new
-		absoluteCoordinates: AbsoluteCoordinates zero;
-		isVisible: true;
-		key: #arcband2;
-		fillStyle: Color black asSmockFillStyle;
-		strokeStyle: (Color red asSmockStrokeStyle width: 1);
+	| object |
+	object := super geoObject2.
+
+	^ object
 		apertureInRadians: 10;
 		orientationInAzimuths: 20;
 		radiusInMeters1: 100;
@@ -39,34 +35,44 @@ GeoArcBandTest >> geoArcBand2 [
 		yourself.
 ]
 
+{ #category : #accessing }
+GeoArcBandTest >> geoObjectClass [
+
+	^ GeoArcBand 
+]
+
 { #category : #'tests-updating' }
 GeoArcBandTest >> testCopy [
-	| geoArcBand geoArcBandCopy |
-	geoArcBand := self geoArcBand1.
-	geoArcBandCopy := geoArcBand copy.
 
-	self assert: geoArcBand apertureInRadians equals: geoArcBandCopy apertureInRadians.
-	self assert: geoArcBand orientationInAzimuths equals: geoArcBandCopy orientationInAzimuths.
-	self assert: geoArcBand radiusInMeters1 equals: geoArcBandCopy radiusInMeters1.
-	self assert: geoArcBand radiusInMeters2 equals: geoArcBandCopy radiusInMeters2.
+	| copy |	
+	super testCopy.
+	copy := geoObject copy.
+
+	self assert: geoObject apertureInRadians equals: copy apertureInRadians.
+	self assert: geoObject orientationInAzimuths equals: copy orientationInAzimuths.
+	self assert: geoObject radiusInMeters1 equals: copy radiusInMeters1.
+	self assert: geoObject radiusInMeters2 equals: copy radiusInMeters2.
 ]
 
 { #category : #'tests-updating' }
 GeoArcBandTest >> testUpdateWith [
 
-	| geoArcBand1 geoArcBand2 |
-	geoArcBand1 := self geoArcBand1.
-	geoArcBand2 := self geoArcBand2.
+	| object1 object2 |
 	
-	self assert: geoArcBand1 apertureInRadians ~= geoArcBand2 apertureInRadians.
-	self assert: geoArcBand1 orientationInAzimuths ~= geoArcBand2 orientationInAzimuths.
-	self assert: geoArcBand1 radiusInMeters1 ~= geoArcBand2 radiusInMeters1.
-	self assert: geoArcBand1 radiusInMeters2 ~= geoArcBand2 radiusInMeters2.
+	super testUpdateWith.
 	
-	geoArcBand1 updateWith: geoArcBand2.
+	object1 := self geoObject1.
+	object2 := self geoObject2.
+	
+	self assert: object1 apertureInRadians ~= object2 apertureInRadians.
+	self assert: object1 orientationInAzimuths ~= object2 orientationInAzimuths.
+	self assert: object1 radiusInMeters1 ~= object2 radiusInMeters1.
+	self assert: object1 radiusInMeters2 ~= object2 radiusInMeters2.
+	
+	object1 updateWith: object2.
 
-	self assert: geoArcBand1 apertureInRadians equals: geoArcBand2 apertureInRadians.
-	self assert: geoArcBand1 orientationInAzimuths equals: geoArcBand2 orientationInAzimuths.
-	self assert: geoArcBand1 radiusInMeters1 equals: geoArcBand2 radiusInMeters1.
-	self assert: geoArcBand1 radiusInMeters2 equals: geoArcBand2 radiusInMeters2.
+	self assert: object1 apertureInRadians equals: object2 apertureInRadians.
+	self assert: object1 orientationInAzimuths equals: object2 orientationInAzimuths.
+	self assert: object1 radiusInMeters1 equals: object2 radiusInMeters1.
+	self assert: object1 radiusInMeters2 equals: object2 radiusInMeters2.
 ]
