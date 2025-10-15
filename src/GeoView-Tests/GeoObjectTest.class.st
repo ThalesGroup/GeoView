@@ -50,6 +50,18 @@ GeoObjectTest >> setUp [
 ]
 
 { #category : #tests }
+GeoObjectTest >> testAbsoluteCoordinates [
+
+	self assert: geoObject absoluteCoordinates isNil.
+	
+	geoObject absoluteCoordinates: AbsoluteCoordinates zero.
+	self assert: geoObject absoluteCoordinates equals: AbsoluteCoordinates zero.
+	
+	geoObject absoluteCoordinates: nil.
+	self assert: geoObject absoluteCoordinates isNil.
+]
+
+{ #category : #tests }
 GeoObjectTest >> testCopy [
 
 	| copy |

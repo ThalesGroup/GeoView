@@ -11,7 +11,7 @@ Class {
 { #category : #testing }
 GeoViewTilesProvider class >> isAbstract [
 
-	^ self = GeoViewTilesProvider
+	^ self == GeoViewTilesProvider
 ]
 
 { #category : #accessing }

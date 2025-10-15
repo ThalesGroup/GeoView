@@ -84,10 +84,19 @@ GeoObjectProcessData >> processRecycledData: aKey incoming: aGeoObject with: aDS
 	
 	aDShape key: nil.
 	aDShape removeProperties.
+	aDShape coordinates: nil.
+	aDShape coordinatesDeviceOffset: nil.
+	aDShape displayFilter: nil.
+	aDShape drawMode: nil.
+	aDShape isVisible: nil.
+	aDShape isTranslatedByParent: nil.
+	aDShape zIndex: nil.
+	
 	aDShape isComposite ifTrue:[ 
 		aDShape dShapeList removeAll.
 		aDShape toUpdateDShapeList removeAll.
 		aDShape toDeleteDShapeList removeAll.
+		aDShape hasUserComputingChildren: nil.
 	].
 
 	^ aDShape

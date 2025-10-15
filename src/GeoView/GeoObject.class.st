@@ -14,6 +14,12 @@ Class {
 	#category : #'GeoView-Domain - GeoObjects'
 }
 
+{ #category : #testing }
+GeoObject class >> isAbstract [
+
+	^ self == GeoObject
+]
+
 { #category : #accessing }
 GeoObject class >> key: aKey [
 
@@ -22,21 +28,24 @@ GeoObject class >> key: aKey [
 
 { #category : #accessing }
 GeoObject >> absoluteCoordinates [
+
 	^ absoluteCoordinates
 ]
 
 { #category : #accessing }
 GeoObject >> absoluteCoordinates: anAbsoluteCoordinates [
+
 	absoluteCoordinates := anAbsoluteCoordinates
 ]
 
 { #category : #copying }
 GeoObject >> copy [
+
 	| copy |
 	copy := self class new.
-	copy key: self key copy.		
+	copy key: self key copy.
 	copy updateWith: self.
-	^copy
+	^ copy
 ]
 
 { #category : #accessing }
@@ -68,5 +77,5 @@ GeoObject >> updateWith: aGeoObject [
 
 	self properties: aGeoObject properties copy.
 	self absoluteCoordinates: aGeoObject absoluteCoordinates copy.
-	self isVisible: aGeoObject isVisible.
+	self isVisible: aGeoObject isVisible
 ]

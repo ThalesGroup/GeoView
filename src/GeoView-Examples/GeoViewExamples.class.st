@@ -300,14 +300,6 @@ GeoViewExamples class >> exampleGeoCircles [
 	objects := self createGeoCircles: 1000.
 	element addObjects: objects.
 
-	"Example of event handler behavior on geoView domain event"
-	element addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent do: [ :event |
-		event absoluteCoordinates printString traceCr.
-	].
-
-	"Example of custom EventHandler, here a logger"
-	element addEventHandler: (GeoViewEventLogger new).
-
 	^ self openViewInWindow: element
 ]
 
@@ -329,6 +321,22 @@ GeoViewExamples class >> exampleGeoCirclesAddedOneByOne [
 
 	"Example of custom EventHandler, here a logger"
 	element addEventHandler: (GeoViewEventLogger new).
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoCirclesProjected [
+	"Same example as exampleGeoCircles but with projected circles (due to projection deformation)"
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	
+	(element getLayer: #GeoObjectsLayer) setProcessData: (GeoCircleProjectedProcessData new) forClass: GeoCircle. 
+	
+	"create sample datas"
+	objects := self createGeoCircles: 100 do: [ :e | e radiusInMeters: 1000000 ].
+	element addObjects: objects.
 
 	^ self openViewInWindow: element
 ]
@@ -676,6 +684,51 @@ GeoViewExamples class >> exampleLargestCountriesOfTheWorld [
 	]).
 
 	^ self openViewInWindow: geoView
+]
+
+{ #category : #'examples - interactions' }
+GeoViewExamples class >> exampleMeasuringRuler [
+	"This example show how to use a MeasuringRuler with a custom process data"
+
+	| element layer instructionsText |
+	element := GeoViewElement new id: #geoView.
+	element addLayer: (GeoViewMapTilesLayer newWithOpenStreetMap).
+	
+	"Create a new layer to display the measure tool"
+	layer := GeoViewDomainObjectsLayer new name: #tools.
+	layer setProcessData: (GeoMeasuringRulerProcessData new) forClass: GeoMeasuringRuler. 
+	element addLayer: layer.
+	
+	"Create a text to display instructions"
+	instructionsText := BlTextElement new
+				background: Color white;
+				effect: (BlGaussianShadowEffect color: (Color gray alpha: 0.5) width: 10 offset: 0@0);
+	        constraintsDo: [ :constraints |
+		        constraints horizontal fitContent.
+		        constraints vertical exact: 15.
+		        constraints padding: (BlInsets all: 10.0) ];
+	        id: #instructionsText; text: 'Double click on a position to start a measurement, move the mouse and click another time to stay the ruler.' asRopedText;
+	        yourself.
+	element addChild: instructionsText.
+	
+	"create a controller to manager the ruler"
+	element addEventHandler: GeoViewMeasuringRulerController new.
+	
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - interactions' }
+GeoViewExamples class >> exampleMeasuringRulerWithCircle [
+	"This example show how to use a MeasuringRuler but with a process data which is display a circle in addition to the ruler"
+
+	| space geoView layer |
+	space := self exampleMeasuringRuler.
+	
+	geoView := space root childWithId: #geoView.
+	
+	"change process data"
+	layer := geoView getLayer: #tools.
+	layer setProcessData: (GeoMeasuringRulerWithCircleProcessData new) forClass: GeoMeasuringRuler. 
 ]
 
 { #category : #'examples - filters' }

@@ -7,7 +7,7 @@ Class {
 { #category : #accessing }
 DLeafShapeGeoViewProcessData class >> isAbstract [ 
 
-	^ self = DLeafShapeGeoViewProcessData
+	^ self == DLeafShapeGeoViewProcessData
 ]
 
 { #category : #private }

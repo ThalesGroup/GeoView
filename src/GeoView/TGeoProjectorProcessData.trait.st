@@ -11,9 +11,102 @@ Trait {
 	#category : #'GeoView-Projections'
 }
 
-{ #category : #utilities }
-TGeoProjectorProcessData >> createCartesianPolylinesFrom: aFromAbsolutePosition to: aToAbsolutePosition [
-	"Create Cartesian Polylines (using DPolylines) for a geodesic trajectory from a start point to an end point. Each polylines corresponding to a projection cut (not necessary)"
+{ #category : #private }
+TGeoProjectorProcessData >> findLastAndFirstPointsOnProjectionExitBetween: aStartAbsoluteCoordinates and: anEndAbsoluteCoordinates [
+	"Find the last and the first point when a geodesic is cutting by a projection exit. 
+	Be carefull to check that the geodesic is effectively cut by a projection border! 
+	Use self processor projection isAbsoluteCoordinatesOutsideProjectionLimit: a[Start|End]AbsoluteCoordinates to do that"
+
+	| assoc |
+	assoc := GeoViewProjectionUtils
+		         findSideBySideAbsoluteCoordinatesBetween:
+		         aStartAbsoluteCoordinates
+		         and: anEndAbsoluteCoordinates
+		         mapProjection: self processor projection
+		         geodesicFormulas: self geodesicFormulas.
+
+	^ assoc
+]
+
+{ #category : #accessing }
+TGeoProjectorProcessData >> geodesicFormulas [
+
+	^ geodesicFormulas ifNil: [
+		  self usingVincentyFormulas.
+		  geodesicFormulas ]
+]
+
+{ #category : #accessing }
+TGeoProjectorProcessData >> geodesicFormulas: aGeodesicFormulas [
+
+	geodesicFormulas := aGeodesicFormulas
+]
+
+{ #category : #private }
+TGeoProjectorProcessData >> geodesicSamplingForDistanceInMeters: aDistanceInM [
+
+	self flag:'considere projection quality here with a sampling calculation algorithm'.
+	
+	^ 100
+]
+
+{ #category : #'quality ' }
+TGeoProjectorProcessData >> highProjectionQuality [
+
+	self projectionQuality: #high
+]
+
+{ #category : #'quality ' }
+TGeoProjectorProcessData >> lowProjectionQuality [
+
+	self projectionQuality: #low
+]
+
+{ #category : #'quality ' }
+TGeoProjectorProcessData >> mediumProjectionQuality [
+
+	self projectionQuality: #medium
+]
+
+{ #category : #projector }
+TGeoProjectorProcessData >> projectCircle: anAbsolutePosition radiusInMeters: aRadiusInMeters [
+	"Project a circle and return a list of cartesians DPolyline. Each polylines corresponding to an angle sampling to compose the circle"
+
+	| precision polylines from first |
+	precision := 10.
+	polylines := OrderedCollection new.
+
+	(0 to: 360 by: precision) collect: [ :i |
+			| to |
+			to := self geodesicFormulas
+				      absoluteCoordinatesFrom: anAbsolutePosition
+				      distanceInMeters: aRadiusInMeters
+				      azimuthInRadians: i degreesToRadians.
+				
+			from ifNotNil: [
+				
+				(self processor projection geodesicExitsValidDomainFrom: from to: to) ifTrue:[
+					polylines addAll: (self projectGeodesicFrom: from to: to) 
+				] ifFalse:[
+					polylines add: (SmockDPolyline new points: { (self processor projection projLatLonToCart: from) . (self processor projection projLatLonToCart: to) }). 
+				]. 
+							
+			] ifNil:[ first := to ].
+			from := to 
+	].
+
+	(self processor projection geodesicExitsValidDomainFrom: from to: first) ifTrue:[
+		polylines addAll: (self projectGeodesicFrom: from to: first) 
+	] ifFalse:[
+		polylines add: (SmockDPolyline new points: { (self processor projection projLatLonToCart: from) . (self processor projection projLatLonToCart: first) }). 
+	]. 
+
+	^ polylines
+]
+
+{ #category : #projector }
+TGeoProjectorProcessData >> projectGeodesicFrom: aFromAbsolutePosition to: aToAbsolutePosition [
+	"Project a geodesic (a line between two geo positions) and return a list of cartesians DPolyline"
 	
 	| from to distance firstAzimuth n step polylines points currentPoly previousStepGeo |
 	from := aFromAbsolutePosition.
@@ -74,63 +167,6 @@ TGeoProjectorProcessData >> createCartesianPolylinesFrom: aFromAbsolutePosition 
 	^polylines 
 ]
 
-{ #category : #utilities }
-TGeoProjectorProcessData >> findLastAndFirstPointsOnProjectionExitBetween: aStartAbsoluteCoordinates and: anEndAbsoluteCoordinates [
-	"Find the last and the first point when a geodesic is cutting by a projection exit. 
-	Be carefull to check that the geodesic is effectively cut by a projection border! 
-	Use self processor projection isAbsoluteCoordinatesOutsideProjectionLimit: a[Start|End]AbsoluteCoordinates to do that"
-
-	| assoc |
-	assoc := GeoViewProjectionUtils
-		         findSideBySideAbsoluteCoordinatesBetween:
-		         aStartAbsoluteCoordinates
-		         and: anEndAbsoluteCoordinates
-		         mapProjection: self processor projection
-		         geodesicFormulas: self geodesicFormulas.
-
-	^ assoc
-]
-
-{ #category : #accessing }
-TGeoProjectorProcessData >> geodesicFormulas [
-
-	^ geodesicFormulas ifNil: [
-		  self usingVincentyFormulas.
-		  geodesicFormulas ]
-]
-
-{ #category : #accessing }
-TGeoProjectorProcessData >> geodesicFormulas: aGeodesicFormulas [
-
-	geodesicFormulas := aGeodesicFormulas
-]
-
-{ #category : #utilities }
-TGeoProjectorProcessData >> geodesicSamplingForDistanceInMeters: aDistanceInM [
-
-	self flag:'considere projection quality here with a sampling calculation algorithm'.
-
-	^ 100
-]
-
-{ #category : #projector }
-TGeoProjectorProcessData >> highProjectionQuality [
-
-	self projectionQuality: #high
-]
-
-{ #category : #projector }
-TGeoProjectorProcessData >> lowProjectionQuality [
-
-	self projectionQuality: #low
-]
-
-{ #category : #projector }
-TGeoProjectorProcessData >> mediumProjectionQuality [
-
-	self projectionQuality: #medium
-]
-
 { #category : #accessing }
 TGeoProjectorProcessData >> projectionQuality [
 
@@ -143,13 +179,13 @@ TGeoProjectorProcessData >> projectionQuality [
 TGeoProjectorProcessData >> projectionQuality: aSymbol [
 ]
 
-{ #category : #projector }
+{ #category : #'quality ' }
 TGeoProjectorProcessData >> ultraProjectionQuality [
 
 	self projectionQuality: #ultra
 ]
 
-{ #category : #projector }
+{ #category : #formulas }
 TGeoProjectorProcessData >> usingVincentyFormulas [
 
 	self geodesicFormulas: GeodesicVincentyFormulas new

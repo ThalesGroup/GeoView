@@ -7,7 +7,7 @@ Class {
 	#category : #'GeoView-Tests-GeoObjects'
 }
 
-{ #category : #'tests-updating' }
+{ #category : #'tests - instance' }
 GeoArcBandTest >> geoObject1 [
 
 	| object |
@@ -21,7 +21,7 @@ GeoArcBandTest >> geoObject1 [
 		yourself.
 ]
 
-{ #category : #'tests-updating' }
+{ #category : #'tests - instance' }
 GeoArcBandTest >> geoObject2 [
 
 	| object |
@@ -41,7 +41,7 @@ GeoArcBandTest >> geoObjectClass [
 	^ GeoArcBand 
 ]
 
-{ #category : #'tests-updating' }
+{ #category : #tests }
 GeoArcBandTest >> testCopy [
 
 	| copy |	
@@ -54,7 +54,7 @@ GeoArcBandTest >> testCopy [
 	self assert: geoObject radiusInMeters2 equals: copy radiusInMeters2.
 ]
 
-{ #category : #'tests-updating' }
+{ #category : #tests }
 GeoArcBandTest >> testUpdateWith [
 
 	| object1 object2 |

@@ -9,7 +9,7 @@ Class {
 { #category : #accessing }
 DShapeGeoViewProcessData class >> isAbstract [ 
 
-	^ self = DShapeGeoViewProcessData
+	^ self == DShapeGeoViewProcessData
 ]
 
 { #category : #computing }
