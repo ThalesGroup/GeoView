@@ -7,5 +7,5 @@ Class {
 { #category : #accessing }
 DMultiShapesGeoViewProcessData class >> isAbstract [ 
 
-	^ self = DMultiShapesGeoViewProcessData 
+	^ self == DMultiShapesGeoViewProcessData 
 ]

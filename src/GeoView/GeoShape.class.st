@@ -12,6 +12,12 @@ Class {
 	#category : #'GeoView-Domain - GeoObjects'
 }
 
+{ #category : #testing }
+GeoShape class >> isAbstract [
+
+	^ self == GeoShape
+]
+
 { #category : #accessing }
 GeoShape >> fillStyle [
 

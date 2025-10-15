@@ -23,7 +23,7 @@ GeoSegmentProjectedProcessData >> createCartesianPolylinesFor: aGeoSegment [
 	from := aGeoSegment fromAbsolutePosition.
 	to := aGeoSegment toAbsolutePosition.
 
-	polylines := self createCartesianPolylinesFrom: from to: to.
+	polylines := self projectGeodesicFrom: from to: to.
 	^ polylines
 ]
 

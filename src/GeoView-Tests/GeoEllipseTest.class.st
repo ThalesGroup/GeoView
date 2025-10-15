@@ -37,7 +37,7 @@ GeoEllipseTest >> geoObjectClass [
 	^ GeoEllipse 
 ]
 
-{ #category : #'tests-updating' }
+{ #category : #tests }
 GeoEllipseTest >> testCopy [
 
 	| copy |	
@@ -48,7 +48,7 @@ GeoEllipseTest >> testCopy [
 	self assert: geoObject radiusInMeters2 equals: copy radiusInMeters2.
 ]
 
-{ #category : #'tests-updating' }
+{ #category : #tests }
 GeoEllipseTest >> testUpdateWith [
 	| object1 object2 |
 	

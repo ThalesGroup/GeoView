@@ -7,7 +7,7 @@ Class {
 { #category : #accessing }
 GeoShapeProcessData class >> isAbstract [
 
-	^ self name = GeoShapeProcessData
+	^ self == GeoShapeProcessData
 ]
 
 { #category : #dShape }

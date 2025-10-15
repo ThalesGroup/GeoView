@@ -23,7 +23,7 @@ Class {
 { #category : #testing }
 GeoViewAbstractElement class >> isAbstract [
 
-	^ self = GeoViewAbstractElement
+	^ self == GeoViewAbstractElement
 ]
 
 { #category : #enumerating }
