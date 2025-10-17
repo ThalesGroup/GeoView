@@ -23,6 +23,7 @@ DShapeGeoViewProcessData >> computePositionFor: aDShape context: aContext [
 	"when the shape haven't coordinates, that mean the shape is managed by a parent (i.e. a dComposite), return an offset if exists"
 	aDShape coordinates ifNil: [ ^ offset ].
 	self processor ifNil: [ ^ nil ].
+	self processor projection ifNil: [ ^ nil ].
 
 	"Return device coordinates only for draw mode device and position not managed by the parent"
 	(aDShape isDrawModeDevice and: [ aDShape isTranslatedByParent ])
