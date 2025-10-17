@@ -12,6 +12,10 @@ Trait {
 GeoViewManagerServices >> addLayer: aLayer [
 ]
 
+{ #category : #'services - layer' }
+GeoViewManagerServices >> addLayer: aLayer afterIndex: anIndex [
+]
+
 { #category : #services }
 GeoViewManagerServices >> centerOnPoint: aGlobalPoint [ 
 ]

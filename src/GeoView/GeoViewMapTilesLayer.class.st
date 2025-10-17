@@ -140,6 +140,9 @@ GeoViewMapTilesLayer >> doLoadingTilesThread [
 
 	| centerGeoPoint level tilesXY tilesXYBuffer findAtLeastOneTile realLevel|
 
+	self surfaceMap ifNil:[^self].
+	self mapProjection ifNil:[^self].
+
 	self previousScale: currentGraphicProjection scale.
 	self surfaceMap offcenter: self mapOffcenter.
 	self surfaceMap scale: 1@1.
