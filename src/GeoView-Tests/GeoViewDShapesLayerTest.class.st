@@ -25,6 +25,44 @@ GeoViewDShapesLayerTest >> testAddDShape [
 ]
 
 { #category : #tests }
+GeoViewDShapesLayerTest >> testAddDShapeBeforeToBeVisible [
+
+	| circle1 circle2 |
+
+	"First create a circle when the layer is visible"
+	self assert: layer isVisible.
+	circle1 := (SmockDCircle key: #circle1) coordinates: 200@200; radius: 100; strokeColor: Color red; strokeWidth: 2; setDrawModeDevice.
+	layer addDShape: circle1.
+	self assert: layer graphicModel getDatas size equals: 1.
+	
+	"Hide the layer and add another circle"
+	layer isVisible: false.
+	circle2 := (SmockDCircle key: #circle2) coordinates: 100@100; radius: 100; strokeColor: Color yellow; strokeWidth: 2; setDrawModeDevice.
+	layer addDShape: circle2.
+	self assert: layer graphicModel getDatas size equals: 2.
+	
+	"Show the layer"
+	layer isVisible: true.
+	self assert: layer graphicModel getDatas size equals: 2.
+]
+
+{ #category : #tests }
+GeoViewDShapesLayerTest >> testAddDShapeBeforeToBeVisible2 [
+
+	| circle2 |
+
+	"Hide the layer and add a circle"
+	layer isVisible: false.
+	circle2 := (SmockDCircle key: #circle2) coordinates: 100@100; radius: 100; strokeColor: Color yellow; strokeWidth: 2; setDrawModeDevice.
+	layer addDShape: circle2.
+	self assert: layer graphicModel getDatas size equals: 1.
+	
+	"Show the layer"
+	layer isVisible: true.
+	self assert: layer graphicModel getDatas size equals: 1.
+]
+
+{ #category : #tests }
 GeoViewDShapesLayerTest >> testAddDShapes [
 
 	| shape1 shape2 |

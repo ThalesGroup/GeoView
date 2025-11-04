@@ -588,7 +588,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
 	| element layer |
 	element := GeoViewElement new.
 
-	element maxScaleInMeters: element maxScale * 8.
+	element maxScale: element maxScale * 8.
 
 	"add carto layer"
 	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
@@ -931,6 +931,25 @@ GeoViewExamples class >> exampleOrthonormicVsOrthodromicFromParisToNewyork [
 	^ self openViewInWindow: element
 ]
 
+{ #category : #'examples - tiles' }
+GeoViewExamples class >> exampleTileNotVisibleAndThenVisible [
+	"This example show a map layer (assuming an internet connection to default url open street map"
+
+	| element layer |
+	element := GeoViewElement new.
+	element maxScale: element maxScale * 8.
+
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
+	layer isVisible: false.
+	element addLayer: layer.
+
+	"waiting two seconds before show the layer"
+	[ 2 seconds wait. layer isVisible: true ] fork.
+
+	^ self openViewInWindow: element
+]
+
 { #category : #'examples - projections' }
 GeoViewExamples class >> exampleTissotIndicatorMercator [
 	"This example implement the indicator of Tissot (Nicolas August) for a projection, this indicator indicate the level of deformation of the selection projection"
@@ -971,6 +990,24 @@ GeoViewExamples class >> exampleTissotIndicatorUTM [
 
 	^ self openViewInWindow: element
 	
+]
+
+{ #category : #'examples - dshapeslayer' }
+GeoViewExamples class >> exampleVisibilityDShapesLayer [
+	
+	| element layer circle |
+	element := GeoViewElement new.
+	layer := GeoViewDShapesLayer new name: #shapes. 
+	element addLayer: layer.
+	layer isVisible: false.
+	
+	"add circle when the layer is not visible and show it"
+	circle := (SmockDCircle key: #circle2) coordinates: 100@100; radius: 100; strokeColor: Color yellow; strokeWidth: 2; setDrawModeDevice.
+	layer addDShape: circle.
+
+	layer isVisible: true.
+
+	^ self openViewInWindow: element
 ]
 
 { #category : #'examples - dshapeslayer' }

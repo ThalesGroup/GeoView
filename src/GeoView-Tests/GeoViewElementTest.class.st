@@ -285,6 +285,31 @@ GeoViewElementTest >> testLayerNeedToBeSorted [
 ]
 
 { #category : #tests }
+GeoViewElementTest >> testLayerNeedToSortDatasBeforeBeVisible [
+
+	| layer circle1 circle2 |
+	layer := GeoViewDShapesLayer new name: #shapes.
+	geoView addLayer: layer.
+	
+	circle1 := (SmockDCircle key: #circle1) coordinates: 200@200; radius: 100; strokeColor: Color red; strokeWidth: 2; setDrawModeDevice.
+	layer addDShape: circle1.
+	0.2 seconds wait.
+	self assert: layer toBeDisplayDatas size equals: 1.
+	
+	layer isVisible: false.
+	
+	circle2 := (SmockDCircle key: #circle2) coordinates: 100@100; radius: 100; strokeColor: Color yellow; strokeWidth: 2; setDrawModeDevice.
+	layer addDShape: circle2.
+	0.2 seconds wait.
+	self assert: layer toBeDisplayDatas size equals: 1.
+
+	layer isVisible: true.
+	0.2 seconds wait.
+	
+	self assert: layer toBeDisplayDatas size equals: 2.
+]
+
+{ #category : #tests }
 GeoViewElementTest >> testNewInteractionsStrategy [
 
 	self assert: geoView newInteractionsStrategy class equals: GeoViewInteractionsStrategy.

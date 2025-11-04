@@ -159,6 +159,10 @@ GeoViewDShapesLayer >> updateDShapes: aDShapeList [
 GeoViewDShapesLayer >> updateModel: aContext [
 
 	| dShapes |
+	super updateModel: aContext.
+	
+	self isVisible ifFalse:[ ^ self ].
+	
 	self displayModelMutex critical: [ | datas |
 		
 		datas := self displayModel.
@@ -175,7 +179,9 @@ GeoViewDShapesLayer >> updateModel: aContext [
 	
 	self graphicModelMutex critical:[
 		super updateGraphicModelWithDShapes: dShapes 
-	]
+	].
+
+	
 ]
 
 { #category : #accessing }
