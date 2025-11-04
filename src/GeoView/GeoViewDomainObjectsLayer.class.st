@@ -159,10 +159,12 @@ GeoViewDomainObjectsLayer >> setProcessData: aProcessData forClass: aDomainObjec
 
 { #category : #private }
 GeoViewDomainObjectsLayer >> updateModel: aContext [
-	"don't update when not visible"
 
 	| dShapes datas |
-	self isVisible ifFalse: [ ^ self ].
+	super updateModel: aContext.
+	
+	self isVisible ifFalse:[ ^ self ].
+	
 	dShapes := OrderedCollection new.
 
 	self displayModelMutex critical: [
@@ -180,11 +182,7 @@ GeoViewDomainObjectsLayer >> updateModel: aContext [
 				           e isComposite ifTrue: [ e updateChildrenInDepth ].
 				           e ] ]. 		
 
-	self updateDShapes: dShapes.
-
-	aContext isDisplayFilterChanges ifTrue:[ self sendSortRequest. ^ self ].
-	(aContext isBeVisibleChanges and: [ self isNeedToSortDatas ])
-		ifTrue: [ self sendSortRequest ]
+	self updateDShapes: dShapes
 ]
 
 { #category : #'API -- objects management' }

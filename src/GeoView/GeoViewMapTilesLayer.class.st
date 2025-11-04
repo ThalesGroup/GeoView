@@ -938,11 +938,17 @@ GeoViewMapTilesLayer >> updateMapBackground [
 GeoViewMapTilesLayer >> updateModel: aContext [
 
 	super updateModel: aContext.
+	
+	self isVisible ifFalse:[ 
+		aContext isBeVisibleChanges ifTrue:[ self stopTilesWorker ].	
+		^ self ].
 
 	self graphicProjection
 		ifNil: [ ^ self ]
 		ifNotNil: [ :e | currentGraphicProjection := e copy ].
 
+	aContext isBeVisibleChanges ifTrue:[ self resetMap. self restartTilesWorker: 20 milliSeconds. ].
+		
 	aContext isProjectionChanges ifFalse: [ ^ self ].
 	self updateWhenProjectionChanged: aContext
 ]

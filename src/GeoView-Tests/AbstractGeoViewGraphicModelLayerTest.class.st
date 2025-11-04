@@ -166,3 +166,9 @@ AbstractGeoViewGraphicModelLayerTest >> testSortDatas [
 	layer sortDatas. "call from the manager"
 	self deny: layer isNeedToSortDatas.
 ]
+
+{ #category : #tests }
+AbstractGeoViewGraphicModelLayerTest >> testToBeDisplayDatas [
+
+	self assert: layer toBeDisplayDatas isCollection.
+]

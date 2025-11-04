@@ -91,8 +91,8 @@ AbstractGeoViewGraphicModelLayer >> dShapesWaitingToBeUpdated: anObject [
 { #category : #drawing }
 AbstractGeoViewGraphicModelLayer >> datasAeDrawOn: aeCanvas [
 
-	toBeDisplayDatas ifNil: [ ^ self ].
-	toBeDisplayDatas do: [ :e | e aeDrawOn: aeCanvas ]
+	self toBeDisplayDatas ifNotNil: [ :datas |
+		datas do: [ :e | e aeDrawOn: aeCanvas ] ]
 ]
 
 { #category : #'API -- filters' }
@@ -357,7 +357,7 @@ AbstractGeoViewGraphicModelLayer >> populateSortedDatasLimited: aCollection [
 	"limited way: cannot display all the datas"
 	
 	| temp limitedDatas |
-	temp := toBeDisplayDatas copy.
+	temp := self toBeDisplayDatas copy.
 	temp addAll: aCollection.
 	limitedDatas := temp copyFrom: 1 to: (self maximumDisplayedObjects min: temp size).
 	
@@ -370,7 +370,7 @@ AbstractGeoViewGraphicModelLayer >> populateSortedDatasNormally: aCollection [
 	"sort by zIndex by default"
 	aCollection sort: [ :a :b | a zIndex < b zIndex ].
 
-	toBeDisplayDatas addAll: aCollection
+	self toBeDisplayDatas addAll: aCollection
 ]
 
 { #category : #'private - sort' }
@@ -456,7 +456,7 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 	"force sorted to remove and add datas - execute my only with a bloc command applier - return true / false if need to repaint"
 	| sortableDatas |
 
-	toBeDisplayDatas ifNil: [ ^ self ].
+	self toBeDisplayDatas ifNil: [ ^ self ].
 	
 	self graphicModelMutex critical: [
 		self isNeedToSortDatas: false.
@@ -467,7 +467,7 @@ AbstractGeoViewGraphicModelLayer >> sortDatas [
 	sortableDatas := sortableDatas select: [ :gShape | gShape isDrawable and:[ (self isGShapeDisplayed: gShape) ] ].
 
 	"reset objects to display"
-	toBeDisplayDatas removeAll.
+	self toBeDisplayDatas removeAll.
 	
 	self populateSortedDatasWith: sortableDatas
 ]
@@ -482,6 +482,12 @@ AbstractGeoViewGraphicModelLayer >> symbologyProvider [
 AbstractGeoViewGraphicModelLayer >> symbologyProvider: aSymbologyProvider [
 
 	self graphicModel symbologyProvider: aSymbologyProvider
+]
+
+{ #category : #private }
+AbstractGeoViewGraphicModelLayer >> toBeDisplayDatas [
+
+	^ toBeDisplayDatas
 ]
 
 { #category : #'private - DShapes' }
@@ -531,6 +537,20 @@ AbstractGeoViewGraphicModelLayer >> updateGraphicModelWithDShapes: aDShapeList [
 	
 	self needToSortDatas.
 	self isVisible ifTrue:[ self sendRepaintRequest ].
+]
+
+{ #category : #private }
+AbstractGeoViewGraphicModelLayer >> updateModel: aContext [
+	"don't update when not visible"
+
+	self isVisible ifFalse: [ ^ self ].
+
+	"process visibility changes"
+	(aContext isBeVisibleChanges and: [ self isNeedToSortDatas ])
+		ifTrue: [ self sendSortRequest ].
+
+	"process display filter changes"
+	aContext isDisplayFilterChanges ifTrue: [ self sendSortRequest ]
 ]
 
 { #category : #'API -- graphic properties' }
