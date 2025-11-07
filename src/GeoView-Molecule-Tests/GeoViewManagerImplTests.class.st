@@ -30,6 +30,30 @@ GeoViewManagerImplTests >> tearDown [
 ]
 
 { #category : #tests }
+GeoViewManagerImplTests >> testAddLayerAfterIndex [
+
+	| layerA layerB layerC |
+
+	layerA := geoViewManager createAndAddDomainObjectsLayer: #layerA.
+	self assert: layerA notNil.
+
+	layerB := geoViewManager createDomainObjectsLayer: #layerB.
+	self assert: layerB notNil.
+	geoViewManager addLayer: layerB.
+	
+	self assert: (geoViewManager getLayers first) name equals: #layerA.
+	self assert: (geoViewManager getLayers last) name equals: #layerB.
+
+	layerC := geoViewManager createDomainObjectsLayer: #layerC.
+	self assert: layerC notNil.
+	geoViewManager addLayer: layerC afterIndex: 1.
+
+	self assert: (geoViewManager getLayers first) name equals: #layerA.
+	self assert: (geoViewManager getLayers at: 2) name equals: #layerC.
+	self assert: (geoViewManager getLayers last) name equals: #layerB
+]
+
+{ #category : #tests }
 GeoViewManagerImplTests >> testAggregatedComponentsStart [
 
 	self assert: geoViewManager getSmockSymbologyManagerServicesProvider isNotFoundServices equals: false.

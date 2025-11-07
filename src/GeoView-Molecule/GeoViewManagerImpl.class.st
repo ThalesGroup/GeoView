@@ -29,9 +29,15 @@ GeoViewManagerImpl >> activateComponents [
 { #category : #'services - layer' }
 GeoViewManagerImpl >> addLayer: aLayer [
 
+	self addLayer: aLayer afterIndex: nil
+]
+
+{ #category : #'services - layer' }
+GeoViewManagerImpl >> addLayer: aLayer afterIndex: anIndex [
+
 	aLayer name ifNil: [ ^ nil ].
 	self configureLayer: aLayer.
-	self view addLayer: aLayer
+	self view addLayer: aLayer afterIndex: anIndex
 ]
 
 { #category : #'services - object' }
