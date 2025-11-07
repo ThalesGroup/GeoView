@@ -740,7 +740,11 @@ GeoViewAbstractElement >> updateObjects: anUserObjectList [
 	anUserObjectList ifEmpty: [ ^ self ].
 
 	self layers do: [ :e |
-		e haveDomainObjects ifTrue: [ e updateObjects: anUserObjectList ] ]
+		self flag: 'TODO: Add a mutex for accessing layers collection'.
+		e ifNotNil:[
+			e haveDomainObjects ifTrue: [ e updateObjects: anUserObjectList ]
+		] 
+	]
 ]
 
 { #category : #'API -- states' }
