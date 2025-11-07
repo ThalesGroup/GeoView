@@ -41,7 +41,9 @@ GeoBoundingBoxProcessData >> processUpdatedData: aKey incoming: aGeoBoundingBox 
 	points add: (self processor projection projLatLonToCart: aGeoBoundingBox topRightAbsoluteCoordinates).
 	points add: (self processor projection projLatLonToCart: aGeoBoundingBox bottomRightAbsoluteCoordinates).
 	points add: (self processor projection projLatLonToCart: aGeoBoundingBox bottomLeftAbsoluteCoordinates).
-	dPolygon points: points.
+	
+	"some points should be nil in case of projection limits"
+	dPolygon points: (points select:[ :pt | pt notNil ]).
 	
 	^dPolygon
 ]

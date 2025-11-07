@@ -144,14 +144,14 @@ TGeoProjectorProcessData >> projectGeodesicFrom: aFromAbsolutePosition to: aToAb
 				firstPoint := assoc value.
 			
 				cartesianPoint := 	self processor projection projLatLonToCart: lastPoint.
-				currentPoly points add: cartesianPoint.
+				cartesianPoint ifNotNil:[ currentPoly points add: cartesianPoint ].
 			
 				"when first point is out of projection limit it seems than the shape cannot be displayed entirely"
 				(self processor projection isAbsoluteCoordinatesOutsideProjectionLimit: firstPoint) ifFalse:[
 					cartesianPoint := 	self processor projection projLatLonToCart: firstPoint.
 					currentPoly := SmockDPolyline new.
 					polylines add: currentPoly.
-					currentPoly points add: cartesianPoint.
+					cartesianPoint ifNotNil:[ currentPoly points add: cartesianPoint ].
 				].	
 			
 				previousStepGeo := firstPoint.
@@ -159,12 +159,12 @@ TGeoProjectorProcessData >> projectGeodesicFrom: aFromAbsolutePosition to: aToAb
 			
 		] ifFalse:[
 			cartesianPoint := 	self processor projection projLatLonToCart: stepGeo.
-			currentPoly points add: cartesianPoint.
+			cartesianPoint ifNotNil:[ currentPoly points add: cartesianPoint ].
 			previousStepGeo := stepGeo.
 		].
 	].
 
-	^polylines 
+	^ polylines 
 ]
 
 { #category : #accessing }

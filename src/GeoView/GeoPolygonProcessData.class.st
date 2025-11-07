@@ -19,25 +19,27 @@ GeoPolygonProcessData >> createDShapeInstance [
 
 { #category : #processing }
 GeoPolygonProcessData >> processCreatedData: aKey incoming: aGeoPolygon with: aDPolygon context: aContext [
-	| dPolygon points |
+	| dPolygon |
 	
 	dPolygon := aDPolygon.
 	dPolygon := super processCreatedData: aKey incoming: aGeoPolygon with: dPolygon context: aContext.
-	
-	points := aGeoPolygon absolutePositions collect: [ :e | self processor projection projLatLonToCart: e].
-	dPolygon points: points.
+	dPolygon := super processUpdatedData: aKey incoming: aGeoPolygon with: aDPolygon context: aContext.
 	
 	^dPolygon
 ]
 
 { #category : #processing }
 GeoPolygonProcessData >> processUpdatedData: aKey incoming: aGeoPolygon with: aDPolygon context: aContext [
-	| dPolygon points |
-	dPolygon := aDPolygon.
+	| points |
 	super processUpdatedData: aKey incoming: aGeoPolygon with: aDPolygon context: aContext.
 	
-	points := aGeoPolygon absolutePositions collect: [ :e | self processor projection projLatLonToCart: e].
-	dPolygon points: points.
+	points := aGeoPolygon absolutePositions
+	          collect: [ :e |
+	          self processor projection projLatLonToCart: e ]
+	          thenReject: [ :pt | "some points should be nil in case of projection limits"
+		          pt isNil ].
 	
-	^dPolygon
+	aDPolygon points: points.
+
+	^ aDPolygon
 ]
