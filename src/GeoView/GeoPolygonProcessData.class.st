@@ -4,7 +4,7 @@ Class {
 	#category : #'GeoView-Domain - GeoObjects'
 }
 
-{ #category : #private }
+{ #category : #computing }
 GeoPolygonProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape context: aContext [
 	"Position makes no sense for a Geo polygon"
 

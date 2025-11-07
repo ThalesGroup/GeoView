@@ -19,7 +19,8 @@ GeoViewUtils class >> createGeoObjectsLayer: aName [
 
 	| layer |
 	layer := self createDomainObjectsLayer: aName.
-
+	
+	layer setProcessData: GeoBoundingBoxProcessData new forClass: GeoBoundingBox.
 	layer setProcessData: GeoCircleProcessData new forClass: GeoCircle.
 	layer setProcessData: GeoEllipseProcessData new forClass: GeoEllipse.
 	layer setProcessData: GeoSegmentProcessData new forClass: GeoSegment.

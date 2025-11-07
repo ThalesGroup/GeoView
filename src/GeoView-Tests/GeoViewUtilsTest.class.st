@@ -14,6 +14,7 @@ GeoViewUtilsTest >> testCreateGeoObjectsLayer [
 	layer := GeoViewUtils createGeoObjectsLayer: #myLayer.
 	self assert: layer name equals: #myLayer.
 	self assert: layer class equals: GeoViewDomainObjectsLayer.
+	self assert: (layer getProcessDataForClass: GeoBoundingBox) class equals: GeoBoundingBoxProcessData.
 	self assert: (layer getProcessDataForClass: GeoCircle) class equals: GeoCircleProcessData.
 	self assert: (layer getProcessDataForClass: GeoEllipse) class equals: GeoEllipseProcessData.
 	self assert: (layer getProcessDataForClass: GeoSegment) class equals: GeoSegmentProcessData.
