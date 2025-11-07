@@ -4,7 +4,7 @@ Class {
 	#category : #'GeoView-Domain - GeoObjects'
 }
 
-{ #category : #private }
+{ #category : #computing }
 GeoPolylineProcessData >> computePosition: aKey incoming: aGeoObject with: aDShape context: aContext [
 	"Position makes no sense for a Geo polyline"
 
@@ -19,13 +19,11 @@ GeoPolylineProcessData >> createDShapeInstance [
 
 { #category : #processing }
 GeoPolylineProcessData >> processCreatedData: aKey incoming: aGeoPolyline with: aDPolyline context: aContext [
-	| dPolyline points |
+	| dPolyline |
 	
 	dPolyline := aDPolyline.
 	dPolyline := super processCreatedData: aKey incoming: aGeoPolyline with: dPolyline context: aContext.
-	
-	points := aGeoPolyline absolutePositions collect: [ :e | self processor projection projLatLonToCart: e].
-	dPolyline points: points.
+	dPolyline := self processUpdatedData: aKey incoming: aGeoPolyline with: aDPolyline context: aContext.
 	
 	^dPolyline
 ]
@@ -35,8 +33,13 @@ GeoPolylineProcessData >> processUpdatedData: aKey incoming: aGeoPolyline with: 
 	| points |
 	super processUpdatedData: aKey incoming: aGeoPolyline with: aDPolyline context: aContext.
 	
-	points := aGeoPolyline absolutePositions collect: [ :e | self processor projection projLatLonToCart: e].
-	aDPolyline points: points.
+	points := aGeoPolyline absolutePositions
+	          collect: [ :e |
+	          self processor projection projLatLonToCart: e ]
+	          thenReject: [ :pt | "some points should be nil in case of projection limits"
+		          pt isNil ].
 	
-	^aDPolyline
+	aDPolyline points: points.
+
+	^ aDPolyline
 ]

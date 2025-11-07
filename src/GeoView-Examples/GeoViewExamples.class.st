@@ -13,6 +13,36 @@ GeoViewExamples class >> createAndStartTask: aBlockClosure [
 ]
 
 { #category : #private }
+GeoViewExamples class >> createGeoBoundingBoxes: aQuantity [
+
+	^ self createGeoBoundingBoxes: aQuantity do: nil
+]
+
+{ #category : #private }
+GeoViewExamples class >> createGeoBoundingBoxes: aQuantity do: aBlock [
+
+	| list random nb |
+	list := OrderedCollection new.
+	random := Random new.
+	nb := aQuantity.
+	
+	1 to: nb do:[ :i | | object topLeft bottomRight |
+		object := GeoBoundingBox new.
+		object key: i.
+		object fillStyle: (Color random asSmockFillStyle).
+		object strokeStyle: (Color random asSmockStrokeStyle).
+		topLeft := AbsoluteCoordinates random.
+		object topLeftAbsoluteCoordinates: topLeft.
+		bottomRight := AbsoluteCoordinates random.
+		object bottomRightAbsoluteCoordinates: bottomRight.
+		aBlock ifNotNil: [ :b | b value: object ].
+		list add: object.
+	].
+
+	^ list
+]
+
+{ #category : #private }
 GeoViewExamples class >> createGeoCircles: aQuantity [
 
 	^ self createGeoCircles: aQuantity do: nil
@@ -269,6 +299,53 @@ GeoViewExamples class >> exampleDisplayCoordinates [
 										   yourself));
 						 yourself).
 				longitudeText textChanged ].
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoBoundingBox [
+
+	| element box |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+
+	"create sample datas"
+	box := (GeoBoundingBox topLeft: AbsoluteCoordinates frBrest
+					 bottomRight: AbsoluteCoordinates frLyon) 
+					key: 1;
+		         strokeStyle: Color white asSmockStrokeStyle;
+		         absoluteCoordinates: AbsoluteCoordinates zero.
+	element addObject: box.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoBoundingBoxes [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	
+	"create sample datas"
+	objects := self createGeoBoundingBoxes: 1000 do:[ :e | e fillStyle: nil ].
+	element addObjects: objects.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - GeoObjects' }
+GeoViewExamples class >> exampleGeoBoundingBoxesProjected [
+	"This example use ready-to-use geo-object classes (GeoObject and processData) to represent a static (no updates) geographical view with a lot of data."
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	
+	(element getLayer: #GeoObjectsLayer) setProcessData: (GeoBoundingBoxProjectedProcessData new) forClass: GeoBoundingBox. 
+	
+	"create sample datas"
+	objects := self createGeoBoundingBoxes: 100 do:[ :e | e fillStyle: nil ].
+	element addObjects: objects.
 
 	^ self openViewInWindow: element
 ]
