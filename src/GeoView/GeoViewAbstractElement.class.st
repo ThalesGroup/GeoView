@@ -16,7 +16,7 @@ Class {
 		'scale',
 		'maxScale',
 		'minScale',
-		'mutex'
+		'layerListMutex'
 	],
 	#category : #'GeoView-Core'
 }
@@ -335,6 +335,12 @@ GeoViewAbstractElement >> initializeViewInfos [
 	self viewInfos: GeoViewInfos new
 ]
 
+{ #category : #accessing }
+GeoViewAbstractElement >> layerListMutex [
+	layerListMutex ifNil: [ layerListMutex := Semaphore forMutualExclusion ].
+	^ layerListMutex
+]
+
 { #category : #'private - events' }
 GeoViewAbstractElement >> layerNeedToBeRepaint: anEvent [
 
@@ -478,12 +484,6 @@ GeoViewAbstractElement >> minScaleInMeters: aNumber [
 		transformWith: '`@receiver minScaleInMeters: `@aNumber' -> '`@receiver minScale: `@aNumber'.
 
 	self minScale: aNumber
-]
-
-{ #category : #accessing }
-GeoViewAbstractElement >> mutex [
-	mutex ifNil: [ mutex := Semaphore forMutualExclusion ].
-	^ mutex
 ]
 
 { #category : #private }
