@@ -15,7 +15,8 @@ Class {
 		'displayFilter',
 		'scale',
 		'maxScale',
-		'minScale'
+		'minScale',
+		'mutex'
 	],
 	#category : #'GeoView-Core'
 }
@@ -65,12 +66,15 @@ GeoViewAbstractElement >> addLayer: aLayer afterIndex: anIndex [
 	"Add a layer to a specific index. Littles indexes are displayed before highest indexes"
 
 	| event |
-	(self layers includes: aLayer) ifTrue: [ ^ self ].
-	self configureLayer: aLayer.
+	
+	self mutex criticalReleasingOnError:[
+		(self layers includes: aLayer) ifTrue: [ ^ self ].
+		self configureLayer: aLayer.
 
-	(anIndex isNil or:[ (anIndex < 0 or:[ anIndex > self layers size ]) ])
-		ifTrue: [ self layers add: aLayer ]
-		ifFalse: [ self layers add: aLayer afterIndex: anIndex ].
+		(anIndex isNil or:[ (anIndex < 0 or:[ anIndex > self layers size ]) ])
+			ifTrue: [ self layers add: aLayer ]
+			ifFalse: [ self layers add: aLayer afterIndex: anIndex ]
+	].
 
 	self isAttachedToSceneGraph ifTrue: [ aLayer addedToSceneGraph ].	
 
@@ -105,8 +109,10 @@ GeoViewAbstractElement >> addObject: anUserObject [
 
 	anUserObject ifNil: [ ^ self ].
 
-	self layers do: [ :e |
+	self mutex criticalReleasingOnError:[
+		self layers do: [ :e |
 		e haveDomainObjects ifTrue: [ e addObject: anUserObject ] ]
+	]
 ]
 
 { #category : #'API -- objects management' }
@@ -115,8 +121,10 @@ GeoViewAbstractElement >> addObjects: anUserObjectList [
 	(anUserObjectList isNil or: [ anUserObjectList isEmpty ]) ifTrue: [
 		^ self ].
 
-	self layers do: [ :e |
-		e haveDomainObjects ifTrue: [ e addObjects: anUserObjectList ] ]
+	self mutex criticalReleasingOnError:[
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e addObjects: anUserObjectList ] ]
+	]
 ]
 
 { #category : #'API -- filters' }
@@ -225,7 +233,9 @@ GeoViewAbstractElement >> displayToGraphicProjection: aGeoView2DProjection [
 	displayToGraphicProjection ifNil: [ ^ self ].
 
 	"inject the projection to all layers"
-	self layers do:[ :l | l graphicProjection: displayToGraphicProjection ].
+	self mutex criticalReleasingOnError:[
+		self layers do:[ :l | l graphicProjection: displayToGraphicProjection ]
+	].
 	
 	self updateDisplayToGraphicProjection
 ]
@@ -470,6 +480,12 @@ GeoViewAbstractElement >> minScaleInMeters: aNumber [
 	self minScale: aNumber
 ]
 
+{ #category : #accessing }
+GeoViewAbstractElement >> mutex [
+	mutex ifNil: [ mutex := Semaphore forMutualExclusion ].
+	^ mutex
+]
+
 { #category : #private }
 GeoViewAbstractElement >> normalizeScale: aNumberInMeters [
 
@@ -563,9 +579,11 @@ GeoViewAbstractElement >> removeAllLayers [
 GeoViewAbstractElement >> removeLayer: aLayer [
 	
 	| event |
-	(self layers includes: aLayer) ifFalse: [ ^ self ].
-	self unconfigureLayer: aLayer.
-	self layers remove: aLayer.
+	self mutex criticalReleasingOnError:[
+		(self layers includes: aLayer) ifFalse: [ ^ self ].
+		self unconfigureLayer: aLayer.
+		self layers remove: aLayer
+	].
 	self isAttachedToSceneGraph ifTrue:[ aLayer removedFromSceneGraph ].
 	
 	"Send layer added event"
@@ -579,8 +597,10 @@ GeoViewAbstractElement >> removeObject: anUserObject [
 
 	anUserObject ifNil: [ ^ self ].
 
-	self layers do: [ :e |
-		e haveDomainObjects ifTrue: [ e removeObject: anUserObject ] ]
+	self mutex criticalReleasingOnError:[
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e removeObject: anUserObject ] ]
+	]
 ]
 
 { #category : #'API -- objects management' }
@@ -589,8 +609,11 @@ GeoViewAbstractElement >> removeObjects: anUserObjectList [
 	anUserObjectList ifNil: [ ^ self ].
 	anUserObjectList ifEmpty: [ ^ self ].
 
-	self layers do: [ :e |
-		e haveDomainObjects ifTrue: [ e removeObjects: anUserObjectList ] ]
+	self mutex criticalReleasingOnError:[
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e removeObjects: anUserObjectList ] ]
+	]
+
 ]
 
 { #category : #private }
@@ -721,7 +744,9 @@ GeoViewAbstractElement >> updateModel: aContext [
 	aContext ifNil:[ ^ self ].
 	self layers ifEmpty: [ ^ self ].
 
+	self mutex criticalReleasingOnError:[
 	self layers do: [ :l | l updateModel: aContext ]
+	]
 ]
 
 { #category : #'API -- objects management' }
@@ -729,8 +754,10 @@ GeoViewAbstractElement >> updateObject: anUserObject [
 
 	anUserObject ifNil: [ ^ self ].
 
-	self layers do: [ :e |
-		e haveDomainObjects ifTrue: [ e updateObject: anUserObject ] ]
+	self mutex criticalReleasingOnError:[
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e updateObject: anUserObject ] ]
+	]
 ]
 
 { #category : #'API -- objects management' }
@@ -739,8 +766,10 @@ GeoViewAbstractElement >> updateObjects: anUserObjectList [
 	anUserObjectList ifNil: [ ^ self ].
 	anUserObjectList ifEmpty: [ ^ self ].
 
-	self layers do: [ :e |
-		e haveDomainObjects ifTrue: [ e updateObjects: anUserObjectList ] ]
+	self mutex criticalReleasingOnError:[
+		self layers do: [ :e |
+			e haveDomainObjects ifTrue: [ e updateObjects: anUserObjectList ] ]
+	]
 ]
 
 { #category : #'API -- states' }
