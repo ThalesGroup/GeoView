@@ -311,6 +311,14 @@ GeoViewElementTest >> testInteractionsStrategy [
 ]
 
 { #category : #tests }
+GeoViewElementTest >> testInteractionsStrategyDefaultValues [
+
+	self assert: geoView interactionsStrategy allowMapMoving.
+	self assert: geoView interactionsStrategy allowMapScaling.
+	self assert: geoView interactionsStrategy isMultipleSelection
+]
+
+{ #category : #tests }
 GeoViewElementTest >> testLayerNeedToBeSorted [
 	"Test when a added layer that need to be sorted is sorted"
 
