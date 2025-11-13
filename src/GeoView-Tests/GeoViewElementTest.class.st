@@ -161,6 +161,51 @@ GeoViewElementTest >> testAbsoluteCoordinatesFromGlobalPoint2 [
 ]
 
 { #category : #tests }
+GeoViewElementTest >> testAddRemoveLayers [
+
+	| layerA layerB index list isModeA updateTask uiTask|
+	layerA := GeoViewUtils createGeoObjectsLayer: #layerA.
+	layerB := GeoViewUtils createGeoObjectsLayer: #layerB.
+	geoView addLayer: layerA.
+	isModeA := true.
+	self assert: (geoView getLayer: #layerA) equals: layerA.
+	
+	index := 5000.
+	list := self createRandomPositionGeoCircles: index color: Color random radius: 100000.
+	geoView addObjects: list.
+	
+	updateTask := (self createTask: [ 
+		isModeA := isModeA not.
+		isModeA ifTrue:[
+			geoView removeLayer: layerB.
+			geoView addLayer: layerA.
+		] ifFalse:[
+			geoView removeLayer: layerA.
+			geoView addLayer: layerB.
+		]
+	] delay: 100 milliSeconds) start; yourself.
+
+	"stimulate user interaction by updating the model"
+	uiTask := (self createTask: [
+		geoView updateModel: GeoViewProjectionChanges new.
+	] delay: 5 milliSeconds) start; yourself.
+
+	1 seconds wait.
+	updateTask stop.
+	uiTask stop.
+	spacePulseTask stop.
+	2 seconds wait.
+	
+	isModeA ifTrue:[
+		self assert: (geoView getLayer: #layerA) notNil.
+		self assert: (geoView getLayer: #layerB) isNil
+	] ifFalse:[
+		self assert: (geoView getLayer: #layerA) isNil.
+		self assert: (geoView getLayer: #layerB) notNil
+	]
+]
+
+{ #category : #tests }
 GeoViewElementTest >> testCreateAndRemoveObjectOnHiddenLayer [
 	
 	| index list updateTask layer uiTask |
