@@ -67,7 +67,7 @@ GeoViewAbstractElement >> addLayer: aLayer afterIndex: anIndex [
 
 	| event |
 	
-	self mutex criticalReleasingOnError:[
+	self layerListMutex criticalReleasingOnError:[
 		(self layers includes: aLayer) ifTrue: [ ^ self ].
 		self configureLayer: aLayer.
 
@@ -109,7 +109,7 @@ GeoViewAbstractElement >> addObject: anUserObject [
 
 	anUserObject ifNil: [ ^ self ].
 
-	self mutex criticalReleasingOnError:[
+	self layerListMutex criticalReleasingOnError:[
 		self layers do: [ :e |
 		e haveDomainObjects ifTrue: [ e addObject: anUserObject ] ]
 	]
@@ -121,7 +121,7 @@ GeoViewAbstractElement >> addObjects: anUserObjectList [
 	(anUserObjectList isNil or: [ anUserObjectList isEmpty ]) ifTrue: [
 		^ self ].
 
-	self mutex criticalReleasingOnError:[
+	self layerListMutex criticalReleasingOnError:[
 		self layers do: [ :e |
 			e haveDomainObjects ifTrue: [ e addObjects: anUserObjectList ] ]
 	]
@@ -233,7 +233,7 @@ GeoViewAbstractElement >> displayToGraphicProjection: aGeoView2DProjection [
 	displayToGraphicProjection ifNil: [ ^ self ].
 
 	"inject the projection to all layers"
-	self mutex criticalReleasingOnError:[
+	self layerListMutex criticalReleasingOnError:[
 		self layers do:[ :l | l graphicProjection: displayToGraphicProjection ]
 	].
 	
@@ -579,7 +579,7 @@ GeoViewAbstractElement >> removeAllLayers [
 GeoViewAbstractElement >> removeLayer: aLayer [
 	
 	| event |
-	self mutex criticalReleasingOnError:[
+	self layerListMutex criticalReleasingOnError:[
 		(self layers includes: aLayer) ifFalse: [ ^ self ].
 		self unconfigureLayer: aLayer.
 		self layers remove: aLayer
@@ -597,7 +597,7 @@ GeoViewAbstractElement >> removeObject: anUserObject [
 
 	anUserObject ifNil: [ ^ self ].
 
-	self mutex criticalReleasingOnError:[
+	self layerListMutex criticalReleasingOnError:[
 		self layers do: [ :e |
 			e haveDomainObjects ifTrue: [ e removeObject: anUserObject ] ]
 	]
@@ -609,7 +609,7 @@ GeoViewAbstractElement >> removeObjects: anUserObjectList [
 	anUserObjectList ifNil: [ ^ self ].
 	anUserObjectList ifEmpty: [ ^ self ].
 
-	self mutex criticalReleasingOnError:[
+	self layerListMutex criticalReleasingOnError:[
 		self layers do: [ :e |
 			e haveDomainObjects ifTrue: [ e removeObjects: anUserObjectList ] ]
 	]
@@ -744,8 +744,8 @@ GeoViewAbstractElement >> updateModel: aContext [
 	aContext ifNil:[ ^ self ].
 	self layers ifEmpty: [ ^ self ].
 
-	self mutex criticalReleasingOnError:[
-	self layers do: [ :l | l updateModel: aContext ]
+	self layerListMutex criticalReleasingOnError:[
+		self layers do: [ :l | l updateModel: aContext ]
 	]
 ]
 
@@ -754,7 +754,7 @@ GeoViewAbstractElement >> updateObject: anUserObject [
 
 	anUserObject ifNil: [ ^ self ].
 
-	self mutex criticalReleasingOnError:[
+	self layerListMutex criticalReleasingOnError:[
 		self layers do: [ :e |
 			e haveDomainObjects ifTrue: [ e updateObject: anUserObject ] ]
 	]
@@ -766,7 +766,7 @@ GeoViewAbstractElement >> updateObjects: anUserObjectList [
 	anUserObjectList ifNil: [ ^ self ].
 	anUserObjectList ifEmpty: [ ^ self ].
 
-	self mutex criticalReleasingOnError:[
+	self layerListMutex criticalReleasingOnError:[
 		self layers do: [ :e |
 			e haveDomainObjects ifTrue: [ e updateObjects: anUserObjectList ] ]
 	]
