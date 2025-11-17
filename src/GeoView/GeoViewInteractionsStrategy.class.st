@@ -12,7 +12,8 @@ Class {
 		'mouseDownPosition',
 		'pickingRadius',
 		'lastMouseMoveEventTimestamp',
-		'isMultipleSelection'
+		'isMultipleSelection',
+		'selectionFilterBlock'
 	],
 	#category : #'GeoView-Events'
 }
@@ -203,6 +204,9 @@ GeoViewInteractionsStrategy >> primaryClickEvent: anEvent [
 	point := anEvent position.
 	
 	pickingResult := element pickAt: point radius: self pickingRadius.
+	self selectionFilterBlock ifNotNil:[
+		pickingResult := pickingResult applyFilter: self selectionFilterBlock
+	].
 
 	"send picking event"
 	event := GeoViewPickingEvent new.
@@ -249,6 +253,18 @@ GeoViewInteractionsStrategy >> pulsePeriodInMs [
 	"BlHostPulseLoop>>defaultPulsePeriod"
 
 	^ 15 milliSecond
+]
+
+{ #category : #accessing }
+GeoViewInteractionsStrategy >> selectionFilterBlock [
+
+	^ selectionFilterBlock
+]
+
+{ #category : #accessing }
+GeoViewInteractionsStrategy >> selectionFilterBlock: aSelectFilterBlock [
+
+	selectionFilterBlock := aSelectFilterBlock 
 ]
 
 { #category : #'events - processing' }
