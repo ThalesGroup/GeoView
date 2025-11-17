@@ -258,7 +258,7 @@ GeoViewInteractionsStrategy >> pulsePeriodInMs [
 { #category : #accessing }
 GeoViewInteractionsStrategy >> selectionFilterBlock [
 
-	^ selectionFilterBlock ifNil:[ selectionFilterBlock := [:e | ] ]
+	^ selectionFilterBlock
 ]
 
 { #category : #accessing }
