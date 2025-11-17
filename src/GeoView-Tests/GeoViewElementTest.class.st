@@ -315,7 +315,17 @@ GeoViewElementTest >> testInteractionsStrategyDefaultValues [
 
 	self assert: geoView interactionsStrategy allowMapMoving.
 	self assert: geoView interactionsStrategy allowMapScaling.
-	self assert: geoView interactionsStrategy isMultipleSelection
+	self assert: geoView interactionsStrategy isMultipleSelection.
+	self assert: geoView interactionsStrategy selectionFilterBlock equals: nil
+]
+
+{ #category : #tests }
+GeoViewElementTest >> testInteractionsStrategySelectionFilter [
+
+	self assert: geoView interactionsStrategy selectionFilterBlock equals: nil.
+	geoView interactionsStrategy selectionFilterBlock: [ :e | ].
+	self assert: geoView interactionsStrategy selectionFilterBlock notNil.
+	
 ]
 
 { #category : #tests }
