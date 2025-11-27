@@ -21,13 +21,15 @@ DShapeGeoViewProcessDataTest class >> isAbstract [
 { #category : #asserting }
 DShapeGeoViewProcessDataTest >> assertCreatedGShape: aGShape forDShape: aDShape iteration: aNumber [
 
-	self assert: (aGShape isKindOf: SmockGShape2D)
+	self assert: (aGShape isKindOf: SmockGShape2D).
+	self assert: aDShape hasEffect equals: aGShape hasEffect.
 ]
 
 { #category : #asserting }
 DShapeGeoViewProcessDataTest >> assertDeletedGShape: aGShape forDShape: aDShape iteration: aNumber [
 
-	self assert: (aGShape isKindOf: SmockGShape2D)
+	self assert: (aGShape isKindOf: SmockGShape2D).
+	self assert: aDShape hasEffect equals: aGShape hasEffect.
 ]
 
 { #category : #asserting }
@@ -39,13 +41,15 @@ DShapeGeoViewProcessDataTest >> assertGShapeStateChanged: aGShape iteration: aNu
 { #category : #asserting }
 DShapeGeoViewProcessDataTest >> assertRecycledGShape: aGShape forDShape: aDShape iteration: aNumber [
 
-	self assert: (aGShape isKindOf: SmockGShape2D)
+	self assert: (aGShape isKindOf: SmockGShape2D).
+	self deny: aGShape hasEffect.
 ]
 
 { #category : #asserting }
 DShapeGeoViewProcessDataTest >> assertUpdatedGShape: aGShape forDShape: aDShape iteration: aNumber [
 
-	self assert: (aGShape isKindOf: SmockGShape2D)
+	self assert: (aGShape isKindOf: SmockGShape2D).
+	self assert: aDShape hasEffect equals: aGShape hasEffect.
 ]
 
 { #category : #running }

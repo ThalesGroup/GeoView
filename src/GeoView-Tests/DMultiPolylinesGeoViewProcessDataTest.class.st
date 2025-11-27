@@ -1,6 +1,6 @@
 Class {
 	#name : #DMultiPolylinesGeoViewProcessDataTest,
-	#superclass : #DShapeGeoViewProcessDataTest,
+	#superclass : #DLeafShapeGeoViewProcessDataTest,
 	#category : #'GeoView-Tests-ProcessDatas'
 }
 

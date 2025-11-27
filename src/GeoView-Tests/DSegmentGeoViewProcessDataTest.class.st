@@ -1,6 +1,6 @@
 Class {
 	#name : #DSegmentGeoViewProcessDataTest,
-	#superclass : #DShapeGeoViewProcessDataTest,
+	#superclass : #DLeafShapeGeoViewProcessDataTest,
 	#category : #'GeoView-Tests-ProcessDatas'
 }
 

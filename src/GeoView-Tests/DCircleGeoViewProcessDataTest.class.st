@@ -1,6 +1,6 @@
 Class {
 	#name : #DCircleGeoViewProcessDataTest,
-	#superclass : #DShapeGeoViewProcessDataTest,
+	#superclass : #DLeafShapeGeoViewProcessDataTest,
 	#category : #'GeoView-Tests-ProcessDatas'
 }
 
@@ -13,7 +13,10 @@ DCircleGeoViewProcessDataTest >> createDShapes [
 	SmockDCircle new .
 	
 	"Complete shape"
-	(SmockDCircle new radius: 10; coordinates: 0@0; fillColor: Color red)
+	(SmockDCircle new radius: 10; coordinates: 0@0; fillColor: Color red).
+	
+	"With effect"
+	(SmockDCircle new radius: 10; coordinates: 0@0; fillColor: Color red; effect: (SmockDuplicateEffect new)).
 	 }
 ]
 
