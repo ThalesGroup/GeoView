@@ -328,7 +328,7 @@ GeoViewExamples class >> exampleGeoBoundingBoxes [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 	
 	"create sample datas"
-	objects := self createGeoBoundingBoxes: 1000 do:[ :e | e fillStyle: nil ].
+	objects := self createGeoBoundingBoxes: 100 do:[ :e | e fillStyle: nil ].
 	element addObjects: objects.
 
 	^ self openViewInWindow: element
@@ -457,7 +457,7 @@ GeoViewExamples class >> exampleGeoPolylines [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 		
 	"create sample datas"
-	objects := self createGeoPolyline: 1000.
+	objects := self createGeoPolyline: 100.
 	element addObjects: objects.
 
 	^ self openViewInWindow: element
@@ -529,7 +529,7 @@ GeoViewExamples class >> exampleGeoSegmentsProjected [
 	element getLayers last setProcessData: (GeoSegmentProjectedProcessData new) forClass: GeoSegment.
 		
 	"create sample datas"
-	objects := self createGeoSegment: 200.
+	objects := self createGeoSegment: 100.
 	
 	element addObjects: objects.
 
@@ -734,7 +734,7 @@ GeoViewExamples class >> exampleLargestCitiesOfTheWorld [
 	geoView := GeoViewUtils createGeoViewForGeoObjects.
 	geoView addLayerAtFirst: (GeoViewMapTilesLayer new).
 	"configure process data of GeoPosition objects"
-	(geoView getLayers last getProcessDataForClass: GeoPosition) textColor: Color black.
+	(geoView getLayers last getProcessDataForClass: GeoPosition).
 	
 	"add largest cities with the same icon"
 	nb := 1.

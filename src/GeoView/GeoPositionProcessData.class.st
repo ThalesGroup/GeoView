@@ -24,11 +24,8 @@ GeoPositionProcessData >> processCreatedData: aKey incoming: aGeoPosition with: 
 
 	"create label"
 	dLabel := SmockDText key: #text.
-	dLabel fillColor: self textColor.
-	dLabel smockFont: SmockFont defaultFont.
-	dLabel text: aGeoPosition text.
-	dLabel setTopCenter.
-	dLabel coordinatesDeviceOffset: 0 @ -30.
+	dLabel fillColor: self textColor; smockFont: SmockFont defaultFont; text: aGeoPosition text; setTopCenter; coordinatesDeviceOffset: 0 @ -30.
+	dLabel effect: (SmockBackgroundEffect new fillColor: (Color white alpha: 0.66); padding: (SmockInsets all: 2)).
 	dCompositeShape addChild: dLabel.
 	
 	^ dCompositeShape
@@ -59,7 +56,7 @@ GeoPositionProcessData >> processUpdatedData: aKey incoming: aGeoPosition with: 
 { #category : #accessing }
 GeoPositionProcessData >> textColor [
 
-	^ textColor ifNil: [ textColor := Color white ]
+	^ textColor ifNil: [ textColor := Color black ]
 ]
 
 { #category : #accessing }

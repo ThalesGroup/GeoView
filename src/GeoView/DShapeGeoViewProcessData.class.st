@@ -81,6 +81,9 @@ DShapeGeoViewProcessData >> processUpdatedData: aKey incoming: aDShape with: aGS
 	self processor displayFilter ifNotNil:[ :displayFilter | 
 		displayFilter processDShape: aDShape toGShape: aGShape2D.
 	].
+
+	"Inject effect pointer"
+	aGShape2D effect: aDShape effect.
 	
 	^ aGShape2D
 ]
