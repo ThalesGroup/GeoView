@@ -64,6 +64,8 @@ DShapeGeoViewProcessData >> processRecycledData: aKey incoming: aDShape with: aG
 DShapeGeoViewProcessData >> processStateChanged: aKey state: aState value: aValueOrNil with: aProducedData context: aContext [
 
 	"do nothing"
+	
+	^ aProducedData
 ]
 
 { #category : #processing }
