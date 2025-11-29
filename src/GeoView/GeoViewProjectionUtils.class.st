@@ -58,14 +58,13 @@ GeoViewProjectionUtils class >> projectedCartesianRadiusFromCenter: anAbsoluteCo
 
 	| cartesianCoordinates1 tangentAbsolutePosition cartesianCoordinates2 cartesianRadius |
 
-	self flag:'labordep: check projection limits before calculating'.
 	(aMapProjection isAbsoluteCoordinatesOutsideProjectionLimit: anAbsoluteCoordinates) ifTrue:[
 		^ nil
 	].
 	
 	cartesianCoordinates1 := aMapProjection projLatLonToCart: anAbsoluteCoordinates.
 		
-	tangentAbsolutePosition := GeodesicApproximativeFormulas new
+	tangentAbsolutePosition := GeodesicHaversineFormulas new
 		         absoluteCoordinatesFrom: anAbsoluteCoordinates
 		         distanceInMeters: aDistanceInM
 		         azimuthInRadians: (anAzimuthInDegrees degreesToRadians).
