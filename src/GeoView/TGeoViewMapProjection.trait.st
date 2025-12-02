@@ -6,6 +6,13 @@ Trait {
 	#category : #'GeoView-Projections'
 }
 
+{ #category : #accessing }
+TGeoViewMapProjection >> epsgCode [
+	"Return the EPSG code identifying the projection coordinate reference system"
+
+	self shouldBeImplemented 
+]
+
 { #category : #testing }
 TGeoViewMapProjection >> geodesicExitsValidDomainFrom: aFromAbsoluteCoordinates to: aToAbsoluteCoordinates [
 	"return a boolean if a segment between two points need to be cut, used in case of changement of the projection side"

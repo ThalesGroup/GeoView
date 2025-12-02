@@ -21,6 +21,13 @@ GeoViewMercatorProjection class >> scaleFactor [
 	^ self k0
 ]
 
+{ #category : #accessing }
+GeoViewMercatorProjection >> epsgCode [
+	"EPSG:3395 World Mercator (ellipsoidal earth)"
+
+	^ 3395
+]
+
 { #category : #testing }
 GeoViewMercatorProjection >> geodesicExitsValidDomainFrom: aFromAbsoluteCoordinates to: aToAbsoluteCoordinates [
 	"return a boolean if a segment between two points need to be cut, used in case of changement of the projection side"
