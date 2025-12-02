@@ -75,6 +75,9 @@ GeoViewElement >> initializeFootnotesElements [
 	| element |
 	element := GeoViewFootnotesElement id: #footnotes.
 	
+	"Non interactive BlElement"
+	element preventMeAndChildrenMouseEvents.
+	
 	element constraintsDo: [ :c |
 		c horizontal matchParent.
 		c vertical matchParent.
@@ -127,9 +130,15 @@ GeoViewElement >> newInteractionsStrategy [
 { #category : #'strategy management' }
 GeoViewElement >> removeInteractionsStrategy [
 
-	interactionsStrategy ifNil:[ ^ self ].
-	self removeEventHandler: interactionsStrategy.
-	interactionsStrategy := nil.
+	interactionsStrategy ifNil: [ ^ self ].
+
+	interactionsStrategy geoView: nil.
+
+	(self layerListElement hasEventHandler: interactionsStrategy)
+		ifTrue: [
+		self layerListElement removeEventHandler: interactionsStrategy ].
+	
+	interactionsStrategy := nil
 ]
 
 { #category : #'strategy management' }
@@ -137,9 +146,12 @@ GeoViewElement >> setInteractionsStrategy: aBlEventListener [
 
 	self removeInteractionsStrategy.
 
-	aBlEventListener ifNil:[ ^ self ].
+	aBlEventListener ifNil: [ ^ self ].
+
 	interactionsStrategy := aBlEventListener.
-	self addEventHandler: aBlEventListener.
+	interactionsStrategy geoView: self.
+	
+	self layerListElement addEventHandler: aBlEventListener
 ]
 
 { #category : #private }

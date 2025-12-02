@@ -305,6 +305,12 @@ GeoViewElementTest >> testFootnotes [
 ]
 
 { #category : #tests }
+GeoViewElementTest >> testFootnotesElement [
+
+	self assert: geoView footnotesElement notNil
+]
+
+{ #category : #tests }
 GeoViewElementTest >> testInteractionsStrategy [
 
 	self assert: geoView interactionsStrategy class equals: GeoViewInteractionsStrategy

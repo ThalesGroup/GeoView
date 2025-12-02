@@ -96,6 +96,19 @@ GeoViewDShapesLayer >> populatePickingResult: aPickingResult at: index with: aGS
 ]
 
 { #category : #'API -- DShapes' }
+GeoViewDShapesLayer >> removeAllDShapes [
+
+	| toRemove |
+	toRemove := OrderedCollection new.
+
+	self displayModelMutex critical: [
+		toRemove addAll: self displayModel values
+	].
+
+	^ self removeDShapes: toRemove
+]
+
+{ #category : #'API -- DShapes' }
 GeoViewDShapesLayer >> removeDShape: aDShape [
 
 	aDShape ifNil: [ ^ self ].
