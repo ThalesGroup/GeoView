@@ -4,52 +4,20 @@ This class provided classical mouse and keyboard ergonomic to move, scale and se
 "
 Class {
 	#name : #GeoViewInteractionsStrategy,
-	#superclass : #BlEventListener,
+	#superclass : #AbstractGeoViewInteractionsStrategy,
 	#instVars : [
-		'allowMapMoving',
-		'allowMapScaling',
 		'isMapMoving',
 		'mouseDownPosition',
-		'pickingRadius',
-		'lastMouseMoveEventTimestamp',
-		'isMultipleSelection',
-		'selectionFilterBlock'
+		'lastMouseMoveEventTimestamp'
 	],
 	#category : #'GeoView-Events'
 }
 
-{ #category : #accessing }
-GeoViewInteractionsStrategy >> allowMapMoving [
-
-	^ allowMapMoving ifNil:[ allowMapMoving := true ]
-]
-
-{ #category : #accessing }
+{ #category : #map }
 GeoViewInteractionsStrategy >> allowMapMoving: anObject [
 
-	allowMapMoving := anObject
-]
-
-{ #category : #accessing }
-GeoViewInteractionsStrategy >> allowMapScaling [
-
-	^ allowMapScaling ifNil:[ allowMapScaling := true ]
-]
-
-{ #category : #accessing }
-GeoViewInteractionsStrategy >> allowMapScaling: anObject [
-
-	allowMapScaling := anObject
-]
-
-{ #category : #'mouse handlers' }
-GeoViewInteractionsStrategy >> clickEvent: anEvent [
-
-	anEvent
-		ifPrimary: [ self primaryClickEvent: anEvent ]
-		secondary: [  ]
-		middle: [  ]
-		other: [  ]
+	super allowMapMoving: anObject.
+	self isMapMoving: nil
 ]
 
 { #category : #accessing }
@@ -62,18 +30,6 @@ GeoViewInteractionsStrategy >> isMapMoving [
 GeoViewInteractionsStrategy >> isMapMoving: aBoolean [
 
 	isMapMoving := aBoolean
-]
-
-{ #category : #accessing }
-GeoViewInteractionsStrategy >> isMultipleSelection [
-
-	^ isMultipleSelection ifNil:[ isMultipleSelection := true ]
-]
-
-{ #category : #accessing }
-GeoViewInteractionsStrategy >> isMultipleSelection: aBoolean [
-
-	isMultipleSelection := aBoolean
 ]
 
 { #category : #'mouse handlers' }
@@ -100,8 +56,10 @@ GeoViewInteractionsStrategy >> mouseMoveEvent: anEvent [
 
 	"optimize mouse event processing"
 	lastMouseMoveEventTimestamp ifNotNil:[ | duration |
+		self flag:'labordep: use SmockCommandRunner to sample events'.
 		duration := anEvent timestamp - lastMouseMoveEventTimestamp.
-		duration < self pulsePeriodInMs ifTrue:[ ^ self ].  
+		"BlHostPulseLoop>>defaultPulsePeriod"
+		duration < 15 milliSecond ifTrue:[ ^ self ].  
 	].
 	lastMouseMoveEventTimestamp := anEvent timestamp copy.
 
@@ -114,7 +72,7 @@ GeoViewInteractionsStrategy >> mouseMoveEvent: anEvent [
 
 { #category : #'mouse handlers' }
 GeoViewInteractionsStrategy >> mouseUpEvent: anEvent [
-
+	
 	self isMapMoving: false
 ]
 
@@ -122,18 +80,20 @@ GeoViewInteractionsStrategy >> mouseUpEvent: anEvent [
 GeoViewInteractionsStrategy >> mouseWheelEvent: anEvent [
 	"Scale the map(zoom in or zoom out) but stay centered behind the mouse position"
 	
-	| element point mapProjection graphicProjection geoPoint geoPointPx geoCenterPx difPx geoPointPxNew newPointPx geoPointFinal |
+	| point mapProjection graphicProjection geoPoint geoPointPx geoCenterPx difPx geoPointPxNew newPointPx geoPointFinal |
 
 	self allowMapScaling ifFalse:[ ^ self ].
-	element := anEvent currentTarget.
-	point := element localPointFromGlobalPoint: anEvent position.
-	
-	mapProjection := element mapProjection ifNil:[ ^ self ].
-	graphicProjection := element displayToGraphicProjection ifNil:[ ^ self ].
 
-	geoPoint := element absoluteCoordinatesFromLocalPoint: point.
+	anEvent consume.
+
+	point := self geoView localPointFromGlobalPoint: anEvent position.
+	
+	mapProjection := self geoView mapProjection ifNil:[ ^ self ].
+	graphicProjection := self geoView displayToGraphicProjection ifNil:[ ^ self ].
+
+	geoPoint := self geoView absoluteCoordinatesFromLocalPoint: point.
 	geoPointPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: geoPoint).
-	geoCenterPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: element geoCenter).
+	geoCenterPx := graphicProjection projCartToPixel: (mapProjection projLatLonToCart: self geoView geoCenter).
 	
 	geoPointPx ifNil:[ ^ self ].
 	geoCenterPx ifNil:[ ^ self ].
@@ -143,8 +103,8 @@ GeoViewInteractionsStrategy >> mouseWheelEvent: anEvent [
 	
 	"Scale"
 	anEvent isScrollDown 
-		ifTrue: [ element scaleDown ] 
-		ifFalse:[ anEvent isScrollUp ifTrue: [ element scaleUp ] ifFalse:[ ^ self ] ].
+		ifTrue: [ self geoView scaleDown ] 
+		ifFalse:[ anEvent isScrollUp ifTrue: [ self geoView scaleUp ] ifFalse:[ ^ self ] ].
 	
 	self allowMapMoving ifFalse:[ ^ self ].
 	
@@ -154,56 +114,43 @@ GeoViewInteractionsStrategy >> mouseWheelEvent: anEvent [
 	"add the previous diff in pixels to get new center in pixel"
 	newPointPx := geoPointPxNew + difPx.
 	"Compute new position in cartesian for new center"
-	geoPointFinal := element absoluteCoordinatesFromLocalPoint: newPointPx.
-	element geoCenter: geoPointFinal.
+	geoPointFinal := self geoView absoluteCoordinatesFromLocalPoint: newPointPx.
+	self geoView geoCenter: geoPointFinal.
 ]
 
 { #category : #'events - processing' }
 GeoViewInteractionsStrategy >> moveMap: anEvent [ 
 
-	| point difPx geoCenterPx element |
+	| point difPx geoCenterPx |
 	
 	self allowMapMoving ifFalse:[ ^ self ].
-	element := anEvent currentTarget ifNil: [ ^ self ].
+
+	anEvent consume.
 
 	point := anEvent position.
 	difPx := self mouseDownPosition - point.
 	difPx := difPx x @ difPx y.
-	geoCenterPx := element globalPointFromAbsoluteCoordinates: element geoCenter.
+	geoCenterPx := self geoView globalPointFromAbsoluteCoordinates: self geoView geoCenter.
 	geoCenterPx ifNil: [ ^ self ].
 	geoCenterPx := geoCenterPx + difPx.
 
 	"Update mouse down position with this event"
 	self mouseDownPosition: point copy.
 
-	element centerOnGlobalPoint: geoCenterPx.
-]
-
-{ #category : #picking }
-GeoViewInteractionsStrategy >> pickingRadius [
-	"Consider this radius as a device coordinates (i.e. pixels)"
-
-	^ pickingRadius ifNil: [ pickingRadius := 5 ]
-]
-
-{ #category : #picking }
-GeoViewInteractionsStrategy >> pickingRadius: aNumber [
-
-	pickingRadius := aNumber
+	self geoView centerOnGlobalPoint: geoCenterPx.
 ]
 
 { #category : #'mouse handlers' }
 GeoViewInteractionsStrategy >> primaryClickEvent: anEvent [
 	"pick the geoview on click"
 
-	| element point pickingResult event |
+	| point pickingResult event |
 	self flag:'laborde, need to report bloc bug because there is a click with a drag... patch with checking mouse down position'.
 	self isMapMoving ifTrue:[^ self].
 	
-	element := anEvent currentTarget.
 	point := anEvent position.
 	
-	pickingResult := element pickAt: point radius: self pickingRadius.
+	pickingResult := self geoView pickAt: point radius: self pickingRadius.
 	self selectionFilterBlock ifNotNil:[
 		pickingResult := pickingResult applyFilter: self selectionFilterBlock
 	].
@@ -211,7 +158,7 @@ GeoViewInteractionsStrategy >> primaryClickEvent: anEvent [
 	"send picking event"
 	event := GeoViewPickingEvent new.
 	event pickingResult: pickingResult.
-	element dispatchEvent: event.
+	self geoView dispatchEvent: event.
 
 	"process selection events"
 	(anEvent modifiers isCtrl and:[ self isMultipleSelection ])
@@ -226,13 +173,13 @@ GeoViewInteractionsStrategy >> primaryClickEvent: anEvent [
 				notSelected ifNotEmpty: [ 
 					event := GeoViewObjectSelectionAdded new.
 					event objectIndexesList: notSelected.
-					element dispatchEvent: event
+					self geoView dispatchEvent: event
 				].
 			
 				selected ifNotEmpty: [ 
 					event := GeoViewObjectSelectionRemoved new.
 					event objectIndexesList: selected.
-					element dispatchEvent: event
+					self geoView dispatchEvent: event
 				].
 				
 			] ifTrue:[ "doing nothing here : stay the selection" ] ] 
@@ -245,39 +192,19 @@ GeoViewInteractionsStrategy >> primaryClickEvent: anEvent [
 					"When a minimum of 1 object is under the mouse (without Ctrl key press), select only the first object"
 					event := GeoViewObjectSelectionChanged new.
 					event objectIndexesList: (OrderedCollection with: pickingResult firstElement objectIndex) ].
-			element dispatchEvent: event ]
-]
-
-{ #category : #accessing }
-GeoViewInteractionsStrategy >> pulsePeriodInMs [
-	"BlHostPulseLoop>>defaultPulsePeriod"
-
-	^ 15 milliSecond
-]
-
-{ #category : #accessing }
-GeoViewInteractionsStrategy >> selectionFilterBlock [
-
-	^ selectionFilterBlock
-]
-
-{ #category : #accessing }
-GeoViewInteractionsStrategy >> selectionFilterBlock: aSelectFilterBlock [
-
-	selectionFilterBlock := aSelectFilterBlock 
+			self geoView dispatchEvent: event ]
 ]
 
 { #category : #'events - processing' }
 GeoViewInteractionsStrategy >> sendMouseCoordinatesChanged: anEvent [
 
-	| element coordinates event |
-	element := anEvent currentTarget.
+	| coordinates event |
 	
 	"Calculate the absolute coordinates (lat/lon) under the mouse cursor"
-	coordinates := element absoluteCoordinatesFromGlobalPoint: anEvent position.
+	coordinates := self geoView absoluteCoordinatesFromGlobalPoint: anEvent position.
 	coordinates ifNil:[ ^ self ].
 	
 	event := GeoViewCursorCoordinatesChangedEvent new.
 	event absoluteCoordinates: coordinates.
-	element dispatchEvent: event.
+	self geoView dispatchEvent: event.
 ]

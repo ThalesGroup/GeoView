@@ -33,17 +33,16 @@ GeoBoundingBoxProjectedProcessData >> processCreatedData: aKey incoming: aGeoBou
 
 { #category : #processing }
 GeoBoundingBoxProjectedProcessData >> processUpdatedData: aKey incoming: aGeoBoundingBox with: aDMultiPolylines context: aContext [
-	| dMultiPolylines points |
+	| dMultiPolylines points polylines |
 	
 	dMultiPolylines := aDMultiPolylines.
-	super processUpdatedData: aKey incoming: aGeoBoundingBox with: aDMultiPolylines context: aContext.
+	super processUpdatedData: aKey incoming: aGeoBoundingBox with: dMultiPolylines context: aContext.
 	
 	points := OrderedCollection new.
+	dMultiPolylines removePolylines.
 	
-	aDMultiPolylines addPolylines: (self projectGeodesicFrom: aGeoBoundingBox topLeftAbsoluteCoordinates to: aGeoBoundingBox topRightAbsoluteCoordinates).
-	aDMultiPolylines addPolylines: (self projectGeodesicFrom: aGeoBoundingBox topRightAbsoluteCoordinates to: aGeoBoundingBox bottomRightAbsoluteCoordinates).
-	aDMultiPolylines addPolylines: (self projectGeodesicFrom: aGeoBoundingBox bottomRightAbsoluteCoordinates to: aGeoBoundingBox bottomLeftAbsoluteCoordinates).
-	aDMultiPolylines addPolylines: (self projectGeodesicFrom: aGeoBoundingBox bottomLeftAbsoluteCoordinates to: aGeoBoundingBox topLeftAbsoluteCoordinates).
+	polylines := self projectBoundingBox: aGeoBoundingBox.
+	polylines ifNotNil:[ :e | dMultiPolylines addPolylines: e ].
 	
-	^dMultiPolylines
+	^ dMultiPolylines
 ]
