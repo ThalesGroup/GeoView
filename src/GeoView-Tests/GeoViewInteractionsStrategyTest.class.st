@@ -16,6 +16,8 @@ GeoViewInteractionsStrategyTest >> testAllowMapMoving [
 	super testAllowMapMoving.
 	
 	strategy isMapMoving: true.
+	self assert: strategy isMapMoving.
+	
 	strategy allowMapMoving: false.
 	self deny: strategy isMapMoving.
 ]

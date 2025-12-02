@@ -14,7 +14,7 @@ Class {
 { #category : #'dnd handlers' }
 GeoViewBoundingBoxCreatorController >> dragEvent: anEvent [
 
-	| coordinates width height |
+	| coordinates width height formulas stream |
 	self isOnCreation ifFalse: [ ^ self ].
 
 	anEvent consume.
@@ -33,13 +33,23 @@ GeoViewBoundingBoxCreatorController >> dragEvent: anEvent [
 	geoView updateObject: boundingBox.
 	
 	"update helper"
-	(boundingBox notNil and:[ boundingBox isValid ]) ifTrue: [ | formulas |
-		formulas := GeodesicVincentyFormulas new.
-		width := formulas distanceInMetersFrom: boundingBox topLeftAbsoluteCoordinates to: boundingBox topRightAbsoluteCoordinates.
-		height := formulas distanceInMetersFrom: boundingBox topLeftAbsoluteCoordinates to: boundingBox bottomLeftAbsoluteCoordinates.
-		helperShape text: (width rounded) printString, 'M x ', (height rounded) printString, 'M'.
-		helperShape coordinates: ((geoView localPointFromAbsoluteCoordinates: boundingBox topLeftAbsoluteCoordinates)).
-	].
+	(boundingBox notNil and:[ boundingBox isValid ]) ifFalse: [ ^ self ].
+	
+	formulas := GeodesicVincentyFormulas new.
+	width := formulas distanceInMetersFrom: boundingBox topLeftAbsoluteCoordinates to: boundingBox topRightAbsoluteCoordinates.
+	height := formulas distanceInMetersFrom: boundingBox topLeftAbsoluteCoordinates to: boundingBox bottomLeftAbsoluteCoordinates.
+	
+	stream := ReadWriteStream on: String new.
+	stream 
+		nextPutAll: (width rounded) printString;
+		nextPutAll: 'M x'; space;
+		nextPutAll: (height rounded) printString;
+		nextPutAll: 'M'.
+	
+	helperShape 
+		text: stream contents; 
+		coordinates: ((geoView localPointFromAbsoluteCoordinates: boundingBox topLeftAbsoluteCoordinates)).
+	
 	self helpersLayer updateDShape: helperShape.
 ]
 
@@ -105,14 +115,22 @@ GeoViewBoundingBoxCreatorController >> keyUpEvent: anEvent [
 { #category : #'mouse handlers' }
 GeoViewBoundingBoxCreatorController >> mouseMoveEvent: anEvent [
 
-	| coordinates |
+	| coordinates stream |
 	self isOnCreation ifFalse:[ ^ self ].
 	
 	coordinates := geoView absoluteCoordinatesFromGlobalPoint: anEvent position.
 	coordinates ifNil:[ ^ self ].
 
+	stream := ReadWriteStream on: String new.
+	stream 
+		nextPutAll: 'Create from:'; space;
+		nextPutAll: (coordinates latitudeInDegrees ifNil:['--']) asString;
+		nextPutAll: '°'; space;
+		nextPutAll: (coordinates longitudeInDegrees ifNil:['--']) asString;
+		nextPutAll: '°'.
+	
 	helperShape coordinates: ((geoView localPointFromAbsoluteCoordinates: coordinates) + (0@ -20)).
-	helperShape text: 'Create from: ', ((coordinates latitudeInDegrees ifNil:['--']) asString, '° '),  ((coordinates longitudeInDegrees ifNil:['--']) asString, '°').
+	helperShape text: stream contents.
 
 	self helpersLayer updateDShape: helperShape
 ]
@@ -144,7 +162,7 @@ GeoViewBoundingBoxCreatorController >> startCreation [
 	geoView focused: true.
 	
 	"the object to help user (show a text)"
-	helperShape ifNil: [ helperShape := SmockDText new key: -100 ].
+	helperShape ifNil: [ helperShape := SmockDText new key: #helper ].
 	helperShape
 		text: nil;
 		setDrawModeDevice;
