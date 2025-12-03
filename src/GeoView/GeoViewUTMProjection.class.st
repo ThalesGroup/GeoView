@@ -164,15 +164,13 @@ GeoViewUTMProjection >> initialize [
 GeoViewUTMProjection >> isAbsoluteCoordinatesOutsideProjectionLimit: anAbsoluteCoordinates [
 	"Check if coordinates are outside UTM valid range"
 
-	| coordZone lat |
+	| lat |
 	anAbsoluteCoordinates isValid ifFalse: [ ^ true ].
 
 	lat := anAbsoluteCoordinates latitudeInDegrees abs.
 	lat > 84 ifTrue: [ ^ true ].
 
-	coordZone := self class zoneNumberFor: anAbsoluteCoordinates longitudeInDegrees.
-	
-	^ coordZone ~= self zone
+	^ false
 ]
 
 { #category : #accessing }

@@ -13,6 +13,14 @@ GeoViewUTMProjectionTest >> projectionClass [
 	^ GeoViewUTMProjection 
 ]
 
+{ #category : #'tests-accessing' }
+GeoViewUTMProjectionTest >> testAbsoluteCoordinates [
+
+	projection := GeoViewUTMProjection absoluteCoordinates: AbsoluteCoordinates zero.
+	self assert: projection zone equals: 31.
+	self assert: projection isNorthernHemisphere
+]
+
 { #category : #tests }
 GeoViewUTMProjectionTest >> testCentraleMeridian [
 
@@ -42,16 +50,61 @@ GeoViewUTMProjectionTest >> testEpsgCode [
 	self assert: projection epsgCode equals: 32631.
 ]
 
+{ #category : #'tests-accessing' }
+GeoViewUTMProjectionTest >> testEquatorCentralMeridian [
+
+	| coord result |
+	coord := AbsoluteCoordinates new
+		         latitudeInDegrees: 0;
+		         longitudeInDegrees: 3.
+
+	result := projection projLatLonToCart: coord.
+	self assert: (result xInMeters roundTo: 0.1) equals: 500000.
+	self assert: (result yInMeters roundTo: 0.1) equals: 0
+]
+
+{ #category : #'tests-accessing' }
+GeoViewUTMProjectionTest >> testHighLatitude [
+
+	| coord result |
+	coord := AbsoluteCoordinates new
+		         latitudeInDegrees: 83;
+		         longitudeInDegrees: 0.
+
+	result := projection projLatLonToCart: coord.
+
+	self assert: result xInMeters isNumber.
+	self assert: result yInMeters isNumber
+]
+
 { #category : #tests }
 GeoViewUTMProjectionTest >> testIsNorthernHemisphere [
 
-	self assert: projection isNorthernHemisphere 
+	self assert: projection isNorthernHemisphere
 ]
 
 { #category : #tests }
 GeoViewUTMProjectionTest >> testKey [
 
 	self assert: projection key equals: #GeoViewUTMProjection
+]
+
+{ #category : #'tests-accessing' }
+GeoViewUTMProjectionTest >> testLongitudeMonotonicity [
+
+	| coord1 coord2 r1 r2 |
+	coord1 := AbsoluteCoordinates new
+		          latitudeInDegrees: 45;
+		          longitudeInDegrees: 0.
+
+	coord2 := AbsoluteCoordinates new
+		          latitudeInDegrees: 45;
+		          longitudeInDegrees: 2.
+
+	r1 := projection projLatLonToCart: coord1.
+	r2 := projection projLatLonToCart: coord2.
+
+	self assert: r2 xInMeters > r1 xInMeters
 ]
 
 { #category : #'tests-accessing' }
@@ -124,6 +177,21 @@ GeoViewUTMProjectionTest >> testReverseProj [
 	
 	self assert: latDiff < 0.0001.
 	self assert: lonDiff < 0.0001
+]
+
+{ #category : #'tests-accessing' }
+GeoViewUTMProjectionTest >> testSouthernHemisphere [
+
+	| coord result |
+	projection isNorthernHemisphere: false.
+	
+	coord := AbsoluteCoordinates new
+		         latitudeInDegrees: 0;
+		         longitudeInDegrees: 3.
+		
+	result := projection projLatLonToCart: coord.
+	self assert: (result xInMeters roundTo: 0.1) equals: 500000.
+    self assert: (result yInMeters roundTo: 0.1) equals: 10000000.
 ]
 
 { #category : #tests }
