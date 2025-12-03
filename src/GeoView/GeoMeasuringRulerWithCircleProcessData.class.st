@@ -12,7 +12,8 @@ GeoMeasuringRulerWithCircleProcessData >> populateDShape: aDCompositeShape [
 	
 	"Add a projected circle"
 	circle := SmockDMultiPolylines key: #circle.
-	circle strokeStyle: (Color black asSmockStrokeStyle width: 3).
+	circle strokeStyle: (Color white asSmockStrokeStyle width: 3).
+	circle effect: (SmockDuplicateEffect new strokeColor: (Color black); strokeWidth: 8; yourself).
 	aDCompositeShape addChild: circle.
 ]
 

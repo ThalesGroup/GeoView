@@ -88,6 +88,21 @@ GeoViewDShapesLayerTest >> testHaveDomainObjects [
 ]
 
 { #category : #tests }
+GeoViewDShapesLayerTest >> testRemoveAllDShapes [
+
+	| shape1 shape2 |
+	shape1 := SmockDCircle key: 1.
+	shape2 := SmockDCircle key: 2.
+	layer
+		addDShape: shape1;
+		addDShape: shape2.
+
+	layer removeAllDShapes.
+	self assert: layer displayModel size equals: 0.
+	self assert: layer graphicModel getDatas size equals: 0
+]
+
+{ #category : #tests }
 GeoViewDShapesLayerTest >> testRemoveDShape [
 
 	| shape |

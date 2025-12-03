@@ -69,10 +69,30 @@ TGeoProjectorProcessData >> mediumProjectionQuality [
 ]
 
 { #category : #projector }
+TGeoProjectorProcessData >> projectBoundingBox: aBoundingBox [
+	"Project an object which is used TGeoToolsBoundingBox"
+	
+	| polylines |
+	aBoundingBox isValid ifFalse:[ ^ #( ) ].
+	
+	polylines := OrderedCollection new.
+	
+	polylines addAll: (self projectGeodesicFrom: aBoundingBox topLeftAbsoluteCoordinates to: aBoundingBox topRightAbsoluteCoordinates).
+	polylines addAll: (self projectGeodesicFrom: aBoundingBox topRightAbsoluteCoordinates to: aBoundingBox bottomRightAbsoluteCoordinates).
+	polylines addAll: (self projectGeodesicFrom: aBoundingBox bottomRightAbsoluteCoordinates to: aBoundingBox bottomLeftAbsoluteCoordinates).
+	polylines addAll: (self projectGeodesicFrom: aBoundingBox bottomLeftAbsoluteCoordinates to: aBoundingBox topLeftAbsoluteCoordinates).
+	
+	^ polylines
+	
+]
+
+{ #category : #projector }
 TGeoProjectorProcessData >> projectCircle: anAbsolutePosition radiusInMeters: aRadiusInMeters [
 	"Project a circle and return a list of cartesians DPolyline. Each polylines corresponding to an angle sampling to compose the circle"
 
 	| precision polylines from first |
+	anAbsolutePosition isValid ifFalse:[ ^ #( ) ].
+	
 	precision := 10.
 	polylines := OrderedCollection new.
 
@@ -109,6 +129,8 @@ TGeoProjectorProcessData >> projectGeodesicFrom: aFromAbsolutePosition to: aToAb
 	"Project a geodesic (a line between two geo positions) and return a list of cartesians DPolyline"
 	
 	| from to distance firstAzimuth n step polylines points currentPoly previousStepGeo |
+	(aFromAbsolutePosition isValid not or:[aToAbsolutePosition isValid not]) ifTrue:[ ^ #( ) ].
+	
 	from := aFromAbsolutePosition.
 	to := aToAbsolutePosition.
 	
@@ -171,12 +193,14 @@ TGeoProjectorProcessData >> projectGeodesicFrom: aFromAbsolutePosition to: aToAb
 TGeoProjectorProcessData >> projectionQuality [
 
 	^ projectionQuality ifNil: [
-		  self highProjectionQuality.
-		  projectionQuality ]
+			  self highProjectionQuality.
+			  projectionQuality ]
 ]
 
 { #category : #accessing }
 TGeoProjectorProcessData >> projectionQuality: aSymbol [
+
+	projectionQuality := aSymbol 
 ]
 
 { #category : #'quality ' }

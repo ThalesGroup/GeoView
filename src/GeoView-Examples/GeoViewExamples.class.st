@@ -12,6 +12,51 @@ GeoViewExamples class >> createAndStartTask: aBlockClosure [
 		  yourself
 ]
 
+{ #category : #'private - bloc' }
+GeoViewExamples class >> createBlButton: aText [
+	"Code created with Pyramid editor"
+	"self createBlButton: 'My button'"
+
+	^ BlElement new
+   background: (BlPaintBackground new
+         paint: (BlColorPaint new
+               color: (Color r: 1.0 g: 1.0 b: 1.0 alpha: 1.0);
+               yourself);
+         opacity: 1.0;
+         yourself);
+   border: (BlBorderBuilder new
+         paint: (BlColorPaint new
+               color: (Color r: 0.10166177908113393 g: 0.7135874877810362 b: 0.9921798631476051 alpha: 1.0);
+               yourself);
+         width: 2;
+         lineCap: BlStrokeLineCap round;
+         lineJoin: BlStrokeLineJoin round;
+         build);
+   geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
+   id: #button;
+   addChildren: {(BlTextElement new
+         text: (BlRopedText new
+               rope: (BlAttributeRope attributes: {(BlTextForegroundAttribute new
+                           paint: (Color r: 0.2668621700879765 g: 0.2668621700879765 b: 0.2668621700879765 alpha: 1.0);
+                           yourself)} rope: (BlCollectionRope new
+                           collection: (aText ifNil:['Button']);
+                           yourself));
+               yourself);
+         id: #text;
+         constraintsDo: [:constraints |  constraints horizontal fitContent.
+            constraints vertical fitContent.
+            constraints frame horizontal alignCenter.
+            constraints frame vertical alignCenter.
+            constraints position: 3.0 @ 3.0 ];
+         layout: BlBasicLayout uniqueInstance;
+         yourself)};
+   constraintsDo: [:constraints |  constraints horizontal fitContent.
+      constraints vertical fitContent.
+      constraints padding: (BlInsets all: 8.0) ];
+   layout: BlFrameLayout new;
+   yourself
+]
+
 { #category : #private }
 GeoViewExamples class >> createGeoBoundingBoxes: aQuantity [
 
@@ -205,6 +250,41 @@ GeoViewExamples class >> createTissotIndicatorCircles [
 ]
 
 { #category : #'examples - interactions' }
+GeoViewExamples class >> exampleBoundingBoxCreator [
+	"This example show how to create several BoundingBoxes from scratch"
+
+	| element layer button controller |
+	element := GeoViewElement new id: #geoView.
+	
+	"OSM layer"
+	element addLayer: (GeoViewMapTilesLayer newWithOpenStreetMap).
+	
+	"Bounding box layer"
+	layer := GeoViewDomainObjectsLayer new name: #boundingbox.
+	layer setProcessData: (GeoBoundingBoxProjectedProcessData new) forClass: GeoBoundingBox. 
+	element addLayer: layer.
+	
+	"Helpers layer"
+	layer := GeoViewDShapesLayer new name: #helpers.
+	element addLayer: layer.
+	
+	"Create interaction button and event handlers"
+	controller := GeoViewBoundingBoxCreatorController new.
+	element addEventHandler: controller.
+	
+	button := self createBlButton: 'Create Bounding Box'.
+	button addEventHandlerOn: BlClickEvent do: [ :e |
+		e consume.
+		controller isOnCreation 
+			ifFalse:[ controller startCreation ] 
+			ifTrue:[ controller stopCreation ].
+	].
+	element addChild: button.
+		
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - interactions' }
 GeoViewExamples class >> exampleCitiesHover [
 	"This example show how to implement a mouse hover interaction to do something"
 
@@ -328,7 +408,7 @@ GeoViewExamples class >> exampleGeoBoundingBoxes [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 	
 	"create sample datas"
-	objects := self createGeoBoundingBoxes: 1000 do:[ :e | e fillStyle: nil ].
+	objects := self createGeoBoundingBoxes: 100 do:[ :e | e fillStyle: nil ].
 	element addObjects: objects.
 
 	^ self openViewInWindow: element
@@ -457,7 +537,7 @@ GeoViewExamples class >> exampleGeoPolylines [
 	element := GeoViewUtils createGeoViewForGeoObjects.
 		
 	"create sample datas"
-	objects := self createGeoPolyline: 1000.
+	objects := self createGeoPolyline: 100.
 	element addObjects: objects.
 
 	^ self openViewInWindow: element
@@ -529,7 +609,7 @@ GeoViewExamples class >> exampleGeoSegmentsProjected [
 	element getLayers last setProcessData: (GeoSegmentProjectedProcessData new) forClass: GeoSegment.
 		
 	"create sample datas"
-	objects := self createGeoSegment: 200.
+	objects := self createGeoSegment: 100.
 	
 	element addObjects: objects.
 
@@ -734,7 +814,7 @@ GeoViewExamples class >> exampleLargestCitiesOfTheWorld [
 	geoView := GeoViewUtils createGeoViewForGeoObjects.
 	geoView addLayerAtFirst: (GeoViewMapTilesLayer new).
 	"configure process data of GeoPosition objects"
-	(geoView getLayers last getProcessDataForClass: GeoPosition) textColor: Color black.
+	(geoView getLayers last getProcessDataForClass: GeoPosition).
 	
 	"add largest cities with the same icon"
 	nb := 1.
@@ -1429,7 +1509,7 @@ GeoViewExamples class >> largest50Countries [
         ^positions
 ]
 
-{ #category : #private }
+{ #category : #'private - bloc' }
 GeoViewExamples class >> openViewInWindow: aGeoViewElement [
 	"open the view in a window"
 

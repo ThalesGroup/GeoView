@@ -30,7 +30,14 @@ GeoShapeProcessData >> processCreatedData: aKey incoming: aGeoShape with: aDShap
 
 	dShape isComposite ifFalse: [
 		dShape fillStyle: aGeoShape fillStyle copy.
-		dShape strokeStyle: aGeoShape strokeStyle copy ].
+		dShape strokeStyle: aGeoShape strokeStyle copy.
+		dShape strokeStyle ifNotNil: [ :e | | style paint |
+			style := dShape strokeStyle copy.
+			paint := dShape strokeStyle isColor ifTrue:[ (dShape strokeStyle paint copy) twiceDarker ] ifFalse:[ Color black ].
+			style paint: paint; width: (dShape strokeStyle width + 1.5).
+			dShape effect: (SmockDuplicateEffect new strokeStyle: style) 
+		].
+	].
 
 	^ dShape
 ]
