@@ -8,19 +8,17 @@ Class {
 GeoMeasuringRulerProcessData >> populateDShape: aDCompositeShape [
 	
 	"label to display cursor informations"
-	| label polylinesDash polylinesBackground |
+	| label polylines |
 	label := SmockDText key: #label.
-	label zIndex: 10; isTranslatedByParent: false; fillColor: Color blue; smockFont: (SmockFont defaultFont fontSize: 20).
+	label zIndex: 10; isTranslatedByParent: false; fillColor: Color cyan; smockFont: (SmockFont defaultFont fontSize: 20).
+	label effect: (SmockBackgroundEffect new fillColor: (Color black alpha: 0.66); padding: (SmockInsets all: 2)).
 	aDCompositeShape addChild: label.	
 
 	"lines to display projected measured distance"
-	polylinesDash := SmockDMultiPolylines key: #polylinesDash.
-	polylinesDash strokeStyle: (Color white asSmockStrokeStyle width: 6; dashes: #(6 6)).
-	aDCompositeShape addChild: polylinesDash.
-
-	polylinesBackground := SmockDMultiPolylines key: #polylinesBackground.
-	polylinesBackground strokeStyle: (Color black asSmockStrokeStyle width: 8).
-	aDCompositeShape addChild: polylinesBackground
+	polylines := SmockDMultiPolylines key: #polylines.
+	polylines strokeStyle: (Color white asSmockStrokeStyle width: 6; dashes: #(6 6)).
+	polylines effect: (SmockDuplicateEffect new strokeColor: (Color black); strokeWidth: 8; yourself).
+	aDCompositeShape addChild: polylines.
 ]
 
 { #category : #processing }
@@ -50,14 +48,13 @@ GeoMeasuringRulerProcessData >> processCreatedData: aKey incoming: aGeoMeasuring
 { #category : #processing }
 GeoMeasuringRulerProcessData >> processUpdatedData: aKey incoming: aGeoMeasuringRuler with: aDShape context: aContext [
 
-	| dShape label polylinesDash text polylinesBackground labelPos |
+	| dShape label polylines text labelPos |
 	dShape := aDShape.
 
 	super processUpdatedData: aKey incoming: aGeoMeasuringRuler with: dShape context: aContext.
 
 	label := aDShape getChild: #label.
-	polylinesDash := aDShape getChild: #polylinesDash.
-	polylinesBackground := aDShape getChild: #polylinesBackground.
+	polylines := aDShape getChild: #polylines.
 
 	(aGeoMeasuringRuler fromAbsoluteCoordinates isNil 
 		or:[aGeoMeasuringRuler toAbsoluteCoordinates isNil]) ifTrue:[
@@ -82,12 +79,8 @@ GeoMeasuringRulerProcessData >> processUpdatedData: aKey incoming: aGeoMeasuring
 		"Update the ruler"
 		list := self projectGeodesicFrom: aGeoMeasuringRuler fromAbsoluteCoordinates to: aGeoMeasuringRuler toAbsoluteCoordinates.
 		
-		polylinesDash removePolylines; addPolylines: list.
-		dShape updateChild: polylinesDash.
-		
-		polylinesBackground removePolylines; addPolylines: list.
-		dShape updateChild: polylinesBackground.
-	
+		polylines removePolylines; addPolylines: list.
+		dShape updateChild: polylines.
 	].
 
 	^ dShape

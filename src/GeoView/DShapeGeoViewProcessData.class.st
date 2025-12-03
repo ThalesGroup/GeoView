@@ -64,6 +64,8 @@ DShapeGeoViewProcessData >> processRecycledData: aKey incoming: aDShape with: aG
 DShapeGeoViewProcessData >> processStateChanged: aKey state: aState value: aValueOrNil with: aProducedData context: aContext [
 
 	"do nothing"
+	
+	^ aProducedData
 ]
 
 { #category : #processing }
@@ -81,6 +83,9 @@ DShapeGeoViewProcessData >> processUpdatedData: aKey incoming: aDShape with: aGS
 	self processor displayFilter ifNotNil:[ :displayFilter | 
 		displayFilter processDShape: aDShape toGShape: aGShape2D.
 	].
+
+	"Inject effect pointer"
+	aGShape2D effect: aDShape effect.
 	
 	^ aGShape2D
 ]

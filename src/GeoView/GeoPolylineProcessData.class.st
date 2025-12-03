@@ -23,7 +23,7 @@ GeoPolylineProcessData >> processCreatedData: aKey incoming: aGeoPolyline with: 
 	
 	dPolyline := aDPolyline.
 	dPolyline := super processCreatedData: aKey incoming: aGeoPolyline with: dPolyline context: aContext.
-	dPolyline := self processUpdatedData: aKey incoming: aGeoPolyline with: aDPolyline context: aContext.
+	dPolyline := self processUpdatedData: aKey incoming: aGeoPolyline with: dPolyline context: aContext.
 	
 	^dPolyline
 ]
