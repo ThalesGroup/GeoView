@@ -201,9 +201,9 @@ GeoViewAbstractElement >> createPickingResultAt: aGlobalPoint [
 
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> defaultScale [
-	"Default scale is 1:10 000 000"
+	"Default scale is 1:10 000 000 considering allowed scale range"
 
-	^ 10000000
+	^ self normalizeScale: 10000000
 ]
 
 { #category : #'API -- filters' }
@@ -326,6 +326,8 @@ GeoViewAbstractElement >> initialize [
 	"Initialize default projection systems"
 	self mapProjection: GeoViewMercatorProjection new.
 	self displayToGraphicProjection: GeoView2DProjection new.
+	
+	"Setup default scale"
 	self scale: self defaultScale
 ]
 
@@ -429,8 +431,12 @@ GeoViewAbstractElement >> maxScale [
 
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> maxScale: aNumber [
+	"Define the maximum allowed scale, when changed adapt the current scale"
 
-	maxScale := aNumber
+	maxScale ~= aNumber ifFalse: [ ^ self ].
+	maxScale := aNumber.
+	(self scale notNil and: [ self scale > aNumber ]) ifTrue: [
+		self scale: aNumber ]
 ]
 
 { #category : #'API -- scale and center' }
@@ -462,8 +468,12 @@ GeoViewAbstractElement >> minScale [
 
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> minScale: aNumber [
+	"Define the minimum allowed scale, when changed adapt the current scale"
 
-	minScale := aNumber
+	minScale ~= aNumber ifFalse: [ ^ self ].
+	minScale := aNumber.
+	(self scale notNil and: [ self scale < aNumber ]) ifTrue: [
+		self scale: aNumber ]
 ]
 
 { #category : #'API -- scale and center' }
