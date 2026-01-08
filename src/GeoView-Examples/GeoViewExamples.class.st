@@ -339,8 +339,8 @@ GeoViewExamples class >> exampleDisplayCoordinates [
 		addEventHandlerOn: GeoViewCursorCoordinatesChangedEvent
 		do: [ :event |
 				| lat lon string |
-				lat := event absoluteCoordinates latitudeInDegrees printString.
-				lon := event absoluteCoordinates longitudeInDegrees printString.
+				lat := event absoluteCoordinates printLatitudeString.
+				lon := event absoluteCoordinates printLongitudeString.
 				
 				string := 'Latitude: ', lat.
 				latitudeText text: (BlRopedText new
