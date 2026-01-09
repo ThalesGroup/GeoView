@@ -42,9 +42,9 @@ GeoViewBoundingBoxCreatorController >> dragEvent: anEvent [
 	stream := ReadWriteStream on: String new.
 	stream 
 		nextPutAll: (width rounded) printString;
-		nextPutAll: 'M x'; space;
+		nextPutAll: 'm x'; space;
 		nextPutAll: (height rounded) printString;
-		nextPutAll: 'M'.
+		nextPutAll: 'm'.
 	
 	helperShape 
 		text: stream contents; 
@@ -122,12 +122,8 @@ GeoViewBoundingBoxCreatorController >> mouseMoveEvent: anEvent [
 	coordinates ifNil:[ ^ self ].
 
 	stream := ReadWriteStream on: String new.
-	stream 
-		nextPutAll: 'Create from:'; space;
-		nextPutAll: (coordinates latitudeInDegrees ifNil:['--']) asString;
-		nextPutAll: '°'; space;
-		nextPutAll: (coordinates longitudeInDegrees ifNil:['--']) asString;
-		nextPutAll: '°'.
+	stream nextPutAll: 'Create from:'; space.
+	coordinates printOn: stream.
 	
 	helperShape coordinates: ((geoView localPointFromAbsoluteCoordinates: coordinates) + (0@ -20)).
 	helperShape text: stream contents.
