@@ -329,6 +329,27 @@ GeoViewAbstractElementTest >> testScaleFactor [
 ]
 
 { #category : #tests }
+GeoViewAbstractElementTest >> testScaleRangeSetup [
+	"Create a new view, setup the scale range and check the model"
+		
+	| maxScale minScale |
+	maxScale := 10000.
+	minScale := 1000.
+		
+	geoView maxScale: maxScale.
+	geoView minScale: minScale.
+
+	self assert: geoView scale equals: maxScale.
+	
+	"Force out of range scale"
+	geoView scale: 100000.
+	self assert: geoView scale equals: maxScale.
+	
+	geoView scale: 10.
+	self assert: geoView scale equals: minScale.
+]
+
+{ #category : #tests }
 GeoViewAbstractElementTest >> testScaleUp [
 	
 	geoView scaleUp.
