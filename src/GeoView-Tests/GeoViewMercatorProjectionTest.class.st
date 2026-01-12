@@ -25,6 +25,12 @@ GeoViewMercatorProjectionTest >> testKey [
 	self assert: projection key equals: #GeoViewMercatorProjection
 ]
 
+{ #category : #tests }
+GeoViewMercatorProjectionTest >> testName [
+
+	self assert: projection name equals: 'Mercator'
+]
+
 { #category : #'tests-accessing' }
 GeoViewMercatorProjectionTest >> testReverseProj [
 

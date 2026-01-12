@@ -226,6 +226,12 @@ GeoViewUTMProjection >> meridianArc: aLatitudeInRadians [
 		   - (D * lat6 sin) + (E * lat8 sin))
 ]
 
+{ #category : #accessing }
+GeoViewUTMProjection >> name [
+
+	^ 'Universal Transverse Mercator'
+]
+
 { #category : #projection }
 GeoViewUTMProjection >> projCartToLatLon: aCartesianCoordinates [
 	"Convert UTM coordinates to latitude/longitude"

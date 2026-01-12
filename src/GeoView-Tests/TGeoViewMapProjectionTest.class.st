@@ -48,3 +48,15 @@ TGeoViewMapProjectionTest >> testKey [
 
 	self subclassResponsibility 
 ]
+
+{ #category : #tests }
+TGeoViewMapProjectionTest >> testName [
+
+	self subclassResponsibility 
+]
+
+{ #category : #tests }
+TGeoViewMapProjectionTest >> testPrintOn [
+
+	self assert: projection printString isString
+]

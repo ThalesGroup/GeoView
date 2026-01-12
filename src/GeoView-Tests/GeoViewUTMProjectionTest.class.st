@@ -107,6 +107,12 @@ GeoViewUTMProjectionTest >> testLongitudeMonotonicity [
 	self assert: r2 xInMeters > r1 xInMeters
 ]
 
+{ #category : #tests }
+GeoViewUTMProjectionTest >> testName [
+
+	self assert: projection name equals: 'Universal Transverse Mercator'
+]
+
 { #category : #'tests-accessing' }
 GeoViewUTMProjectionTest >> testProjCartToLatLon [
 	"Test UTM to lat/lon conversion with known coordinates"

@@ -69,6 +69,12 @@ GeoViewMercatorProjection >> latitudeLimit [
 	^ 85
 ]
 
+{ #category : #accessing }
+GeoViewMercatorProjection >> name [
+
+	^ 'Mercator'
+]
+
 { #category : #projection }
 GeoViewMercatorProjection >> projCartToLatLon: aCartesianCoordinates [
 
