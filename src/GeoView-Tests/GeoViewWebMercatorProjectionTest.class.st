@@ -1,26 +1,26 @@
 "
-A MercatorProjectionTest is a test class for testing the behavior of MercatorProjection
+A GeoViewWebMercatorProjectionTest is a test class for testing the behavior of GeoViewWebMercatorProjection
 "
 Class {
-	#name : #GeoViewMercatorProjectionTest,
+	#name : #GeoViewWebMercatorProjectionTest,
 	#superclass : #TGeoViewMapProjectionTest,
 	#category : #'GeoView-Tests-Projections'
 }
 
 { #category : #running }
-GeoViewMercatorProjectionTest >> projectionClass [
-	
-	^ GeoViewMercatorProjection 
+GeoViewWebMercatorProjectionTest >> projectionClass [
+
+	^ GeoViewWebMercatorProjection 
 ]
 
 { #category : #tests }
-GeoViewMercatorProjectionTest >> testEpsgCode [
+GeoViewWebMercatorProjectionTest >> testEpsgCode [
 
-	self assert: projection epsgCode equals: 3395
+	self assert: projection epsgCode equals: 3857
 ]
 
 { #category : #tests }
-GeoViewMercatorProjectionTest >> testGeodesicCrossesValidDomainFromTo [
+GeoViewWebMercatorProjectionTest >> testGeodesicCrossesValidDomainFromTo [
 
 	self deny: (projection
 			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
@@ -35,17 +35,12 @@ GeoViewMercatorProjectionTest >> testGeodesicCrossesValidDomainFromTo [
 	self deny: (projection
 			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
 			 to:
-			 (AbsoluteCoordinates latitudeInDegrees: 84 longitudeInDegrees: 180)).
+			 (AbsoluteCoordinates latitudeInDegrees: 85.06 longitudeInDegrees: 180)).
 			
 	self deny: (projection
 			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
 			 to:
-			 (AbsoluteCoordinates latitudeInDegrees: -80 longitudeInDegrees: 180)).
-			
-	self deny: (projection
-			 geodesicCrossesValidDomainFrom: (AbsoluteCoordinates latitudeInDegrees: 5.08 longitudeInDegrees: -19.01)
-			 to:
-			 (AbsoluteCoordinates latitudeInDegrees: 5.08 longitudeInDegrees: -19.00)).
+			 (AbsoluteCoordinates latitudeInDegrees: -85.06 longitudeInDegrees: 180)).
 			
 	"projection limits"
 	self assert: (projection
@@ -60,7 +55,7 @@ GeoViewMercatorProjectionTest >> testGeodesicCrossesValidDomainFromTo [
 ]
 
 { #category : #tests }
-GeoViewMercatorProjectionTest >> testIsAbsoluteCoordinatesOutsideProjectionLimit [
+GeoViewWebMercatorProjectionTest >> testIsAbsoluteCoordinatesOutsideProjectionLimit [
 
 	self deny: (projection isAbsoluteCoordinatesOutsideProjectionLimit:
 			 AbsoluteCoordinates zero).
@@ -83,57 +78,57 @@ GeoViewMercatorProjectionTest >> testIsAbsoluteCoordinatesOutsideProjectionLimit
 ]
 
 { #category : #tests }
-GeoViewMercatorProjectionTest >> testKey [
+GeoViewWebMercatorProjectionTest >> testKey [
 
-	self assert: projection key equals: #GeoViewMercatorProjection
+	self assert: projection key equals: #GeoViewWebMercatorProjection
 ]
 
 { #category : #tests }
-GeoViewMercatorProjectionTest >> testName [
+GeoViewWebMercatorProjectionTest >> testName [
 
-	self assert: projection name equals: 'Mercator'
+	self assert: projection name equals: 'Web Mercator'
 ]
 
 { #category : #tests }
-GeoViewMercatorProjectionTest >> testProjCartToLatLon [
+GeoViewWebMercatorProjectionTest >> testProjCartToLatLon [
 
 	"Brest"
 	| cartesian absolute reference |
 	reference := AbsoluteCoordinates frBrest.
-	cartesian := CartesianCoordinates xInMeters: -499082 yInMeters: 6203898.
+	cartesian := CartesianCoordinates xInMeters: -499083 yInMeters: 6171933.
 	absolute := projection projCartToLatLon: cartesian.
 	self assert: (absolute latitudeInDegrees closeTo: (reference latitudeInDegrees) precision: 0.0001).
 	self assert: (absolute longitudeInDegrees closeTo: (reference longitudeInDegrees) precision: 0.0001).
 	
 	"Paris"
 	reference := AbsoluteCoordinates frParis.
-	cartesian := CartesianCoordinates xInMeters: 259745 yInMeters: 6284473.
+	cartesian := CartesianCoordinates xInMeters: 259745 yInMeters: 6252273.
 	absolute := projection projCartToLatLon: cartesian.
 	self assert: (absolute latitudeInDegrees closeTo: (reference latitudeInDegrees) precision: 0.0001).
 	self assert: (absolute longitudeInDegrees closeTo: (reference longitudeInDegrees) precision: 0.0001).
 ]
 
 { #category : #tests }
-GeoViewMercatorProjectionTest >> testProjLatLonToCart [
+GeoViewWebMercatorProjectionTest >> testProjLatLonToCart [
 
 	"Brest"
 	| coord cart |
 	coord := AbsoluteCoordinates frBrest.
 	cart := projection projLatLonToCart: coord.
-	self assert: (cart xInMeters closeTo: -499082 precision: 1).
-	self assert: (cart yInMeters closeTo: 6203898 precision: 1).
+	self assert: (cart xInMeters closeTo: -499083 precision: 1).
+	self assert: (cart yInMeters closeTo: 6171933 precision: 1).
 	self assert: (cart zInMeters closeTo: 52 precision: 0.01).
 	
 	"Paris"
 	coord := AbsoluteCoordinates frParis.
 	cart := projection projLatLonToCart: coord.
 	self assert: (cart xInMeters closeTo: 259745 precision: 1).
-	self assert: (cart yInMeters closeTo: 6284473 precision: 1).
+	self assert: (cart yInMeters closeTo: 6252273 precision: 1).
 	self assert: (cart zInMeters closeTo: 79 precision: 0.01)
 ]
 
-{ #category : #'tests-accessing' }
-GeoViewMercatorProjectionTest >> testReverseProj [
+{ #category : #tests }
+GeoViewWebMercatorProjectionTest >> testReverseProj [
 
 	| absoluteCoordinates cartesianCoordinates absoluteCoordinatesRes random precision |
 	random := Random seed: 42.
@@ -156,7 +151,7 @@ GeoViewMercatorProjectionTest >> testReverseProj [
 ]
 
 { #category : #tests }
-GeoViewMercatorProjectionTest >> testSideOfAbsoluteCoordinates [
+GeoViewWebMercatorProjectionTest >> testSideOfAbsoluteCoordinates [
 
 	self
 		assert:

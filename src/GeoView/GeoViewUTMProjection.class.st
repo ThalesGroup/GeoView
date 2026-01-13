@@ -1,5 +1,5 @@
 "
-I am a UTM (Universal Transverse Mercator) projection.
+I am a UTM (Universal Transverse Mercator) projection (EPSG:32601-32660 for northern hemisphere, EPSG:32701-32760 for southern hemisphere).
 UTM divides the Earth into 60 zones of 6° longitude each.
 Each zone uses a Transverse Mercator projection with specific parameters.
 "
@@ -122,7 +122,7 @@ GeoViewUTMProjection >> falseNorthingInMeters [
 ]
 
 { #category : #testing }
-GeoViewUTMProjection >> geodesicExitsValidDomainFrom: aFromAbsoluteCoordinates to: aToAbsoluteCoordinates [
+GeoViewUTMProjection >> geodesicCrossesValidDomainFrom: aFromAbsoluteCoordinates to: aToAbsoluteCoordinates [
 	"Check if geodesic crosses zone boundary or latitude limit"
 	
 	| fromZone toZone lat1 lat2 |
@@ -237,6 +237,8 @@ GeoViewUTMProjection >> projCartToLatLon: aCartesianCoordinates [
 	"Convert UTM coordinates to latitude/longitude"
 	
 	| x y M mu phi1 e1 e12 e13 e14 C1 C2 C3 C4 N1 T1 R1 D D2 D3 D4 D5 D6 lat lon |
+	(aCartesianCoordinates isEmpty or: [
+		 aCartesianCoordinates isValid not ]) ifTrue: [ ^ nil ].
 	
 	x := aCartesianCoordinates xInMeters - self falseEastingInMeters.
 	y := aCartesianCoordinates yInMeters - self falseNorthingInMeters.
@@ -319,30 +321,30 @@ GeoViewUTMProjection >> sideOfAbsoluteCoordinates: anAbsolutePosition [
 	"Return the position relative to this UTM zone"
 
 	| coordZone lat |
-	anAbsolutePosition isValid ifFalse: [ ^ #outOfProjection ].
+	anAbsolutePosition isValid ifFalse: [ ^ GeoViewMapProjectionSide outOfProjection ].
 
 	lat := anAbsolutePosition latitudeInDegrees.
 
 	"Check latitude limits"
 	lat abs > 84 ifTrue: [
 			^ lat > 0
-				  ifTrue: [ #outsideLatitudeLimitTop ]
-				  ifFalse: [ #outsideLatitudeLimitBottom ] ].
+				  ifTrue: [ GeoViewMapProjectionSide outsideLatitudeLimitTop ]
+				  ifFalse: [ GeoViewMapProjectionSide outsideLatitudeLimitBottom ] ].
 
 	"Check hemisphere"
 	(lat >= 0 and: [ self isNorthernHemisphere not ]) ifTrue: [
-		^ #wrongHemisphere ].
-	(lat < 0 and: [ self isNorthernHemisphere ]) ifTrue: [ ^ #wrongHemisphere ].
+		^ GeoViewMapProjectionSide wrongUTMHemisphere ].
+	(lat < 0 and: [ self isNorthernHemisphere ]) ifTrue: [ ^ GeoViewMapProjectionSide wrongUTMHemisphere ].
 
 	"Check zone"
 	coordZone := self class zoneNumberFor:
 		             anAbsolutePosition longitudeInDegrees.
 	coordZone = self zone ifFalse: [
 			^ coordZone < self zone
-				  ifTrue: [ #leftOfZone ]
-				  ifFalse: [ #rightOfZone ] ].
+				  ifTrue: [ GeoViewMapProjectionSide leftOfUTMZone ]
+				  ifFalse: [ GeoViewMapProjectionSide rightOfUTMZone ] ].
 
-	^ #insideZone
+	^ GeoViewMapProjectionSide insideUTMZone 
 ]
 
 { #category : #accessing }

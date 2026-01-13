@@ -23,7 +23,7 @@ TGeoProjectorProcessDataTest >> setUp [
 TGeoProjectorProcessDataTest >> setUpProcessData [
 
 	processData processor: GeoViewModel new.
-	processData processor projection: GeoViewMercatorProjection new.
+	processData processor projection: GeoViewWebMercatorProjection new.
 ]
 
 { #category : #tests }

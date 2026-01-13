@@ -14,7 +14,7 @@ TGeoViewMapProjection >> epsgCode [
 ]
 
 { #category : #testing }
-TGeoViewMapProjection >> geodesicExitsValidDomainFrom: aFromAbsoluteCoordinates to: aToAbsoluteCoordinates [
+TGeoViewMapProjection >> geodesicCrossesValidDomainFrom: aFromAbsoluteCoordinates to: aToAbsoluteCoordinates [
 	"return a boolean if a segment between two points need to be cut, used in case of changement of the projection side"
 	
 	self explicitRequirement 
@@ -65,7 +65,7 @@ TGeoViewMapProjection >> projLatLonToCart: anAbsoluteCoordinates [
 
 { #category : #testing }
 TGeoViewMapProjection >> sideOfAbsoluteCoordinates: anAbsolutePosition [
-	"return the side (a symbol, i.e.: #top, #bottom, #left, #right, etc.) of an absolution position (lat, lon). Sides symbols depend of the nature of the projection"
+	"return the side (a GeoViewMapProjectionSide, i.e.: #top, #bottom, #left, #right, etc.) of an absolution position (lat, lon). Sides symbols depend of the nature of the projection"
 
 	self explicitRequirement
 ]

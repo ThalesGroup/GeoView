@@ -16,7 +16,8 @@ Class {
 		'loadingBufferWorker',
 		'doubleBufferedScene',
 		'moveMapWorker',
-		'resetMapWorker'
+		'resetMapWorker',
+		'tileZLevel'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -113,8 +114,12 @@ GeoViewMapTilesLayer >> computeGraphicBoundsForTile: aGeoFormTile level: aLevel 
 		origin := self getGraphicPositionFromGeoPosition: aGeoFormTile geoBounds origin.
 		corner := self getGraphicPositionFromGeoPosition: aGeoFormTile geoBounds corner.
 	].
-	graphicBounds := origin floor corner: corner floor.
-	aGeoFormTile graphicBounds: graphicBounds
+
+	"origin and corner can be nil is case of out of projection"
+	(origin isNil or:[corner isNil]) ifFalse:[
+		graphicBounds := origin corner: corner.
+		aGeoFormTile graphicBounds: graphicBounds
+	]
 ]
 
 { #category : #'API -- tiles' }
@@ -145,7 +150,7 @@ GeoViewMapTilesLayer >> doLoadingTilesThread [
 	self surfaceMap scale: 1@1.
 
 	centerGeoPoint := self getCenterInGeoPoint.
-	level := (self getTilesLevelForCurrentResolution) key.
+	level := self tileZLevel. "(self getTilesLevelForCurrentResolution) key."
 	
 	tilesXY := self getTilesXYFor: centerGeoPoint level: level.
 	tilesXYBuffer := self getTilesXYForBuffer: centerGeoPoint level: level.
@@ -312,15 +317,21 @@ GeoViewMapTilesLayer >> getPixelXYFromTileXY: aTilePt [
 { #category : #computing }
 GeoViewMapTilesLayer >> getTileSurfaceFromGeoImage: aGeoImageTile [
 
-	| tileSurface context|
-	aGeoImageTile imageReference ifNil:[
-		tileSurface := AeCairoImageSurface extent: (self tileSize asPoint).
-		context := tileSurface newContext
-	] ifNotNil:[ | form |
-		form := aGeoImageTile imageReference isForm ifTrue:[ aGeoImageTile imageReference ] ifFalse:[ ImageReadWriter formFromFileNamed: aGeoImageTile imageReference ].
-		tileSurface := AeCairoImageSurface fromForm: form.
-	].
-	^tileSurface
+	| tileSurface context |
+	aGeoImageTile imageReference
+		ifNil: [
+				tileSurface := AeCairoImageSurface extent: self tileSize asPoint.
+				context := tileSurface newContext ]
+		ifNotNil: [
+				| form |
+				form := aGeoImageTile imageReference isForm
+					        ifTrue: [ aGeoImageTile imageReference ]
+					        ifFalse: [
+					        ImageReadWriter formFromFileNamed:
+						        aGeoImageTile imageReference ].
+				tileSurface := AeCairoImageSurface fromForm: form ].
+			
+	^ tileSurface
 ]
 
 { #category : #level }
@@ -347,23 +358,28 @@ GeoViewMapTilesLayer >> getTileXYFromPixelXY: aPixelPt [
 { #category : #level }
 GeoViewMapTilesLayer >> getTilesLevelForCurrentResolution [
 
-	| tile points pt2 pt3 h current centerGeoPoint|
-	
+	| tile points pt2 pt3 h current centerGeoPoint |
 	centerGeoPoint := self getCenterInGeoPoint.
-	(18 to: 1 by: -1) detect: 
-			[:i |
-			tile := self getTileXYFromGeoPoint: centerGeoPoint level: i.
-			points := self getGeoRectanglePointsFromTileXY: tile level: i.
-			points := points collect: [:pt | self getGraphicPositionFromGeoPosition: pt].
-			pt2 := points at: 2.
-			pt3 := points at: 3.
-			h := (pt2 - pt3) r.
-			current := i -> h.
-			h >= self tileSize
-				ifTrue: [true]
-				ifFalse: [false]] ifNone:[ 0 -> self tileSize].
-	^current
-	
+	(18 to: 1 by: -1)
+		detect: [ :i |
+				tile := self getTileXYFromGeoPoint: centerGeoPoint level: i.
+				points := self getGeoRectanglePointsFromTileXY: tile level: i.
+				points := points collect: [ :pt |
+					          self getGraphicPositionFromGeoPosition: pt ].
+				pt2 := points at: 2.
+				pt3 := points at: 3.
+
+				"points can be nil in case of out of projection"
+				(pt2 isNil or: [ pt3 isNil ])
+					ifTrue: [ false ]
+					ifFalse: [
+							h := (pt2 - pt3) r.
+							current := i -> h.
+							h >= self tileSize
+								ifTrue: [ true ]
+								ifFalse: [ false ] ] ]
+		ifNone: [ 0 -> self tileSize ].
+	^ current
 ]
 
 { #category : #tiles }
@@ -673,16 +689,21 @@ GeoViewMapTilesLayer >> offcenterGeoPngTile: aTile offset: anOffset level: aLeve
 
 	| origin corner center modelCenter|
 	
+	"at first, compute the graphic bound if needed"
 	aTile graphicBounds ifNil:[
 		self computeGraphicBoundsForTile: aTile level: aLevel
 	].
+	
+	"graphic bounds can be nil is case of out of projection"
+	aTile graphicBounds ifNil:[ ^ self ].
+
 	origin := aTile graphicBounds origin.
 	corner := aTile graphicBounds corner.
 	
 	center := (origin + corner) /2.
 	 
 	modelCenter := self getCenterInPixel.
-	aTile offcenter: ((center - modelCenter + anOffset) floor)
+	aTile offcenter: (center - modelCenter + anOffset)
 ]
 
 { #category : #accessing }
@@ -739,49 +760,62 @@ GeoViewMapTilesLayer >> removedFromSceneGraph [
 
 { #category : #rendering }
 GeoViewMapTilesLayer >> renderSurface: aSurface on: aTargetSurface scale: aXYScale centeredAt: aPoint tile: aGeoImageTile [
-	
-	| offset targetContext|
+	| targetContext finalPosition halfTile |
 	
 	targetContext := aTargetSurface newContext.
-	targetContext sourceColor: Color red.
-	targetContext translateBy: aPoint.
+	targetContext antialias: AeCairoAntialias none.
+
+	"Half tile in SOURCE space"
+	halfTile := (self tileSize / 2) asPoint.
+
+	"Translate in SCREEN space"
+	finalPosition := aPoint - (halfTile * aXYScale).
+
+	targetContext translateBy: finalPosition.
 	targetContext scaleBy: aXYScale.
-	offset := 0@0 - (((self tileSize / 2) asPoint)).
-	targetContext translateBy: offset.
 	targetContext sourceSurface: aSurface x: 0 y: 0.
 	targetContext paint.
 
-	
 ]
 
 { #category : #rendering }
 GeoViewMapTilesLayer >> renderTileImage: aGeoImageTile on: aSurface [
-
-	|origin corner scale center centerPixel tileSurface|
+	| origin corner scale center centerPixel tileSurface width height scaleX scaleY newTileSize |
 	
-	aGeoImageTile graphicBounds ifNil:[
-		origin := self getGraphicPositionFromGeoPosition: aGeoImageTile geoBounds origin.
-		corner := self getGraphicPositionFromGeoPosition: aGeoImageTile geoBounds corner
-	] ifNotNil:[
-		origin := aGeoImageTile graphicBounds origin.
-		corner := aGeoImageTile graphicBounds corner
-	].
+	origin := aGeoImageTile graphicBounds
+		ifNil: [ self getGraphicPositionFromGeoPosition: aGeoImageTile geoBounds origin ]
+		ifNotNil: [ aGeoImageTile graphicBounds origin ].
 
-	scale := (corner y - origin y) / self defaultTileSize.
-	"Slightly increase size of tiles to avoid space between tiles"
-	scale := scale + ((0.005 * scale) max: 0.02).
-	
+	corner := aGeoImageTile graphicBounds
+		ifNil: [ self getGraphicPositionFromGeoPosition: aGeoImageTile geoBounds corner ]
+		ifNotNil: [ aGeoImageTile graphicBounds corner ].
+
+	"origin and corner can be nil in case of out of projection"
+	(origin isNil or:[corner isNil]) ifTrue:[ "cannot render the tile" ^ self ].
+
+	"magic number to remove margin between tiles, waiting for rendering rebuild"
+	newTileSize := self defaultTileSize - (self defaultTileSize * 0.0045).
+
+	width := (corner x - origin x) abs.
+	height := (corner y - origin y) abs.
+	scaleX := width / newTileSize.
+	scaleY := height / newTileSize.
+	scale := (scaleX @ scaleY).
 	center := currentGraphicProjection cartesianCenter.
 	centerPixel := currentGraphicProjection projCartToPixel: center.
-	
-	aGeoImageTile offcenter ifNotNil:[ centerPixel := centerPixel + aGeoImageTile offcenter].
-	
+
+	aGeoImageTile offcenter ifNotNil: [
+		centerPixel := centerPixel + aGeoImageTile offcenter
+	].
+
 	tileSurface := self getTileSurfaceFromGeoImage: aGeoImageTile.
-	self renderSurface: tileSurface on: aSurface scale: scale@scale centeredAt: centerPixel tile: aGeoImageTile
-	
 
-
-
+	self
+		renderSurface: tileSurface
+		on: aSurface
+		scale: scale
+		centeredAt: centerPixel
+		tile: aGeoImageTile
 ]
 
 { #category : #accessing }
@@ -878,6 +912,21 @@ GeoViewMapTilesLayer >> tileSize: anObject [
 	tileSize := anObject
 ]
 
+{ #category : #level }
+GeoViewMapTilesLayer >> tileZLevel [
+
+	tileZLevel ifNil: [
+		tileZLevel := self getTilesLevelForCurrentResolution key ].
+
+	^ tileZLevel
+]
+
+{ #category : #level }
+GeoViewMapTilesLayer >> tileZLevel: anObject [
+
+	tileZLevel := anObject
+]
+
 { #category : #accessing }
 GeoViewMapTilesLayer >> tilesCacheSizeByLevel [
 
@@ -959,6 +1008,8 @@ GeoViewMapTilesLayer >> updateWhenProjectionChanged: aContext [
 	self stopTilesWorker.
 
 	"for instant, when the scale or view extent change, rebuild the entirely view from scratch - in the futur do a zoom and extent / crop the map background"
+	aContext isScaleChanged ifTrue:[ 	self tileZLevel: nil. ].
+	
 	(aContext isExtentChanged or:[ aContext isScaleChanged ]) ifTrue:[ self resetMap ].
 	
 	aContext isCenterChanged ifTrue:[ 

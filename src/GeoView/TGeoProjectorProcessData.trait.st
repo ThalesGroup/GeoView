@@ -105,7 +105,7 @@ TGeoProjectorProcessData >> projectCircle: anAbsolutePosition radiusInMeters: aR
 				
 			from ifNotNil: [
 				
-				(self processor projection geodesicExitsValidDomainFrom: from to: to) ifTrue:[
+				(self processor projection geodesicCrossesValidDomainFrom: from to: to) ifTrue:[
 					polylines addAll: (self projectGeodesicFrom: from to: to) 
 				] ifFalse:[
 					polylines add: (SmockDPolyline new points: { (self processor projection projLatLonToCart: from) . (self processor projection projLatLonToCart: to) }). 
@@ -115,7 +115,7 @@ TGeoProjectorProcessData >> projectCircle: anAbsolutePosition radiusInMeters: aR
 			from := to 
 	].
 
-	(self processor projection geodesicExitsValidDomainFrom: from to: first) ifTrue:[
+	(self processor projection geodesicCrossesValidDomainFrom: from to: first) ifTrue:[
 		polylines addAll: (self projectGeodesicFrom: from to: first) 
 	] ifFalse:[
 		polylines add: (SmockDPolyline new points: { (self processor projection projLatLonToCart: from) . (self processor projection projLatLonToCart: first) }). 
@@ -151,7 +151,7 @@ TGeoProjectorProcessData >> projectGeodesicFrom: aFromAbsolutePosition to: aToAb
 			
 		"check if need to create a new polyline"
 		previousStepGeo ifNotNil:[
-			needNewPoly := self processor projection geodesicExitsValidDomainFrom: previousStepGeo to: stepGeo. 
+			needNewPoly := self processor projection geodesicCrossesValidDomainFrom: previousStepGeo to: stepGeo. 
 		].
 		
 		needNewPoly ifTrue:[ | assoc |

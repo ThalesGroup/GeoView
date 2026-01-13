@@ -324,7 +324,7 @@ GeoViewAbstractElement >> initialize [
 	super initialize.
 	
 	"Initialize default projection systems"
-	self mapProjection: GeoViewMercatorProjection new.
+	self mapProjection: GeoViewWebMercatorProjection new.
 	self displayToGraphicProjection: GeoView2DProjection new.
 	
 	"Setup default scale"

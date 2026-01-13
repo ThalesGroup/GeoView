@@ -60,3 +60,15 @@ TGeoViewMapProjectionTest >> testPrintOn [
 
 	self assert: projection printString isString
 ]
+
+{ #category : #tests }
+TGeoViewMapProjectionTest >> testProjCartToLatLon [
+
+	self subclassResponsibility 
+]
+
+{ #category : #tests }
+TGeoViewMapProjectionTest >> testProjLatLonToCart [
+
+	self subclassResponsibility 
+]
