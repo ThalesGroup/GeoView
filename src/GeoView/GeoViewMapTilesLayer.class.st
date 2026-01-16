@@ -1,3 +1,8 @@
+"
+I am a provisional implementation of a map tiles layer.
+I provide basic functionality for displaying tiled map data, but my current implementation has known limitations and will require a complete redesign in a future iteration.
+This is a temporary solution - use with the understanding that the API and internal structure will change significantly in future versions.
+"
 Class {
 	#name : #GeoViewMapTilesLayer,
 	#superclass : #AbstractGeoViewBasicLayer,
@@ -100,26 +105,24 @@ GeoViewMapTilesLayer >> clip: num min: min max: max [
 { #category : #'loading and updating' }
 GeoViewMapTilesLayer >> computeGraphicBoundsForTile: aGeoFormTile level: aLevel [
 
-	| centerPixel vMapTileCenter diffXY diffPixel origin corner graphicBounds centerGeoPoint|
-	
-	aGeoFormTile isNoPicture ifTrue:[
-		centerPixel := self getCenterInPixel.
-		centerGeoPoint := self getCenterInGeoPoint.
-		vMapTileCenter := self getTileXYFromGeoPoint: centerGeoPoint level: aLevel.
-		diffXY := aGeoFormTile tileXY - vMapTileCenter.
-		diffPixel := diffXY * (self defaultTileSize asPoint).
-		origin := (centerPixel) + diffPixel.
-		corner := origin + (self defaultTileSize asPoint).
-	] ifFalse:[
-		origin := self getGraphicPositionFromGeoPosition: aGeoFormTile geoBounds origin.
-		corner := self getGraphicPositionFromGeoPosition: aGeoFormTile geoBounds corner.
-	].
+	| centerPixel vMapTileCenter diffXY diffPixel origin corner graphicBounds centerGeoPoint |
+	aGeoFormTile isNoPicture
+		ifTrue: [
+				centerPixel := self getCenterInPixel.
+				centerGeoPoint := self getCenterInGeoPoint.
+				vMapTileCenter := self getTileXYFromGeoPoint: centerGeoPoint level: aLevel.
+				diffXY := aGeoFormTile tileXY - vMapTileCenter.
+				diffPixel := diffXY * self defaultTileSize asPoint.
+				origin := centerPixel + diffPixel.
+				corner := origin + self defaultTileSize asPoint ]
+		ifFalse: [
+				origin := self getGraphicPositionFromGeoPosition: aGeoFormTile geoBounds origin.
+				corner := self getGraphicPositionFromGeoPosition: aGeoFormTile geoBounds corner ].
 
-	"origin and corner can be nil is case of out of projection"
-	(origin isNil or:[corner isNil]) ifFalse:[
-		graphicBounds := origin corner: corner.
-		aGeoFormTile graphicBounds: graphicBounds
-	]
+	(origin isNil or: [ corner isNil ]) ifTrue: [ ^ self ].
+
+	graphicBounds := origin corner: corner.
+	aGeoFormTile graphicBounds: graphicBounds
 ]
 
 { #category : #'API -- tiles' }
@@ -150,7 +153,7 @@ GeoViewMapTilesLayer >> doLoadingTilesThread [
 	self surfaceMap scale: 1@1.
 
 	centerGeoPoint := self getCenterInGeoPoint.
-	level := self tileZLevel. "(self getTilesLevelForCurrentResolution) key."
+	level := self tileZLevel.
 	
 	tilesXY := self getTilesXYFor: centerGeoPoint level: level.
 	tilesXYBuffer := self getTilesXYForBuffer: centerGeoPoint level: level.
@@ -912,7 +915,7 @@ GeoViewMapTilesLayer >> tileSize: anObject [
 	tileSize := anObject
 ]
 
-{ #category : #level }
+{ #category : #accessing }
 GeoViewMapTilesLayer >> tileZLevel [
 
 	tileZLevel ifNil: [
@@ -921,7 +924,7 @@ GeoViewMapTilesLayer >> tileZLevel [
 	^ tileZLevel
 ]
 
-{ #category : #level }
+{ #category : #accessing }
 GeoViewMapTilesLayer >> tileZLevel: anObject [
 
 	tileZLevel := anObject

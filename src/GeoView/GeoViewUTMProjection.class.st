@@ -124,22 +124,37 @@ GeoViewUTMProjection >> falseNorthingInMeters [
 { #category : #testing }
 GeoViewUTMProjection >> geodesicCrossesValidDomainFrom: aFromAbsoluteCoordinates to: aToAbsoluteCoordinates [
 	"Check if geodesic crosses zone boundary or latitude limit"
-	
-	| fromZone toZone lat1 lat2 |
-	(aFromAbsoluteCoordinates isValid not or: [aToAbsoluteCoordinates isValid not]) 
-		ifTrue: [ ^ true ].
-	
-	fromZone := self class zoneNumberFor: aFromAbsoluteCoordinates longitudeInDegrees.
-	toZone := self class zoneNumberFor: aToAbsoluteCoordinates longitudeInDegrees.
-	
-	"Check if crosses zone boundary"
-	fromZone ~= toZone ifTrue: [ ^ true ].
-	
+
+	| lat1 lat2 crossesLatCut |
+	(aFromAbsoluteCoordinates isValid not or: [
+		 aToAbsoluteCoordinates isValid not ]) ifTrue: [ ^ true ].
+
 	"Check latitude limits"
-	lat1 := aFromAbsoluteCoordinates latitudeInDegrees abs.
-	lat2 := aToAbsoluteCoordinates latitudeInDegrees abs.
-	
-	^ (lat1 > 84 or: [ lat2 > 84 ])
+	lat1 := aFromAbsoluteCoordinates latitudeInDegrees.
+	lat2 := aToAbsoluteCoordinates latitudeInDegrees.
+	crossesLatCut := (lat1 < self latitudeMin or: [
+		                  lat1 > self latitudeMax ]) or: [
+		                 lat2 < self latitudeMin or: [
+			                 lat2 > self latitudeMax ] ].
+
+	^ crossesLatCut
+]
+
+{ #category : #testing }
+GeoViewUTMProjection >> geodesicCrossesZoneFrom: aFromAbsoluteCoordinates to: aToAbsoluteCoordinates [
+	"Check if geodesic crosses zone boundary"
+
+	| fromZone toZone |
+	(aFromAbsoluteCoordinates isValid not or: [
+		 aToAbsoluteCoordinates isValid not ]) ifTrue: [ ^ true ].
+
+	fromZone := self class zoneNumberFor:
+		            aFromAbsoluteCoordinates longitudeInDegrees.
+	toZone := self class zoneNumberFor:
+		          aToAbsoluteCoordinates longitudeInDegrees.
+
+	"Check if crosses zone boundary"
+	^ fromZone ~= toZone
 ]
 
 { #category : #initialization }
@@ -166,11 +181,8 @@ GeoViewUTMProjection >> isAbsoluteCoordinatesOutsideProjectionLimit: anAbsoluteC
 
 	| lat |
 	anAbsoluteCoordinates isValid ifFalse: [ ^ true ].
-
-	lat := anAbsoluteCoordinates latitudeInDegrees abs.
-	lat > 84 ifTrue: [ ^ true ].
-
-	^ false
+	lat := anAbsoluteCoordinates latitudeInDegrees.
+	^ lat < self latitudeMin or: [ lat > self latitudeMax ]
 ]
 
 { #category : #accessing }
@@ -196,6 +208,20 @@ GeoViewUTMProjection >> k0 [
 GeoViewUTMProjection >> key [
 
 	^ #GeoViewUTMProjection
+]
+
+{ #category : #accessing }
+GeoViewUTMProjection >> latitudeMax [
+	"UTM coordinates between 80°S and 84°N"
+
+	^ 84
+]
+
+{ #category : #accessing }
+GeoViewUTMProjection >> latitudeMin [
+	"UTM coordinates between 80°S and 84°N"
+
+	^ -80
 ]
 
 { #category : #private }
@@ -321,20 +347,22 @@ GeoViewUTMProjection >> sideOfAbsoluteCoordinates: anAbsolutePosition [
 	"Return the position relative to this UTM zone"
 
 	| coordZone lat |
-	anAbsolutePosition isValid ifFalse: [ ^ GeoViewMapProjectionSide outOfProjection ].
+	anAbsolutePosition isValid ifFalse: [
+		^ GeoViewMapProjectionSide outOfProjection ].
 
 	lat := anAbsolutePosition latitudeInDegrees.
 
 	"Check latitude limits"
-	lat abs > 84 ifTrue: [
-			^ lat > 0
-				  ifTrue: [ GeoViewMapProjectionSide outsideLatitudeLimitTop ]
-				  ifFalse: [ GeoViewMapProjectionSide outsideLatitudeLimitBottom ] ].
+	lat > self latitudeMax ifTrue: [
+		^ GeoViewMapProjectionSide outsideLatitudeLimitTop ].
+	lat < self latitudeMin ifTrue: [
+		^ GeoViewMapProjectionSide outsideLatitudeLimitBottom ].
 
 	"Check hemisphere"
 	(lat >= 0 and: [ self isNorthernHemisphere not ]) ifTrue: [
 		^ GeoViewMapProjectionSide wrongUTMHemisphere ].
-	(lat < 0 and: [ self isNorthernHemisphere ]) ifTrue: [ ^ GeoViewMapProjectionSide wrongUTMHemisphere ].
+	(lat < 0 and: [ self isNorthernHemisphere ]) ifTrue: [
+		^ GeoViewMapProjectionSide wrongUTMHemisphere ].
 
 	"Check zone"
 	coordZone := self class zoneNumberFor:
@@ -344,7 +372,7 @@ GeoViewUTMProjection >> sideOfAbsoluteCoordinates: anAbsolutePosition [
 				  ifTrue: [ GeoViewMapProjectionSide leftOfUTMZone ]
 				  ifFalse: [ GeoViewMapProjectionSide rightOfUTMZone ] ].
 
-	^ GeoViewMapProjectionSide insideUTMZone 
+	^ GeoViewMapProjectionSide insideUTMZone
 ]
 
 { #category : #accessing }

@@ -35,12 +35,12 @@ GeoViewWebMercatorProjectionTest >> testGeodesicCrossesValidDomainFromTo [
 	self deny: (projection
 			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
 			 to:
-			 (AbsoluteCoordinates latitudeInDegrees: 85.06 longitudeInDegrees: 180)).
+			 (AbsoluteCoordinates latitudeInDegrees: (projection latitudeMax) longitudeInDegrees: 180)).
 			
 	self deny: (projection
 			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
 			 to:
-			 (AbsoluteCoordinates latitudeInDegrees: -85.06 longitudeInDegrees: 180)).
+			 (AbsoluteCoordinates latitudeInDegrees: (projection latitudeMin) longitudeInDegrees: 180)).
 			
 	"projection limits"
 	self assert: (projection

@@ -63,6 +63,55 @@ GeoViewUTMProjectionTest >> testEquatorCentralMeridian [
 	self assert: (result yInMeters roundTo: 0.1) equals: 0
 ]
 
+{ #category : #tests }
+GeoViewUTMProjectionTest >> testGeodesicCrossesValidDomainFromTo [
+
+	self deny: (projection
+			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
+			 to:
+			 (AbsoluteCoordinates latitudeInDegrees: 45 longitudeInDegrees: 100)).
+
+	self deny: (projection
+			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
+			 to:
+			 (AbsoluteCoordinates latitudeInDegrees: 0 longitudeInDegrees: 0)).
+	
+	self deny: (projection
+			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
+			 to:
+			 (AbsoluteCoordinates latitudeInDegrees: (projection latitudeMax) longitudeInDegrees: 180)).
+			
+	self deny: (projection
+			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
+			 to:
+			 (AbsoluteCoordinates latitudeInDegrees: (projection latitudeMin) longitudeInDegrees: 180)).
+			
+	self deny: (projection
+			 geodesicCrossesValidDomainFrom: (AbsoluteCoordinates latitudeInDegrees: 5.08 longitudeInDegrees: -19.01)
+			 to:
+			 (AbsoluteCoordinates latitudeInDegrees: 5.08 longitudeInDegrees: -19.00)).
+			
+	"projection limits"
+	self assert: (projection
+			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
+			 to:
+			 (AbsoluteCoordinates latitudeInDegrees: 90 longitudeInDegrees: 100)).
+			
+	self assert: (projection
+			 geodesicCrossesValidDomainFrom: AbsoluteCoordinates zero
+			 to:
+			 (AbsoluteCoordinates latitudeInDegrees: -90 longitudeInDegrees: 100)).
+]
+
+{ #category : #tests }
+GeoViewUTMProjectionTest >> testGeodesicCrossesZoneFromTo [
+
+	self assert: (projection
+			 geodesicCrossesZoneFrom: AbsoluteCoordinates zero
+			 to:
+			 (AbsoluteCoordinates latitudeInDegrees: 45 longitudeInDegrees: 100))
+]
+
 { #category : #'tests-accessing' }
 GeoViewUTMProjectionTest >> testHighLatitude [
 
@@ -75,6 +124,29 @@ GeoViewUTMProjectionTest >> testHighLatitude [
 
 	self assert: result xInMeters isNumber.
 	self assert: result yInMeters isNumber
+]
+
+{ #category : #tests }
+GeoViewUTMProjectionTest >> testIsAbsoluteCoordinatesOutsideProjectionLimit [
+
+	self deny: (projection isAbsoluteCoordinatesOutsideProjectionLimit:
+			 AbsoluteCoordinates zero).
+
+	self deny: (projection isAbsoluteCoordinatesOutsideProjectionLimit:
+			 AbsoluteCoordinates frBrest).
+
+	"out"
+	self assert:
+		(projection isAbsoluteCoordinatesOutsideProjectionLimit:
+			 AbsoluteCoordinates new).
+
+	self assert:
+		(projection isAbsoluteCoordinatesOutsideProjectionLimit:
+			 (AbsoluteCoordinates latitudeInDegrees: -90 longitudeInDegrees: 0)).
+			
+	self assert:
+		(projection isAbsoluteCoordinatesOutsideProjectionLimit:
+			 (AbsoluteCoordinates latitudeInDegrees: 90 longitudeInDegrees: 0))
 ]
 
 { #category : #tests }
@@ -183,6 +255,43 @@ GeoViewUTMProjectionTest >> testReverseProj [
 	
 	self assert: latDiff < 0.0001.
 	self assert: lonDiff < 0.0001
+]
+
+{ #category : #'tests-accessing' }
+GeoViewUTMProjectionTest >> testSideOfAbsoluteCoordinates [
+
+	self
+		assert:
+		(projection sideOfAbsoluteCoordinates: AbsoluteCoordinates zero)
+		equals: GeoViewMapProjectionSide insideUTMZone.
+	
+	self
+		assert:
+		(projection sideOfAbsoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 0 longitudeInDegrees: -1))
+		equals: GeoViewMapProjectionSide leftOfUTMZone.
+	
+	self
+		assert:
+		(projection sideOfAbsoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 0 longitudeInDegrees: 20))
+		equals: GeoViewMapProjectionSide rightOfUTMZone.
+		
+	"limits"
+	self
+		assert:
+		(projection sideOfAbsoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: 90 longitudeInDegrees: 0))
+		equals: GeoViewMapProjectionSide outsideLatitudeLimitTop.
+		
+	self
+		assert:
+		(projection sideOfAbsoluteCoordinates: (AbsoluteCoordinates latitudeInDegrees: -90 longitudeInDegrees: 0))
+		equals: GeoViewMapProjectionSide outsideLatitudeLimitBottom.
+		
+	"out"
+	self
+		assert:
+		(projection sideOfAbsoluteCoordinates: AbsoluteCoordinates new)
+		equals: GeoViewMapProjectionSide outOfProjection
+		.
 ]
 
 { #category : #'tests-accessing' }
