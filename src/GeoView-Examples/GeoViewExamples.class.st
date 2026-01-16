@@ -235,10 +235,11 @@ GeoViewExamples class >> createTissotIndicatorCircles [
 	
 	i := 1.
 	-70 to: 70 by: 15 do:[ :lat | 
-		-180 to: 180 by: 15 do:[ :lon | 
+		-180 to: 180 by: 15 do:[ :lon | | coordinates |
+			coordinates := ( lat @ lon ) asAbsoluteCoordinates.
 			circles add: (GeoCircle new key: i;
-				absoluteCoordinates: ( lat @ lon ) asAbsoluteCoordinates ;
-				fillStyle: (Color green alpha: 0.5) asSmockFillStyle;
+				absoluteCoordinates: coordinates ;
+				fillStyle: (Color green alpha: 0.25) asSmockFillStyle;
 				strokeStyle: (Color green asSmockStrokeStyle width: 1);
 				radiusInMeters: radiusInM;
 				yourself).
@@ -636,19 +637,18 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleHybrid [
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadmap [
 	"This example show a map layer (assuming an internet connection to default url of google"
-	
+
 	| element layer |
 	element := GeoViewElement new.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	
+
+	element maxScale: element maxScale * 8.
+
 	"add carto layer"
 	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
 	layer tilesProvider beRoadmapType.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
-	
 ]
 
 { #category : #'examples - tiles provider' }
@@ -658,7 +658,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadsOnly [
 	| element layer |
 	element := GeoViewElement new.
 
-	element maxScaleInMeters: element maxScale * 8.
+	element maxScale: element maxScale * 8.
 
 	"add carto layer"
 	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
@@ -671,54 +671,51 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadsOnly [
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleSatellite [
 	"This example show a map layer (assuming an internet connection to default url of google"
-	
+
 	| element layer |
 	element := GeoViewElement new.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	
+
+	element maxScale: element maxScale * 8.
+
 	"add carto layer"
 	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
-	
 ]
 
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrain [
 	"This example show a map layer (assuming an internet connection to default url of google"
-	
+
 	| element layer |
 	element := GeoViewElement new.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	
+
+	element maxScale: element maxScale * 8.
+
 	"add carto layer"
 	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
 	layer tilesProvider beTerrainType.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
-	
 ]
 
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrainOnly [
 	"This example show a map layer (assuming an internet connection to default url of google"
-	
+
 	| element layer |
 	element := GeoViewElement new.
-	
-	element maxScaleInMeters: element maxScaleInMeters * 8.
-	
+
+	element maxScale: element maxScale * 8.
+
 	"add carto layer"
 	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
 	layer tilesProvider beTerrainOnlyType.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
-	
 ]
 
 { #category : #'examples - tiles provider' }
@@ -728,7 +725,7 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingLocal [
 	| element layer |
 	element := GeoViewElement new.
 
-	element maxScaleInMeters: element maxScale * 8.
+	element maxScale: element maxScale * 8.
 
 	"add carto layer"
 	layer := GeoViewMapTilesLayer newWithLocalDirectory name:
@@ -755,13 +752,28 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
 ]
 
 { #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithMercatorProjection [
+	"This example show a map layer (assuming an internet connection to default url open street map"
+
+	| element layer |
+	element := GeoViewElement new.
+	element maxScale: element maxScale * 8.
+
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithSmallTileSize [
 	"This example show a map layer (assuming an internet connection to default url open street map"
 
 	| element layer |
 	element := GeoViewElement new.
 
-	element maxScaleInMeters: element maxScale * 8.
+	element maxScale: element maxScale * 8.
 
 	"add carto layer"
 	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
@@ -1113,7 +1125,7 @@ GeoViewExamples class >> exampleTissotIndicatorMercator [
 	
 	| element objects |
 	element := GeoViewUtils createGeoViewForGeoObjects.
-	element mapProjection: GeoViewMercatorProjection new. "by default"
+	element mapProjection: GeoViewMercatorProjection new.
 	"laborde: better to have a vectorial map to considere the deformation because tiles are not available for all projections"
 	
 	"create sample datas"
@@ -1133,12 +1145,29 @@ GeoViewExamples class >> exampleTissotIndicatorUTM [
 	"warning before opening"
 	(UIManager default
 		 confirm:
-			 'This Tissot indicator example using a not finalized UTM Projection, it can works but without stability.
+			 'This Tissot indicator example using a work in progress UTM Projection, it can works but with glitchs and without stability.
 			Start ?'
 		 label: 'GeoView - Work in progress') ifFalse:[ ^ self ].
 	
 	element := GeoViewUtils createGeoViewForGeoObjects.
 	element mapProjection: GeoViewUTMProjection new.
+	"laborde: better to have a vectorial map to considere the deformation because tiles are not available for all projections"
+	
+	"create sample datas"
+	objects := self createTissotIndicatorCircles.
+	element addObjects: objects.
+
+	^ self openViewInWindow: element
+	
+]
+
+{ #category : #'examples - projections' }
+GeoViewExamples class >> exampleTissotIndicatorWebMercator [
+	"This example implement the indicator of Tissot (Nicolas August) for a projection, this indicator indicate the level of deformation of the selection projection"
+	
+	| element objects |
+	element := GeoViewUtils createGeoViewForGeoObjects.
+	"element mapProjection: GeoViewWebMercatorProjection new." "by default"
 	"laborde: better to have a vectorial map to considere the deformation because tiles are not available for all projections"
 	
 	"create sample datas"

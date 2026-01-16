@@ -175,7 +175,7 @@ GeoViewAbstractElementTest >> testInitialize [
 	self assert: geoView extent equals: 1000 @ 1000.
 	self
 		assert: geoView mapProjection class
-		equals: GeoViewMercatorProjection.
+		equals: GeoViewWebMercatorProjection.
 	self
 		assert: geoView displayToGraphicProjection class
 		equals: GeoView2DProjection.

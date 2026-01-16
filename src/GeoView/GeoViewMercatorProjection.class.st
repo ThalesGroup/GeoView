@@ -1,5 +1,6 @@
 "
-I am a Mercator projection. It is a cylindrical map projection.
+I am a Mercator projection (EPSG:3395). 
+It is a cylindrical map projection.
 "
 Class {
 	#name : #GeoViewMercatorProjection,
@@ -9,20 +10,15 @@ Class {
 	#category : #'GeoView-Projections'
 }
 
-{ #category : #properties }
-GeoViewMercatorProjection class >> k0 [
+{ #category : #accessing }
+GeoViewMercatorProjection >> epsgCode [
+	"EPSG:3395 World Mercator (ellipsoidal earth)"
 
-	^ 0.9996
-]
-
-{ #category : #properties }
-GeoViewMercatorProjection class >> scaleFactor [
-
-	^ self k0
+	^ 3395
 ]
 
 { #category : #testing }
-GeoViewMercatorProjection >> geodesicExitsValidDomainFrom: aFromAbsoluteCoordinates to: aToAbsoluteCoordinates [
+GeoViewMercatorProjection >> geodesicCrossesValidDomainFrom: aFromAbsoluteCoordinates to: aToAbsoluteCoordinates [
 	"return a boolean if a segment between two points need to be cut, used in case of changement of the projection side"
 	
 	| lat1 lon1 lat2 lon2 deltaLon crossesLonCut crossesLatCut |
@@ -35,7 +31,9 @@ GeoViewMercatorProjection >> geodesicExitsValidDomainFrom: aFromAbsoluteCoordina
 	
 	deltaLon := (lon1 - lon2) abs.
 	crossesLonCut := deltaLon > 180.
-	crossesLatCut := (lat1 abs >= self latitudeLimit) or:[ lat2 abs >= self latitudeLimit ].
+	crossesLatCut := ((lat1 < self latitudeMin) or:[ lat1 > self latitudeMax ]) or:[ 
+	                  (lat2 < self latitudeMin) or:[ lat2 > self latitudeMax ] ].
+	
 	^ crossesLonCut or:[ crossesLatCut ] 
 ]
 
@@ -45,9 +43,10 @@ GeoViewMercatorProjection >> isAbsoluteCoordinatesOutsideProjectionLimit: anAbso
 
 	| side |
 	side := self sideOfAbsoluteCoordinates: anAbsoluteCoordinates.
-	^ side = #outOfProjection or: [
-		  side = #outsideLatitudeLimitBottom or: [
-			  side = #outsideLatitudeLimitTop ] ]
+	^ {
+		  GeoViewMapProjectionSide outOfProjection.
+		  GeoViewMapProjectionSide outsideLatitudeLimitBottom.
+		  GeoViewMapProjectionSide outsideLatitudeLimitTop } includes: side
 ]
 
 { #category : #accessing }
@@ -57,60 +56,101 @@ GeoViewMercatorProjection >> key [
 ]
 
 { #category : #accessing }
-GeoViewMercatorProjection >> latitudeLimit [
+GeoViewMercatorProjection >> latitudeMax [
+	"World between 80°S and 84°N"
 
-	^ 85
+	^ 84
+]
+
+{ #category : #accessing }
+GeoViewMercatorProjection >> latitudeMin [
+	"World between 80°S and 84°N"
+
+	^ -80
+]
+
+{ #category : #accessing }
+GeoViewMercatorProjection >> name [
+
+	^ 'Mercator'
 ]
 
 { #category : #projection }
 GeoViewMercatorProjection >> projCartToLatLon: aCartesianCoordinates [
+	"Inverse ellipsoidal Mercator (EPSG:3395)"
+	| a e lat lon ts sinLat factor |
 
-	| lat lon |
-	lat := (2 * (aCartesianCoordinates yInMeters / WGS84 semiMinorAxisInMeters) exp arcTan) 
-		- (Float pi / 2).
-	lon := aCartesianCoordinates xInMeters / WGS84 semiMajorAxisInMeters.
-	
+	a := WGS84 semiMajorAxisInMeters.
+	e := WGS84 eccentricity.
+
+	lon := aCartesianCoordinates xInMeters / a.
+	ts := ((aCartesianCoordinates yInMeters / a) negated) exp.
+
+	"Initial approximation"
+	lat := (Float pi / 2) - (2 * (ts arcTan)).
+
+	6 timesRepeat: [
+		sinLat := lat sin.
+
+		factor := ts * (
+			(((1 + (e * sinLat)) / (1 - (e * sinLat))) ln * (e / 2)) exp
+		).
+
+		lat := (Float pi / 2) - (2 * (factor arcTan))
+	].
+
 	^ AbsoluteCoordinates
 		latitudeInRadians: lat
-		longitudeInRadians: lon 
+		longitudeInRadians: lon
 		altitudeInMeters: aCartesianCoordinates zInMeters
+
 ]
 
 { #category : #projection }
 GeoViewMercatorProjection >> projLatLonToCart: anAbsoluteCoordinates [
+	"Project using ellipsoidal Mercator (EPSG:3395)"
 
-	| x y |
-	(anAbsoluteCoordinates isEmpty or:[anAbsoluteCoordinates isValid not]) ifTrue:[^nil].
-	x := anAbsoluteCoordinates longitudeInRadians 
-		* WGS84 semiMajorAxisInMeters.
-	y := ((anAbsoluteCoordinates latitudeInRadians / 2) + (Float pi / 4)) tan ln 
-		* WGS84 semiMinorAxisInMeters.
-	
+	| x y lat e sinLat |
+	(anAbsoluteCoordinates isEmpty or: [
+		 anAbsoluteCoordinates isValid not ]) ifTrue: [ ^ nil ].
+
+	lat := anAbsoluteCoordinates latitudeInRadians.
+	e := WGS84 eccentricity.
+	sinLat := lat sin.
+
+	x := anAbsoluteCoordinates longitudeInRadians
+	     * WGS84 semiMajorAxisInMeters.
+
+	"Ellipsoidal Mercator formula"
+	y := WGS84 semiMajorAxisInMeters
+	     * ((Float pi / 4 + (lat / 2)) tan ln
+		      - (e / 2 * (1 - (e * sinLat) / (1 + (e * sinLat))) ln)).
+
 	^ CartesianCoordinates new
-		xInMeters: x;
-		yInMeters: y;
-		zInMeters: anAbsoluteCoordinates altitudeInMeters.
+		  xInMeters: x;
+		  yInMeters: y;
+		  zInMeters: anAbsoluteCoordinates altitudeInMeters
 ]
 
 { #category : #testing }
 GeoViewMercatorProjection >> sideOfAbsoluteCoordinates: anAbsolutePosition [
-	"Available side symbols: 
-	#outsideLatitudeLimitTop, #outsideLatitudeLimitBottom, #leftOfZeroMeridian, #rightOfZeroMeridian
-	and #outOfProjection
-	"
-	
+	"Return the projection side of the coordinates. Return leftOfZeroMeridian by default in case of zero longitude."
+
 	| lat lon |
-	anAbsolutePosition isValid ifFalse:[ ^ #outOfProjection ].
+	anAbsolutePosition isValid ifFalse: [
+		^ GeoViewMapProjectionSide outOfProjection ].
+	
 	lat := anAbsolutePosition latitudeInDegrees.
 	lon := anAbsolutePosition longitudeInDegrees.
-	
+
 	"Test if the point is outside latitude limit"
-	(lat abs) > self latitudeLimit ifTrue:[
-		lat > (self latitudeLimit negated) ifTrue:[ ^ #outsideLatitudeLimitBottom ].
-		^ #outsideLatitudeLimitTop.
-	].
+	lat > self latitudeMax ifTrue: [
+		^ GeoViewMapProjectionSide outsideLatitudeLimitTop ].
+	lat < self latitudeMin ifTrue: [
+		^ GeoViewMapProjectionSide outsideLatitudeLimitBottom ].
 
 	"Test if the side of the point according to the zero meridian"
-	lon > 0 ifTrue:[ ^ #rightOfZeroMeridian ].
-	^ #leftOfZeroMeridian
+	lon > 0 ifTrue: [ ^ GeoViewMapProjectionSide rightOfZeroMeridian ].
+	
+	^ GeoViewMapProjectionSide leftOfZeroMeridian
 ]
