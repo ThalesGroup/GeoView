@@ -26,6 +26,27 @@ GeoViewLocalDirectoryTilesProvider >> imageType: anObject [
 	imageType := anObject
 ]
 
+{ #category : #request }
+GeoViewLocalDirectoryTilesProvider >> loadTileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
+
+	| filename |
+	filename := self
+		            tileFilenameFor: aZoomLevel
+		            x: anXCoordinate
+		            y: anYCoordinate.
+	filename ifNil: [ ^ nil ].
+	filename parent asFileReference ensureCreateDirectory.
+	filename exists ifTrue: [ ^ filename ].
+	
+	^ nil
+]
+
+{ #category : #cache }
+GeoViewLocalDirectoryTilesProvider >> sharedCacheKey [
+
+	^ self tileDirectory printString
+]
+
 { #category : #accessing }
 GeoViewLocalDirectoryTilesProvider >> tileDirectory [
 
@@ -36,7 +57,8 @@ GeoViewLocalDirectoryTilesProvider >> tileDirectory [
 { #category : #accessing }
 GeoViewLocalDirectoryTilesProvider >> tileDirectory: anObject [
 
-	tileDirectory := anObject
+	tileDirectory := anObject.
+	self initializeCache
 ]
 
 { #category : #request }
@@ -59,15 +81,4 @@ GeoViewLocalDirectoryTilesProvider >> tileFilenameFor: aZoomLevel x: anXCoordina
 	filename := filename , imageType asString.
 
 	^ filename
-]
-
-{ #category : #request }
-GeoViewLocalDirectoryTilesProvider >> tileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
-
-	| filename |
-	filename := self tileFilenameFor: aZoomLevel x: anXCoordinate y: anYCoordinate.
-	filename ifNil: [ ^ nil ].
-	filename parent asFileReference ensureCreateDirectory.
-	filename exists ifTrue: [ ^ filename ].
-	^ nil
 ]

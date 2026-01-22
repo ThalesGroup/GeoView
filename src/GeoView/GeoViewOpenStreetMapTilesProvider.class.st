@@ -37,6 +37,12 @@ GeoViewOpenStreetMapTilesProvider >> initialize [
 	self updateUrl
 ]
 
+{ #category : #cache }
+GeoViewOpenStreetMapTilesProvider >> sharedCacheKey [
+
+	^ 'OpenStreetMap'
+]
+
 { #category : #update }
 GeoViewOpenStreetMapTilesProvider >> updateUrl [
 

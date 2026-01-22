@@ -8,6 +8,18 @@ Class {
 	#category : #'GeoView-Map'
 }
 
+{ #category : #testing }
+GeoViewTilesProviderTMS class >> isAbstract [
+
+	^ self == GeoViewTilesProviderTMS
+]
+
+{ #category : #request }
+GeoViewTilesProviderTMS >> loadTileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
+
+	^ self service tile: anXCoordinate y: anYCoordinate z: aZoomLevel
+]
+
 { #category : #accessing }
 GeoViewTilesProviderTMS >> serverUrl [
 
@@ -25,12 +37,6 @@ GeoViewTilesProviderTMS >> serverUrl: anObject [
 GeoViewTilesProviderTMS >> service [
 
 	^ service ifNil: [ service := OWSTMS new ]
-]
-
-{ #category : #request }
-GeoViewTilesProviderTMS >> tileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
-
-	^ self service tile: anXCoordinate y: anYCoordinate z: aZoomLevel
 ]
 
 { #category : #update }

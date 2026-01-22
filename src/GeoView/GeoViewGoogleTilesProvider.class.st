@@ -77,10 +77,18 @@ GeoViewGoogleTilesProvider >> beTerrainType [
 GeoViewGoogleTilesProvider >> initialize [
 
 	super initialize.
-	self haveCopyrightNote: true.
-	self defaultCopyrightNote: self class attributionText.
 
-	self beSatelliteType
+	self beSatelliteType.
+
+	self haveCopyrightNote: true.
+	self defaultCopyrightNote: self class attributionText
+]
+
+{ #category : #cache }
+GeoViewGoogleTilesProvider >> sharedCacheKey [
+
+	tilesType ifNil: [ ^ nil ].
+	^ 'Google-' , tilesType asString
 ]
 
 { #category : #update }
@@ -92,5 +100,7 @@ GeoViewGoogleTilesProvider >> updateUrl [
 	(tilesType = 's' or:[tilesType = 'y' or:[tilesType = 't' or:[tilesType = 'p']]])
 		ifTrue: [ format := '.jpg' ].
 
-	self service url: self serverUrl, '?lyrs=', ( tilesType asString ), '&x={x}&y={y}&z={z}&ext=', format
+	self service url: self serverUrl, '?lyrs=', ( tilesType asString ), '&x={x}&y={y}&z={z}&ext=', format.
+	
+	self initializeCache
 ]
