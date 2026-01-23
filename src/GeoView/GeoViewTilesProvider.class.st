@@ -82,6 +82,13 @@ GeoViewTilesProvider >> cache: anObject [
 	cache := anObject
 ]
 
+{ #category : #'private - cache' }
+GeoViewTilesProvider >> changeCache [
+	"need to change the cache because of provider settings changes"
+
+	self initializeCache
+]
+
 { #category : #accessing }
 GeoViewTilesProvider >> defaultCopyrightNote [
 
@@ -115,16 +122,15 @@ GeoViewTilesProvider >> initialize [
 	self haveCopyrightNote: false
 ]
 
-{ #category : #cache }
+{ #category : #'private - cache' }
 GeoViewTilesProvider >> initializeCache [
 
 	| sharedCache |
-	self sharedCacheKey ifNil: [ ^ self ].
-
 	sharedCache := self class sharedCacheFor: self.
 	sharedCache ifNil: [
 			sharedCache := GeoViewSharedMemoryTilesCache new.
 			self class installSharedCache: sharedCache for: self ].
+
 	self cache: sharedCache
 ]
 

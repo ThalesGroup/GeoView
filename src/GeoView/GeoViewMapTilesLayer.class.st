@@ -9,7 +9,6 @@ Class {
 	#instVars : [
 		'tileSize',
 		'loadingTilesWorker',
-		'dictTilesByLevel',
 		'previousCenter',
 		'mapMutex',
 		'currentGraphicProjection',
@@ -22,7 +21,8 @@ Class {
 		'doubleBufferedScene',
 		'moveMapWorker',
 		'resetMapWorker',
-		'tileZLevel'
+		'tileZLevel',
+		'localTilesCache'
 	],
 	#category : #'GeoView-Layers'
 }
@@ -69,31 +69,30 @@ GeoViewMapTilesLayer >> aeDrawOn: aeCanvas [
 
 { #category : #'loading and updating' }
 GeoViewMapTilesLayer >> buildVMapLayerTiles: aVMapTilesXY buffer: aLargerVMapTilesXY level: aLevel [
-	
-	| findAtLeastOneTile vMapServerTiles |
-	
+
+	| findAtLeastOneTile |
 	findAtLeastOneTile := false.
-	self surfaceMap ifNil:[ ^ findAtLeastOneTile ].
+	self surfaceMap ifNil: [ ^ findAtLeastOneTile ].
 	self surfaceMap offcenter: self mapOffcenter.
 	self surfaceMap position: currentGraphicProjection cartesianCenter.
 
-	findAtLeastOneTile := self loadAndRenderTiles: aVMapTilesXY on: self surfaceMap offset: self mapOffcenter negated level: aLevel.
-	
-	"VMAP Tiles computing completed"
-	"worker qui charge uniquement les tuiles en dehors de la vue en arrière plan (à la marge)"
-	self loadingBufferWorker: ([
-		self loadAndRenderTiles: aLargerVMapTilesXY on: self surfaceMap offset: (self mapOffcenter negated) level: aLevel.
-	
-		vMapServerTiles := self dictTilesByLevel at: aLevel ifAbsent:[nil].
-		vMapServerTiles ifNotNil:[
-			vMapServerTiles keys size > self tilesCacheSizeByLevel ifTrue:[ 
-				vMapServerTiles := nil.
-				self dictTilesByLevel at: aLevel put: vMapServerTiles. 
-			]
-		]
-	] forkAt: Processor userBackgroundPriority named: '[GeoView] Map stroke tiles loading').
+	findAtLeastOneTile := self
+		                      loadAndRenderTiles: aVMapTilesXY
+		                      on: self surfaceMap
+		                      offset: self mapOffcenter negated
+		                      level: aLevel.
 
-	^findAtLeastOneTile
+	"This job load tiles in background"
+	self loadingBufferWorker: ([
+			 self
+				 loadAndRenderTiles: aLargerVMapTilesXY
+				 on: self surfaceMap
+				 offset: self mapOffcenter negated
+				 level: aLevel ]
+			 forkAt: Processor userBackgroundPriority
+			 named: '[GeoView] Map stroke tiles loading').
+
+	^ findAtLeastOneTile
 ]
 
 { #category : #computing }
@@ -129,18 +128,6 @@ GeoViewMapTilesLayer >> computeGraphicBoundsForTile: aGeoFormTile level: aLevel 
 GeoViewMapTilesLayer >> defaultTileSize [
 
 	^ 256
-]
-
-{ #category : #accessing }
-GeoViewMapTilesLayer >> dictTilesByLevel [
-
-	^ dictTilesByLevel ifNil: [ dictTilesByLevel := Dictionary new ]
-]
-
-{ #category : #accessing }
-GeoViewMapTilesLayer >> dictTilesByLevel: aDictionary [
-
-	dictTilesByLevel := aDictionary
 ]
 
 { #category : #'loading and updating' }
@@ -535,44 +522,45 @@ GeoViewMapTilesLayer >> initializeDoubleBufferScene [
 { #category : #'loading and updating' }
 GeoViewMapTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: anOffset level: aLevel [
 
-	| index t geoTile  findAtLeastOneTile vMapServerTiles nbTiles tilesXY vMapServerTilesCopy |
+	| index findAtLeastOneTile nbTiles tilesXY |
 	
 	index := 1.
 	findAtLeastOneTile := false.
 
-	vMapServerTiles := self dictTilesByLevel at: aLevel ifAbsentPut:[ Dictionary new: self tilesCacheSizeByLevel ].
-	vMapServerTilesCopy := vMapServerTiles copy.
 	tilesXY := aListTilesXY copy.
 	nbTiles := tilesXY size.
 
-	[index <= nbTiles]
-		whileTrue: 
-			[| tKey isValidTile |
-			tKey := tilesXY at: index.
-			index := index + 1.
-						
-			[ t := vMapServerTilesCopy at: tKey ifAbsentPut: [geoTile := self getGeoImageAtTileXY: tKey level: aLevel. geoTile].
+	[index <= nbTiles] whileTrue: [ | tKey isValidTile |
+		tKey := tilesXY at: index.
+		index := index + 1.
+			
+		"catch loading tile block to considere error when retreiving tiles (network, disk, etc.)"		
+		[ | newTile requestedTile |
+			requestedTile := self localTilesCache tileAtLevel: aLevel x: tKey x y: tKey y.
+			requestedTile ifNil:[ 
+				newTile := self getGeoImageAtTileXY: tKey level: aLevel.
+				requestedTile := newTile. 
+			].
 
-				self computeGraphicBoundsForTile: t level: aLevel.
-				self offcenterGeoPngTile: t offset: anOffset level: aLevel.
-				isValidTile := t isNoPicture not.
-				findAtLeastOneTile := findAtLeastOneTile or:[ isValidTile ].
-				
-				self renderTileImage: t on: aSurface surface.
-				
-				"store the new tile"
-				self dictTilesByLevel at: aLevel put: vMapServerTilesCopy.
-				vMapServerTilesCopy := vMapServerTilesCopy copy.
+			self computeGraphicBoundsForTile: requestedTile level: aLevel.
+			self offcenterGeoPngTile: requestedTile offset: anOffset level: aLevel.
+			isValidTile := requestedTile isNoPicture not.
+			findAtLeastOneTile := findAtLeastOneTile or:[ isValidTile ].
+			
+			self renderTileImage: requestedTile on: aSurface surface.
+			
+			"store the new tile"
+			newTile ifNotNil:[
+				self localTilesCache storeTile: requestedTile level: aLevel x: tKey x y: tKey y.
+			].
 
-				self updateMapBackground.
+			self updateMapBackground.
+			
+		] on:[ Exception ] do:[ :ex |
+				Transcript show: '[GeoView] Error on Tiles loading :'; show: ex printString; cr.
+				(Delay forMilliseconds: 1000) wait.
+				ex restart]
 				
-				Processor yield.
-				
-			] on:[ Exception ] do:[:ex |
-					Transcript show: '[GeoView] Error on Tiles loading :'; show: ex printString; cr.
-					(Delay forMilliseconds: 1000) wait.
-					ex restart]
-					
 	].
 
 	^findAtLeastOneTile
@@ -601,6 +589,13 @@ GeoViewMapTilesLayer >> loadingTilesWorker [
 GeoViewMapTilesLayer >> loadingTilesWorker: anObject [
 
 	loadingTilesWorker := anObject
+]
+
+{ #category : #accessing }
+GeoViewMapTilesLayer >> localTilesCache [
+
+	^ localTilesCache ifNil: [
+		  localTilesCache := GeoViewMemoryTilesCache new ]
 ]
 
 { #category : #accessing }
@@ -930,12 +925,6 @@ GeoViewMapTilesLayer >> tileZLevel: anObject [
 	tileZLevel := anObject
 ]
 
-{ #category : #accessing }
-GeoViewMapTilesLayer >> tilesCacheSizeByLevel [
-
-	^ 9000
-]
-
 { #category : #'API -- tiles' }
 GeoViewMapTilesLayer >> tilesProvider [
 
@@ -953,35 +942,30 @@ GeoViewMapTilesLayer >> updateMapBackground [
 
 	| offcenter surface cairoSurface nextBufferedCanvas |
 	offcenter := self mapOffcenter.
+		
+	self surfaceMap ifNil: [ ^ self ].
+	self surfaceMap surface ifNil:[ ^ self ].
+			
+	self mapBackground: self surfaceMap.
+	self mapBackground offcenter: self mapOffcenter.
+	self mapBackground scale: 1 @ 1.
+	self mapBackground position: currentGraphicProjection cartesianCenter.
+	
+	surface := self mapBackground surface.
+	
+	"prepare new buffer: setup size and draw current buffer on it to conserve current paint"
+	cairoSurface := AeCairoImageSurface extent: surface extent.
+	doubleBufferedScene nextBuffer content: cairoSurface.
+	nextBufferedCanvas := AeCanvas newFor: cairoSurface.
+	
+	"render the map"
+	doubleBufferedScene nextBuffer content ifNotNil:[ :content | | context |
+		context := nextBufferedCanvas privateAeCairoContext.
+		context sourceSurface: surface x: offcenter x y: offcenter y; paint.
+	].
 
-	"self mapMutex critical: [" 
-		
-		self surfaceMap ifNil: [ ^ self ].
-		self surfaceMap surface ifNil:[ ^ self ].
-				
-		self mapBackground: self surfaceMap.
-		self mapBackground offcenter: self mapOffcenter.
-		self mapBackground scale: 1 @ 1.
-		self mapBackground position: currentGraphicProjection cartesianCenter.
-		
-		surface := self mapBackground surface.
-		
-		"prepare new buffer: setup size and draw current buffer on it to conserve current paint"
-		cairoSurface := AeCairoImageSurface extent: surface extent.
-		doubleBufferedScene nextBuffer content: cairoSurface.
-		nextBufferedCanvas := AeCanvas newFor: cairoSurface.
-		
-		"render the map"
-		doubleBufferedScene nextBuffer content ifNotNil:[ :content | | context |
-			context := nextBufferedCanvas privateAeCairoContext.
-			context sourceSurface: surface x: offcenter x y: offcenter y; paint.
-		].
-
-		"swap and notify repaint"
-		doubleBufferedScene swap.
-	"]."
-
-	Processor yield.
+	"swap and notify repaint"
+	doubleBufferedScene swap.
 
 	self sendRepaintRequest
 ]

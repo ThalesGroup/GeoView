@@ -58,7 +58,7 @@ GeoViewLocalDirectoryTilesProvider >> tileDirectory [
 GeoViewLocalDirectoryTilesProvider >> tileDirectory: anObject [
 
 	tileDirectory := anObject.
-	self initializeCache
+	self changeCache
 ]
 
 { #category : #request }

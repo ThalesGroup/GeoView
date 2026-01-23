@@ -102,5 +102,5 @@ GeoViewGoogleTilesProvider >> updateUrl [
 
 	self service url: self serverUrl, '?lyrs=', ( tilesType asString ), '&x={x}&y={y}&z={z}&ext=', format.
 	
-	self initializeCache
+	self changeCache
 ]
