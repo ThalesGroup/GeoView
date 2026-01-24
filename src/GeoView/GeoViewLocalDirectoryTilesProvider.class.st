@@ -14,6 +14,15 @@ GeoViewLocalDirectoryTilesProvider class >> defaultDirectory [
 	^ FileLocator imageDirectory / 'map' / 'r'
 ]
 
+{ #category : #'private - cache' }
+GeoViewLocalDirectoryTilesProvider >> createCache [
+	"Local directory already store tiles on the file system, use a shared memory cache"
+
+	| sharedCache |
+	sharedCache := GeoViewSharedMemoryTilesCache new.
+	^ sharedCache
+]
+
 { #category : #accessing }
 GeoViewLocalDirectoryTilesProvider >> imageType [
 

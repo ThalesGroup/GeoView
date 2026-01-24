@@ -559,7 +559,7 @@ GeoViewMapTilesLayer >> loadAndRenderTiles: aListTilesXY on: aSurface offset: an
 		] on:[ Exception ] do:[ :ex |
 				Transcript show: '[GeoView] Error on Tiles loading :'; show: ex printString; cr.
 				(Delay forMilliseconds: 1000) wait.
-				ex restart]
+				ex restart].
 				
 	].
 
@@ -862,6 +862,7 @@ GeoViewMapTilesLayer >> sinLatitude: aLatitude [
 
 { #category : #private }
 GeoViewMapTilesLayer >> stopTilesWorker [
+	"stop tiles worker properly, they can write files and need to wait that"
 
 	self loadingTilesWorker ifNotNil: [
 		self loadingTilesWorker terminate ].

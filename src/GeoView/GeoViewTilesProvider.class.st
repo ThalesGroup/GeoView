@@ -89,6 +89,12 @@ GeoViewTilesProvider >> changeCache [
 	self initializeCache
 ]
 
+{ #category : #'private - cache' }
+GeoViewTilesProvider >> createCache [
+
+	self subclassResponsibility 
+]
+
 { #category : #accessing }
 GeoViewTilesProvider >> defaultCopyrightNote [
 
@@ -128,7 +134,7 @@ GeoViewTilesProvider >> initializeCache [
 	| sharedCache |
 	sharedCache := self class sharedCacheFor: self.
 	sharedCache ifNil: [
-			sharedCache := GeoViewSharedMemoryTilesCache new.
+			sharedCache := self createCache.
 			self class installSharedCache: sharedCache for: self ].
 
 	self cache: sharedCache
@@ -159,7 +165,8 @@ GeoViewTilesProvider >> tileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
 		        loadTileFor: aZoomLevel
 		        x: anXCoordinate
 		        y: anYCoordinate.
-
+	tile ifNil:[ ^ tile ].
+	
 	self cache ifNotNil: [ :e |
 			e
 				storeTile: tile

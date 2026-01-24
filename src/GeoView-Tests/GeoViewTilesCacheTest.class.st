@@ -33,10 +33,10 @@ GeoViewTilesCacheTest >> setUp [
 GeoViewTilesCacheTest >> testStoreTileLevelXY [
 
 	| tile |
-	tile := Form new.
+	tile := self iconNamed: #pharo.
 
 	cache storeTile: tile level: 1 x: 1 y: 1.
-	self assert: (cache tileAtLevel: 1 x: 1 y: 1) equals: tile
+	self assert: (cache tileAtLevel: 1 x: 1 y: 1) bits equals: (tile bits)
 ]
 
 { #category : #tests }

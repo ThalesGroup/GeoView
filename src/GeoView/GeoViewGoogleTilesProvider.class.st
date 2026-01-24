@@ -73,6 +73,22 @@ GeoViewGoogleTilesProvider >> beTerrainType [
 	self updateUrl
 ]
 
+{ #category : #'private - cache' }
+GeoViewGoogleTilesProvider >> createCache [
+
+	| sharedCache |
+	sharedCache := GeoViewSharedMemoryAndFileSystemTilesCache new.
+
+	self tileImageType = #jpg ifTrue: [
+		sharedCache fileSystemCache: GeoViewFileSystemJPEGTilesCache new ].
+
+	sharedCache fileSystemCache directory:
+		sharedCache fileSystemCache class defaultCacheRoot
+		/ self sharedCacheKey asString.
+
+	^ sharedCache
+]
+
 { #category : #initialization }
 GeoViewGoogleTilesProvider >> initialize [
 
@@ -91,16 +107,24 @@ GeoViewGoogleTilesProvider >> sharedCacheKey [
 	^ 'Google-' , tilesType asString
 ]
 
+{ #category : #accessing }
+GeoViewGoogleTilesProvider >> tileImageType [
+
+	| type |
+	type := #png.
+	(#( 's' 'y' 't' 'p' ) includes: tilesType) ifTrue: [ type := #jpg ].
+
+	^ type
+]
+
 { #category : #update }
 GeoViewGoogleTilesProvider >> updateUrl [
 
-	| format |
+	| extension |
+	extension := self tileImageType asString.
 
-	format := '.png'.
-	(tilesType = 's' or:[tilesType = 'y' or:[tilesType = 't' or:[tilesType = 'p']]])
-		ifTrue: [ format := '.jpg' ].
+	self service url: self serverUrl , '?lyrs=' , tilesType asString
+		, '&x={x}&y={y}&z={z}&ext=' , '.' , extension.
 
-	self service url: self serverUrl, '?lyrs=', ( tilesType asString ), '&x={x}&y={y}&z={z}&ext=', format.
-	
 	self changeCache
 ]

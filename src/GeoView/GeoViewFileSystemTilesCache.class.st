@@ -2,15 +2,37 @@ Class {
 	#name : #GeoViewFileSystemTilesCache,
 	#superclass : #GeoViewTilesCache,
 	#instVars : [
-		'directory'
+		'directory',
+		'mutex'
 	],
 	#category : #'GeoView-Map'
 }
 
 { #category : #default }
-GeoViewFileSystemTilesCache class >> defaultDirectoryRoot [
+GeoViewFileSystemTilesCache class >> defaultCacheRoot [
 
 	^ FileSystem workingDirectory / 'geoview-cache'
+]
+
+{ #category : #testing }
+GeoViewFileSystemTilesCache class >> isAbstract [
+
+	^ self == GeoViewFileSystemTilesCache
+]
+
+{ #category : #private }
+GeoViewFileSystemTilesCache >> buildTileFilenameLevel: aZoomLevel x: anXCoordinate y: anYCoordinate [
+
+	self subclassResponsibility 
+]
+
+{ #category : #private }
+GeoViewFileSystemTilesCache >> canStoreTile: aForm level: aZoomLevel x: anXCoordinate y: anYCoordinate [
+
+	aForm width ifNil: [ ^ false ].
+	aForm height ifNil: [ ^ false ].
+
+	^ true
 ]
 
 { #category : #accessing }
@@ -23,4 +45,68 @@ GeoViewFileSystemTilesCache >> directory [
 GeoViewFileSystemTilesCache >> directory: aDirectoryFileReference [
 
 	directory := aDirectoryFileReference
+]
+
+{ #category : #initialization }
+GeoViewFileSystemTilesCache >> initialize [
+
+	super initialize.
+	"use a mutex to not read and write the same file at the same time, not a big problem to have only one mutex for all files because this cache is just used a first time to load on the memory. if needed try to create a mutex by file or use a shared read/write file mecanism"
+	mutex := Monitor new
+]
+
+{ #category : #accessing }
+GeoViewFileSystemTilesCache >> mutex [
+
+	^ mutex
+]
+
+{ #category : #accessing }
+GeoViewFileSystemTilesCache >> mutex: anObject [
+
+	mutex := anObject
+]
+
+{ #category : #accessing }
+GeoViewFileSystemTilesCache >> storeTile: aForm level: aZoomLevel x: anXCoordinate y: anYCoordinate [
+
+	| filename parent |
+	(self canStoreTile: aForm level: aZoomLevel x: anXCoordinate y: anYCoordinate) ifFalse: [ ^ self ].
+
+	filename := self
+		            buildTileFilenameLevel: aZoomLevel
+		            x: anXCoordinate
+		            y: anYCoordinate.
+		
+	parent := filename parent.
+
+	self mutex critical: [
+			parent ensureCreateDirectory.
+			self writeForm: aForm fileNamed: filename ]
+]
+
+{ #category : #'api - cache' }
+GeoViewFileSystemTilesCache >> tileAtLevel: aZoomLevel x: anXCoordinate y: anYCoordinate [
+
+	| filename form |
+	filename := self
+		            buildTileFilenameLevel: aZoomLevel
+		            x: anXCoordinate
+		            y: anYCoordinate.
+
+	self mutex critical: [
+			[
+				filename exists ifTrue: [
+					form := ImageReadWriter formFromFileNamed: filename ] ]
+				on: Error
+				do: [ :err | "Image can corrupted, remove it an return nil. Another error should raise but will be more clear to analyse (file already open for example)"
+					filename delete ] ].
+
+	^ form
+]
+
+{ #category : #private }
+GeoViewFileSystemTilesCache >> writeForm: aForm fileNamed: aFilename [
+
+	self subclassResponsibility 
 ]
