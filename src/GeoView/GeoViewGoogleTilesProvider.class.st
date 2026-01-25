@@ -77,6 +77,8 @@ GeoViewGoogleTilesProvider >> beTerrainType [
 GeoViewGoogleTilesProvider >> createCache [
 
 	| sharedCache |
+	self sharedCacheKey ifNil: [ ^ nil ].
+
 	sharedCache := GeoViewSharedMemoryAndFileSystemTilesCache new.
 
 	self tileImageType = #jpg ifTrue: [

@@ -1,7 +1,7 @@
 Class {
 	#name : #GeoViewFileSystemPNGTilesCacheTest,
 	#superclass : #GeoViewFileSystemTilesCacheTest,
-	#category : #'GeoView-Tests-ProcessDatas'
+	#category : #'GeoView-Tests-Map'
 }
 
 { #category : #accessing }

@@ -5,27 +5,13 @@ Class {
 }
 
 { #category : #private }
-GeoViewFileSystemJPEGTilesCache >> buildTileFilenameLevel: aZoomLevel x: anXCoordinate y: anYCoordinate [
+GeoViewFileSystemJPEGTilesCache >> createImageFileFor: aForm fileNamed: aFilename [
 
-	^ self directory / aZoomLevel printString / anXCoordinate printString
-	  / (anYCoordinate printString , '.jpg')
+	aForm writeJPEGfileNamed: aFilename
 ]
 
-{ #category : #private }
-GeoViewFileSystemJPEGTilesCache >> writeForm: aForm fileNamed: aFilename [
-	"Use an atomic write to secure thread terminaison"
+{ #category : #accessing }
+GeoViewFileSystemJPEGTilesCache >> tileExtension [
 
-	| tempFilename |
-	tempFilename := aFilename parent / (aFilename basename , '.tmp').
-	"if the temp filename exists, a cache is already create it, some files can be here in case of brutal terminate"
-	tempFilename exists ifTrue:[ 
-		"try to remove the file before caching"
-		[ tempFilename delete ] on: Error do:[ :error | ^ nil ].	
-	].
-	
-	aForm writeJPEGfileNamed: tempFilename.
-	
-	"cannot store an existing file"
-	aFilename exists ifTrue:[ ^ self ].
-	tempFilename moveTo: aFilename
+	^ '.jpg'
 ]

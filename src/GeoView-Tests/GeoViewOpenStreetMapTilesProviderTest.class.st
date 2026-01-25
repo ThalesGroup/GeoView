@@ -36,7 +36,7 @@ GeoViewOpenStreetMapTilesProviderTest >> testServerUrl [
 ]
 
 { #category : #initialization }
-GeoViewOpenStreetMapTilesProviderTest >> tilesProvider [
+GeoViewOpenStreetMapTilesProviderTest >> tilesProviderClass [
 
-	^ GeoViewOpenStreetMapTilesProvider new
+	^ GeoViewOpenStreetMapTilesProvider
 ]

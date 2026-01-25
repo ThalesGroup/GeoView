@@ -3,16 +3,10 @@ Class {
 	#superclass : #GeoViewTilesCache,
 	#instVars : [
 		'tilesByLevel',
-		'maxTilesPerLevel'
+		'maxTilesLimitPerLevel'
 	],
 	#category : #'GeoView-Map'
 }
-
-{ #category : #default }
-GeoViewMemoryTilesCache class >> defaultMaxTilesPerLevel [
-
-	^ 1000
-]
 
 { #category : #private }
 GeoViewMemoryTilesCache >> cacheTile: tile inLevel: aZoomLevel at: aCoordinate [
@@ -21,7 +15,8 @@ GeoViewMemoryTilesCache >> cacheTile: tile inLevel: aZoomLevel at: aCoordinate [
 	levelTilesDictionary := self tilesByLevel
 		                        at: aZoomLevel
 		                        ifAbsentPut: [
-		                        Dictionary new: self maxTilesPerLevel ].
+		                        Dictionary new:
+			                        (self maxTilesForLevel: aZoomLevel) ].
 
 	self manageLevelSpace: levelTilesDictionary.
 	levelTilesDictionary at: aCoordinate put: tile
@@ -42,27 +37,43 @@ GeoViewMemoryTilesCache >> manageLevelSpace: aDictionary [
 	size := aDictionary keys size.
 
 	"normal control: when size is just equals to the maximum autorized size"
-	size = self maxTilesPerLevel
+	size = self maxTilesLimitPerLevel
 		ifTrue: [ aDictionary removeKey: aDictionary keys first ]
 		ifFalse: [ "In this case, maximum size have been reduced size last management"
-				size > self maxTilesPerLevel ifTrue: [
-						[ aDictionary keys size >= self maxTilesPerLevel ] whileFalse: [
+				size > self maxTilesLimitPerLevel ifTrue: [
+						[ aDictionary keys size >= self maxTilesLimitPerLevel ] whileFalse: [
 							aDictionary removeKey: aDictionary keys first ] ] ]
 ]
 
-{ #category : #accessing }
-GeoViewMemoryTilesCache >> maxTilesPerLevel [
+{ #category : #private }
+GeoViewMemoryTilesCache >> maxTilesForLevel: aLevel [
 
-	^ maxTilesPerLevel ifNil: [
-		  maxTilesPerLevel := self class defaultMaxTilesPerLevel ]
+	| theoreticalMax |
+	theoreticalMax := 4 raisedTo: aLevel.
+	^ theoreticalMax min: self maxTilesLimitPerLevel
 ]
 
-{ #category : #accessing }
-GeoViewMemoryTilesCache >> maxTilesPerLevel: anObject [
+{ #category : #'api - cache' }
+GeoViewMemoryTilesCache >> maxTilesLimitPerLevel [
 
-	maxTilesPerLevel := anObject.
-	maxTilesPerLevel <= 0 ifTrue: [
-		maxTilesPerLevel := self class defaultMaxTilesPerLevel ]
+	^ maxTilesLimitPerLevel ifNil: [ maxTilesLimitPerLevel := 8192 ]
+]
+
+{ #category : #'api - cache' }
+GeoViewMemoryTilesCache >> maxTilesLimitPerLevel: anInteger [
+
+	maxTilesLimitPerLevel := anInteger
+]
+
+{ #category : #'api - cache' }
+GeoViewMemoryTilesCache >> nbTiles [
+	"Return the number of tile in cache"
+
+	| nb |
+	nb := 0.
+	self tilesByLevel valuesDo: [ :dict | nb := nb + dict keys size ].
+
+	^ nb
 ]
 
 { #category : #private }

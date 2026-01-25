@@ -2,6 +2,7 @@ Class {
 	#name : #GeoViewTilesProvider,
 	#superclass : #Object,
 	#instVars : [
+		'isCachingTiles',
 		'cache',
 		'haveCopyrightNote',
 		'defaultCopyrightNote'
@@ -77,15 +78,17 @@ GeoViewTilesProvider >> cache [
 ]
 
 { #category : #accessing }
-GeoViewTilesProvider >> cache: anObject [
+GeoViewTilesProvider >> cache: aGeoViewTilesCache [
 
-	cache := anObject
+	cache := aGeoViewTilesCache
 ]
 
 { #category : #'private - cache' }
 GeoViewTilesProvider >> changeCache [
 	"need to change the cache because of provider settings changes"
 
+	self cache: nil.
+	self isCachingTiles ifFalse: [ ^ self ].
 	self initializeCache
 ]
 
@@ -124,20 +127,35 @@ GeoViewTilesProvider >> initialize [
 
 	super initialize.
 
-	self initializeCache.
+	self isCachingTiles ifTrue: [ self initializeCache ].
 	self haveCopyrightNote: false
 ]
 
-{ #category : #'private - cache' }
+{ #category : #initialization }
 GeoViewTilesProvider >> initializeCache [
 
 	| sharedCache |
 	sharedCache := self class sharedCacheFor: self.
 	sharedCache ifNil: [
 			sharedCache := self createCache.
-			self class installSharedCache: sharedCache for: self ].
+			sharedCache ifNotNil: [
+				self class installSharedCache: sharedCache for: self ] ].
 
 	self cache: sharedCache
+]
+
+{ #category : #cache }
+GeoViewTilesProvider >> isCachingTiles [
+
+	^ isCachingTiles ifNil: [ isCachingTiles := true ]
+]
+
+{ #category : #cache }
+GeoViewTilesProvider >> isCachingTiles: aBoolean [
+
+	isCachingTiles ~= aBoolean ifFalse: [ ^ self ].
+	isCachingTiles := aBoolean.
+	self changeCache
 ]
 
 { #category : #private }
@@ -157,18 +175,21 @@ GeoViewTilesProvider >> tileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
 	"first check in cache"
 
 	| tile |
-	self cache ifNotNil: [ :e |
-			tile := e tileAtLevel: aZoomLevel x: anXCoordinate y: anYCoordinate.
+	self isCachingTiles ifTrue: [
+			tile := self cache
+				        tileAtLevel: aZoomLevel
+				        x: anXCoordinate
+				        y: anYCoordinate.
 			tile ifNotNil: [ ^ tile ] ].
 
 	tile := self
 		        loadTileFor: aZoomLevel
 		        x: anXCoordinate
 		        y: anYCoordinate.
-	tile ifNil:[ ^ tile ].
-	
-	self cache ifNotNil: [ :e |
-			e
+	tile ifNil: [ ^ tile ].
+
+	self isCachingTiles ifTrue: [
+			self cache
 				storeTile: tile
 				level: aZoomLevel
 				x: anXCoordinate

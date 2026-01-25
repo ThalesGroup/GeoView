@@ -11,7 +11,7 @@ Class {
 { #category : #default }
 GeoViewFileSystemTilesCache class >> defaultCacheRoot [
 
-	^ FileSystem workingDirectory / 'geoview-cache'
+	^ FileLocator cache / 'geoview'
 ]
 
 { #category : #testing }
@@ -23,7 +23,8 @@ GeoViewFileSystemTilesCache class >> isAbstract [
 { #category : #private }
 GeoViewFileSystemTilesCache >> buildTileFilenameLevel: aZoomLevel x: anXCoordinate y: anYCoordinate [
 
-	self subclassResponsibility 
+	^ self directory / aZoomLevel printString / anXCoordinate printString
+	  / (anYCoordinate printString , self tileExtension)
 ]
 
 { #category : #private }
@@ -35,13 +36,19 @@ GeoViewFileSystemTilesCache >> canStoreTile: aForm level: aZoomLevel x: anXCoord
 	^ true
 ]
 
-{ #category : #accessing }
+{ #category : #private }
+GeoViewFileSystemTilesCache >> createImageFileFor: aForm fileNamed: aFilename [
+
+	self subclassResponsibility 
+]
+
+{ #category : #'api - cache' }
 GeoViewFileSystemTilesCache >> directory [
 
 	^ directory
 ]
 
-{ #category : #accessing }
+{ #category : #'api - cache' }
 GeoViewFileSystemTilesCache >> directory: aDirectoryFileReference [
 
 	directory := aDirectoryFileReference
@@ -105,8 +112,27 @@ GeoViewFileSystemTilesCache >> tileAtLevel: aZoomLevel x: anXCoordinate y: anYCo
 	^ form
 ]
 
-{ #category : #private }
-GeoViewFileSystemTilesCache >> writeForm: aForm fileNamed: aFilename [
+{ #category : #accessing }
+GeoViewFileSystemTilesCache >> tileExtension [
 
 	self subclassResponsibility 
+]
+
+{ #category : #private }
+GeoViewFileSystemTilesCache >> writeForm: aForm fileNamed: aFilename [
+	"Use an atomic write to secure thread terminaison"
+
+	| tempFilename |
+	tempFilename := aFilename parent / (aFilename basename , '.tmp').
+	"if the temp filename exists, a cache is already create it, some files can be here in case of brutal terminate"
+	tempFilename exists ifTrue: [ "try to remove the file before caching"
+			[ tempFilename delete ]
+				on: Error
+				do: [ :error | ^ nil ] ].
+
+	self createImageFileFor: aForm fileNamed: tempFilename.
+
+	"cannot store an existing file"
+	aFilename exists ifTrue: [ ^ self ].
+	tempFilename moveTo: aFilename
 ]

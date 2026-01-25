@@ -19,6 +19,8 @@ GeoViewTilesProviderTMS >> createCache [
 	"TMS tiles provider are network services, create a cache which store tiles on the file system and also use the memory on running"
 
 	| sharedCache |
+	self sharedCacheKey ifNil: [ ^ nil ].
+	
 	sharedCache := GeoViewSharedMemoryAndFileSystemTilesCache new.
 	sharedCache fileSystemCache directory:
 		(sharedCache fileSystemCache class defaultCacheRoot
