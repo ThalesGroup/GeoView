@@ -20,13 +20,23 @@ GeoViewOpenStreetMapTilesProviderTest >> testHaveCopyrightNote [
 ]
 
 { #category : #tests }
+GeoViewOpenStreetMapTilesProviderTest >> testLoadTileForXY [
+
+	| tile |
+	super testLoadTileForXY.
+	
+	tile := provider loadTileFor: 1 x: 1 y: 1.
+	self assert: (tile isKindOf: Form)
+]
+
+{ #category : #tests }
 GeoViewOpenStreetMapTilesProviderTest >> testServerUrl [
 
 	self assert: provider serverUrl equals: (provider class primaryTileUrl)
 ]
 
 { #category : #initialization }
-GeoViewOpenStreetMapTilesProviderTest >> tilesProvider [
+GeoViewOpenStreetMapTilesProviderTest >> tilesProviderClass [
 
-	^ GeoViewOpenStreetMapTilesProvider new
+	^ GeoViewOpenStreetMapTilesProvider
 ]
