@@ -618,113 +618,11 @@ GeoViewExamples class >> exampleGeoSegmentsProjected [
 ]
 
 { #category : #'examples - tiles provider' }
-GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleHybrid [
-	"This example show a map layer (assuming an internet connection to default url of google"
-
-	| element layer |
-	element := GeoViewElement new.
-
-	element maxScale: element maxScale * 8.
-
-	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
-	layer tilesProvider beHybridType.
-	element addLayer: layer.
-
-	^ self openViewInWindow: element
-]
-
-{ #category : #'examples - tiles provider' }
-GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadmap [
-	"This example show a map layer (assuming an internet connection to default url of google"
-
-	| element layer |
-	element := GeoViewElement new.
-
-	element maxScale: element maxScale * 8.
-
-	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
-	layer tilesProvider beRoadmapType.
-	element addLayer: layer.
-
-	^ self openViewInWindow: element
-]
-
-{ #category : #'examples - tiles provider' }
-GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleRoadsOnly [
-	"This example show a map layer (assuming an internet connection to default url of google"
-
-	| element layer |
-	element := GeoViewElement new.
-
-	element maxScale: element maxScale * 8.
-
-	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
-	layer tilesProvider beRoadsOnlyType.
-	element addLayer: layer.
-
-	^ self openViewInWindow: element
-]
-
-{ #category : #'examples - tiles provider' }
-GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleSatellite [
-	"This example show a map layer (assuming an internet connection to default url of google"
-
-	| element layer |
-	element := GeoViewElement new.
-
-	element maxScale: element maxScale * 8.
-
-	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
-	element addLayer: layer.
-
-	^ self openViewInWindow: element
-]
-
-{ #category : #'examples - tiles provider' }
-GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrain [
-	"This example show a map layer (assuming an internet connection to default url of google"
-
-	| element layer |
-	element := GeoViewElement new.
-
-	element maxScale: element maxScale * 8.
-
-	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
-	layer tilesProvider beTerrainType.
-	element addLayer: layer.
-
-	^ self openViewInWindow: element
-]
-
-{ #category : #'examples - tiles provider' }
-GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingGoogleTerrainOnly [
-	"This example show a map layer (assuming an internet connection to default url of google"
-
-	| element layer |
-	element := GeoViewElement new.
-
-	element maxScale: element maxScale * 8.
-
-	"add carto layer"
-	layer := GeoViewMapTilesLayer newWithGoogle name: 'Tiles Layer'.
-	layer tilesProvider beTerrainOnlyType.
-	element addLayer: layer.
-
-	^ self openViewInWindow: element
-]
-
-{ #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingLocal [
-	"This example show a map layer (assuming there are tiles on default tiles directory (/map/r)"
+	"This example show a map layer, assuming there are tiles on default tiles directory"
 
 	| element layer |
 	element := GeoViewElement new.
-
 	element maxScale: element maxScale * 8.
 
 	"add carto layer"
@@ -736,12 +634,26 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingLocal [
 ]
 
 { #category : #'examples - tiles provider' }
-GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
-	"This example show a map layer (assuming an internet connection to default url open street map"
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingNASABlueMarble [
+	"This example show a map layer, assuming an internet connection to NASA BlueMarble"
 
 	| element layer |
 	element := GeoViewElement new.
+	element maxScale: element maxScale * 8.
 
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithNASABlueMarble name: 'Tiles Layer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
+	"This example show a map layer, assuming an internet connection to default url open street map"
+
+	| element layer |
+	element := GeoViewElement new.
 	element maxScale: element maxScale * 8.
 
 	"add carto layer"
@@ -753,10 +665,11 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
 
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithMercatorProjection [
-	"This example show a map layer (assuming an internet connection to default url open street map"
+	"This example show a map layer, assuming an internet connection to default url open street map"
 
 	| element layer |
 	element := GeoViewElement new.
+	element mapProjection: GeoViewMercatorProjection new.
 	element maxScale: element maxScale * 8.
 
 	"add carto layer"
@@ -768,16 +681,39 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithMercatorPr
 
 { #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithSmallTileSize [
-	"This example show a map layer (assuming an internet connection to default url open street map"
+	"This example show a map layer, assuming an internet connection to default url open street map"
 
 	| element layer |
 	element := GeoViewElement new.
-
 	element maxScale: element maxScale * 8.
 
 	"add carto layer"
 	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
 	layer tileSize: 128.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithUTMProjection [
+	"This example show a map layer, assuming an internet connection to default url open street map"
+
+	| element layer |
+	
+	"warning before opening"
+	(UIManager default
+		 confirm:
+			 'This example using a work in progress UTM Projection, it can works but with glitchs and without stability.
+			Start ?'
+		 label: 'GeoView - Work in progress') ifFalse:[ ^ self ].
+	
+	element := GeoViewElement new.
+	element mapProjection: GeoViewUTMProjection new.
+	element maxScale: element maxScale * 8.
+
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element

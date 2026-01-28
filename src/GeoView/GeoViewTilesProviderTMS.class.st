@@ -14,6 +14,12 @@ GeoViewTilesProviderTMS class >> isAbstract [
 	^ self == GeoViewTilesProviderTMS
 ]
 
+{ #category : #constants }
+GeoViewTilesProviderTMS class >> primaryTileUrl [
+
+	self subclassResponsibility
+]
+
 { #category : #'private - cache' }
 GeoViewTilesProviderTMS >> createCache [
 	"TMS tiles provider are network services, create a cache which store tiles on the file system and also use the memory on running"
@@ -29,7 +35,7 @@ GeoViewTilesProviderTMS >> createCache [
 	^ sharedCache
 ]
 
-{ #category : #request }
+{ #category : #private }
 GeoViewTilesProviderTMS >> loadTileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
 
 	^ self service tile: anXCoordinate y: anYCoordinate z: aZoomLevel
