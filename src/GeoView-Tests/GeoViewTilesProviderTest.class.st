@@ -20,7 +20,20 @@ GeoViewTilesProviderTest class >> isAbstract [
 GeoViewTilesProviderTest >> setUp [
 
 	super setUp.
-	provider := self tilesProvider
+	provider := self tilesProviderClass new
+]
+
+{ #category : #running }
+GeoViewTilesProviderTest >> tearDown [
+
+	provider class cleanCaches.
+	super tearDown
+]
+
+{ #category : #tests }
+GeoViewTilesProviderTest >> testCache [
+
+	self assert: provider cache notNil
 ]
 
 { #category : #tests }
@@ -35,8 +48,49 @@ GeoViewTilesProviderTest >> testHaveCopyrightNote [
 	self deny: provider haveCopyrightNote 
 ]
 
+{ #category : #tests }
+GeoViewTilesProviderTest >> testIsCachingTiles [
+
+	self assert: provider isCachingTiles.
+	
+	provider isCachingTiles: false.
+	self deny: provider isCachingTiles.
+]
+
+{ #category : #tests }
+GeoViewTilesProviderTest >> testLoadTileForXY [
+
+	| tile |
+	tile := provider loadTileFor: 1 x: 1 y: 1.
+	self assert: tile notNil
+]
+
+{ #category : #tests }
+GeoViewTilesProviderTest >> testLoadTileForXYWithoutCache [
+
+	| tile |
+	provider isCachingTiles: false.
+
+	tile := provider loadTileFor: 1 x: 1 y: 1.
+	self assert: tile notNil
+]
+
+{ #category : #tests }
+GeoViewTilesProviderTest >> testSharedCacheFor [
+
+	| cache |
+	cache := self tilesProviderClass sharedCacheFor: provider.
+	self assert: cache notNil.
+]
+
+{ #category : #tests }
+GeoViewTilesProviderTest >> testSharedCacheKey [
+
+	self assert: provider sharedCacheKey notNil
+]
+
 { #category : #initialization }
-GeoViewTilesProviderTest >> tilesProvider [
+GeoViewTilesProviderTest >> tilesProviderClass [
 
 	self subclassResponsibility 
 ]
