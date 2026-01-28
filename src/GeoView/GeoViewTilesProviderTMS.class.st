@@ -35,7 +35,7 @@ GeoViewTilesProviderTMS >> createCache [
 	^ sharedCache
 ]
 
-{ #category : #request }
+{ #category : #private }
 GeoViewTilesProviderTMS >> loadTileFor: aZoomLevel x: anXCoordinate y: anYCoordinate [
 
 	^ self service tile: anXCoordinate y: anYCoordinate z: aZoomLevel

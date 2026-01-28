@@ -28,15 +28,6 @@ Class {
 }
 
 { #category : #constructor }
-GeoViewMapTilesLayer class >> newWithGoogle [
-
-	| layer |
-	layer := self new.
-	layer tilesProvider: GeoViewGoogleTilesProvider new.
-	^ layer
-]
-
-{ #category : #constructor }
 GeoViewMapTilesLayer class >> newWithLocalDirectory [
 
 	| layer |
