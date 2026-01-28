@@ -8,6 +8,12 @@ Class {
 	#category : #'GeoView-Map'
 }
 
+{ #category : #constants }
+GeoViewTilesProviderTMS class >> primaryTileUrl [
+
+	self subclassResponsibility
+]
+
 { #category : #accessing }
 GeoViewTilesProviderTMS >> serverUrl [
 

@@ -46,6 +46,15 @@ GeoViewMapTilesLayer class >> newWithLocalDirectory [
 ]
 
 { #category : #constructor }
+GeoViewMapTilesLayer class >> newWithNASABlueMarble [
+
+	| layer |
+	layer := self new.
+	layer tilesProvider: GeoViewNASABlueMarbleTilesProvider new.
+	^ layer
+]
+
+{ #category : #constructor }
 GeoViewMapTilesLayer class >> newWithOpenStreetMap [
 	"default tiles provider is OSM"
 

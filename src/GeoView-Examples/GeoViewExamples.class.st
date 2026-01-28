@@ -736,6 +736,22 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingLocal [
 ]
 
 { #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingNASABlueMarble [
+	"This example show a map layer assuming an internet connection to NASA BlueMarble"
+
+	| element layer |
+	element := GeoViewElement new.
+
+	element maxScale: element maxScale * 8.
+
+	"add carto layer"
+	layer := GeoViewMapTilesLayer newWithNASABlueMarble name: 'Tiles Layer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSM [
 	"This example show a map layer (assuming an internet connection to default url open street map"
 
