@@ -13,7 +13,10 @@ DSymbolGeoViewProcessDataTest >> createDShapes [
 	SmockDSymbol new .
 	
 	"Complete shape"
-	(SmockDSymbol new coordinates: 0@0; orientation: 45; symbolKey: #mySymbol)
+	(SmockDSymbol new coordinates: 0@0; orientation: 45; symbolKey: #mySymbol).
+	
+	"Draw mode user (default is device)"
+	(SmockDSymbol new coordinates: 0@0; orientation: 45; symbolKey: #mySymbol; setDrawModeUser).
 	 }
 ]
 

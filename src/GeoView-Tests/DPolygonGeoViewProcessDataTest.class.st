@@ -13,7 +13,10 @@ DPolygonGeoViewProcessDataTest >> createDShapes [
 	SmockDPolygon new .
 	
 	"Complete shape"
-	(SmockDPolygon new points: { 0 asPoint . 1 asPoint . 2 asPoint }; fillColor: Color red)
+	(SmockDPolygon new points: { 0 asPoint . 1 asPoint . 2 asPoint }; fillColor: Color red).
+	
+	"Draw mode device (default is user)"
+	(SmockDPolygon new points: { 0 asPoint . 1 asPoint . 2 asPoint }; fillColor: Color red) setDrawModeDevice.
 	 }
 ]
 

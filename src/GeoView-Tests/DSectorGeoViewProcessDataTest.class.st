@@ -13,7 +13,10 @@ DSectorGeoViewProcessDataTest >> createDShapes [
 	SmockDSector new .
 	
 	"Complete shape"
-	(SmockDSector new aperture: 10; radius: 20; orientation: 45; coordinates: 0@0; fillColor: Color red)
+	(SmockDSector new aperture: 10; radius: 20; orientation: 45; coordinates: 0@0; fillColor: Color red).
+	
+	"Draw mode device (default is user)"
+	(SmockDSector new aperture: 10; radius: 20; orientation: 45; coordinates: 0@0; fillColor: Color red; setDrawModeDevice).
 	 }
 ]
 

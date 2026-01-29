@@ -4,7 +4,7 @@ I am a bench class to test performances
 Class {
 	#name : #GeoViewBench,
 	#superclass : #Object,
-	#category : #'GeoView-Examples'
+	#category : #'GeoView-Examples-Bench'
 }
 
 { #category : #projections }

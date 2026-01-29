@@ -49,7 +49,13 @@ DCompositeShapeGeoViewProcessDataTest >> createDShapes [
 		  (SmockDCompositeShape new addChildren: {
 				   (SmockDText new key: #text1).
 				   (SmockDText new key: #text2).
-				   (SmockDText new key: #text3) }) 
+				   (SmockDText new key: #text3) }).
+				
+		"Draw mode device (default is user)" 
+		(SmockDCompositeShape new addChildren: {
+				   (SmockDText new key: #text1).
+				   (SmockDText new key: #text2).
+				   (SmockDText new key: #text3) }) setDrawModeDevice.
 		}
 ]
 

@@ -1140,11 +1140,11 @@ GeoViewExamples class >> exampleWithDShapesLayer [
 	layer := GeoViewDShapesLayer new name: #shapes. 
 	element addLayer: layer.
 	
-	"User circle (not projected)"
+	"User circle (considering measures are in cartesian coordinates)"
 	circle1 := (SmockDCircle key: #circle1) coordinates: (element mapProjection projLatLonToCart: AbsoluteCoordinates zero); radius: 1000000; strokeColor: Color green; strokeWidth: 2.
 	layer addDShape: circle1.
 
-	"Device circle"
+	"Device circle (considering measures are in screen coordinates)"
 	circle2 := (SmockDCircle key: #circle2) coordinates: 100@100; radius: 100; strokeColor: Color yellow; strokeWidth: 2; setDrawModeDevice.
 	layer addDShape: circle2.
 
@@ -1361,6 +1361,32 @@ GeoViewExamples class >> exampleWithGeoObjectsUpdated [
 			 do: [ :event | task kill ]).
 
 	^ space
+]
+
+{ #category : #'examples - dshapeslayer' }
+GeoViewExamples class >> exampleWithUserDrawModeImage [
+	"Display the pharo logo image of 32m x 32m on the Brest city"
+	
+	| element layer image |
+	element := GeoViewElement new.
+	element addLayer: GeoViewMapTilesLayer newWithOpenStreetMap.
+	
+	layer := GeoViewDShapesLayer new name: #shapes.
+	element addLayer: layer.
+
+	"User image (considering measures are in cartesian coordinates)"
+	image := (SmockDImage key: #image1)
+		         coordinates:
+			         (element mapProjection projLatLonToCart:
+					          AbsoluteCoordinates frBrest);
+		         image: (self iconNamed: #pharo); "this image is 32x32 pixels => 1 meter by pixel in user draw mode"
+		         setDrawModeUser.
+	layer addDShape: image.
+	
+	element geoCenter: AbsoluteCoordinates frBrest.
+	element scale: 200.
+
+	^ self openViewInWindow: element
 ]
 
 { #category : #'private - datas' }

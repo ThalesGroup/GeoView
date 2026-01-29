@@ -13,7 +13,10 @@ DPolylineGeoViewProcessDataTest >> createDShapes [
 	SmockDPolyline new .
 	
 	"Complete shape"
-	(SmockDPolyline new points: { 0 asPoint . 1 asPoint . 2 asPoint }; fillColor: Color red)
+	(SmockDPolyline new points: { 0 asPoint . 1 asPoint . 2 asPoint }; fillColor: Color red).
+	
+	"Draw mode device (default is user)"
+	(SmockDPolyline new points: { 0 asPoint . 1 asPoint . 2 asPoint }; fillColor: Color red) setDrawModeDevice.
 	 }
 ]
 
