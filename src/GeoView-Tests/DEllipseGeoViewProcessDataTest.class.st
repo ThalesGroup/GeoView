@@ -13,7 +13,10 @@ DEllipseGeoViewProcessDataTest >> createDShapes [
 	SmockDEllipse new .
 	
 	"Complete shape"
-	(SmockDEllipse new radius1: 10; radius2: 20; orientation: 45; coordinates: 0@0; fillColor: Color red)
+	(SmockDEllipse new radius1: 10; radius2: 20; orientation: 45; coordinates: 0@0; fillColor: Color red).
+	
+	"Draw mode device (default is user)"
+	(SmockDEllipse new radius1: 10; radius2: 20; orientation: 45; coordinates: 0@0; fillColor: Color red; setDrawModeDevice).
 	 }
 ]
 

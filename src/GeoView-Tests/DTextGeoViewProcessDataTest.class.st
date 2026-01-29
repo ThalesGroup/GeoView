@@ -13,7 +13,10 @@ DTextGeoViewProcessDataTest >> createDShapes [
 	SmockDText new .
 	
 	"Complete shape"
-	(SmockDText new coordinates: 0@0; text: 'Test'; smockFont: (SmockFont defaultFont fontSize: 20))
+	(SmockDText new coordinates: 0@0; text: 'Test'; smockFont: (SmockFont defaultFont fontSize: 20)).
+	
+	"Draw mode user (default is device)"
+	(SmockDText new coordinates: 0@0; text: 'Test'; smockFont: (SmockFont defaultFont fontSize: 20); setDrawModeUser).
 	 }
 ]
 

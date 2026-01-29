@@ -16,7 +16,10 @@ DMultiPolylinesGeoViewProcessDataTest >> createDShapes [
 	(SmockDMultiPolylines new addPolylines: { SmockDPolyline new . SmockDPolyline new . SmockDPolyline new }; fillColor: Color red) .
 	
 	"With polylines"
-	(SmockDMultiPolylines new addPolylines: { SmockDPolyline new points: { 0 asPoint . 1 asPoint . 2 asPoint } . SmockDPolyline new points: { 3 asPoint . 4 asPoint . 5 asPoint } . SmockDPolyline new points: { 6 asPoint . 7 asPoint . 8 asPoint } }; fillColor: Color red)
+	(SmockDMultiPolylines new addPolylines: { SmockDPolyline new points: { 0 asPoint . 1 asPoint . 2 asPoint } . SmockDPolyline new points: { 3 asPoint . 4 asPoint . 5 asPoint } . SmockDPolyline new points: { 6 asPoint . 7 asPoint . 8 asPoint } }; fillColor: Color red).
+	
+	"Draw mode device (default is user)"
+	(SmockDMultiPolylines new addPolylines: { SmockDPolyline new points: { 0 asPoint . 1 asPoint . 2 asPoint } . SmockDPolyline new points: { 3 asPoint . 4 asPoint . 5 asPoint } . SmockDPolyline new points: { 6 asPoint . 7 asPoint . 8 asPoint } }; fillColor: Color red; setDrawModeDevice).
 	 }
 ]
 

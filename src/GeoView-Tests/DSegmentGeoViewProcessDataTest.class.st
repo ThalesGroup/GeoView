@@ -13,7 +13,10 @@ DSegmentGeoViewProcessDataTest >> createDShapes [
 	SmockDSegment new .
 	
 	"Complete shape"
-	(SmockDSegment new coordinates: 0@0; coordinates2: 2@2; fillColor: Color red)
+	(SmockDSegment new coordinates: 0@0; coordinates2: 2@2; fillColor: Color red).
+	
+	"Draw mode device (default is user)"
+	(SmockDSegment new coordinates: 0@0; coordinates2: 2@2; fillColor: Color red; setDrawModeDevice).
 	 }
 ]
 

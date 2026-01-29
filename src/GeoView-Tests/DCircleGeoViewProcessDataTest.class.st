@@ -15,6 +15,9 @@ DCircleGeoViewProcessDataTest >> createDShapes [
 	"Complete shape"
 	(SmockDCircle new radius: 10; coordinates: 0@0; fillColor: Color red).
 	
+	"Draw mode device (default is user)"
+	(SmockDCircle new radius: 10; coordinates: 0@0; fillColor: Color red; setDrawModeDevice).
+	
 	"With effect"
 	(SmockDCircle new radius: 10; coordinates: 0@0; fillColor: Color red; effect: (SmockDuplicateEffect new)).
 	 }
