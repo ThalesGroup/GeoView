@@ -1,36 +1,52 @@
 Class {
-	#name : #GeoViewManagerImplTests,
+	#name : #GeoViewManagerImplTest,
 	#superclass : #TestCase,
 	#instVars : [
-		'geoViewManagerName',
-		'geoViewManager'
+		'geoViewManager',
+		'geoViewUser'
 	],
 	#category : #'GeoView-Molecule-Tests-Cases'
 }
 
-{ #category : #running }
-GeoViewManagerImplTests >> setUp [
+{ #category : #testing }
+GeoViewManagerImplTest class >> isAbstract [ 
 
-	super setUp.
-	MolComponentManager cleanUp.
+	^ self == GeoViewManagerImplTest 
+]
 
-	geoViewManagerName := #myGeoViewManager.
-	geoViewManager := GeoViewManagerBlocImpl start: geoViewManagerName.
+{ #category : #setup }
+GeoViewManagerImplTest >> componentImplClass [
+
+	self subclassResponsibility 
 ]
 
 { #category : #running }
-GeoViewManagerImplTests >> tearDown [
+GeoViewManagerImplTest >> setUp [
 
-	super tearDown.
-	GeoViewManagerBlocImpl stop: geoViewManagerName.
+	super setUp.
+
+	MolComponentManager cleanUp.
+
+	geoViewManager := self componentImplClass start.
+	geoViewUser := GeoViewManagerTestUserImpl start
+]
+
+{ #category : #running }
+GeoViewManagerImplTest >> tearDown [
+
+	self componentImplClass stop.
 	geoViewManager := nil.
-	geoViewManagerName := nil.
+	
+	geoViewUser stop.
+	geoViewUser := nil.
 
-	MolComponentManager cleanUp
+	MolComponentManager cleanUp.
+
+	super tearDown
 ]
 
 { #category : #tests }
-GeoViewManagerImplTests >> testAddLayerAfterIndex [
+GeoViewManagerImplTest >> testAddLayerAfterIndex [
 
 	| layerA layerB layerC |
 
@@ -54,14 +70,14 @@ GeoViewManagerImplTests >> testAddLayerAfterIndex [
 ]
 
 { #category : #tests }
-GeoViewManagerImplTests >> testAggregatedComponentsStart [
+GeoViewManagerImplTest >> testAggregatedComponentsStart [
 
 	self assert: geoViewManager getSmockSymbologyManagerServicesProvider isNotFoundServices equals: false.
 	self assert: geoViewManager getSmockSelectionManagerServicesProvider isNotFoundServices equals: false.
 ]
 
 { #category : #tests }
-GeoViewManagerImplTests >> testCreateAndAddGeoObjectsLayer [
+GeoViewManagerImplTest >> testCreateAndAddGeoObjectsLayer [
 	"Warning : default implementation of GeoViewManager is an abtract engine implementation, all created objets are nil"
 
 	| layer |
@@ -70,7 +86,21 @@ GeoViewManagerImplTests >> testCreateAndAddGeoObjectsLayer [
 ]
 
 { #category : #tests }
-GeoViewManagerImplTests >> testLayerServices [
+GeoViewManagerImplTest >> testGetGeoCenter [
+
+	self
+		assert: geoViewManager getGeoCenter class
+		equals: AbsoluteCoordinates
+]
+
+{ #category : #tests }
+GeoViewManagerImplTest >> testGetScale [
+
+	self assert: geoViewManager getScale isNumber
+]
+
+{ #category : #tests }
+GeoViewManagerImplTest >> testLayerServices [
 	| layer |
 	geoViewManager addLayer: (GeoViewTestLayer new name: #layer1).
 	self assert: geoViewManager getLayers size equals: 1.
@@ -89,7 +119,7 @@ GeoViewManagerImplTests >> testLayerServices [
 ]
 
 { #category : #tests }
-GeoViewManagerImplTests >> testLayerServicesWithoutLayers [
+GeoViewManagerImplTest >> testLayerServicesWithoutLayers [
 	| layer |
 	self assert: geoViewManager getLayers isEmpty.
 	layer := geoViewManager getLayer: #nonExistingLayer.
@@ -100,4 +130,42 @@ GeoViewManagerImplTests >> testLayerServicesWithoutLayers [
 	
 	geoViewManager removeAllLayers.
 	self assert: geoViewManager getLayers isEmpty.
+]
+
+{ #category : #tests }
+GeoViewManagerImplTest >> testSetGeoCenter [
+
+	self
+		deny: geoViewManager getGeoCenter
+		equals: AbsoluteCoordinates frBrest.
+
+	self assert: geoViewUser center isNil.
+
+	geoViewManager setGeoCenter: AbsoluteCoordinates frBrest.
+	self
+		assert: geoViewManager getGeoCenter
+		equals: AbsoluteCoordinates frBrest.
+
+	self
+		assert: geoViewUser center
+		equals: AbsoluteCoordinates frBrest -> geoViewManager componentName
+]
+
+{ #category : #tests }
+GeoViewManagerImplTest >> testSetScale [
+
+	self
+		deny: geoViewManager getScale
+		equals: 1000.
+
+	self assert: geoViewUser scale isNil.
+
+	geoViewManager setScale: 1000.
+	self
+		assert: geoViewManager getScale
+		equals: 1000.
+
+	self
+		assert: geoViewUser scale
+		equals: 1000 -> geoViewManager componentName
 ]
