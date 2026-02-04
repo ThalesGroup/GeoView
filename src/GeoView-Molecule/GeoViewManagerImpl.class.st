@@ -52,6 +52,14 @@ GeoViewManagerImpl >> addObjects: aGeoObjectList [
 	self view addObjects: aGeoObjectList
 ]
 
+{ #category : #'private - events' }
+GeoViewManagerImpl >> centerHasChanged: anEvent [
+
+	self getGeoViewManagerEventsNotifier
+		geoViewCenterHasChanged: anEvent absoluteCoordinates
+		in: self componentName
+]
+
 { #category : #services }
 GeoViewManagerImpl >> centerOnPoint: aGlobalPoint [
 	"Center the map on a global point"
@@ -445,6 +453,14 @@ GeoViewManagerImpl >> removeObjects: aGeoObjectList [
 GeoViewManagerImpl >> scaleDown [
 	
 	self view scaleDown
+]
+
+{ #category : #'private - events' }
+GeoViewManagerImpl >> scaleHasChanged: anEvent [
+
+	self getGeoViewManagerEventsNotifier
+		geoViewScaleHasChanged: anEvent scale
+		in: self componentName
 ]
 
 { #category : #services }
