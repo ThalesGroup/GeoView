@@ -40,12 +40,6 @@ AbstractGeoViewBasicLayer >> mapProjection: aMapProjection [
 	mapProjection := aMapProjection 
 ]
 
-{ #category : #'API -- picking' }
-AbstractGeoViewBasicLayer >> populatePickingResult: aPickingResult [ 
-
-	"do nothing"
-]
-
 { #category : #'API -- symbology' }
 AbstractGeoViewBasicLayer >> symbologyProvider [
 

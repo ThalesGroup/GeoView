@@ -10,7 +10,7 @@ Class {
 { #category : #accessing }
 GeoViewLayerEvent >> layerName [
 
-	^ layerName
+	^ layerName 
 ]
 
 { #category : #accessing }

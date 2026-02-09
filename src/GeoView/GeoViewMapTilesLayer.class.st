@@ -750,9 +750,9 @@ GeoViewMapTilesLayer >> projCartToPixel: aCartesianCoordinates metersByPixel: aM
 ]
 
 { #category : #private }
-GeoViewMapTilesLayer >> removedFromSceneGraph [
+GeoViewMapTilesLayer >> removedFromScene: anObject [
 
-	super removedFromSceneGraph.
+	super removedFromScene: anObject.
 	self stopTilesWorker 
 ]
 
