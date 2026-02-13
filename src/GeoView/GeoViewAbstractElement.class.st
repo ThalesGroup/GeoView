@@ -245,7 +245,7 @@ GeoViewAbstractElement >> doPicking: aPickingResult [
 	"Collect all picked elements"
 
 	self getLayers
-		select: [ :l | l isVisible and: [ l pickable ] ]
+		select: [ :l | l isVisible and: [ l isPickable ] ]
 		thenDo: [ :l | l populatePickingResult: aPickingResult ]
 ]
 

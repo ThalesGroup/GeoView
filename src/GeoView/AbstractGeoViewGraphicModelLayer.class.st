@@ -95,6 +95,12 @@ AbstractGeoViewGraphicModelLayer >> datasAeDrawOn: aeCanvas [
 		datas do: [ :e | e aeDrawOn: aeCanvas ] ]
 ]
 
+{ #category : #picking }
+AbstractGeoViewGraphicModelLayer >> defaultIsPickable [
+
+	^ true
+]
+
 { #category : #'API -- filters' }
 AbstractGeoViewGraphicModelLayer >> displayFilter [
 
@@ -292,12 +298,6 @@ AbstractGeoViewGraphicModelLayer >> isNeedToSortDatas [
 AbstractGeoViewGraphicModelLayer >> isNeedToSortDatas: aBoolean [
 
 	isNeedToSortDatas := aBoolean
-]
-
-{ #category : #picking }
-AbstractGeoViewGraphicModelLayer >> isPickableByDefault [
-
-	^ true
 ]
 
 { #category : #'API -- drawing' }

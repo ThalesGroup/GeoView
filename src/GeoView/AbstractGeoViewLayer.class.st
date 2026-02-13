@@ -52,12 +52,18 @@ AbstractGeoViewLayer >> announcer [
 ]
 
 { #category : #'private - picking' }
-AbstractGeoViewLayer >> createPickingElement [
+AbstractGeoViewLayer >> createPickedElement [
 
-	| pickingElement |
-	pickingElement := GeoViewPickingElement new.
-	pickingElement layerName: self name.
-	^ pickingElement
+	| element |
+	element := GeoViewPickedElement new.
+	element layerName: self name.
+	^ element
+]
+
+{ #category : #picking }
+AbstractGeoViewLayer >> defaultIsPickable [
+
+	^ false
 ]
 
 { #category : #'API -- footnotes' }
@@ -86,12 +92,6 @@ AbstractGeoViewLayer >> haveDomainObjects [
 
 { #category : #testing }
 AbstractGeoViewLayer >> haveGraphicModel [
-
-	^ false
-]
-
-{ #category : #picking }
-AbstractGeoViewLayer >> isPickableByDefault [
 
 	^ false
 ]
