@@ -95,6 +95,12 @@ AbstractGeoViewGraphicModelLayer >> datasAeDrawOn: aeCanvas [
 		datas do: [ :e | e aeDrawOn: aeCanvas ] ]
 ]
 
+{ #category : #picking }
+AbstractGeoViewGraphicModelLayer >> defaultIsPickable [
+
+	^ true
+]
+
 { #category : #'API -- filters' }
 AbstractGeoViewGraphicModelLayer >> displayFilter [
 
@@ -105,7 +111,7 @@ AbstractGeoViewGraphicModelLayer >> displayFilter [
 AbstractGeoViewGraphicModelLayer >> displayFilter: aDisplayFilter [
 
 	self graphicModel displayFilter: aDisplayFilter.
-	self updateModel: GeoViewDisplayFilterChanges new
+	self updateModel: SmockDisplayFilterChanges new
 ]
 
 { #category : #accessing }
@@ -125,6 +131,24 @@ AbstractGeoViewGraphicModelLayer >> displayModelMutex [
 
 	^ displayModelMutex ifNil: [
 		  displayModelMutex := Monitor new ]
+]
+
+{ #category : #'private - picking' }
+AbstractGeoViewGraphicModelLayer >> gShapesToPick [
+
+	| datas |
+	self graphicModelMutex critical: [
+		datas := self graphicModel getDatas ].
+	^ datas
+]
+
+{ #category : #'private - picking' }
+AbstractGeoViewGraphicModelLayer >> gShapesToPick: aPickingResult [
+
+	| datas |
+	self graphicModelMutex critical: [
+		datas := self graphicModel getDatas ].
+	^ datas
 ]
 
 { #category : #accessing }
@@ -316,40 +340,6 @@ AbstractGeoViewGraphicModelLayer >> notifyReachMaximumDisplayedObjects [
 	announcement := GeoViewLayerReachMaximumDisplayedObjectsEvent new.
 	announcement layerName: self name.
 	self announcer announce: announcement
-]
-
-{ #category : #'API -- picking' }
-AbstractGeoViewGraphicModelLayer >> populatePickingResult: aPickingResult [
-
-	| datas |
-  	self graphicModelMutex critical: [ datas := self graphicModel getDatas ].
-	datas do: [ :gShape |
-		self
-			populatePickingResult: aPickingResult
-			at: gShape id
-			with: gShape ]
-]
-
-{ #category : #private }
-AbstractGeoViewGraphicModelLayer >> populatePickingResult: aPickingResult at: index with: aGShape [
-	"Way to detect if the gShape is picked"
-
-	| distanceInPixels pickingElement |
-	distanceInPixels := aPickingResult distanceBlock value: aGShape value: aPickingResult localPoint.
-	(distanceInPixels notNil and: [ distanceInPixels <= aPickingResult radiusInPixels ]) ifFalse: [ ^ nil ].
-
-	"Store the element into the result"
-	pickingElement := GeoViewPickingElement new.
-	pickingElement layerName: self name.
-	pickingElement layerLevel: nil.
-	self flag: 'labordep: put the level of the layer'.
-	pickingElement distanceInPixels: distanceInPixels.
-	pickingElement objectIndex: index.
-	pickingElement gShape: aGShape.
-
-	aPickingResult addPickingElement: pickingElement.
-	
- 	^ pickingElement 
 ]
 
 { #category : #'private - sort' }

@@ -76,7 +76,7 @@ GeoViewAbstractElement >> addLayer: aLayer afterIndex: anIndex [
 			ifFalse: [ self layers add: aLayer afterIndex: anIndex ]
 	].
 
-	self isAttachedToSceneGraph ifTrue: [ aLayer addedToSceneGraph ].	
+	self isAttachedToSceneGraph ifTrue: [ aLayer addedToScene: self ].	
 
 	"Send layer added event"
 	event := GeoViewLayerAddedEvent new.
@@ -164,7 +164,7 @@ GeoViewAbstractElement >> configureLayer: aLayer [
 	aLayer mapProjection: self mapProjection.
 	"Setup the graphic projection (from a device point of view) of the layer"
 	aLayer graphicProjection: self displayToGraphicProjection.
-	aLayer announcer when: GeoViewLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
+	aLayer announcer when: SmockLayerRepaintRequest send: #layerNeedToBeRepaint: to: self.
 
 	aLayer haveGraphicModel ifFalse:[ ^ self ].	
 	"Setup the display filter"
@@ -244,7 +244,9 @@ GeoViewAbstractElement >> displayToGraphicProjection: aGeoView2DProjection [
 GeoViewAbstractElement >> doPicking: aPickingResult [
 	"Collect all picked elements"
 
-	self getLayers do: [ :l | l isVisible ifTrue: [ l populatePickingResult: aPickingResult ] ]
+	self getLayers
+		select: [ :l | l isVisible and: [ l isPickable ] ]
+		thenDo: [ :l | l populatePickingResult: aPickingResult ]
 ]
 
 { #category : #'API -- scale and center' }
@@ -334,7 +336,7 @@ GeoViewAbstractElement >> initialize [
 { #category : #initialization }
 GeoViewAbstractElement >> initializeViewInfos [
 
-	self viewInfos: GeoViewInfos new
+	self viewInfos: SmockViewInfos new
 ]
 
 { #category : #accessing }
@@ -522,7 +524,7 @@ GeoViewAbstractElement >> onAddedToSceneGraph [
 	super onAddedToSceneGraph.
 
 	"send message to all layers"
-	self layers do: [ :e | e addedToSceneGraph ]
+	self layers do: [ :e | e addedToScene: self ]
 ]
 
 { #category : #'hooks - children' }
@@ -531,7 +533,7 @@ GeoViewAbstractElement >> onRemovedFromSceneGraph [
 	super onRemovedFromSceneGraph.
 	
 	"send message to all layers"
-	self layers do: [ :e | e removedFromSceneGraph ]
+	self layers do: [ :e | e removedFromScene: self ]
 ]
 
 { #category : #'API -- picking' }
@@ -594,7 +596,7 @@ GeoViewAbstractElement >> removeLayer: aLayer [
 		self unconfigureLayer: aLayer.
 		self layers remove: aLayer
 	].
-	self isAttachedToSceneGraph ifTrue:[ aLayer removedFromSceneGraph ].
+	self isAttachedToSceneGraph ifTrue:[ aLayer removedFromScene: self ].
 	
 	"Send layer added event"
 	event := GeoViewLayerRemovedEvent new.

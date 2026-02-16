@@ -86,19 +86,22 @@ GeoViewDomainObjectsLayer >> mapProjection: aMapProjection [
 	self displayModel projection: aMapProjection
 ]
 
-{ #category : #private }
-GeoViewDomainObjectsLayer >> populatePickingResult: aPickingResult at: index with: aGShape [
-	"Way to detect if the gShape is picked"
+{ #category : #'private - picking' }
+GeoViewDomainObjectsLayer >> populatePickingResult: aPickingResult at: index withGShape: aGShape [
 
 	| pickingElement data |
-	pickingElement := super populatePickingResult: aPickingResult at: index with: aGShape.
-	pickingElement ifNil:[ ^ nil ].
-	
+	pickingElement := (super
+		                   populatePickingResult: aPickingResult
+		                   at: index
+		                   withGShape: aGShape) ifNil: [ ^ nil ].
+
 	"add dShape"
-	self displayModelMutex critical: [ data := self displayModel getData: index ].
-	pickingElement dShape: data. 
+	self displayModelMutex critical: [
+		data := self displayModel getData: index ].
 	
- 	^ pickingElement 
+	pickingElement dShape: data.
+
+	^ pickingElement
 ]
 
 { #category : #private }

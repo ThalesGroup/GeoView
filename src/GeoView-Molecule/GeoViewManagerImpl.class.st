@@ -589,7 +589,7 @@ GeoViewManagerImpl >> strategyRequestSetSelection: anObjectIndexesList [
 GeoViewManagerImpl >> symbologyHasChanged: aSymbologyKey [
 	"update all symbols - need to update all DCompositeShapes"
 
-	self view updateModel: GeoViewSymbologyChanges new
+	self view updateModel: SmockSymbologyChanges new
 ]
 
 { #category : #private }

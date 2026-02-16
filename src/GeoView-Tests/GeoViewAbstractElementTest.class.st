@@ -183,7 +183,7 @@ GeoViewAbstractElementTest >> testInitialize [
 	self
 		assert: geoView displayToGraphicProjection cartesianCenter
 		equals: CartesianCoordinates zero.
-	self assert: geoView viewInfos class equals: GeoViewInfos
+	self assert: geoView viewInfos class equals: SmockViewInfos
 ]
 
 { #category : #tests }

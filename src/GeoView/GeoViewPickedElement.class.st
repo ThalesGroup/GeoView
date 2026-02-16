@@ -1,6 +1,6 @@
 Class {
-	#name : #GeoViewPickingElement,
-	#superclass : #SmockPickingElement,
+	#name : #GeoViewPickedElement,
+	#superclass : #SmockPickedElement,
 	#instVars : [
 		'geodesicDistanceInM'
 	],
@@ -8,13 +8,13 @@ Class {
 }
 
 { #category : #accessing }
-GeoViewPickingElement >> geodesicDistanceInM [
+GeoViewPickedElement >> geodesicDistanceInM [
 
 	^ geodesicDistanceInM
 ]
 
 { #category : #accessing }
-GeoViewPickingElement >> geodesicDistanceInM: anObject [
+GeoViewPickedElement >> geodesicDistanceInM: anObject [
 
 	geodesicDistanceInM := anObject
 ]

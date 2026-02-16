@@ -1,8 +1,8 @@
 Class {
 	#name : #AbstractGeoViewLayer,
 	#superclass : #Object,
-	#traits : 'TSmockHaveProperties',
-	#classTraits : 'TSmockHaveProperties classTrait',
+	#traits : 'TSmockHaveProperties + TSmockPickable + TSmockCanPopulatePickingResult',
+	#classTraits : 'TSmockHaveProperties classTrait + TSmockPickable classTrait + TSmockCanPopulatePickingResult classTrait',
 	#instVars : [
 		'isVisible',
 		'name',
@@ -18,10 +18,17 @@ AbstractGeoViewLayer class >> isAbstract [
 ]
 
 { #category : #private }
+AbstractGeoViewLayer >> addedToScene: anObject [
+	"call when the geoview is added to a scene graph"
+
+	self addedToSceneGraph 
+]
+
+{ #category : #private }
 AbstractGeoViewLayer >> addedToSceneGraph [
 	"call when the geoview is added to a scene graph"
 
-	
+	self deprecated:'used addedToScene:'.
 ]
 
 { #category : #drawing }
@@ -42,6 +49,21 @@ AbstractGeoViewLayer >> announce: anAnnouncement [
 AbstractGeoViewLayer >> announcer [
 
 	^ announcer ifNil:[ announcer := Announcer new ]
+]
+
+{ #category : #'private - picking' }
+AbstractGeoViewLayer >> createPickedElement [
+
+	| element |
+	element := GeoViewPickedElement new.
+	element layerName: self name.
+	^ element
+]
+
+{ #category : #picking }
+AbstractGeoViewLayer >> defaultIsPickable [
+
+	^ false
 ]
 
 { #category : #'API -- footnotes' }
@@ -88,7 +110,7 @@ AbstractGeoViewLayer >> isVisible: aBoolean [
 	self sendRepaintRequest.
 	
 	isVisible ifFalse: [ ^ self ].
-	self updateModel: GeoViewBeVisibleChanges new
+	self updateModel: SmockBeVisibleChanges new
 ]
 
 { #category : #'API -- projection' }
@@ -115,24 +137,25 @@ AbstractGeoViewLayer >> name: anObject [
 	name := anObject
 ]
 
-{ #category : #'API -- picking' }
-AbstractGeoViewLayer >> populatePickingResult: aPickingResult [ 
+{ #category : #private }
+AbstractGeoViewLayer >> removedFromScene: anObject [
+	"call when the geoview is removed from a scene graph"
 
-	self explicitRequirement 
+	self removedFromSceneGraph 
 ]
 
 { #category : #private }
 AbstractGeoViewLayer >> removedFromSceneGraph [
 	"call when the geoview is removed from a scene graph"
 
-	
+	self deprecated:'used removedFromScene:'.
 ]
 
 { #category : #private }
 AbstractGeoViewLayer >> sendRepaintRequest [
 	"Notify that the layer need to be repaint, use it if the layer manage internal changes of his own graphical model"
 
-	self announce: GeoViewLayerRepaintRequest new
+	self announce: SmockLayerRepaintRequest new
 ]
 
 { #category : #'API -- symbology' }

@@ -15,7 +15,9 @@ GeoViewLayerListElement >> aeDrawOn: aeCanvas [
 	"Drawing geo layers using Alexandrie canvas"
 
 	self layers ifNil: [ ^ self ].
-	self layers do: [ :l | l isVisible ifTrue: [ l aeDrawOn: aeCanvas ] ]
+	self layers
+		select: [ :l | l isVisible ]
+		thenDo: [ :l | l aeDrawOn: aeCanvas ]
 ]
 
 { #category : #accessing }

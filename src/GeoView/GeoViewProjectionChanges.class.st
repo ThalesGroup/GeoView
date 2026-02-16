@@ -1,13 +1,12 @@
 Class {
 	#name : #GeoViewProjectionChanges,
-	#superclass : #GeoViewUpdateContext,
+	#superclass : #SmockProjectionChanges,
 	#instVars : [
 		'isMapProjectionChange',
 		'isScaleChanged',
 		'isExtentChanged',
 		'isResolutionChanged',
-		'isCenterChanged',
-		'scaleCenterPoint'
+		'isCenterChanged'
 	],
 	#category : #'GeoView-Projections'
 }
@@ -46,12 +45,6 @@ GeoViewProjectionChanges >> isMapProjectionChange [
 GeoViewProjectionChanges >> isMapProjectionChange: anObject [
 
 	isMapProjectionChange := anObject
-]
-
-{ #category : #testing }
-GeoViewProjectionChanges >> isProjectionChanges [
-
-	^ true
 ]
 
 { #category : #accessing }
