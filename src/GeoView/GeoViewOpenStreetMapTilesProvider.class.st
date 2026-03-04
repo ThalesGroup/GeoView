@@ -10,6 +10,12 @@ GeoViewOpenStreetMapTilesProvider class >> attributionText [
 	^ '© OpenStreetMap contributors'
 ]
 
+{ #category : #cache }
+GeoViewOpenStreetMapTilesProvider class >> defaultSharedCacheKey [
+
+	^ 'OpenStreetMap'
+]
+
 { #category : #constants }
 GeoViewOpenStreetMapTilesProvider class >> mirror1TileUrl [
 
@@ -35,12 +41,6 @@ GeoViewOpenStreetMapTilesProvider >> initialize [
 	self haveCopyrightNote: true. 
 	self defaultCopyrightNote: self class attributionText.
 	self updateUrl
-]
-
-{ #category : #cache }
-GeoViewOpenStreetMapTilesProvider >> sharedCacheKey [
-
-	^ 'OpenStreetMap'
 ]
 
 { #category : #update }

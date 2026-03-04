@@ -618,6 +618,29 @@ GeoViewExamples class >> exampleGeoSegmentsProjected [
 ]
 
 { #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWith2TilesProviders [
+	"Using OpenStreetMap and OpenSeaMap providers in the same view"
+
+	| element layer |
+	element := GeoViewElement new.
+
+	element maxScale: 50000.
+	element geoCenter: AbsoluteCoordinates frBrest.
+
+	"add open street map layer"
+	layer := GeoViewMapTilesLayer new name: 'OpenStreetMap'.
+	layer tilesProvider: GeoViewOpenStreetMapTilesProvider new.
+	element addLayer: layer.	
+
+	"add sea map layer"
+	layer := GeoViewMapTilesLayer new name: 'OpenSeaMap'.
+	layer tilesProvider: GeoViewOpenSeaMapSeamarkTilesProvider new.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingLocal [
 	"This example show a map layer, assuming there are tiles on default tiles directory"
 
@@ -714,6 +737,25 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithUTMProject
 
 	"add carto layer"
 	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOpenSeaMapSeamark [
+	"OpenSeaMap provider"
+
+	| element layer |
+	element := GeoViewElement new.
+
+	element maxScale: 50000.
+	element geoCenter: AbsoluteCoordinates frBrest.
+	element background: Color blue darker.
+
+	"add sea map layer"
+	layer := GeoViewMapTilesLayer new name: 'OpenSeaMap'.
+	layer tilesProvider: GeoViewOpenSeaMapSeamarkTilesProvider new.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element
