@@ -34,12 +34,13 @@ GeoViewElement >> footnotesElement [
 { #category : #accessing }
 GeoViewElement >> footnotesElement: aFootnoteElement [
 
-	footnotesElement ifNotNil: [ self removeChild: footnotesElement ].
+	footnotesElement ifNotNil: [
+		self inUIProcessDo: [ self removeChild: footnotesElement ] ].
 
 	footnotesElement := aFootnoteElement.
 
 	footnotesElement ifNotNil: [
-			self addChild: footnotesElement.
+			self inUIProcessDo: [ self addChild: footnotesElement ].
 			self updateFootnotes ]
 ]
 

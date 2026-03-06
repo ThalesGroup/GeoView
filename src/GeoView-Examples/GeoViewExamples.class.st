@@ -384,6 +384,37 @@ GeoViewExamples class >> exampleDisplayCoordinates [
 	^ self openViewInWindow: element
 ]
 
+{ #category : #'examples - scale' }
+GeoViewExamples class >> exampleDisplayScaleInfos [
+	"This example display scale infos"
+
+	| element layer scaleInfos scaleInfoStringBuilder |
+	element := GeoViewElement new.
+
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
+	element addLayer: layer.
+
+	scaleInfoStringBuilder := [ 'Scale - min: ' , element minScale printString , ' max:' , element maxScale printString , ' current: ', element scale printString, ' zoom factor: x', element scaleFactor printString ].
+
+	"Create a text to display scale informations"
+	scaleInfos := BlTextElement new
+				background: Color white;
+				effect: (BlGaussianShadowEffect color: (Color gray alpha: 0.5) width: 10 offset: 0@0);
+	        constraintsDo: [ :constraints |
+		        constraints horizontal fitContent.
+		        constraints vertical exact: 15.
+		        constraints padding: (BlInsets all: 10.0) ];
+	        id: #scaleInfos; text: (scaleInfoStringBuilder value) asRopedText;
+	        yourself.
+	element addChild: scaleInfos.
+	element addEventHandlerOn: GeoViewScaleChangedEvent do: [ :e | 
+		scaleInfos inUIProcessDo: [ scaleInfos text: (scaleInfoStringBuilder value) asRopedText ] 
+	]. 
+
+	^ self openViewInWindow: element
+]
+
 { #category : #'examples - GeoObjects' }
 GeoViewExamples class >> exampleGeoBoundingBox [
 

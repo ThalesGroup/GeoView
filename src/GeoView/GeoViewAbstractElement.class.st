@@ -21,6 +21,33 @@ Class {
 	#category : #'GeoView-Core'
 }
 
+{ #category : #scale }
+GeoViewAbstractElement class >> defaultMaxScale [
+	"Default maximum scale is 1:100 000 000"
+
+	^ 100000000
+]
+
+{ #category : #scale }
+GeoViewAbstractElement class >> defaultMinScale [
+	"Default minimum scale is 1:100"
+
+	^ 100
+]
+
+{ #category : #scale }
+GeoViewAbstractElement class >> defaultScale [
+	"Default scale is 1:10 000 000 considering allowed scale range"
+
+	^ 10000000
+]
+
+{ #category : #scale }
+GeoViewAbstractElement class >> defaultScaleFactor [
+
+	^ 1.5
+]
+
 { #category : #testing }
 GeoViewAbstractElement class >> isAbstract [
 
@@ -201,9 +228,8 @@ GeoViewAbstractElement >> createPickingResultAt: aGlobalPoint [
 
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> defaultScale [
-	"Default scale is 1:10 000 000 considering allowed scale range"
 
-	^ self normalizeScale: 10000000
+	^ self normalizeScale: self class defaultScale
 ]
 
 { #category : #'API -- filters' }
@@ -426,9 +452,8 @@ GeoViewAbstractElement >> mapProjection: aMapProjection [
 
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> maxScale [
-	"Default maximum scale is 1:100 000 000"
 
-	^ maxScale ifNil: [ maxScale := 100000000 ]
+	^ maxScale ifNil: [ maxScale := self class defaultMaxScale ]
 ]
 
 { #category : #'API -- scale and center' }
@@ -463,9 +488,8 @@ GeoViewAbstractElement >> maxScaleInMeters: aNumber [
 
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> minScale [
-	"Default minimum scale is 1:100"
 
-	^ minScale ifNil: [ minScale := 100 ]
+	^ minScale ifNil: [ minScale := self class defaultMinScale ]
 ]
 
 { #category : #'API -- scale and center' }
@@ -668,7 +692,8 @@ GeoViewAbstractElement >> scaleFactor [
 	"The scale factor is the multiplicator / diviser for default zoom up/down"
 
 	(scaleFactor = 0 or: [ scaleFactor isNil ]) ifTrue: [
-		scaleFactor := 1.5 ].
+		scaleFactor := self class defaultScaleFactor ].
+	
 	^ scaleFactor
 ]
 

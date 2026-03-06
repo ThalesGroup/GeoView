@@ -15,12 +15,11 @@ GeoViewFootnotesElement >> addNote: aString [
 	label := BlTextElement new.
 	label text: (aString asRopedText attributes: textAttributes).
 	label background: (Color black alpha: 0.6).
-	label constraintsDo: [ :c | 
-		c flow horizontal alignRight.
-		c padding: (BlInsets all: 2.0). 
-	].
+	label constraintsDo: [ :c |
+			c flow horizontal alignRight.
+			c padding: (BlInsets all: 2.0) ].
 
-	self addChild: label
+	self inUIProcessDo: [ self addChild: label ]
 ]
 
 { #category : #adding }
@@ -49,7 +48,7 @@ GeoViewFootnotesElement >> initialize [
 { #category : #adding }
 GeoViewFootnotesElement >> removeAllNotes [
 
-	self removeChildren
+	self inUIProcessDo: [ self removeChildren ]
 ]
 
 { #category : #initialization }
