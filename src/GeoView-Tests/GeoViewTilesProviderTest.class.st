@@ -76,6 +76,17 @@ GeoViewTilesProviderTest >> testLoadTileForXYWithoutCache [
 ]
 
 { #category : #tests }
+GeoViewTilesProviderTest >> testSharedCacheAreDifferent [
+	"Need to check if (by default) there isn't tiles provider with the same key"
+
+	| classes keys |
+	classes := GeoViewTilesProvider allSubclasses reject: [ :c | c isAbstract ].
+	keys := classes collect:[ :providerClass | providerClass new sharedCacheKey ].
+	self assert: keys notEmpty.
+	self assert: keys size equals: (keys asSet size). "is the size between ordered collection and set is different, that means there are duplicated keys"	
+]
+
+{ #category : #tests }
 GeoViewTilesProviderTest >> testSharedCacheFor [
 
 	| cache |

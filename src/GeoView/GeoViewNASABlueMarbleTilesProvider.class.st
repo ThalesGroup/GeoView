@@ -14,6 +14,12 @@ GeoViewNASABlueMarbleTilesProvider class >> attributionText [
 	^ 'Blue Marble © NASA'
 ]
 
+{ #category : #cache }
+GeoViewNASABlueMarbleTilesProvider class >> defaultSharedCacheKey [
+
+	^ 'NASA Blue Marble'
+]
+
 { #category : #constants }
 GeoViewNASABlueMarbleTilesProvider class >> primaryTileUrl [
 
@@ -44,12 +50,6 @@ GeoViewNASABlueMarbleTilesProvider >> initialize [
 	self haveCopyrightNote: true.
 	self defaultCopyrightNote: self class attributionText.
 	self updateUrl
-]
-
-{ #category : #cache }
-GeoViewNASABlueMarbleTilesProvider >> sharedCacheKey [
-
-	^ 'NASA Blue Marble'
 ]
 
 { #category : #update }

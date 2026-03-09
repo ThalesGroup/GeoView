@@ -384,6 +384,37 @@ GeoViewExamples class >> exampleDisplayCoordinates [
 	^ self openViewInWindow: element
 ]
 
+{ #category : #'examples - scale' }
+GeoViewExamples class >> exampleDisplayScaleInfos [
+	"This example display scale infos"
+
+	| element layer scaleInfos scaleInfoStringBuilder |
+	element := GeoViewElement new.
+
+	"add carto layer"
+	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
+	element addLayer: layer.
+
+	scaleInfoStringBuilder := [ 'Scale - min: ' , element minScale printString , ' max:' , element maxScale printString , ' current: ', element scale printString, ' zoom factor: x', element scaleFactor printString ].
+
+	"Create a text to display scale informations"
+	scaleInfos := BlTextElement new
+				background: Color white;
+				effect: (BlGaussianShadowEffect color: (Color gray alpha: 0.5) width: 10 offset: 0@0);
+	        constraintsDo: [ :constraints |
+		        constraints horizontal fitContent.
+		        constraints vertical exact: 15.
+		        constraints padding: (BlInsets all: 10.0) ];
+	        id: #scaleInfos; text: (scaleInfoStringBuilder value) asRopedText;
+	        yourself.
+	element addChild: scaleInfos.
+	element addEventHandlerOn: GeoViewScaleChangedEvent do: [ :e | 
+		scaleInfos inUIProcessDo: [ scaleInfos text: (scaleInfoStringBuilder value) asRopedText ] 
+	]. 
+
+	^ self openViewInWindow: element
+]
+
 { #category : #'examples - GeoObjects' }
 GeoViewExamples class >> exampleGeoBoundingBox [
 
@@ -618,6 +649,29 @@ GeoViewExamples class >> exampleGeoSegmentsProjected [
 ]
 
 { #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWith2TilesProviders [
+	"Using OpenStreetMap and OpenSeaMap providers in the same view"
+
+	| element layer |
+	element := GeoViewElement new.
+
+	element maxScale: 50000.
+	element geoCenter: AbsoluteCoordinates frBrest.
+
+	"add open street map layer"
+	layer := GeoViewMapTilesLayer new name: 'OpenStreetMap'.
+	layer tilesProvider: GeoViewOpenStreetMapTilesProvider new.
+	element addLayer: layer.	
+
+	"add sea map layer"
+	layer := GeoViewMapTilesLayer new name: 'OpenSeaMap'.
+	layer tilesProvider: GeoViewOpenSeaMapSeamarkTilesProvider new.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - tiles provider' }
 GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingLocal [
 	"This example show a map layer, assuming there are tiles on default tiles directory"
 
@@ -714,6 +768,25 @@ GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOSMWithUTMProject
 
 	"add carto layer"
 	layer := GeoViewMapTilesLayer new name: 'Tiles Layer'.
+	element addLayer: layer.
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - tiles provider' }
+GeoViewExamples class >> exampleGeoViewWithCartoTilesLayerUsingOpenSeaMapSeamark [
+	"OpenSeaMap provider"
+
+	| element layer |
+	element := GeoViewElement new.
+
+	element maxScale: 50000.
+	element geoCenter: AbsoluteCoordinates frBrest.
+	element background: Color blue darker.
+
+	"add sea map layer"
+	layer := GeoViewMapTilesLayer new name: 'OpenSeaMap'.
+	layer tilesProvider: GeoViewOpenSeaMapSeamarkTilesProvider new.
 	element addLayer: layer.
 
 	^ self openViewInWindow: element

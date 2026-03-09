@@ -47,6 +47,12 @@ GeoViewTilesProvider class >> cleanUp [
 	self cleanAllCaches
 ]
 
+{ #category : #cache }
+GeoViewTilesProvider class >> defaultSharedCacheKey [
+
+	^ self subclassResponsibility
+]
+
 { #category : #'private - cache' }
 GeoViewTilesProvider class >> getCache: aKey [
 
@@ -167,7 +173,7 @@ GeoViewTilesProvider >> loadTileFor: aZoomLevel x: anXCoordinate y: anYCoordinat
 { #category : #cache }
 GeoViewTilesProvider >> sharedCacheKey [
 
-	self subclassResponsibility 
+	^ self class defaultSharedCacheKey
 ]
 
 { #category : #request }
