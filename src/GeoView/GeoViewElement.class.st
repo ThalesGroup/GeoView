@@ -107,7 +107,7 @@ GeoViewElement >> initializeLayerListElement [
 
 	layerListElement layers: self layers.
 
-	self addChildFirst: layerListElement
+	self inUIProcessDo: [ self addChildFirst: layerListElement ]
 ]
 
 { #category : #'strategy management' }

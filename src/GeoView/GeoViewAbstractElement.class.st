@@ -351,6 +351,8 @@ GeoViewAbstractElement >> initialize [
 
 	super initialize.
 	
+	layers := OrderedCollection new.
+	
 	"Initialize default projection systems"
 	self mapProjection: GeoViewWebMercatorProjection new.
 	self displayToGraphicProjection: GeoView2DProjection new.
@@ -406,7 +408,7 @@ GeoViewAbstractElement >> layerProcessDataChanged: anEvent [
 { #category : #accessing }
 GeoViewAbstractElement >> layers [
 
-	^ layers ifNil: [ layers := OrderedCollection new ]
+	^ layers 
 ]
 
 { #category : #'API -- coordinates transformations' }
@@ -540,24 +542,6 @@ GeoViewAbstractElement >> objectIndexAccessor [
 GeoViewAbstractElement >> objectIndexAccessor: aSymbol [
 
 	objectIndexAccessor := aSymbol
-]
-
-{ #category : #'hooks - children' }
-GeoViewAbstractElement >> onAddedToSceneGraph [
-
-	super onAddedToSceneGraph.
-
-	"send message to all layers"
-	self layers do: [ :e | e addedToScene: self ]
-]
-
-{ #category : #'hooks - children' }
-GeoViewAbstractElement >> onRemovedFromSceneGraph [
-
-	super onRemovedFromSceneGraph.
-	
-	"send message to all layers"
-	self layers do: [ :e | e removedFromScene: self ]
 ]
 
 { #category : #'API -- picking' }
