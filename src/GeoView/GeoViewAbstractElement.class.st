@@ -162,6 +162,16 @@ GeoViewAbstractElement >> applyDisplayFilterToAllLayers: aDisplayFilter [
 		thenDo: [ :l | l displayFilter: aDisplayFilter ]
 ]
 
+{ #category : #'api - space' }
+GeoViewAbstractElement >> attachSpace [
+
+	super attachSpace.
+
+	"send message to all layers"
+	self layerListMutex criticalReleasingOnError: [
+		self layers do: [ :e | e addedToScene: self ] ]
+]
+
 { #category : #'API -- scale and center' }
 GeoViewAbstractElement >> centerOnGlobalPoint: aGlobalPoint [
 	"Center the map on a global point"
@@ -230,6 +240,16 @@ GeoViewAbstractElement >> createPickingResultAt: aGlobalPoint [
 GeoViewAbstractElement >> defaultScale [
 
 	^ self normalizeScale: self class defaultScale
+]
+
+{ #category : #'api - space' }
+GeoViewAbstractElement >> detachSpace [
+
+	super detachSpace.
+
+	"send message to all layers"
+	self layerListMutex criticalReleasingOnError: [
+		self layers do: [ :e | e removedFromScene: self ] ]
 ]
 
 { #category : #'API -- filters' }
@@ -351,6 +371,8 @@ GeoViewAbstractElement >> initialize [
 
 	super initialize.
 	
+	layers := OrderedCollection new.
+	
 	"Initialize default projection systems"
 	self mapProjection: GeoViewWebMercatorProjection new.
 	self displayToGraphicProjection: GeoView2DProjection new.
@@ -406,7 +428,7 @@ GeoViewAbstractElement >> layerProcessDataChanged: anEvent [
 { #category : #accessing }
 GeoViewAbstractElement >> layers [
 
-	^ layers ifNil: [ layers := OrderedCollection new ]
+	^ layers 
 ]
 
 { #category : #'API -- coordinates transformations' }
@@ -540,24 +562,6 @@ GeoViewAbstractElement >> objectIndexAccessor [
 GeoViewAbstractElement >> objectIndexAccessor: aSymbol [
 
 	objectIndexAccessor := aSymbol
-]
-
-{ #category : #'hooks - children' }
-GeoViewAbstractElement >> onAddedToSceneGraph [
-
-	super onAddedToSceneGraph.
-
-	"send message to all layers"
-	self layers do: [ :e | e addedToScene: self ]
-]
-
-{ #category : #'hooks - children' }
-GeoViewAbstractElement >> onRemovedFromSceneGraph [
-
-	super onRemovedFromSceneGraph.
-	
-	"send message to all layers"
-	self layers do: [ :e | e removedFromScene: self ]
 ]
 
 { #category : #'API -- picking' }

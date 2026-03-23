@@ -21,14 +21,14 @@ AbstractGeoViewLayer class >> isAbstract [
 AbstractGeoViewLayer >> addedToScene: anObject [
 	"call when the geoview is added to a scene graph"
 
-	self addedToSceneGraph 
+	"override me to implement behavior"
 ]
 
 { #category : #private }
 AbstractGeoViewLayer >> addedToSceneGraph [
 	"call when the geoview is added to a scene graph"
 
-	self deprecated:'used addedToScene:'.
+	self deprecated: 'used addedToScene:'
 ]
 
 { #category : #drawing }
@@ -141,14 +141,14 @@ AbstractGeoViewLayer >> name: anObject [
 AbstractGeoViewLayer >> removedFromScene: anObject [
 	"call when the geoview is removed from a scene graph"
 
-	self removedFromSceneGraph 
+	"override me to implement behavior"
 ]
 
 { #category : #private }
 AbstractGeoViewLayer >> removedFromSceneGraph [
 	"call when the geoview is removed from a scene graph"
 
-	self deprecated:'used removedFromScene:'.
+	self deprecated: 'used removedFromScene:'
 ]
 
 { #category : #private }
