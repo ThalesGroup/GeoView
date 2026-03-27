@@ -44,6 +44,6 @@ GeoPosition >> updateWith: aGeoObject [
 
 	super updateWith: aGeoObject.
 
-	self image: aGeoObject image.
+	self image: aGeoObject image copy.
 	self text: aGeoObject text copy
 ]
