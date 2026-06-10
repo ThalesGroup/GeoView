@@ -1456,6 +1456,42 @@ GeoViewExamples class >> exampleWithDShapesLayer [
 ]
 
 { #category : #'examples - dshapeslayer' }
+GeoViewExamples class >> exampleWithDShapesLayerWithDeviceAndUserArcBand [
+
+	| element layer arcBand arcBand2 |
+	element := GeoViewElement new.
+	layer := GeoViewDShapesLayer new name: #shapes.
+	element addLayer: layer.
+
+	arcBand := (SmockDArcBand key: #arcBand)
+		           coordinates: 200 @ 200;
+		           strokeWidth: 2;
+		           strokeColor: Color yellow;
+		           radiusMin: 100;
+		           radiusMax: 150;
+		           orientation: 0;
+		           aperture: 90;
+		           setDrawModeDevice.
+	layer addDShape: arcBand.
+
+	arcBand2 := (SmockDArcBand key: #arcBand2)
+		            coordinates:
+			            (element mapProjection projLatLonToCart:
+					             AbsoluteCoordinates zero);
+		            strokeWidth: 2;
+		            strokeColor: Color green;
+		            radiusMin: 1000000;
+		            radiusMax: 1100000;
+		            orientation: 90;
+		            aperture: 150;
+		            setDrawModeUser.
+	layer addDShape: arcBand2.
+
+
+	^ self openViewInWindow: element
+]
+
+{ #category : #'examples - dshapeslayer' }
 GeoViewExamples class >> exampleWithDShapesLayerWithDeviceRectanglesResizedOnSizeChanged [
 	"In this test, use of a DShapes layer to display rectangles in device coordinates. These rectangle are resize when the window size change."
 	
