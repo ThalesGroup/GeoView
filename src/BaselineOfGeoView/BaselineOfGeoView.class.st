@@ -24,8 +24,8 @@ BaselineOfGeoView >> baselineForCommon: spec [
 	self moleculePackages: spec.
 	
 	"Groups"
-    spec group: 'default' with: (#('OpenSmock' 'GeoTools' 'OWS', 'Bloc', 'Alexandrie'), self corePackagesNames , self moleculePackagesNames).
-    spec group: 'Core' with: (#('OpenSmockCoreWithBloc' 'GeoTools' 'OWS', 'Bloc', 'Alexandrie'), self corePackagesNames).
+    spec group: 'default' with: (#('OpenSmock' 'GeoTools' 'OWS' 'Bloc' 'Alexandrie'), self corePackagesNames , self moleculePackagesNames).
+    spec group: 'Core' with: (#('OpenSmockCoreWithBloc' 'GeoTools' 'OWS' 'Bloc' 'Alexandrie'), self corePackagesNames).
 ]
 
 { #category : #dependencies }
