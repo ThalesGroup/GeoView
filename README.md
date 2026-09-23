@@ -82,17 +82,11 @@ GeoView is in active development but already powers many applications involving 
 To install **GeoView** with all features and dependencies, simply execute the following script in your Pharo image:
 
 ```smalltalk
-[[ 
-	Metacello new
-    baseline: 'GeoView';
-    repository: 'github://ThalesGroup/GeoView:main';
-    onConflict:[ :ex :loaded :incoming | ex useIncoming ];
-    onUpgrade: [ :ex :loaded :incoming | ex useLoaded ];
-    ignoreImage;
-    load.
-
-] on: MCMergeOrLoadWarning do: [ :warning | warning load ] 
-] on: Warning do: [ :w | w resume ].
+Metacello new
+	baseline: 'GeoView';
+	repository: 'github://ThalesGroup/GeoView:main';
+	onConflictUseLoaded;
+	load
 ```
 
 ### Minimal version (Core) installation
@@ -100,17 +94,11 @@ To install **GeoView** with all features and dependencies, simply execute the fo
 If you prefer to install only the core version of GeoView (without Molecule component framework integration), use the following script:
 
 ```smalltalk
-[[ 
-	Metacello new
-    baseline: 'GeoView';
-    repository: 'github://ThalesGroup/GeoView:main';
-    onConflict:[ :ex :loaded :incoming | ex useIncoming ];
-    onUpgrade: [ :ex :loaded :incoming | ex useLoaded ];
-    ignoreImage;
-    load: 'Core'.
-
-] on: MCMergeOrLoadWarning do: [ :warning | warning load ] 
-] on: Warning do: [ :w | w resume ].
+Metacello new
+	baseline: 'GeoView';
+	repository: 'github://ThalesGroup/GeoView:main';
+	onConflictUseLoaded;
+	load: 'Core'
 ```
 
 ## Dependencies

@@ -4,7 +4,7 @@ SmalltalkCISpec {
       #baseline : 'GeoView',
       #directory : 'src',
       #platforms : [ #pharo ],
-      #onConflict : #useIncoming,
+      #onConflict : #useLoaded,
       #onUpgrade : #useLoaded,
       #ignoreImage : true
     }
