@@ -14,7 +14,7 @@ jobs:
         smalltalk: [ Pharo64-12, Pharo64-13, Pharo64-14 ] #Pharo versions
         os: [ ubuntu-latest, macos-latest, windows-latest ] #OS versions
         ston: [ .smalltalkci.core.ston, .smalltalkci.default.ston ] #Can use multiple .ston files
-        #Specific case for Pharo 15 (experimental): ignore failures
+        #Specific case for Pharo 14 (experimental): ignore failures
         include:
           - smalltalk: Pharo64-14
             experimental: true
