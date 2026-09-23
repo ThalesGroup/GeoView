@@ -1,5 +1,7 @@
 [![Pharo 12](https://img.shields.io/badge/Pharo-12-%23aac9ff.svg)](https://pharo.org/download)
 [![Pharo 13](https://img.shields.io/badge/Pharo-13-%23aac9ff.svg)](https://pharo.org/download)
+[![Pharo 14](https://img.shields.io/badge/Pharo-14-%23aac9ff.svg)](https://pharo.org/download)
+[![Pharo 15](https://img.shields.io/badge/Pharo-15-%23aac9ff.svg)](https://pharo.org/download)
 
 [![License](https://img.shields.io/github/license/ThalesGroup/GeoView.svg)](./LICENSE)
 [![Unit tests](https://github.com/ThalesGroup/GeoView/actions/workflows/CI.yml/badge.svg)](https://github.com/ThalesGroup/GeoView/actions/workflows/CI.yml)
