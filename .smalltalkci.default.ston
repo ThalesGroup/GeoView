@@ -1,4 +1,9 @@
 SmalltalkCISpec {
+  
+  #preLoading: '
+    Iceberg remoteTypeSelector: #httpsUrl.
+  ',
+  
   #loading : [
     SCIMetacelloLoadSpec {
       #baseline : 'GeoView',
@@ -9,6 +14,7 @@ SmalltalkCISpec {
       #ignoreImage : true
     }
   ],
+  
   #testing : {
     #packages : [ 'GeoView-*' ]
   }
