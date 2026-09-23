@@ -12,15 +12,12 @@
 
 GeoView is a library for displaying and interacting with geographical objects and cartographic layers in a user interface.
 
-GeoView’s architecture is designed to support multiple graphics backends. Currently, the default and only supported backend is Bloc, using the Alexandrie library.
+GeoView’s architecture is designed to work with Bloc using the Alexandrie library as graphical backend.
 Thanks to its integration with Bloc, GeoView also works within Toplo UI views.
 
 <a href="https://esug.org/2025-Conference/awardsSubmissions.html"><img src="/resources/award.jpg" width="200"></a>
 
 ## 🔧 Key Architectural Features
-
-- **Graphics backend agnostic**  
-  GeoView is designed to be independent of any specific graphics backend. The default implementation uses **Bloc/Alexandrie**.
 
 - **Multiple levels of user-facing APIs**  
   GeoView provides several API layers to suit different abstraction levels:
@@ -74,13 +71,9 @@ This approach gives developers fine-grained control over how geographical conten
 
 ![image](https://github.com/user-attachments/assets/81bdfd1b-23ce-46d4-bbf1-670f5142cfc8)
 
-GeoView is in active development but already powers many UI applications and prototypes involving geospatial data.
+GeoView is in active development but already powers many applications involving geospatial data.
 
 ---
-
-## Prerequisites
-
-Make sure your Bloc backend uses Alexandrie, as other backends are not yet supported.
 
 ## Getting Started
 
@@ -89,10 +82,17 @@ Make sure your Bloc backend uses Alexandrie, as other backends are not yet suppo
 To install **GeoView** with all features and dependencies, simply execute the following script in your Pharo image:
 
 ```smalltalk
-Metacello new
-   baseline: 'GeoView';
-   repository: 'github://ThalesGroup/GeoView:main/src';
-   load.
+[[ 
+	Metacello new
+    baseline: 'GeoView';
+    repository: 'github://ThalesGroup/GeoView:main';
+    onConflict:[ :ex :loaded :incoming | ex useIncoming ];
+    onUpgrade: [ :ex :loaded :incoming | ex useLoaded ];
+    ignoreImage;
+    load.
+
+] on: MCMergeOrLoadWarning do: [ :warning | warning load ] 
+] on: Warning do: [ :w | w resume ].
 ```
 
 ### Minimal version (Core) installation
@@ -100,10 +100,17 @@ Metacello new
 If you prefer to install only the core version of GeoView (without Molecule component framework integration), use the following script:
 
 ```smalltalk
-Metacello new
-   baseline: 'GeoView';
-   repository: 'github://ThalesGroup/GeoView:main/src';
-   load: 'Core'.
+[[ 
+	Metacello new
+    baseline: 'GeoView';
+    repository: 'github://ThalesGroup/GeoView:main';
+    onConflict:[ :ex :loaded :incoming | ex useIncoming ];
+    onUpgrade: [ :ex :loaded :incoming | ex useLoaded ];
+    ignoreImage;
+    load: 'Core'.
+
+] on: MCMergeOrLoadWarning do: [ :warning | warning load ] 
+] on: Warning do: [ :w | w resume ].
 ```
 
 ## Dependencies
