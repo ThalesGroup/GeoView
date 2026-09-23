@@ -1,8 +1,6 @@
 SmalltalkCISpec {
   
-  #preLoading: '
-    Iceberg remoteTypeSelector: #httpsUrl.
-  ',
+  #preLoading: 'ci/preLoading.st',
 
   #loading : [
     SCIMetacelloLoadSpec {
