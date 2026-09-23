@@ -3,7 +3,10 @@ SmalltalkCISpec {
     SCIMetacelloLoadSpec {
       #baseline : 'GeoView',
       #directory : 'src',
-      #platforms : [ #pharo ]
+      #platforms : [ #pharo ],
+      #onConflict : #useIncoming,
+      #onUpgrade : #useLoaded,
+      #ignoreImage : true
     }
   ],
   #testing : {
