@@ -46,7 +46,15 @@ BaselineOfGeoView >> commonDependencies: spec [
 		baseline: 'OpenSmock' with: [	spec repository: 'github://OpenSmock/OpenSmock:main' ].
 	
 	"Enrich version of OpenSmock depending the targeted group"
-	spec project: 'OpenSmockCoreWithBloc' copyFrom: 'OpenSmock' with:[ spec loads: #('CoreWithBloc') ]
+	spec project: 'OpenSmockCoreWithBloc' copyFrom: 'OpenSmock' with:[ spec loads: #('CoreWithBloc') ].
+
+	"Graphic librairies: this section should be removed when librairies will be integrated in Pharo, meanwhile, the versions of these libraries are updated in /ThalesGroup once they have been validated."
+	spec
+		baseline: 'Alexandrie'
+		with: [ spec repository: 'github://ThalesGroup/Alexandrie:dev' ].
+	spec
+		baseline: 'Bloc'
+		with: [ spec repository: 'github://ThalesGroup/Bloc:dev' ].
 ]
 
 { #category : #packages }
