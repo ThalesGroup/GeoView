@@ -117,7 +117,7 @@ GeoViewElementTest >> stimulateGeoCirclesIn: aList geoView: aGeoView fromIndex: 
 { #category : #running }
 GeoViewElementTest >> tearDown [
 
-	spacePulseTask stop.
+	spacePulseTask ifNotNil:[ :t | t stop ].
 	super tearDown
 ]
 
