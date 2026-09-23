@@ -8,8 +8,6 @@ SmalltalkCISpec {
       #directory : 'src',
       #platforms : [ #pharo ],
       #onConflict : #useIncoming,
-      #onUpgrade : #useLoaded,
-      #ignoreImage : true,
       #load: 'Core'
     }
   ],
