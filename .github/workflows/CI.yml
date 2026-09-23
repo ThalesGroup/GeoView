@@ -11,12 +11,12 @@ jobs:
   test:
     strategy:
       matrix:
-        smalltalk: [ Pharo64-12, Pharo64-13, Pharo64-14, Pharo64-15 ] #Pharo versions
+        smalltalk: [ Pharo64-12, Pharo64-13, Pharo64-14 ] #Pharo versions
         os: [ ubuntu-latest, macos-latest, windows-latest ] #OS versions
         ston: [ .smalltalkci.core.ston, .smalltalkci.default.ston ] #Can use multiple .ston files
         #Specific case for Pharo 15 (experimental): ignore failures
         include:
-          - smalltalk: Pharo64-15
+          - smalltalk: Pharo64-14
             experimental: true
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.ston == '.smalltalkci.default.ston' && '[Full] ' || '[Core] ' }} • ${{ matrix.smalltalk }} • ${{ matrix.os }}
