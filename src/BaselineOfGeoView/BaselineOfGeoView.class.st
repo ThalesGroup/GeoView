@@ -61,18 +61,13 @@ BaselineOfGeoView >> commonDependencies: spec [
 BaselineOfGeoView >> corePackages: spec [
 
 	"Core and graphical backend packages"
-	spec package: 'GeoView'.
-		
+	spec package: 'GeoView'  with: [ spec requires: #('Alexandrie' 'Bloc') ].
+	
 	"Examples packages"
-	spec package: 'GeoView-Examples' with:[ 
-		spec requires: #('GeoView') with: [
-				spec requires: #('Alexandrie' 'Bloc')
-			].
-		].
+	spec package: 'GeoView-Examples' with:[ spec requires: #('GeoView') ].
 
 	"Tests packages"
-	spec package: 'GeoView-Tests' with: [ 
-		spec requires: #('GeoView') ].
+	spec package: 'GeoView-Tests' with: [ spec requires: #('GeoView') ]. 
 ]
 
 { #category : #packages }
