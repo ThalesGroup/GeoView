@@ -1,5 +1,6 @@
 [![Pharo 12](https://img.shields.io/badge/Pharo-12-%23aac9ff.svg)](https://pharo.org/download)
 [![Pharo 13](https://img.shields.io/badge/Pharo-13-%23aac9ff.svg)](https://pharo.org/download)
+[![Pharo 14](https://img.shields.io/badge/Pharo-14-%23aac9ff.svg)](https://pharo.org/download)
 
 [![License](https://img.shields.io/github/license/ThalesGroup/GeoView.svg)](./LICENSE)
 [![Unit tests](https://github.com/ThalesGroup/GeoView/actions/workflows/CI.yml/badge.svg)](https://github.com/ThalesGroup/GeoView/actions/workflows/CI.yml)
@@ -10,15 +11,12 @@
 
 GeoView is a library for displaying and interacting with geographical objects and cartographic layers in a user interface.
 
-GeoView’s architecture is designed to support multiple graphics backends. Currently, the default and only supported backend is Bloc, using the Alexandrie library.
+GeoView’s architecture is designed to work with Bloc using the Alexandrie library as graphical backend.
 Thanks to its integration with Bloc, GeoView also works within Toplo UI views.
 
 <a href="https://esug.org/2025-Conference/awardsSubmissions.html"><img src="/resources/award.jpg" width="200"></a>
 
 ## 🔧 Key Architectural Features
-
-- **Graphics backend agnostic**  
-  GeoView is designed to be independent of any specific graphics backend. The default implementation uses **Bloc/Alexandrie**.
 
 - **Multiple levels of user-facing APIs**  
   GeoView provides several API layers to suit different abstraction levels:
@@ -72,13 +70,9 @@ This approach gives developers fine-grained control over how geographical conten
 
 ![image](https://github.com/user-attachments/assets/81bdfd1b-23ce-46d4-bbf1-670f5142cfc8)
 
-GeoView is in active development but already powers many UI applications and prototypes involving geospatial data.
+GeoView is in active development but already powers many applications involving geospatial data.
 
 ---
-
-## Prerequisites
-
-Make sure your Bloc backend uses Alexandrie, as other backends are not yet supported.
 
 ## Getting Started
 
@@ -88,9 +82,10 @@ To install **GeoView** with all features and dependencies, simply execute the fo
 
 ```smalltalk
 Metacello new
-   baseline: 'GeoView';
-   repository: 'github://ThalesGroup/GeoView:main/src';
-   load.
+	baseline: 'GeoView';
+	repository: 'github://ThalesGroup/GeoView:main';
+	onConflictUseIncoming;
+	load
 ```
 
 ### Minimal version (Core) installation
@@ -99,27 +94,28 @@ If you prefer to install only the core version of GeoView (without Molecule comp
 
 ```smalltalk
 Metacello new
-   baseline: 'GeoView';
-   repository: 'github://ThalesGroup/GeoView:main/src';
-   load: 'Core'.
+	baseline: 'GeoView';
+	repository: 'github://ThalesGroup/GeoView:main';
+	onConflictUseIncoming;
+	load: 'Core'
 ```
 
 ## Dependencies
 
 Core : 
 
-- [Alexandrie](https://github.com/pharo-graphics/alexandrie)
-- [Bloc](https://github.com/pharo-graphics/bloc)
+- [Alexandrie](https://github.com/ThalesGroup/alexandrie) 
+- [Bloc](https://github.com/ThalesGroup/bloc)
 - [OpenSmock(Core)](https://github.com/OpenSmock/OpenSmock)
 - [GeoTools](https://github.com/ThalesGroup/GeoTools)
 - [PharoOWS](https://github.com/ThalesGroup/PharoOWS)
 
-Default/Full adding :
+Default/Full :
 
 - [Molecule](https://github.com/OpenSmock/Molecule)
 - [OpenSmock](https://github.com/OpenSmock/OpenSmock)
 
-Note: Bloc and Alexandrie will soon be integrated into Pharo, at which point this dependency will be removed.
+Note: Bloc and Alexandrie will soon be integrated into Pharo, at which point this dependency will be removed. GeoView is using the /ThalesGroup fork of Bloc and Alexandrie. By using this way, we have the possibility to avoid block updates and integrate changes at our own pace. You can use the latest Bloc and Alexandrie version from pharo-graphics but at your own risks!
 
 ## License
 

@@ -1,11 +1,16 @@
 SmalltalkCISpec {
+  
+  #preLoading: '.github/ci/preLoading.st',
+  
   #loading : [
     SCIMetacelloLoadSpec {
       #baseline : 'GeoView',
       #directory : 'src',
-      #platforms : [ #pharo ]
+      #platforms : [ #pharo ],
+      #onConflict : #useIncoming
     }
   ],
+
   #testing : {
     #packages : [ 'GeoView-*' ]
   }
