@@ -84,7 +84,7 @@ To install **GeoView** with all features and dependencies, simply execute the fo
 Metacello new
 	baseline: 'GeoView';
 	repository: 'github://ThalesGroup/GeoView:main';
-	onConflictUseLoaded;
+	onConflictUseIncoming;
 	load
 ```
 
@@ -96,7 +96,7 @@ If you prefer to install only the core version of GeoView (without Molecule comp
 Metacello new
 	baseline: 'GeoView';
 	repository: 'github://ThalesGroup/GeoView:main';
-	onConflictUseLoaded;
+	onConflictUseIncoming;
 	load: 'Core'
 ```
 
@@ -104,18 +104,18 @@ Metacello new
 
 Core : 
 
-- [Alexandrie](https://github.com/pharo-graphics/alexandrie)
-- [Bloc](https://github.com/pharo-graphics/bloc)
+- [Alexandrie](https://github.com/ThalesGroup/alexandrie) 
+- [Bloc](https://github.com/ThalesGroup/bloc)
 - [OpenSmock(Core)](https://github.com/OpenSmock/OpenSmock)
 - [GeoTools](https://github.com/ThalesGroup/GeoTools)
 - [PharoOWS](https://github.com/ThalesGroup/PharoOWS)
 
-Default/Full adding :
+Default/Full :
 
 - [Molecule](https://github.com/OpenSmock/Molecule)
 - [OpenSmock](https://github.com/OpenSmock/OpenSmock)
 
-Note: Bloc and Alexandrie will soon be integrated into Pharo, at which point this dependency will be removed.
+Note: Bloc and Alexandrie will soon be integrated into Pharo, at which point this dependency will be removed. GeoView is using the /ThalesGroup fork of Bloc and Alexandrie. By using this way, we have the possibility to avoid block updates and integrate changes at our own pace. You can use the latest Bloc and Alexandrie version from pharo-graphics but at your own risks!
 
 ## License
 
